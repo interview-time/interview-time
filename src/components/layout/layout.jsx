@@ -9,7 +9,7 @@ import {
     UploadOutlined,
 } from '@ant-design/icons';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, pageHeader }) => {
     const [collapsed, setCollapsed] = React.useState(false);
 
     return (
@@ -18,10 +18,12 @@ const Layout = ({ children }) => {
         }}>
             <AntLayout.Sider trigger={null} collapsible collapsed={collapsed}>
                 <div className="logo" />
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                    <Menu.Item key="1" icon={<UserOutlined />}>
-                        nav 1
-              </Menu.Item>
+                <Menu theme="dark" mode="inline" defaultSelectedKeys={['question-bank']}>
+                    <Menu.Item key="question-bank" icon={<VideoCameraOutlined />}>
+                        <Link to={`/question-bank`}>
+                            <span className="nav-text">Question Bank</span>
+                        </Link>
+                    </Menu.Item>
                     <Menu.Item key="2" icon={<VideoCameraOutlined />}>
                         nav 2
               </Menu.Item>
@@ -37,8 +39,8 @@ const Layout = ({ children }) => {
                         onClick: () => setCollapsed(!collapsed),
                     })}
                 </AntLayout.Header>
+                {pageHeader}
                 <AntLayout.Content
-                    className="site-layout-background"
                     style={{
                         margin: '24px 16px',
                         padding: 24,
