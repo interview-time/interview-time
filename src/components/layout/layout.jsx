@@ -1,15 +1,18 @@
 import React from "react";
-import { Layout as AntLayout, Menu } from "antd";
-import { Link, withRouter } from "react-router-dom";
+import {Layout as AntLayout, Menu} from "antd";
+import {Link, withRouter} from "react-router-dom";
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
+    DashboardOutlined,
+    QuestionOutlined,
+    FormOutlined,
+    CheckCircleOutlined,
     UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
+    QuestionCircleOutlined,
 } from '@ant-design/icons';
 
-const Layout = ({ children, pageHeader }) => {
+const Layout = ({children, pageHeader}) => {
     const [collapsed, setCollapsed] = React.useState(false);
 
     return (
@@ -19,21 +22,30 @@ const Layout = ({ children, pageHeader }) => {
             <AntLayout.Sider trigger={null} collapsible collapsed={collapsed}>
                 <div className="logo" />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['question-bank']}>
-                    <Menu.Item key="question-bank" icon={<VideoCameraOutlined />}>
+                    <Menu.Item key="1" icon={<DashboardOutlined />}>
+                        Dashboard
+                    </Menu.Item>
+                    <Menu.Item key="question-bank" icon={<QuestionOutlined />}>
                         <Link to={`/question-bank`}>
                             <span className="nav-text">Question Bank</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-                        nav 2
-              </Menu.Item>
-                    <Menu.Item key="3" icon={<UploadOutlined />}>
-                        nav 3
-              </Menu.Item>
+                    <Menu.Item key="2" icon={<FormOutlined />}>
+                        Guides
+                    </Menu.Item>
+                    <Menu.Item key="3" icon={<CheckCircleOutlined />}>
+                        Interviews
+                    </Menu.Item>
+                    <Menu.Item key="4" icon={<UserOutlined />}>
+                        Account
+                    </Menu.Item>
+                    <Menu.Item key="5" icon={<QuestionCircleOutlined />}>
+                        Help
+                    </Menu.Item>
                 </Menu>
             </AntLayout.Sider>
             <AntLayout className="site-layout">
-                <AntLayout.Header className="site-layout-background" style={{ padding: 0 }}>
+                <AntLayout.Header className="site-layout-background" style={{padding: 0}}>
                     {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                         className: 'trigger',
                         onClick: () => setCollapsed(!collapsed),
