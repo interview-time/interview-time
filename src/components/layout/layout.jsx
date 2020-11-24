@@ -33,8 +33,10 @@ const Layout = ({children, pageHeader}) => {
                     <Menu.Item key="2" icon={<FormOutlined />}>
                         Guides
                     </Menu.Item>
-                    <Menu.Item key="3" icon={<CheckCircleOutlined />}>
-                        Interviews
+                    <Menu.Item key="interviews" icon={<CheckCircleOutlined />}>
+                        <Link to={`/interviews`}>
+                            <span className="nav-text">Interviews</span>
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key="4" icon={<UserOutlined />}>
                         Account
