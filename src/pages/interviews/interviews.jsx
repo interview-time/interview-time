@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import Layout from "../../components/layout/layout";
 import {Input, Button, PageHeader, Space, Table, Tag, Badge} from 'antd';
-import styles from "../question-bank/question-bank.module.css";
+import styles from "../interviews/interviews.module.css";
 import {
     EditTwoTone,
     DeleteTwoTone,
@@ -9,40 +9,73 @@ import {
 
 const {Search} = Input;
 
+const ASSESSMENT_YES = 'yes';
+const ASSESSMENT_NO = 'no';
+const ASSESSMENT_STRONG_YES = 'strong yes';
+const ASSESSMENT_STRONG_NO = 'strong no';
+const STATUS_COMPLETED = 'Completed';
+const STATUS_SCHEDULED = 'Scheduled';
+
 const columns = [
     {
         title: 'Candidate Name',
         dataIndex: 'name',
         key: 'name',
+        sortDirections: ['descend', 'ascend'],
+        sorter: (a, b) => a.name.localeCompare(b.name),
         render: text => <a>{text}</a>,
     },
     {
         title: 'Guide',
         dataIndex: 'guide',
         key: 'guide',
+        sortDirections: ['descend', 'ascend'],
+        sorter: (a, b) => a.guide.localeCompare(b.guide),
     },
     {
         title: 'Date',
         dataIndex: 'date',
         key: 'date',
+        sortDirections: ['descend', 'ascend'],
+        sorter: (a, b) => a.status.localeCompare(b.status),
     },
     {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
-        render: (status) => (
-            <Badge status="default" text={status}/>
-        ),
+        sortDirections: ['descend', 'ascend'],
+        sorter: (a, b) => a.status.localeCompare(b.status),
+        render: status => {
+            let color = "default"
+            if (status === STATUS_COMPLETED) {
+                color = "default"
+            } else if (status === STATUS_SCHEDULED) {
+                color = "processing"
+            }
+            return <Badge status={color} text={status} />;
+        },
     },
     {
         title: 'Assessment',
-        key: 'assessment',
-        dataIndex: 'assessment',
-        render: assessment => (
+        key: 'tags',
+        dataIndex: 'tags',
+        sortDirections: ['descend', 'ascend'],
+        sorter: (a, b) => a.status.localeCompare(b.status),
+        render: tags => (
             <>
-                {
-                    <Tag color={'green'} key={assessment}>{assessment.toUpperCase()}</Tag>
-                }
+                {tags.map(tag => {
+                    let color = 'grey';
+                    if (tag === ASSESSMENT_YES || tag === ASSESSMENT_STRONG_YES) {
+                        color = 'green';
+                    } else if (tag === ASSESSMENT_NO || tag === ASSESSMENT_STRONG_NO) {
+                        color = 'red';
+                    }
+                    return (
+                        <Tag color={color} key={tag}>
+                            {tag.toUpperCase()}
+                        </Tag>
+                    );
+                })}
             </>
         ),
     },
@@ -64,39 +97,56 @@ const data = [
         name: 'John Brown',
         guide: 'Android Developer',
         date: '12-02-2020 09:30',
+        tags: [ASSESSMENT_STRONG_YES],
         status: 'Completed',
-        assessment: 'yes',
     },
     {
         key: '2',
-        name: 'John Brown',
+        name: 'Dmytro Danylyk',
         guide: 'Android Developer',
         date: '12-02-2020 09:30',
+        tags: [ASSESSMENT_NO],
         status: 'Completed',
-        assessment: 'yes',
     },
     {
         key: '3',
-        name: 'John Brown',
+        name: 'Julia Danylyk',
         guide: 'Android Developer',
-        date: '12-02-2020 09:30',
-        status: 'Completed',
-        assessment: 'yes',
+        date: '14-03-2020 09:30',
+        tags: [ASSESSMENT_YES],
+        status: 'Scheduled',
     },
 ];
 
-
 const Interviews = () => {
+    const [interviews, setInterviews] = useState(data)
+
+    function onSearchTextChanged(e) {
+        onSearchClicked(e.target.value)
+    }
+
+    function onSearchClicked(text) {
+        let lowerCaseText = text.toLocaleLowerCase()
+        setInterviews(data.filter(item =>
+            item.name.toLocaleLowerCase().includes(lowerCaseText)
+            || item.guide.toLocaleLowerCase().includes(lowerCaseText)
+            || item.date.includes(lowerCaseText)
+            || item.status.toLocaleLowerCase().includes(lowerCaseText)
+            || item.tags.includes(lowerCaseText)
+        ))
+    }
+
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
             title="Interviews">
             <div>
-                <Search placeholder="Search" style={{width: 400, margin: '0 24px 0 0'}} allowClear enterButton />
+                <Search placeholder="Search" style={{width: 400, margin: '0 24px 0 0'}} allowClear enterButton
+                        onSearch={onSearchClicked} onChange={onSearchTextChanged} />
                 <Button type="primary">Add interview</Button>
             </div>
         </PageHeader>}>
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={interviews} />
         </Layout>
     )
 }
