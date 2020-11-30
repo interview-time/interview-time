@@ -24,7 +24,10 @@ const columns = [
         key: 'name',
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a.name.localeCompare(b.name),
-        render: text => <a>{text}</a>,
+        render: text =>
+            <Link to={`/interviews/detail`}>
+                <span className="nav-text">{text}</span>
+            </Link>,
     },
     {
         title: 'Guide',
@@ -140,16 +143,17 @@ const Interviews = () => {
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
-            title="Interviews">
-            <div>
-                <Search placeholder="Search" style={{width: 400, margin: '0 24px 0 0'}} allowClear enterButton
-                        onSearch={onSearchClicked} onChange={onSearchTextChanged} />
+            title="Interviews"
+            extra={[
+                <Search placeholder="Search" style={{width: 400}} allowClear enterButton
+                        onSearch={onSearchClicked} onChange={onSearchTextChanged} />,
                 <Button type="primary">
                     <Link to={`/interviews/add`}>
                         <span className="nav-text">Add interview</span>
                     </Link>
-                </Button>
-            </div>
+                </Button>,
+            ]}
+        >
         </PageHeader>}>
             <Table columns={columns} dataSource={interviews} />
         </Layout>

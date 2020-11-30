@@ -3,6 +3,7 @@ import Layout from "../../components/layout/layout";
 import {Form, DatePicker, TimePicker, Select, Input, Button, PageHeader, Row, Col, Card} from 'antd';
 import styles from "./new-interview.module.css";
 import {PlusCircleTwoTone, DeleteTwoTone} from '@ant-design/icons';
+import {Link} from "react-router-dom";
 
 const {TextArea} = Input;
 
@@ -20,7 +21,11 @@ const NewInterview = () => {
             title="New Interview"
             onBack={() => window.history.back()}
             extra={[
-                <Button type="primary">Finish</Button>,
+                <Button type="primary">
+                    <Link to={`/interviews`}>
+                        <span className="nav-text">Finish</span>
+                    </Link>
+                </Button>,
             ]}
         >
         </PageHeader>}>
@@ -118,7 +123,11 @@ const NewInterview = () => {
 
                             <Form.Item
                                 wrapperCol={{offset: 6, span: 16}}>
-                                <Button type="primary">Preview</Button>
+                                <Button type="primary">
+                                    <Link to={`/interviews/detail`}>
+                                        <span className="nav-text">Preview</span>
+                                    </Link>
+                                </Button>
                             </Form.Item>
                         </Form>
                     </Card>
