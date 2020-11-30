@@ -1,7 +1,8 @@
 import React, {useState} from "react";
+import {Link} from "react-router-dom";
 import Layout from "../../components/layout/layout";
-import {Input, Button, PageHeader, Space, Table, Tag, Badge} from 'antd';
 import styles from "../interviews/interviews.module.css";
+import {Input, Button, PageHeader, Space, Table, Tag, Badge} from 'antd';
 import {
     EditTwoTone,
     DeleteTwoTone,
@@ -143,7 +144,11 @@ const Interviews = () => {
             <div>
                 <Search placeholder="Search" style={{width: 400, margin: '0 24px 0 0'}} allowClear enterButton
                         onSearch={onSearchClicked} onChange={onSearchTextChanged} />
-                <Button type="primary">Add interview</Button>
+                <Button type="primary">
+                    <Link to={`/interviews/add`}>
+                        <span className="nav-text">Add interview</span>
+                    </Link>
+                </Button>
             </div>
         </PageHeader>}>
             <Table columns={columns} dataSource={interviews} />
