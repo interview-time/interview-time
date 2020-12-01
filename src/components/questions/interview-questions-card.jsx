@@ -103,17 +103,17 @@ const data = [
 const InterviewQuestionsCard = () => {
     const [questions, setQuestions] = useState(data)
 
-    function onSearchTextChanged(e) {
-        onSearchClicked(e.target.value)
-    }
-
-    function onSearchClicked(text) {
+    const onSearchClicked = text => {
         let lowerCaseText = text.toLocaleLowerCase()
         setQuestions(data.filter(item =>
             item.question.toLocaleLowerCase().includes(lowerCaseText)
             || item.tags.includes(lowerCaseText)
         ))
-    }
+    };
+
+    const onSearchTextChanged = e => {
+        onSearchClicked(e.target.value)
+    };
 
     return (
         <Card

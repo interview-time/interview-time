@@ -18,29 +18,29 @@ const AssessmentCheckbox = () => {
 
     const [assessment, setAssessment] = useState(NONE)
 
-    function onDislikeClicked() {
+    const onDislikeClicked = () => {
         if (assessment === DISLIKE) {
             setAssessment(NONE)
         } else {
             setAssessment(DISLIKE)
         }
-    }
+    };
 
-    function onLikeClicked() {
+    const onLikeClicked = () => {
         if (assessment === LIKE) {
             setAssessment(NONE)
         } else {
             setAssessment(LIKE)
         }
-    }
+    };
 
-    function onPlusClicked() {
+    const onPlusClicked = () => {
         if (assessment === PLUS) {
             setAssessment(NONE)
         } else {
             setAssessment(PLUS)
         }
-    }
+    };
 
     return (
         <Space size="middle">
