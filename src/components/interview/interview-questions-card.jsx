@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Card, Form, Input, Table, Tag, Radio} from "antd";
-import AssessmentCheckbox from "../../components/questions/assessment-checkbox"
-import styles from "./interviews-questions-card.module.css";
+import AssessmentCheckbox from "../questions/assessment-checkbox"
+import styles from "./interview-questions-card.module.css";
 
 const {Search} = Input;
 const {TextArea} = Input;
