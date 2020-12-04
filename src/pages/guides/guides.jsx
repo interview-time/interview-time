@@ -79,15 +79,14 @@ const Guides = () => {
                 gutter: 16,
                 xs: 1,
                 sm: 1,
-                md: 1,
-                lg: 2,
-                xl: 3,
+                md: 2,
+                lg: 3,
+                xl: 4,
                 xxl: 4,
             }}
             dataSource={guides}
             renderItem={item => <List.Item>
                 <Card
-                    className={styles.card}
                     actions={[
                         <Tooltip title="Edit"><EditOutlined key="edit"/></Tooltip>,
                         <Tooltip title="Copy"><CopyOutlined key="copy"/></Tooltip>,
