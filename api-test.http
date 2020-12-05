@@ -1,0 +1,36 @@
+### Get all questions in a category
+
+GET https://localhost:5001/question-bank/JavaScript
+Content-Type: application/json
+
+### Save new question
+
+POST https://localhost:5001/question-bank/question
+Content-Type: application/json
+
+{
+    "category": "JavaScript",
+    "question": "Can you name two programming paradigms important for JavaScript app developers?",
+    "tags": ["ui", "concepts"],
+    "time": 3
+}
+
+### Update question
+
+PUT https://localhost:5001/question-bank/question
+Content-Type: application/json
+
+{
+    "questionId": "7bab9df9-3b35-4661-a8a4-03c6fa6aeb98",
+    "category": "JavaScript",
+    "question": "Can you name two programming paradigms important for JavaScript app developers?",
+    "tags": ["concepts"],
+    "time": 5
+}
+
+### Delete question
+
+@questionId = 9a621e69-5adb-468f-8dea-ad6908c4fc1c
+
+DELETE https://localhost:5001/question-bank/question/{{questionId}}
+Content-Type: application/json
