@@ -19,7 +19,26 @@ jobs:
         dotnet-version: 3.1.301
     - name: Install dependencies
       run: dotnet restore
+      
     - name: Build
       run: dotnet build --configuration Release --no-restore
+      
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+
+    - name: dotnet Publish
+      run: dotnet publish -o build -r linux-x64 --self-contained false
+      
+    - name: Create deployment zip package
+      run: zip -r webapi.zip build
+      
+    - name: Deploy to Elastic Beanstalk
+      uses: einaregilsson/beanstalk-deploy@v14
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: interviewer-api
+        environment_name: InterviewerApi-env-1
+        version_label: "${{ steps.format-time.outputs.replaced }}"
+        region: ap-southeast-2
+        deployment_package: webapi.zip
