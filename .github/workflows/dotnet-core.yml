@@ -32,6 +32,10 @@ jobs:
     - name: Create deployment zip package
       run: zip -r webapi.zip build
       
+    - name: Get timestamp
+      id: timestamp
+      run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S-%3NZ')" 
+      
     - name: Deploy to Elastic Beanstalk
       uses: einaregilsson/beanstalk-deploy@v14
       with:
