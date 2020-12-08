@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using Amazon.DynamoDBv2.DataModel;
 
 namespace CafApi
 {
+    [DynamoDBTable("QuestionBank")]
     public class QuestionBank
     {
+        [DynamoDBHashKey]
         public string UserId { get; set; }
 
         public string QuestionId { get; set; }
