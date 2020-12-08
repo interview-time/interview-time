@@ -1,71 +1,57 @@
 import React, {useState} from "react";
 import Layout from "../../components/layout/layout";
-import {Tooltip, Avatar, Button, PageHeader, Input, List, Card} from "antd";
+import {Statistic, Row, Col, Avatar, Button, PageHeader, List, Card} from "antd";
 import styles from "../guides/guides.module.css";
 import {Link} from "react-router-dom";
-import {
-    CopyOutlined,
-    EditOutlined,
-    CheckCircleOutlined
-} from '@ant-design/icons';
 
-const {Search} = Input;
 const {Meta} = Card;
 
 const data = [
     {
         title: 'Senior Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        description: 'Technical, 60min'
+        questions: '95',
+        interviews: '32'
     },
     {
         title: 'Middle Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        description: 'Technical, 50min'
+        questions: '95',
+        interviews: '32'
     },
     {
         title: 'Junior Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        description: 'Technical, 40min'
+        questions: '95',
+        interviews: '32'
     },
     {
         title: 'Junior Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        description: 'Technical, 40min'
+        questions: '95',
+        interviews: '32'
     },
     {
         title: 'Junior Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        description: 'Technical, 40min'
+        questions: '95',
+        interviews: '32'
     },
     {
         title: 'Junior Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        description: 'Technical, 40min'
+        questions: '95',
+        interviews: '32'
     },
 ];
 
 const Guides = () => {
     const [guides, setGuides] = useState(data)
 
-    function onSearchTextChanged(e) {
-        onSearchClicked(e.target.value)
-    }
-
-    function onSearchClicked(text) {
-        let lowerCaseText = text.toLocaleLowerCase()
-        setGuides(data.filter(item =>
-            item.title.toLocaleLowerCase().includes(lowerCaseText)
-            || item.description.toLocaleLowerCase().includes(lowerCaseText)
-        ))
-    }
-
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
         title="Interview Guides"
         extra={[
-            <Search placeholder="Search" className={styles.search} allowClear enterButton
-                    onSearch={onSearchClicked} onChange={onSearchTextChanged}/>,
             <Button type="primary">
                 <Link to={`/guides/add`}>
                     <span className="nav-text">Add guide</span>
@@ -86,18 +72,26 @@ const Guides = () => {
             }}
             dataSource={guides}
             renderItem={item => <List.Item>
-                <Card
-                    actions={[
-                        <Tooltip title="Edit"><EditOutlined key="edit"/></Tooltip>,
-                        <Tooltip title="Copy"><CopyOutlined key="copy"/></Tooltip>,
-                        <Tooltip title="New Interview"><CheckCircleOutlined key="interview"/></Tooltip>,
-                    ]}>
-                    <Meta
-                        avatar={<Avatar src={item.image}/>}
-                        title={item.title}
-                        description={item.description}
-                    />
-                </Card>
+                <Link to={`/guides/add`}>
+                    <Card hoverable>
+                        <Meta
+                            avatar={<Avatar src={item.image} />}
+                            title={item.title}
+                        />
+                        <Row span={24}>
+                            <Col span={12}>
+                                <Statistic title="Questions"
+                                           value={item.questions}
+                                           valueStyle={{fontSize: "large"}} />
+                            </Col>
+                            <Col span={12}>
+                                <Statistic title="Interviews"
+                                           value={item.interviews}
+                                           valueStyle={{fontSize: "large"}} />
+                            </Col>
+                        </Row>
+                    </Card>
+                </Link>
             </List.Item>}
         />
     </Layout>
