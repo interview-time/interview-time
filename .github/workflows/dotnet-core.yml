@@ -30,7 +30,7 @@ jobs:
       run: dotnet publish -o build -r linux-x64 --self-contained false
       
     - name: Create deployment zip package
-      run: zip -r webapi.zip build
+      run: zip -r -j package.zip build/*
       
     - name: Get timestamp
       id: timestamp
@@ -45,4 +45,4 @@ jobs:
         environment_name: InterviewerApi-env-1
         version_label: "${{ steps.timestamp.outputs.date }}"
         region: ap-southeast-2
-        deployment_package: webapi.zip
+        deployment_package: package.zip
