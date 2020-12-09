@@ -6,12 +6,12 @@ import {Card, Space, Form, Button, Input} from "antd";
 const {TextArea} = Input;
 
 const layout = {
-    labelCol: {span: 8},
-    wrapperCol: {span: 16},
+    labelCol: {span: 6},
+    wrapperCol: {span: 18},
 };
 
 const tailLayout = {
-    wrapperCol: {offset: 8, span: 16},
+    wrapperCol: {offset: 6, span: 18},
 };
 
 const questionGroupPlaceholders = [
@@ -21,7 +21,7 @@ const questionGroupPlaceholders = [
     'Architecture',
 ];
 
-const GuideStructureCard = () => {
+const GuideStructureCard = (props) => {
     function createQuestionGroupList() {
         return <Form.List
             {...layout}
@@ -41,34 +41,37 @@ const GuideStructureCard = () => {
                 })}
 
                 <Form.Item {...tailLayout}>
-                    <Button className={styles.input} type="dashed" block icon={<PlusCircleTwoTone />}
+                    <Button className={styles.addGroupButton} type="dashed" block icon={<PlusCircleTwoTone />}
                             onClick={() => add()}>Group</Button>
                 </Form.Item>
             </>}
         </Form.List>;
     }
 
-    return <Card title="Guide Structure" bordered={false} headStyle={{textAlign: 'center'}}>
+    return <Card title="Guide Structure" bordered={false} headStyle={{textAlign: 'center'}} style={{width: 700}}>
         <Form
             {...layout}
             name="basic"
             initialValues={{remember: true}}>
-            <Form.Item label="Intro">
+            <Form.Item label="Intro" {...layout}>
                 <TextArea
-                    autoSize
                     className={styles.input}
+                    autoSize
                     placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
             </Form.Item>
 
             {createQuestionGroupList()}
 
             <Form.Item label="Overall">
-                <TextArea placeholder="Should the candidate proceed to the next stage?" className={styles.input} />
+                <TextArea
+                    className={styles.input}
+                    autoSize
+                    placeholder="Should the candidate proceed to the next stage?" />
             </Form.Item>
 
-            <Form.Item {...tailLayout}>
+            {props.showRevertButton && <Form.Item {...tailLayout}>
                 <Button className={styles.input} danger>Revert Changes</Button>
-            </Form.Item>
+            </Form.Item>}
         </Form>
     </Card>
 }

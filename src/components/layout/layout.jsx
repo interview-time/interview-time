@@ -30,8 +30,10 @@ const Layout = ({children, pageHeader}) => {
                             <span className="nav-text">Question Bank</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key="2" icon={<FormOutlined />}>
-                        Guides
+                    <Menu.Item key="guides" icon={<FormOutlined />}>
+                        <Link to={`/guides`}>
+                            <span className="nav-text">Guides</span>
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key="interviews" icon={<CheckCircleOutlined />}>
                         <Link to={`/interviews`}>

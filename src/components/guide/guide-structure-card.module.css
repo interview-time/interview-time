@@ -6,6 +6,10 @@
     width: 400px;
 }
 
+.addGroupButton {
+    max-width: 400px;
+}
+
 .inputQuestion {
     width: 250px;
 }

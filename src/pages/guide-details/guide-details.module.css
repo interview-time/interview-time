@@ -1,0 +1,16 @@
+.pageHeader {
+    background-color: white;
+}
+
+.input {
+    max-width: 300px;
+    width: 100%;
+}
+
+.textArea {
+    width: 300px;
+}
+
+.detailsCard {
+    width: 500px;
+}
