@@ -1,5 +1,7 @@
 import React from "react";
+import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
+import {loadQuestions, addQuestion, updateQuestion, deleteQuestion} from "../../store/question-bank/actions";
 import { Table, Tag, Space, Row, Col, Card, Select, PageHeader } from 'antd';
 import styles from "./question-bank.module.css";
 
@@ -36,131 +38,14 @@ const columns = [
     },
 ];
 
-const data = [
-    {
-        key: '1',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '2',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '3',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '4',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '5',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '6',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '7',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '8',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '9',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '10',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '11',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '12',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '13',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '14',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '15',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '16',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-    {
-        key: '17',
-        question: 'What are configuration changes and when do they happen?',
-        tags: ['android', 'activity', 'lifecycle'],
-        category: 'android',
-        time: 2,
-    },
-];
+const QuestionBank = ({ questions, loading, loadQuestions, addQuestion, updateQuestion, deleteQuestion }) => {
 
-const tags = ['activity (23)', 'lifecycle (8)', 'ui (6)', 'view (11)', 'concurrency (13)', 'layout (7)', 'performance (4)', 'androidx (7)', 'gradle (4)'];
+    React.useEffect(() => {
+        if ((!questions || questions.length === 0) && !loading) {
+            loadQuestions('JavaScript');
+        }
+    }, []);
 
-const QuestionBank = () => {
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
@@ -168,7 +53,7 @@ const QuestionBank = () => {
         />}>
             <Row gutter={16}>
                 <Col span={18}>
-                    <Table columns={columns} dataSource={data} />
+                    <Table columns={columns} dataSource={questions} loading={loading} />
                 </Col>
                 <Col span={6}>
                     <Card title="Category" bordered={false}>
@@ -178,13 +63,6 @@ const QuestionBank = () => {
                             <Select.Option value="behavioural">Behavioural</Select.Option>
                         </Select>
                     </Card>
-
-                    <Card title="Tags" bordered={false} className={styles.tagsCard}>
-                        {tags.map((tag) => <Tag color="green" key={tag} className={styles.tag}>
-                            {tag}
-                        </Tag>)}
-
-                    </Card>
                 </Col>
             </Row>
 
@@ -192,4 +70,10 @@ const QuestionBank = () => {
     )
 }
 
-export default QuestionBank;
+const mapStateToProps = state => {
+    const { questions, loading } = state.questionBank || {};
+
+    return { questions, loading };
+};
+
+export default connect(mapStateToProps, { loadQuestions, addQuestion, updateQuestion, deleteQuestion })(QuestionBank);
