@@ -82,12 +82,10 @@ const GuideDetails = () => {
             <>{(isPreviewStep()) && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
                 <span className="nav-text">Edit</span>
             </Button>}</>,
-            <>{(isDetailsStep() || isStructureStep()) &&
-            <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
+            <>{(isDetailsStep() || isStructureStep()) && <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
                 <span className="nav-text">Preview</span>
             </Button>}</>,
-            <>{isQuestionsStep() &&
-            <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+            <>{isQuestionsStep() && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
                 <span className="nav-text">Discard</span>
             </Button>}</>,
             <>{isQuestionsStep() && <Button type="primary" onClick={() => setStep(STEP_STRUCTURE)}>
@@ -119,12 +117,9 @@ const GuideDetails = () => {
             the changes.</Text>}
         {isQuestionsStep() && <Text>
             Drag and drop questions from your question bank to the question group.
-            </Text>}
+        </Text>}
     </PageHeader>}>
         <Row gutter={16} justify="center">
-            {isQuestionsStep() && <Col span={24}>
-                <GuideQuestionGroup />
-            </Col>}
             {isDetailsStep() && <Col className={styles.detailsCard}>
                 <Card title="Guide Details" bordered={false} headStyle={{textAlign: 'center'}}>
                     <Form
@@ -168,6 +163,9 @@ const GuideDetails = () => {
                 <GuideStructureCard
                     showRevertButton={false}
                     onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />
+            </Col>}
+            {isQuestionsStep() && <Col span={24}>
+                <GuideQuestionGroup />
             </Col>}
         </Row>
     </Layout>

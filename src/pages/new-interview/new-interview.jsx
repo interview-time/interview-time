@@ -1,11 +1,14 @@
 import React, {useState} from "react";
 import Layout from "../../components/layout/layout";
 import styles from "./new-interview.module.css";
-import {AutoComplete, Form, DatePicker, TimePicker, Input, Button, PageHeader, Row, Col, Card} from 'antd';
+import {AutoComplete, Form, DatePicker, TimePicker, Input, Button, PageHeader, Row, Col, Card, Tabs} from 'antd';
 import {Link} from "react-router-dom";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
+import GuideQuestionGroup from "../../components/guide/guide-question-group";
+
+const {TabPane} = Tabs;
 
 const guides = [
     {value: 'Android Developer'},
@@ -13,8 +16,12 @@ const guides = [
     {value: 'Behavioural'},
 ];
 const STEP_DETAILS = 1
-const STEP_PREVIEW = 2
-const STEP_EDIT = 3
+const STEP_STRUCTURE = 2
+const STEP_PREVIEW = 3
+const STEP_QUESTIONS = 4
+
+const TAB_DETAILS = "details"
+const TAB_STRUCTURE = "structure"
 
 const NewInterview = () => {
     const [step, setStep] = useState(STEP_DETAILS)
@@ -23,15 +30,27 @@ const NewInterview = () => {
 
     const isPreviewStep = () => step === STEP_PREVIEW
 
-    const isEditStep = () => step === STEP_EDIT
+    const isStructureStep = () => step === STEP_STRUCTURE
+
+    const isQuestionsStep = () => step === STEP_QUESTIONS
+
+    const onTabClicked = (key) => {
+        if (key === TAB_DETAILS) {
+            setStep(STEP_DETAILS)
+        } else if (key === TAB_STRUCTURE) {
+            setStep(STEP_STRUCTURE)
+        }
+    }
 
     const onBackClicked = () => {
+        window.history.back()
+    }
+
+    const getActiveTab = () => {
         if (isDetailsStep()) {
-            window.history.back()
-        } else if (isPreviewStep()) {
-            setStep(STEP_DETAILS)
-        } else if (isEditStep()) {
-            setStep(STEP_PREVIEW)
+            return TAB_DETAILS
+        } else if (isStructureStep()) {
+            return TAB_STRUCTURE
         }
     }
 
@@ -40,33 +59,47 @@ const NewInterview = () => {
         onBack={() => onBackClicked()}
         title="New Interview"
         extra={[
-            <>{isPreviewStep() && <Button type="default" onClick={() => setStep(STEP_EDIT)}>
-                <span className="nav-text">Customize</span>
-            </Button>}</>,
-            <>{isEditStep() && <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
+            <>{(isDetailsStep() || isStructureStep()) && <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
                 <span className="nav-text">Preview</span>
             </Button>}</>,
-            <>{isDetailsStep() && <Button type="primary" onClick={() => setStep(STEP_PREVIEW)}>
-                <span className="nav-text">Next</span>
+            <>{isPreviewStep() && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+                <span className="nav-text">Edit</span>
             </Button>}</>,
-            <>{(isPreviewStep() || isEditStep()) && <Button type="primary">
+            <>{isQuestionsStep() && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+                <span className="nav-text">Discard</span>
+            </Button>}</>,
+            <>{isQuestionsStep() && <Button type="primary" onClick={() => setStep(STEP_STRUCTURE)}>
+                <span className="nav-text">Done</span>
+            </Button>}</>,
+            <>{(!isQuestionsStep()) && <Button type="primary">
                 <Link to={`/interviews`}>
-                    <span className="nav-text">Finish</span>
+                    <span className="nav-text">Save</span>
                 </Link>
             </Button>}</>
         ]}
+        footer={
+            <>{(isDetailsStep() || isStructureStep()) &&
+            <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
+                <TabPane tab="Details" key={TAB_DETAILS} />
+                <TabPane tab="Structure" key={TAB_STRUCTURE} />
+            </Tabs>}</>
+        }
     >
         {isDetailsStep() && <Text>
             Enter interview detail information and select guide which will be used during the interview.</Text>}
         {isPreviewStep() && <Text>
             This is a <Text strong>preview</Text> of the guide which will be used during the interview. If you want
             to make changes to the guide (only for this interview) click on <Text
-            strong>customize</Text> button.</Text>}
-        {isEditStep() && <Text>
-            Make adjustments to this interview guide and click on the <Text strong>preview</Text> button to see the changes.</Text>}
+            strong>edit</Text> button.</Text>}
+        {isStructureStep() && <Text>
+            Make adjustments to this interview guide and click on the <Text strong>preview</Text> button to see the
+            changes.</Text>}
+        {isQuestionsStep() && <Text>
+            Drag and drop questions from your question bank to the question group.
+        </Text>}
     </PageHeader>}>
         <Row gutter={16} justify="center">
-            {isDetailsStep() && <Col span={24}>
+            {isDetailsStep() && <Col className={styles.detailsCard}>
                 <Card title="Interview Details" bordered={false} headStyle={{textAlign: 'center'}}>
                     <Form
                         labelCol={{span: 10}}
@@ -102,12 +135,14 @@ const NewInterview = () => {
                     </Form>
                 </Card>
             </Col>}
-            {isPreviewStep() && <Col span={24}>
+            {isPreviewStep() && <Col>
                 <InterviewDetailsCard />
-            </Col>
-            }
-            {isEditStep() && <Col span={24}>
-                <GuideStructureCard />
+            </Col>}
+            {isStructureStep() && <Col>
+                <GuideStructureCard onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />
+            </Col>}
+            {isQuestionsStep() && <Col span={24}>
+                <GuideQuestionGroup />
             </Col>}
         </Row>
     </Layout>
