@@ -34,7 +34,7 @@ const GuideStructureCard = (props) => {
                             <Input placeholder={questionGroupPlaceholders[placeholderIndex]}
                                    className={styles.inputQuestion} />
                             <Button type="dashed" block icon={<PlusCircleTwoTone />}
-                                    className={styles.addQuestionButton}>Question</Button>
+                                    className={styles.addQuestionButton} onClick={() => props.onAddQuestionClicked()}>Question</Button>
                             <DeleteTwoTone twoToneColor="red" onClick={() => remove(field.name)} />
                         </Space>
                     </Form.Item>;
