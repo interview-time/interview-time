@@ -3,10 +3,6 @@ import {Link} from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import styles from "../interviews/interviews.module.css";
 import {Input, Button, PageHeader, Space, Table, Tag, Badge} from 'antd';
-import {
-    EditTwoTone,
-    DeleteTwoTone,
-} from '@ant-design/icons';
 
 const {Search} = Input;
 
@@ -25,9 +21,16 @@ const columns = [
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: text =>
-            <Link to={`/interviews/detail`}>
+            <Link to={`/interviews/start`}>
                 <span className="nav-text">{text}</span>
             </Link>,
+    },
+    {
+        title: 'Position',
+        dataIndex: 'position',
+        key: 'position',
+        sortDirections: ['descend', 'ascend'],
+        sorter: (a, b) => a.position.localeCompare(b.position),
     },
     {
         title: 'Guide',
@@ -82,23 +85,14 @@ const columns = [
                 })}
             </>
         ),
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: () => (
-            <Space size="middle">
-                <a><EditTwoTone /></a>
-                <a><DeleteTwoTone /></a>
-            </Space>
-        ),
-    },
+    }
 ];
 
 const data = [
     {
         key: '1',
         name: 'John Brown',
+        position: 'Software Engineer',
         guide: 'Android Developer',
         date: '12-02-2020 09:30',
         tags: [ASSESSMENT_STRONG_YES],
@@ -107,6 +101,7 @@ const data = [
     {
         key: '2',
         name: 'Dmytro Danylyk',
+        position: 'Software Engineer',
         guide: 'Android Developer',
         date: '12-02-2020 09:30',
         tags: [ASSESSMENT_NO],
@@ -115,9 +110,10 @@ const data = [
     {
         key: '3',
         name: 'Julia Danylyk',
+        position: 'Software Engineer',
         guide: 'Android Developer',
         date: '14-03-2020 09:30',
-        tags: [ASSESSMENT_YES],
+        tags: [],
         status: 'Scheduled',
     },
 ];
