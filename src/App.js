@@ -18,7 +18,8 @@ function App() {
       <Route path="/interviews/detail" exact component={InterviewDetails} />
       <Route path="/interviews/add" exact component={NewInterview} />
       <Route path="/guides" exact component={Guides} />
-      <Route path="/guides/add" exact component={GuideDetails} />
+      <Route path="/guides/add/" exact component={GuideDetails} />
+      <Route path="/guides/details/:id" exact component={GuideDetails} />
     </Switch>
   );
 }
