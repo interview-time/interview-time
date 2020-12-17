@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {useHistory, useParams} from "react-router-dom";
 import {connect} from "react-redux";
-import store from "../../store";
 import {addGuide, deleteGuide, loadGuides, updateGuide} from "../../store/guides/actions";
 import styles from "./guide-details.module.css";
 import Layout from "../../components/layout/layout";
@@ -37,7 +36,7 @@ const STEP_PREVIEW = 4
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
-const GuideDetails = ({guides, loading, loadGuides}) => {
+const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updateGuide}) => {
     const [step, setStep] = useState(STEP_DETAILS);
     const [currentGuide, setCurrentGuide] = useState({
         id: undefined,
@@ -98,17 +97,17 @@ const GuideDetails = ({guides, loading, loadGuides}) => {
     }
 
     const onDeleteClicked = () => {
-        store.dispatch(deleteGuide(currentGuide.id));
-        history.push("/guides")
+        deleteGuide(currentGuide.id);
+        history.push("/guides");
     }
 
     const onSaveClicked = () => {
         if (isNewGuideFlow()) {
-            store.dispatch(addGuide(currentGuide));
+            addGuide(currentGuide);
         } else {
-            store.dispatch(updateGuide(currentGuide));
+            updateGuide(currentGuide);
         }
-        history.push("/guides")
+        history.push("/guides");
     }
 
     const onTitleChanges = event => {
@@ -228,4 +227,4 @@ const mapStateToProps = state => {
     return {guides, loading};
 };
 
-export default connect(mapStateToProps, {loadGuides})(GuideDetails);
+export default connect(mapStateToProps, {loadGuides, addGuide, deleteGuide, updateGuide})(GuideDetails);
