@@ -1,17 +1,19 @@
 import React, {useState} from "react";
-import Layout from "../../components/layout/layout";
+import {useHistory, useParams} from "react-router-dom";
+import {connect} from "react-redux";
+import {addGuide, deleteGuide, loadGuides, updateGuide} from "../../store/guides/actions";
 import styles from "./guide-details.module.css";
-import {Select, Form, Input, Button, PageHeader, Row, Col, Card, Tabs} from 'antd';
-import {Link} from "react-router-dom";
+import Layout from "../../components/layout/layout";
+import {Button, Card, Col, Form, Input, PageHeader, Row, Select, Tabs} from 'antd';
+import Text from "antd/es/typography/Text";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
-import Text from "antd/es/typography/Text";
 
 const {TabPane} = Tabs;
 const {TextArea} = Input;
 
-const guides = [
+const categories = [
     {value: 'Behavioral'},
     {value: 'Technical'},
     {value: 'Management'},
@@ -34,8 +36,29 @@ const STEP_PREVIEW = 4
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
-const GuideDetails = () => {
-    const [step, setStep] = useState(STEP_DETAILS)
+const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updateGuide}) => {
+    const [step, setStep] = useState(STEP_DETAILS);
+    const [currentGuide, setCurrentGuide] = useState({
+        id: undefined,
+        title: '',
+        image: '',
+        questions: [],
+        interviews: []
+    });
+    const history = useHistory();
+    const {id} = useParams();
+
+    const isNewGuideFlow = () => !id;
+
+    if (!isNewGuideFlow() && !currentGuide.id && guides.length !== 0) {
+        setCurrentGuide(guides.find(guide => guide.id === id))
+    }
+
+    React.useEffect(() => {
+        if (!isNewGuideFlow() && guides.length === 0 && !loading) {
+            loadGuides();
+        }
+    });
 
     const isDetailsStep = () => step === STEP_DETAILS
 
@@ -44,6 +67,14 @@ const GuideDetails = () => {
     const isStructureStep = () => step === STEP_STRUCTURE
 
     const isQuestionsStep = () => step === STEP_QUESTIONS
+
+    const getHeaderTitle = () => {
+        if (isPreviewStep()) {
+            return "Interviewer Experience"
+        } else {
+            return isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide";
+        }
+    }
 
     const onBackClicked = () => {
         window.history.back()
@@ -57,15 +88,6 @@ const GuideDetails = () => {
         }
     }
 
-    const getHeaderTitle = () => {
-        if (isPreviewStep()) {
-            return "Interviewer Experience"
-        } else {
-            // TODO replace with "Edit Interview Guide" if we are editing existing guide
-            return "New Interview Guide"
-        }
-    }
-
     const getActiveTab = () => {
         if (isDetailsStep()) {
             return TAB_DETAILS
@@ -73,6 +95,32 @@ const GuideDetails = () => {
             return TAB_STRUCTURE
         }
     }
+
+    const onDeleteClicked = () => {
+        deleteGuide(currentGuide.id);
+        history.push("/guides");
+    }
+
+    const onSaveClicked = () => {
+        if (isNewGuideFlow()) {
+            addGuide(currentGuide);
+        } else {
+            updateGuide(currentGuide);
+        }
+        history.push("/guides");
+    }
+
+    const onTitleChanges = event => {
+        setCurrentGuide({...currentGuide, title: event.target.value})
+    };
+
+    const onDescriptionChanges = event => {
+        setCurrentGuide({...currentGuide, description: event.target.value})
+    };
+
+    const onCategoryChanges = category => {
+        setCurrentGuide({...currentGuide, category: category})
+    };
 
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
@@ -91,11 +139,7 @@ const GuideDetails = () => {
             <>{isQuestionsStep() && <Button type="primary" onClick={() => setStep(STEP_STRUCTURE)}>
                 <span className="nav-text">Done</span>
             </Button>}</>,
-            <>{(!isQuestionsStep()) && <Button type="primary">
-                <Link to={`/guides`}>
-                    <span className="nav-text">Save</span>
-                </Link>
-            </Button>}</>
+            <>{(!isQuestionsStep()) && <Button type="primary" onClick={onSaveClicked}>Save</Button>}</>
         ]}
         footer={
             <>{(isDetailsStep() || isStructureStep()) &&
@@ -127,14 +171,21 @@ const GuideDetails = () => {
                         name="basic"
                         initialValues={{remember: true}}>
                         <Form.Item label="Title">
-                            <Input placeholder="Software Developer" className={styles.input} />
+                            <Input
+                                placeholder="Software Developer"
+                                className={styles.input}
+                                defaultValue={currentGuide.title}
+                                onChange={onTitleChanges}
+                            />
                         </Form.Item>
                         <Form.Item label="Category">
                             <Select
-                                className={styles.input}
-                                options={guides}
-                                showSearch
                                 placeholder="Select category"
+                                className={styles.input}
+                                defaultValue={currentGuide.category}
+                                options={categories}
+                                onChange={onCategoryChanges}
+                                showSearch
                                 filterOption={(inputValue, option) =>
                                     option.value.toLocaleLowerCase().includes(inputValue)
                                 }
@@ -142,17 +193,16 @@ const GuideDetails = () => {
                         </Form.Item>
                         <Form.Item label="Description">
                             <TextArea
-                                autoSize
                                 placeholder="Guide description"
-                                className={styles.textArea} />
+                                className={styles.textArea}
+                                defaultValue={currentGuide.description}
+                                onChange={onDescriptionChanges}
+                                autoSize
+                            />
                         </Form.Item>
-                        <Form.Item {...tailLayout}>
-                            <Button type="default" danger>
-                                <Link to={`/guides`}>
-                                    <span className="nav-text">Delete</span>
-                                </Link>
-                            </Button>
-                        </Form.Item>
+                        {!isNewGuideFlow() && <Form.Item {...tailLayout}>
+                            <Button type="default" danger onClick={onDeleteClicked}>Delete</Button>
+                        </Form.Item>}
                     </Form>
                 </Card>
             </Col>}
@@ -171,4 +221,10 @@ const GuideDetails = () => {
     </Layout>
 }
 
-export default GuideDetails;
+const mapStateToProps = state => {
+    const {guides, loading} = state.guides || {};
+
+    return {guides, loading};
+};
+
+export default connect(mapStateToProps, {loadGuides, addGuide, deleteGuide, updateGuide})(GuideDetails);
