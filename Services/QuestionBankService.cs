@@ -18,13 +18,15 @@ namespace CafApi.Services
 
         public async Task<List<QuestionBank>> GetQuestionBank(string userId, string category)
         {
-            var config = new DynamoDBOperationConfig
+            var config = new DynamoDBOperationConfig();
+
+            if (!string.IsNullOrWhiteSpace(category))
             {
-                QueryFilter = new List<ScanCondition>
+                config.QueryFilter = new List<ScanCondition>
                 {
                     new ScanCondition("Category", ScanOperator.Equal, category)
-                }
-            };
+                };
+            }
 
             return await _context.QueryAsync<QuestionBank>(userId, config).GetRemainingAsync();
         }

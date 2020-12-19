@@ -1,10 +1,10 @@
 
-###@baseUrl = https://localhost:5001
-@baseUrl = http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com
+@baseUrl = https://localhost:5001
+###@baseUrl = http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com
 
 ### Get all questions in a category
 
-GET {{baseUrl}}/question-bank/JavaScript
+GET {{baseUrl}}/question-bank
 Content-Type: application/json
 
 ### Save new question
@@ -13,10 +13,10 @@ POST {{baseUrl}}/question-bank/question
 Content-Type: application/json
 
 {
-    "category": "JavaScript",
-    "question": "What is the difference between var and let?",
-    "tags": ["ui", "concepts"],
-    "time": 3
+    "category": "C#",
+    "question": "Explain in detail the finalize method in C#?",
+    "tags": ["fundamentals"],
+    "time": 2
 }
 
 ### Update question

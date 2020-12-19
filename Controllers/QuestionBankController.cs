@@ -23,7 +23,7 @@ namespace CafApi.Controllers
         }
 
 
-        [HttpGet("{category}")]
+        [HttpGet("{category?}")]
         public async Task<IEnumerable<QuestionBank>> Get(string category)
         {
             return await _questionBankService.GetQuestionBank(_userId, category);
