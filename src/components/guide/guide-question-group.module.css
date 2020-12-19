@@ -1,0 +1,37 @@
+.pageHeader {
+    background-color: white;
+}
+
+.questionGroupCard {
+    margin-right: 12px;
+    min-height: 600px;
+}
+
+.questionBankCard {
+    margin-left: 12px;
+    min-height: 600px;
+}
+
+.questionBankBody {
+    display: flex;
+    width: 100%;
+}
+
+.questionBody {
+    display: flex;
+    width: 100%;
+}
+
+.categorySelect {
+    min-width: 200px;
+    margin-right: 16px;
+}
+
+.dragIcon {
+    font-size: 18px;
+    margin-right: 16px;
+}
+
+.metaBody {
+    min-width: 80px;
+}

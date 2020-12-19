@@ -1,52 +1,20 @@
-import React, {useState} from "react";
+import React from "react";
+import {connect} from "react-redux";
 import Layout from "../../components/layout/layout";
+import {loadGuides} from "../../store/guides/actions";
 import {Statistic, Row, Col, Avatar, Button, PageHeader, List, Card} from "antd";
 import styles from "../guides/guides.module.css";
 import {Link} from "react-router-dom";
 
 const {Meta} = Card;
 
-const data = [
-    {
-        title: 'Senior Android Engineer',
-        image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        questions: '95',
-        interviews: '32'
-    },
-    {
-        title: 'Middle Android Engineer',
-        image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        questions: '95',
-        interviews: '32'
-    },
-    {
-        title: 'Junior Android Engineer',
-        image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        questions: '95',
-        interviews: '32'
-    },
-    {
-        title: 'Junior Android Engineer',
-        image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        questions: '95',
-        interviews: '32'
-    },
-    {
-        title: 'Junior Android Engineer',
-        image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        questions: '95',
-        interviews: '32'
-    },
-    {
-        title: 'Junior Android Engineer',
-        image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
-        questions: '95',
-        interviews: '32'
-    },
-];
+const Guides = ({guides, loading, loadGuides}) => {
 
-const Guides = () => {
-    const [guides, setGuides] = useState(data)
+    React.useEffect(() => {
+        if (guides.length === 0 && !loading) {
+            loadGuides();
+        }
+    }, []);
 
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
@@ -71,22 +39,23 @@ const Guides = () => {
                 xxl: 4,
             }}
             dataSource={guides}
-            renderItem={item => <List.Item>
-                <Link to={`/guides/add`}>
+            loading={loading}
+            renderItem={guide => <List.Item>
+                <Link to={`/guides/details/${guide.id}`}>
                     <Card hoverable>
                         <Meta
-                            avatar={<Avatar src={item.image} />}
-                            title={item.title}
+                            avatar={<Avatar src={guide.image} />}
+                            title={guide.title}
                         />
                         <Row span={24}>
                             <Col span={12}>
                                 <Statistic title="Questions"
-                                           value={item.questions}
+                                           value={guide.questions.length}
                                            valueStyle={{fontSize: "large"}} />
                             </Col>
                             <Col span={12}>
                                 <Statistic title="Interviews"
-                                           value={item.interviews}
+                                           value={guide.interviews.length}
                                            valueStyle={{fontSize: "large"}} />
                             </Col>
                         </Row>
@@ -97,4 +66,10 @@ const Guides = () => {
     </Layout>
 }
 
-export default Guides;
+const mapStateToProps = state => {
+    const {guides, loading} = state.guides || {};
+
+    return {guides, loading};
+};
+
+export default connect(mapStateToProps, {loadGuides})(Guides);
