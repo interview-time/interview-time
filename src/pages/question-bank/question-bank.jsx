@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import {loadQuestions, addQuestion, updateQuestion, deleteQuestion} from "../../store/question-bank/actions";
 import { Table, Tag, Space, Row, Col, Card, Select, PageHeader } from 'antd';
+import AddQuestion from "../../components/add-question/add-question";
 import styles from "./question-bank.module.css";
 
 const columns = [
@@ -51,19 +52,12 @@ const QuestionBank = ({ questions, loading, loadQuestions, addQuestion, updateQu
             className={styles.pageHeader}
             title="Question Bank"
         />}>
+            <AddQuestion />
+
             <Row gutter={16}>
-                <Col span={18}>
+                <Col span={24}>
                     <Table columns={columns} dataSource={questions} loading={loading} />
-                </Col>
-                <Col span={6}>
-                    <Card title="Category" bordered={false}>
-                        <Select defaultValue="android" style={{ width: 120 }} onChange={(value) => console.log(`selected ${value}`)}>
-                            <Select.Option value="android">Android</Select.Option>
-                            <Select.Option value="java">Java</Select.Option>
-                            <Select.Option value="behavioural">Behavioural</Select.Option>
-                        </Select>
-                    </Card>
-                </Col>
+                </Col>                
             </Row>
 
         </Layout>
