@@ -50,12 +50,12 @@ const Guides = ({guides, loading, loadGuides}) => {
                         <Row span={24}>
                             <Col span={12}>
                                 <Statistic title="Questions"
-                                           value={guide.questions.length}
+                                           value={guide.totalQuestions}
                                            valueStyle={{fontSize: "large"}} />
                             </Col>
                             <Col span={12}>
                                 <Statistic title="Interviews"
-                                           value={guide.interviews.length}
+                                           value={guide.totalInterviews}
                                            valueStyle={{fontSize: "large"}} />
                             </Col>
                         </Row>
