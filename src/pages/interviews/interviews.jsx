@@ -1,8 +1,10 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import Layout from "../../components/layout/layout";
+import {loadInterviews} from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import {Input, Button, PageHeader, Space, Table, Tag, Badge} from 'antd';
+import {Badge, Button, Input, PageHeader, Table, Tag} from 'antd';
+import {connect} from "react-redux";
 
 const {Search} = Input;
 
@@ -20,8 +22,8 @@ const columns = [
         key: 'name',
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a.name.localeCompare(b.name),
-        render: text =>
-            <Link to={`/interviews/start`}>
+        render: (text, item) =>
+            <Link to={`/interviews/start/${item.id}`}>
                 <span className="nav-text">{text}</span>
             </Link>,
     },
@@ -88,38 +90,18 @@ const columns = [
     }
 ];
 
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        position: 'Software Engineer',
-        guide: 'Android Developer',
-        date: '12-02-2020 09:30',
-        tags: [ASSESSMENT_STRONG_YES],
-        status: 'Completed',
-    },
-    {
-        key: '2',
-        name: 'Dmytro Danylyk',
-        position: 'Software Engineer',
-        guide: 'Android Developer',
-        date: '12-02-2020 09:30',
-        tags: [ASSESSMENT_NO],
-        status: 'Completed',
-    },
-    {
-        key: '3',
-        name: 'Julia Danylyk',
-        position: 'Software Engineer',
-        guide: 'Android Developer',
-        date: '14-03-2020 09:30',
-        tags: [],
-        status: 'Scheduled',
-    },
-];
+const Interviews = ({interviewsRemote, loading, loadInterviews}) => {
+    const [interviews, setInterviews] = useState(interviewsRemote)
 
-const Interviews = () => {
-    const [interviews, setInterviews] = useState(data)
+    React.useEffect(() => {
+        if (interviewsRemote.length === 0 && !loading) {
+            loadInterviews();
+        }
+    }, []);
+
+    React.useEffect(() => {
+        setInterviews(interviewsRemote)
+    }, [interviewsRemote]);
 
     function onSearchTextChanged(e) {
         onSearchClicked(e.target.value)
@@ -127,7 +109,7 @@ const Interviews = () => {
 
     function onSearchClicked(text) {
         let lowerCaseText = text.toLocaleLowerCase()
-        setInterviews(data.filter(item =>
+        setInterviews(interviewsRemote.filter(item =>
             item.name.toLocaleLowerCase().includes(lowerCaseText)
             || item.guide.toLocaleLowerCase().includes(lowerCaseText)
             || item.date.includes(lowerCaseText)
@@ -151,9 +133,15 @@ const Interviews = () => {
             ]}
         >
         </PageHeader>}>
-            <Table columns={columns} dataSource={interviews} />
+            <Table columns={columns} dataSource={interviews} loading={loading} />
         </Layout>
     )
 }
 
-export default Interviews;
+const mapStateToProps = state => {
+    const {interviews, loading} = state.interviews || {};
+
+    return {interviewsRemote: interviews, loading};
+};
+
+export default connect(mapStateToProps, {loadInterviews})(Interviews);

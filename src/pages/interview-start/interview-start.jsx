@@ -1,11 +1,12 @@
 import React, {useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {Button, PageHeader} from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-start.module.css";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 
 const InterviewStart = () => {
+    const {id} = useParams();
 
     return (
         <Layout pageHeader={<PageHeader
@@ -14,7 +15,7 @@ const InterviewStart = () => {
             onBack={() => window.history.back()}
             extra={[
                 <Button type="default">
-                    <Link to={`/interviews/add`}>
+                    <Link to={`/interviews/details/${id}`}>
                         <span className="nav-text">Edit</span>
                     </Link>
                 </Button>,

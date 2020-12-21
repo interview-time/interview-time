@@ -38,7 +38,6 @@ const InterviewDetailsCard = () => {
                 <Form
                     labelCol={{span: 3}}
                     wrapperCol={{span: 20}}
-                    name="basic"
                     initialValues={{remember: true}}
                     style={{marginTop: 24}}>
 

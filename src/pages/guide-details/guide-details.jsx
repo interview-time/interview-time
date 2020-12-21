@@ -171,15 +171,6 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
         </Card>
     </Col>
 
-    const createGuideStructureCard = <GuideStructureCard
-        structure={currentGuide.structure}
-        onChanges={structure => {
-            setCurrentGuide({
-                ...currentGuide,
-                structure: structure
-            })
-        }}
-        onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />;
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
         onBack={() => onBackClicked()}
@@ -223,7 +214,17 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
     </PageHeader>}>
         <Row gutter={16} justify="center">
             {isDetailsStep() && createDetailsCard}
-            {isStructureStep() && <Col>{createGuideStructureCard}</Col>}
+            {isStructureStep() && <Col>
+                <GuideStructureCard
+                    structure={currentGuide.structure}
+                    onChanges={structure => {
+                        setCurrentGuide({
+                            ...currentGuide,
+                            structure: structure
+                        })
+                    }}
+                    onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />
+            </Col>}
             {isPreviewStep() && <Col span={24}><InterviewDetailsCard /></Col>}
             {isQuestionsStep() && <Col span={24}><GuideQuestionGroup /></Col>}
         </Row>
