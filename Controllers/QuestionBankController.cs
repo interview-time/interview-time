@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CafApi.Models;
 using CafApi.Services;
+using CafApi.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -22,8 +24,19 @@ namespace CafApi.Controllers
             _questionBankService = questionBankService;
         }
 
+        [HttpGet()]
+        public async Task<IEnumerable<CategoryResponse>> Get()
+        {
+            var questions = await _questionBankService.GetQuestionBank(_userId, null);
 
-        [HttpGet("{category?}")]
+            return questions.GroupBy(q => q.Category).Select(g => new CategoryResponse
+            {
+                CategoryName = g.Key,
+                Questions = g.ToList()
+            }).ToList();
+        }
+
+        [HttpGet("{category}")]
         public async Task<IEnumerable<QuestionBank>> Get(string category)
         {
             return await _questionBankService.GetQuestionBank(_userId, category);

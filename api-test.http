@@ -2,13 +2,17 @@
 @baseUrl = https://localhost:5001
 ###@baseUrl = http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com
 
-### Get all questions in a category
-
+### Get all personal questions
 GET {{baseUrl}}/question-bank
 Content-Type: application/json
 
-### Save new question
 
+### Get all personal questions in a category
+GET {{baseUrl}}/question-bank/JavaScript
+Content-Type: application/json
+
+
+### Save new question
 POST {{baseUrl}}/question-bank/question
 Content-Type: application/json
 

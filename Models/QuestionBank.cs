@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 
-namespace CafApi
+namespace CafApi.Models
 {
     [DynamoDBTable("QuestionBank")]
     public class QuestionBank

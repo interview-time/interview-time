@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CafApi.Models;
 
 namespace CafApi.Services
 {
