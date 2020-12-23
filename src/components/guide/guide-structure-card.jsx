@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import styles from "./guide-structure-card.module.css";
 import {DeleteTwoTone, PlusCircleTwoTone} from '@ant-design/icons';
 import {Button, Card, Form, Input, Space} from "antd";
-
-const Arrays = require('lodash');
+import Arrays from "lodash";
 
 const {TextArea} = Input;
 
