@@ -20,8 +20,6 @@ namespace caf_api
 {
     public class Startup
     {
-        readonly string DefaultCorsPolicy = "DefaultCorsPolicy";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,6 +30,18 @@ namespace caf_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+                   {
+                       options.AddDefaultPolicy(
+                                         builder =>
+                                         {
+                                             builder.WithOrigins("http://localhost:3000")
+                                                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                                                .AllowAnyHeader()
+                                                .AllowAnyMethod()
+                                                .AllowCredentials();
+                                         });
+                   });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -45,19 +55,6 @@ namespace caf_api
                     Region = RegionEndpoint.GetBySystemName("ap-southeast-2")
                 }
             );
-
-            services.AddCors(options =>
-                   {
-                       options.AddPolicy(name: DefaultCorsPolicy,
-                                         builder =>
-                                         {
-                                             builder.WithOrigins("http://localhost:3000")
-                                                .SetIsOriginAllowedToAllowWildcardSubdomains()
-                                                .AllowAnyHeader()
-                                                .AllowAnyMethod()
-                                                .AllowCredentials();
-                                         });
-                   });
 
             services.AddSingleton<IQuestionBankService, QuestionBankService>();
         }
@@ -77,10 +74,9 @@ namespace caf_api
             }
 
             app.UseHttpsRedirection();
-
-            app.UseCors(DefaultCorsPolicy);
-
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

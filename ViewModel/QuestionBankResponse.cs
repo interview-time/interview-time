@@ -3,10 +3,10 @@ using CafApi.Models;
 
 namespace CafApi.ViewModel
 {
-    public class CategoryResponse
+    public class QuestionBankResponse
     {
-        public string CategoryName { get; set; }
-
+        public List<string> Categories { get; set; }
+        
         public List<QuestionBank> Questions { get; set; }
     }
 }

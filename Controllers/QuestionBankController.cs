@@ -25,15 +25,17 @@ namespace CafApi.Controllers
         }
 
         [HttpGet()]
-        public async Task<IEnumerable<CategoryResponse>> Get()
+        public async Task<QuestionBankResponse> Get()
         {
             var questions = await _questionBankService.GetQuestionBank(_userId, null);
 
-            return questions.GroupBy(q => q.Category).Select(g => new CategoryResponse
+            var questionGroups = questions.GroupBy(q => q.Category).ToList();
+
+            return new QuestionBankResponse
             {
-                CategoryName = g.Key,
-                Questions = g.ToList()
-            }).ToList();
+                Categories = questions.GroupBy(q => q.Category).Select(q => q.Key).ToList(),
+                Questions = questions
+            };
         }
 
         [HttpGet("{category}")]
@@ -42,20 +44,20 @@ namespace CafApi.Controllers
             return await _questionBankService.GetQuestionBank(_userId, category);
         }
 
-        [HttpPost("question")]
+        [HttpPost()]
         public async Task<QuestionBank> AddQuestion([FromBody] QuestionBank questionBank)
         {
             questionBank.UserId = _userId;
             return await _questionBankService.AddQuestion(questionBank);
         }
 
-        [HttpDelete("question/{questionId}")]
+        [HttpDelete("{questionId}")]
         public async Task DeleteQuestion(string questionId)
         {
             await _questionBankService.DeleteQuestion(_userId, questionId);
         }
 
-        [HttpPut("question")]
+        [HttpPut()]
         public async Task UpdateQuestion([FromBody] QuestionBank questionBank)
         {
             questionBank.UserId = _userId;
