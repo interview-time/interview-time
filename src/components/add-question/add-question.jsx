@@ -1,17 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { loadCategories, addQuestion } from "../../store/question-bank/actions";
-import { Button, Modal, Form, Input, Select } from 'antd';
+import { addQuestion } from "../../store/question-bank/actions";
+import { Button, Modal, Form, Input, Select, InputNumber } from 'antd';
+import { getCategories } from "../../store/question-bank/selector";
 
-const AddQuestion = ({ categories, loading, loadCategories, addQuestion }) => {
+const AddQuestion = ({ categories, addQuestion }) => {
     const [isModalVisible, setIsModalVisible] = React.useState(false);
     const [form] = Form.useForm();
-
-    React.useEffect(() => {
-        if ((!categories || categories.length === 0) && !loading) {
-            loadCategories();
-        }
-    }, []);
 
     return (
         <>
@@ -44,13 +39,14 @@ const AddQuestion = ({ categories, loading, loadCategories, addQuestion }) => {
                                 message: 'Category is required.',
                             },
                         ]}>
-                        <Select style={{ width: 120 }}>
-                            {categories.map(c => <Select.Option key={c.id} value={c.id}>{c.name}</Select.Option>)}
-                        </Select>
+                        {categories &&
+                            <Select style={{ width: 120 }}>
+                                {categories.map(c => <Select.Option key={c} value={c}>{c}</Select.Option>)}
+                            </Select>}
                     </Form.Item>
 
                     <Form.Item name="time" label="Time">
-                        <Input />
+                        <InputNumber />
                     </Form.Item>
 
                     <Form.Item name="question" label="Question"
@@ -69,9 +65,11 @@ const AddQuestion = ({ categories, loading, loadCategories, addQuestion }) => {
 };
 
 const mapStateToProps = state => {
-    const { categories, loading } = state.questionBank || {};
+    const { categories } = state.questionBank || {};
 
-    return { categories, loading };
+    return {
+        categories
+    };
 };
 
-export default connect(mapStateToProps, { loadCategories, addQuestion })(AddQuestion);
+export default connect(mapStateToProps, { addQuestion })(AddQuestion);

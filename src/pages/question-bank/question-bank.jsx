@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
-import {loadQuestions, addQuestion, updateQuestion, deleteQuestion} from "../../store/question-bank/actions";
+import { loadQuestionBank, deleteQuestion } from "../../store/question-bank/actions";
 import { Table, Tag, Space, Row, Col, Card, Select, PageHeader } from 'antd';
 import AddQuestion from "../../components/add-question/add-question";
+import { getQuestions } from "../../store/question-bank/selector";
 import styles from "./question-bank.module.css";
 
 const columns = [
@@ -18,7 +19,7 @@ const columns = [
         dataIndex: 'tags',
         render: tags => (
             <>
-                {tags.map(tag => {
+                {tags && tags.map(tag => {
                     let color = tag.length > 5 ? 'geekblue' : 'green';
                     if (tag === 'loser') {
                         color = 'volcano';
@@ -39,11 +40,11 @@ const columns = [
     },
 ];
 
-const QuestionBank = ({ questions, loading, loadQuestions, addQuestion, updateQuestion, deleteQuestion }) => {
+const QuestionBank = ({ questions, loading, loadQuestionBank, deleteQuestion }) => {
 
     React.useEffect(() => {
         if ((!questions || questions.length === 0) && !loading) {
-            loadQuestions('JavaScript');
+            loadQuestionBank();
         }
     }, []);
 
@@ -57,7 +58,7 @@ const QuestionBank = ({ questions, loading, loadQuestions, addQuestion, updateQu
             <Row gutter={16}>
                 <Col span={24}>
                     <Table columns={columns} dataSource={questions} loading={loading} />
-                </Col>                
+                </Col>
             </Row>
 
         </Layout>
@@ -65,9 +66,12 @@ const QuestionBank = ({ questions, loading, loadQuestions, addQuestion, updateQu
 }
 
 const mapStateToProps = state => {
-    const { questions, loading } = state.questionBank || {};
+    const { loading } = state.questionBank || {};
 
-    return { questions, loading };
+    return {
+        questions: getQuestions(state),
+        loading
+    };
 };
 
-export default connect(mapStateToProps, { loadQuestions, addQuestion, updateQuestion, deleteQuestion })(QuestionBank);
+export default connect(mapStateToProps, { loadQuestionBank, deleteQuestion })(QuestionBank);
