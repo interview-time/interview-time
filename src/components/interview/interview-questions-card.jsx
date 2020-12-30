@@ -129,7 +129,6 @@ const InterviewQuestionsCard = () => {
             <Form
                 labelCol={{span: 3}}
                 wrapperCol={{span: 20}}
-                name="basic"
                 initialValues={{remember: true}}
                 className={styles.form}>
                 <Form.Item label="Notes">

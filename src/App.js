@@ -16,7 +16,8 @@ function App() {
       <Route path="/question-bank" exact component={QuestionBank} />
       <Route path="/interviews" exact component={Interviews} />
       <Route path="/interviews/add" exact component={InterviewDetails} />
-      <Route path="/interviews/start" exact component={InterviewStart} />
+      <Route path="/interviews/details/:id" exact component={InterviewDetails} />
+      <Route path="/interviews/start/:id" exact component={InterviewStart} />
       <Route path="/guides" exact component={Guides} />
       <Route path="/guides/add/" exact component={GuideDetails} />
       <Route path="/guides/details/:id" exact component={GuideDetails} />

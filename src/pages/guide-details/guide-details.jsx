@@ -36,23 +36,41 @@ const STEP_PREVIEW = 4
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
+const emptyGuide = {
+    id: undefined,
+    title: '',
+    image: '',
+    totalQuestions: 0,
+    totalInterviews: 0,
+    structure: {
+        header: '',
+        footer: '',
+        groups: []
+    }
+}
+
 const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updateGuide}) => {
     const [step, setStep] = useState(STEP_DETAILS);
-    const [currentGuide, setCurrentGuide] = useState({
-        id: undefined,
-        title: '',
-        image: '',
-        questions: [],
-        interviews: []
-    });
+    const [currentGuide, setCurrentGuide] = useState(emptyGuide);
+    const [form] = Form.useForm();
     const history = useHistory();
     const {id} = useParams();
 
     const isNewGuideFlow = () => !id;
 
-    if (!isNewGuideFlow() && !currentGuide.id && guides.length !== 0) {
-        setCurrentGuide(guides.find(guide => guide.id === id))
-    }
+    React.useEffect(() => {
+        if (!isNewGuideFlow() && !currentGuide.id && !loading) {
+            const guide = guides.find(guide => guide.id === id);
+            if (guide) {
+                setCurrentGuide(guide)
+                form.setFieldsValue({
+                    title: guide.title,
+                    category: guide.category,
+                    description: guide.description
+                })
+            }
+        }
+    }, [guides, id]);
 
     React.useEffect(() => {
         if (!isNewGuideFlow() && guides.length === 0 && !loading) {
@@ -102,25 +120,56 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
     }
 
     const onSaveClicked = () => {
+        const guide = {
+            ...currentGuide,
+            title: form.getFieldValue("title"),
+            description: form.getFieldValue("description"),
+            category: form.getFieldValue("category"),
+        }
         if (isNewGuideFlow()) {
-            addGuide(currentGuide);
+            addGuide(guide);
         } else {
-            updateGuide(currentGuide);
+            updateGuide(guide);
         }
         history.push("/guides");
     }
 
-    const onTitleChanges = event => {
-        setCurrentGuide({...currentGuide, title: event.target.value})
-    };
-
-    const onDescriptionChanges = event => {
-        setCurrentGuide({...currentGuide, description: event.target.value})
-    };
-
-    const onCategoryChanges = category => {
-        setCurrentGuide({...currentGuide, category: category})
-    };
+    const createDetailsCard = <Col className={styles.detailsCard}>
+        <Card title="Guide Details" bordered={false} headStyle={{textAlign: 'center'}}>
+            <Form
+                form={form}
+                name="details"
+                {...layout}>
+                <Form.Item label="Title" name="title">
+                    <Input
+                        placeholder="Software Developer"
+                        className={styles.input}
+                    />
+                </Form.Item>
+                <Form.Item label="Category" name="category">
+                    <Select
+                        placeholder="Select category"
+                        className={styles.input}
+                        options={categories}
+                        showSearch
+                        filterOption={(inputValue, option) =>
+                            option.value.toLocaleLowerCase().includes(inputValue)
+                        }
+                    />
+                </Form.Item>
+                <Form.Item label="Description" name="description">
+                    <TextArea
+                        placeholder="Guide description"
+                        className={styles.textArea}
+                        autoSize
+                    />
+                </Form.Item>
+                {!isNewGuideFlow() && <Form.Item {...tailLayout}>
+                    <Button type="default" danger onClick={onDeleteClicked}>Delete</Button>
+                </Form.Item>}
+            </Form>
+        </Card>
+    </Col>
 
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
@@ -164,59 +213,20 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
         </Text>}
     </PageHeader>}>
         <Row gutter={16} justify="center">
-            {isDetailsStep() && <Col className={styles.detailsCard}>
-                <Card title="Guide Details" bordered={false} headStyle={{textAlign: 'center'}}>
-                    <Form
-                        {...layout}
-                        name="basic"
-                        initialValues={{remember: true}}>
-                        <Form.Item label="Title">
-                            <Input
-                                placeholder="Software Developer"
-                                className={styles.input}
-                                defaultValue={currentGuide.title}
-                                onChange={onTitleChanges}
-                            />
-                        </Form.Item>
-                        <Form.Item label="Category">
-                            <Select
-                                placeholder="Select category"
-                                className={styles.input}
-                                defaultValue={currentGuide.category}
-                                options={categories}
-                                onChange={onCategoryChanges}
-                                showSearch
-                                filterOption={(inputValue, option) =>
-                                    option.value.toLocaleLowerCase().includes(inputValue)
-                                }
-                            />
-                        </Form.Item>
-                        <Form.Item label="Description">
-                            <TextArea
-                                placeholder="Guide description"
-                                className={styles.textArea}
-                                defaultValue={currentGuide.description}
-                                onChange={onDescriptionChanges}
-                                autoSize
-                            />
-                        </Form.Item>
-                        {!isNewGuideFlow() && <Form.Item {...tailLayout}>
-                            <Button type="default" danger onClick={onDeleteClicked}>Delete</Button>
-                        </Form.Item>}
-                    </Form>
-                </Card>
-            </Col>}
-            {isPreviewStep() && <Col span={24}>
-                <InterviewDetailsCard />
-            </Col>}
+            {isDetailsStep() && createDetailsCard}
             {isStructureStep() && <Col>
                 <GuideStructureCard
-                    showRevertButton={false}
+                    structure={currentGuide.structure}
+                    onChanges={structure => {
+                        setCurrentGuide({
+                            ...currentGuide,
+                            structure: structure
+                        })
+                    }}
                     onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />
             </Col>}
-            {isQuestionsStep() && <Col span={24}>
-                <GuideQuestionGroup />
-            </Col>}
+            {isPreviewStep() && <Col span={24}><InterviewDetailsCard /></Col>}
+            {isQuestionsStep() && <Col span={24}><GuideQuestionGroup /></Col>}
         </Row>
     </Layout>
 }

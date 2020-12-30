@@ -20,16 +20,36 @@ const data = [
         title: 'Senior Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
         category: 'Technical',
-        questions: [
-            "a",
-            "b",
-            "c"
-        ],
-        interviews: [
-            "a",
-            "b",
-            "c"
-        ],
+        structure: {
+            header: 'Hello world header',
+            footer: 'Hello World footer',
+            groups: [
+                {
+                    id: '1',
+                    name: 'Android',
+                    questions: [
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?"
+                    ]
+                },
+                {
+                    id: '2',
+                    name: 'Java',
+                    questions: [
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?",
+                        "What are configuration changes and when do they happen?"
+                    ]
+                }
+            ]
+        },
+        totalQuestions: 10,
+        totalInterviews: 12,
         description: 'This guid helps to evaluate overall knowledge about Android SDK.'
     },
     {
@@ -37,16 +57,25 @@ const data = [
         title: 'Middle Android Engineer',
         image: 'https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg',
         category: 'Technical',
-        questions: [
-            "a",
-            "b",
-            "c"
-        ],
-        interviews: [
-            "a",
-            "b",
-            "c"
-        ],
+        structure: {
+            header: 'Hello world header',
+            footer: 'Hello World footer',
+            groups: [
+                {
+                    id: '1',
+                    title: 'Android',
+                    questions: [
+                        "What are configuration changes and when do they happen 1?",
+                        "What are configuration changes and when do they happen 2?",
+                        "What are configuration changes and when do they happen 3?",
+                        "What are configuration changes and when do they happen 4? ",
+                        "What are configuration changes and when do they happen 5?"
+                    ]
+                }
+            ]
+        },
+        totalQuestions: 10,
+        totalInterviews: 12,
         description: 'This guid helps to evaluate overall knowledge about Android SDK.'
     }
 ];
@@ -95,7 +124,6 @@ export default function (state = initialState, action) {
 
         case UPDATE_GUIDE: {
             const {guide} = action.payload;
-            console.log(guide)
 
             // TODO add network request
 
