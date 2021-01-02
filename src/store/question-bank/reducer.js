@@ -1,35 +1,30 @@
 import {
-    LOAD_QUESTIONS,
-    LOAD_CATEGORIES,
-    SET_QUESTIONS,
-    SET_CATEGORIES,
+    LOAD_QUESTION_BANK,
+    SET_QUESTION_BANK,
     ADD_QUESTION,
     UPDATE_QUESTION,
     DELETE_QUESTION
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
-import { setQuestions, setCategories } from "./actions";
+import { setQuestionBank } from "./actions";
 
 const initialState = {
-    questionBank: [],
+    questions: [],
     categories: [],
     loading: false
 };
 
-
 export default function (state = initialState, action) {
     switch (action.type) {
 
-        case LOAD_QUESTIONS: {
-            const { category } = action.payload;
+        case LOAD_QUESTION_BANK: {
 
-            const existingQuestions = state.questionBank.filter(question => question.category === category);
-            if (existingQuestions.length === 0) {
+            if (state.questions.length === 0) {
                 axios
-                    .get(`${process.env.REACT_APP_API_URL}/question-bank/${category}`, null)
-                    .then(res => {
-                        store.dispatch(setQuestions(res.data || []));
+                    .get(`${process.env.REACT_APP_API_URL}/question-bank`, null)
+                    .then(res => {                        
+                        store.dispatch(setQuestionBank(res.data));
                     })
                     .catch(() => { });
 
@@ -39,37 +34,12 @@ export default function (state = initialState, action) {
             return state;
         }
 
-        case LOAD_CATEGORIES: {
-
-            if (state.categories.length === 0) {
-                axios
-                    .get(`${process.env.REACT_APP_API_URL}/question-bank/categories`, null)
-                    .then(res => {
-                        store.dispatch(setCategories(res.data || []));
-                    })
-                    .catch(() => { });
-
-                return { ...state, loading: true };
-            }
-
-            return state;
-        }
-
-        case SET_QUESTIONS: {
-            const { questions } = action.payload;
+        case SET_QUESTION_BANK: {
+            const { questions, categories } = action.payload;
 
             return {
                 ...state,
                 questions: questions,
-                loading: false
-            };
-        }
-
-        case SET_CATEGORIES: {
-            const { categories } = action.payload;
-
-            return {
-                ...state,
                 categories: categories,
                 loading: false
             };
@@ -85,7 +55,9 @@ export default function (state = initialState, action) {
 
             return {
                 ...state,
-                questions: [...state.questions, question]
+                questions: [
+                    ...state.questions, question
+                ]
             };
         }
 
@@ -97,12 +69,20 @@ export default function (state = initialState, action) {
                 .then(res => { })
                 .catch(() => { });
 
-            var questionToUpdate = state.questions.filter(q => q.id === question.id);
-            if (questionToUpdate.length > 1) {
-                questionToUpdate[0] = question;
-            }
+            var questions = state.questions.map(q => {
+                if (q.id !== question.id) {
+                    return q;
+                }
 
-            return state;
+                return {
+                    ...q, ...question
+                }
+            });
+
+            return {
+                ...state,
+                questions: questions
+            };
         }
 
         case DELETE_QUESTION: {
