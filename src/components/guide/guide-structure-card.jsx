@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from "./guide-structure-card.module.css";
 import {DeleteTwoTone, PlusCircleTwoTone} from '@ant-design/icons';
-import {Button, Card, Form, Input, Space} from "antd";
+import {Button, Card, Form, Input, Popconfirm, Space} from "antd";
 import Arrays from "lodash";
 
 const {TextArea} = Input;
@@ -80,7 +80,13 @@ const GuideStructureCard = (props) => {
                             <Button type="dashed" block icon={<PlusCircleTwoTone />}
                                     className={styles.addQuestionButton}
                                     onClick={props.onAddQuestionClicked}>Question</Button>
-                            <DeleteTwoTone twoToneColor="red" onClick={() => onRemoveGroupClicked(group.id)} />
+                            <Popconfirm
+                                title="Are you sure you want to delete this group?"
+                                onConfirm={() => onRemoveGroupClicked(group.id)}
+                                okText="Yes"
+                                cancelText="No">
+                                <DeleteTwoTone twoToneColor="red"  />
+                            </Popconfirm>
                         </Space>
                     </Form.Item>;
                 })}
