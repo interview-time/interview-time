@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -11,22 +12,39 @@ namespace CafApi.Services
     {
         private readonly DynamoDBContext _context;
 
-        public GuideService(IAmazonDynamoDB dynamoDbClient)
+        private readonly IInterviewService _interviewService;
+
+        public GuideService(IAmazonDynamoDB dynamoDbClient, IInterviewService interviewService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
+            _interviewService = interviewService;
         }
 
         public async Task<List<Guide>> GetGuides(string userId)
         {
             var config = new DynamoDBOperationConfig();
 
-            return await _context.QueryAsync<Guide>(userId, config).GetRemainingAsync();
+            var guides = await _context.QueryAsync<Guide>(userId, config).GetRemainingAsync();
+            foreach (var guide in guides)
+            {
+                var interviews = await _interviewService.GetGuideInterviews(guide.GuideId);
+                guide.TotalInterviews = interviews.Count();
+            }
+
+            return guides;
         }
 
         public async Task<Guide> AddGuide(Guide guide)
         {
             guide.GuideId = Guid.NewGuid().ToString();
-            guide.TotalInterviews = 0;
+
+            if (guide.Structure != null && guide.Structure.Groups != null)
+            {
+                foreach (var group in guide.Structure.Groups)
+                {
+                    group.GroupId = Guid.NewGuid().ToString();
+                }
+            }
 
             await _context.SaveAsync(guide);
 
@@ -35,6 +53,17 @@ namespace CafApi.Services
 
         public async Task UpdateGuide(Guide guide)
         {
+            if (guide.Structure != null && guide.Structure.Groups != null)
+            {
+                foreach (var group in guide.Structure.Groups)
+                {
+                    if (string.IsNullOrWhiteSpace(group.GroupId))
+                    {
+                        group.GroupId = Guid.NewGuid().ToString();
+                    }
+                }
+            }
+
             await _context.SaveAsync(guide);
         }
 

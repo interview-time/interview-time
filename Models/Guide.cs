@@ -20,6 +20,7 @@ namespace CafApi.Models
 
         public string Description { get; set; }
 
+        [DynamoDBIgnore]
         public int TotalInterviews { get; set; }
 
         public GuideStructure Structure { get; set; }
@@ -36,6 +37,8 @@ namespace CafApi.Models
 
     public class GuideGroup
     {
+        public string GroupId { get; set; }
+        
         public string Name { get; set; }
 
         public List<string> Questions { get; set; }

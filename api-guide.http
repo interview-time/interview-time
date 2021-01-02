@@ -62,6 +62,6 @@ Content-Type: application/json
 
 
 ### Delete a guide
-@questionId = 374c8c70-d05b-4cbb-85c7-8093bfe7b396
-DELETE {{baseUrl}}/guide/{{questionId}}
+@guideId = 374c8c70-d05b-4cbb-85c7-8093bfe7b396
+DELETE {{baseUrl}}/guide/{{guideId}}
 Content-Type: application/json
