@@ -57,6 +57,7 @@ namespace caf_api
             );
 
             services.AddSingleton<IQuestionBankService, QuestionBankService>();
+            services.AddSingleton<IGuideService, GuideService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

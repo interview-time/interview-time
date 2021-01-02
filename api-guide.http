@@ -1,0 +1,67 @@
+
+@baseUrl = https://localhost:5001
+###@baseUrl = http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com
+
+### Get all guides
+GET {{baseUrl}}/guide
+Content-Type: application/json
+
+### Create new guide
+POST {{baseUrl}}/guide
+Content-Type: application/json
+
+{      
+    "title": "Senior Android Engineer",
+    "image": "https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg",
+    "type": "Technical",
+    "description": "This guid helps to evaluate overall knowledge about Android SDK.",
+    "structure": {
+        "header": "Hello world header",
+        "footer": "Hello World footer",
+        "groups": [
+            {                    
+                "name": "C#",
+                "questions": ["99c7cee2-f516-4b6d-ad7b-681097ac3d6d"]                    
+            },
+            {                   
+                "name": "JavaScript",
+                "questions": [
+                    "213d4c8d-4f31-4b27-9d10-07c55458b770",
+                    "36e8faeb-794b-4569-a178-954be32ff0e4"
+                ]
+            }
+        ]
+    }
+}
+
+
+### Update guide
+PUT {{baseUrl}}/guide
+Content-Type: application/json
+
+{      
+    "guideId": "374c8c70-d05b-4cbb-85c7-8093bfe7b396",
+    "title": "Senior Android Engineer",
+    "image": "https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg",
+    "type": "Technical",
+    "description": "This guid helps to evaluate overall knowledge about Android SDK.",
+    "structure": {
+        "header": "Hello world header",
+        "footer": "Hello World footer",
+        "groups": [        
+            {                   
+                "name": "JavaScript",
+                "questions": [
+                    "213d4c8d-4f31-4b27-9d10-07c55458b770",
+                    "36e8faeb-794b-4569-a178-954be32ff0e4"
+                ]
+            }
+        ]
+    }
+}
+
+
+### Delete a guide
+@questionId = 374c8c70-d05b-4cbb-85c7-8093bfe7b396
+DELETE {{baseUrl}}/guide/{{questionId}}
+Content-Type: application/json
