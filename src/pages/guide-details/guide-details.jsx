@@ -166,10 +166,10 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
         } else {
             if (isNewGuideFlow()) {
                 addGuide(guide);
-                message.success(`Guide '${currentGuide.title}' created.`);
+                message.success(`Guide '${guide.title}' created.`);
             } else {
                 updateGuide(guide);
-                message.success(`Guide '${currentGuide.title}' updated.`);
+                message.success(`Guide '${guide.title}' updated.`);
             }
             history.push("/guides");
         }
