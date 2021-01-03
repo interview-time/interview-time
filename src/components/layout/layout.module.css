@@ -1,0 +1,43 @@
+.pageHeader {
+    background-color: white;
+    text-align: center;
+}
+
+.pageContent {
+    padding: 24px
+}
+
+.globalHeader {
+    padding: 0;
+    background: #fff;
+    border-bottom: 1px solid rgb(235, 237, 240);
+}
+
+.globalSider {
+    border-right: 1px solid rgb(235, 237, 240);
+    background: #fff;
+}
+
+.globalLayout {
+    height: 100vh
+}
+
+.logo {
+    height: 70px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.avatar {
+    margin-left: 16px;
+}
+
+.menu {
+    border: 0;
+    margin-top: 16px;
+}
+
+.menuItem {
+    display: flex;
+    align-items: center
+}
