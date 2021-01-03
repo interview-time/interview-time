@@ -51,12 +51,14 @@ const Guides = ({guides, loading, loadGuides}) => {
                         <Row span={24}>
                             <Col span={12}>
                                 <Statistic title="Questions"
-                                           value={Arrays.flatten(guide.structure.groups.map(group => group.questions)).length}
+                                           value={Arrays.sumBy(guide.structure.groups, (group) => {
+                                               return group.questions ? group.questions.length : 0;
+                                           })}
                                            valueStyle={{fontSize: "large"}} />
                             </Col>
                             <Col span={12}>
                                 <Statistic title="Interviews"
-                                           value="0" // TODO add number of interviews
+                                           value={guide.totalInterviews}
                                            valueStyle={{fontSize: "large"}} />
                             </Col>
                         </Row>

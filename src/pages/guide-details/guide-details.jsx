@@ -9,6 +9,7 @@ import Text from "antd/es/typography/Text";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
+import Arrays from "lodash";
 
 const {TabPane} = Tabs;
 const {TextArea} = Input;
@@ -146,6 +147,10 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
             type: form.getFieldValue("category"),
         }
 
+        const emptyGroupName = Arrays.find(guide.structure.groups, (group) => {
+            return !group.name || group.name.length === 0
+        })
+
         if (!guide.title || guide.title.length === 0) {
             Modal.warn({
                 title: "Guide 'title' must not be empty.",
@@ -153,6 +158,10 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
         } else if (!guide.type || guide.type.length === 0) {
             Modal.warn({
                 title: "Guide 'category' must not be empty.",
+            })
+        } else if (emptyGroupName) {
+            Modal.warn({
+                title: "Guide 'question group name' must not be empty.",
             })
         } else {
             if (isNewGuideFlow()) {

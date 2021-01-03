@@ -23,12 +23,12 @@ const GuideStructureCard = (props) => {
     }, [structure]);
 
     const onGroupNameChanges = (groupId, groupName) => {
-        structure.groups.find(group => group.id === groupId).name = groupName
+        structure.groups.find(group => group.groupId === groupId).name = groupName
     };
 
     const onAddGroupClicked = () => {
         const newGroup = {
-            id: Date.now().toString(),
+            groupId: Date.now().toString(),
             questions: []
         }
         setStructure({
@@ -40,7 +40,7 @@ const GuideStructureCard = (props) => {
     const onRemoveGroupClicked = id => {
         setStructure({
             ...structure,
-            groups: structure.groups.filter(group => group.id !== id)
+            groups: structure.groups.filter(group => group.groupId !== id)
         })
     }
 
@@ -71,18 +71,18 @@ const GuideStructureCard = (props) => {
 
             <>
                 {structure.groups.map((group) => {
-                    return <Form.Item label="Question Group" key={group.id}>
+                    return <Form.Item label="Question Group" key={group.groupId}>
                         <Space>
                             <Input placeholder='e.g. Software Design Patterns'
                                    className={styles.inputQuestion}
-                                   onChange={e => onGroupNameChanges(group.id, e.target.value)}
+                                   onChange={e => onGroupNameChanges(group.groupId, e.target.value)}
                                    defaultValue={group.name} />
                             <Button type="dashed" block icon={<PlusCircleTwoTone />}
                                     className={styles.addQuestionButton}
                                     onClick={props.onAddQuestionClicked}>Question</Button>
                             <Popconfirm
                                 title="Are you sure you want to delete this group?"
-                                onConfirm={() => onRemoveGroupClicked(group.id)}
+                                onConfirm={() => onRemoveGroupClicked(group.groupId)}
                                 okText="Yes"
                                 cancelText="No">
                                 <DeleteTwoTone twoToneColor="red"  />

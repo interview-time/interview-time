@@ -58,7 +58,6 @@ export default function (state = initialState, action) {
 
         case UPDATE_GUIDE: {
             const {guide} = action.payload;
-
             axios
                 .put(URL, guide, null)
                 .then(() => console.log("Guide updated."))
