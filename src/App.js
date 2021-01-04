@@ -6,21 +6,30 @@ import InterviewDetails from "./pages/interview-details/interview-details";
 import InterviewStart from "./pages/interview-start/interview-start";
 import Guides from "./pages/guides/guides";
 import GuideDetails from "./pages/guide-details/guide-details";
+import { useAuth0 } from "./react-auth0-spa";
+import Spinner from "./components/spinner/spinner";
+import PrivateRoute from "./components/private-route/private-route";
 import './App.css';
 
 function App() {
+  const { loading } = useAuth0();
+
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <Switch>
-      <Route path="/" exact component={Default} />
-      <Route path="/default" render={() => <Redirect to="/" />} />
-      <Route path="/question-bank" exact component={QuestionBank} />
-      <Route path="/interviews" exact component={Interviews} />
-      <Route path="/interviews/add" exact component={InterviewDetails} />
-      <Route path="/interviews/details/:id" exact component={InterviewDetails} />
-      <Route path="/interviews/start/:id" exact component={InterviewStart} />
-      <Route path="/guides" exact component={Guides} />
-      <Route path="/guides/add/" exact component={GuideDetails} />
-      <Route path="/guides/details/:id" exact component={GuideDetails} />
+      <PrivateRoute path="/" exact component={Default} />
+      <PrivateRoute path="/default" render={() => <Redirect to="/" />} />
+      <PrivateRoute path="/question-bank" exact component={QuestionBank} />
+      <PrivateRoute path="/interviews" exact component={Interviews} />
+      <PrivateRoute path="/interviews/add" exact component={InterviewDetails} />
+      <PrivateRoute path="/interviews/details/:id" exact component={InterviewDetails} />
+      <PrivateRoute path="/interviews/start/:id" exact component={InterviewStart} />
+      <PrivateRoute path="/guides" exact component={Guides} />
+      <PrivateRoute path="/guides/add/" exact component={GuideDetails} />
+      <PrivateRoute path="/guides/details/:id" exact component={GuideDetails} />
     </Switch>
   );
 }
