@@ -4,11 +4,12 @@ import {connect} from "react-redux";
 import {addGuide, deleteGuide, loadGuides, updateGuide} from "../../store/guides/actions";
 import styles from "./guide-details.module.css";
 import Layout from "../../components/layout/layout";
-import {Button, Card, Col, Form, Input, PageHeader, Row, Select, Tabs} from 'antd';
+import {Button, Card, Col, Form, Input, message, Modal, PageHeader, Popconfirm, Row, Select, Tabs} from 'antd';
 import Text from "antd/es/typography/Text";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
+import Arrays from "lodash";
 
 const {TabPane} = Tabs;
 const {TextArea} = Input;
@@ -37,11 +38,9 @@ const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
 const emptyGuide = {
-    id: undefined,
+    guideId: undefined,
     title: '',
     image: '',
-    totalQuestions: 0,
-    totalInterviews: 0,
     structure: {
         header: '',
         footer: '',
@@ -52,6 +51,7 @@ const emptyGuide = {
 const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updateGuide}) => {
     const [step, setStep] = useState(STEP_DETAILS);
     const [currentGuide, setCurrentGuide] = useState(emptyGuide);
+    const [originalGuide, setOriginalGuide] = useState(emptyGuide);
     const [form] = Form.useForm();
     const history = useHistory();
     const {id} = useParams();
@@ -59,13 +59,14 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
     const isNewGuideFlow = () => !id;
 
     React.useEffect(() => {
-        if (!isNewGuideFlow() && !currentGuide.id && !loading) {
-            const guide = guides.find(guide => guide.id === id);
+        if (!isNewGuideFlow() && !currentGuide.guideId && !loading) {
+            const guide = guides.find(guide => guide.guideId === id);
             if (guide) {
                 setCurrentGuide(guide)
+                setOriginalGuide(guide)
                 form.setFieldsValue({
                     title: guide.title,
-                    category: guide.category,
+                    category: guide.type,
                     description: guide.description
                 })
             }
@@ -95,7 +96,25 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
     }
 
     const onBackClicked = () => {
-        window.history.back()
+        const guide = {
+            ...currentGuide,
+            title: form.getFieldValue("title"),
+            description: form.getFieldValue("description"),
+            type: form.getFieldValue("category"),
+        }
+
+        if (isNewGuideFlow() || JSON.stringify(guide) !== JSON.stringify(originalGuide)) {
+            Modal.confirm({
+                title: "It seems that you have unsaved changes. Are you sure that you want to exit?",
+                okText: "Yes",
+                cancelText: "No",
+                onOk() {
+                    window.history.back()
+                }
+            })
+        } else {
+            window.history.back()
+        }
     }
 
     const onTabClicked = (key) => {
@@ -115,8 +134,9 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
     }
 
     const onDeleteClicked = () => {
-        deleteGuide(currentGuide.id);
+        deleteGuide(currentGuide.guideId);
         history.push("/guides");
+        message.success(`Guide '${currentGuide.title}' removed.`);
     }
 
     const onSaveClicked = () => {
@@ -124,14 +144,35 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
             ...currentGuide,
             title: form.getFieldValue("title"),
             description: form.getFieldValue("description"),
-            category: form.getFieldValue("category"),
+            type: form.getFieldValue("category"),
         }
-        if (isNewGuideFlow()) {
-            addGuide(guide);
+
+        const emptyGroupName = Arrays.find(guide.structure.groups, (group) => {
+            return !group.name || group.name.length === 0
+        })
+
+        if (!guide.title || guide.title.length === 0) {
+            Modal.warn({
+                title: "Guide 'title' must not be empty.",
+            })
+        } else if (!guide.type || guide.type.length === 0) {
+            Modal.warn({
+                title: "Guide 'category' must not be empty.",
+            })
+        } else if (emptyGroupName) {
+            Modal.warn({
+                title: "Guide 'question group name' must not be empty.",
+            })
         } else {
-            updateGuide(guide);
+            if (isNewGuideFlow()) {
+                addGuide(guide);
+                message.success(`Guide '${guide.title}' created.`);
+            } else {
+                updateGuide(guide);
+                message.success(`Guide '${guide.title}' updated.`);
+            }
+            history.push("/guides");
         }
-        history.push("/guides");
     }
 
     const createDetailsCard = <Col className={styles.detailsCard}>
@@ -165,7 +206,13 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
                     />
                 </Form.Item>
                 {!isNewGuideFlow() && <Form.Item {...tailLayout}>
-                    <Button type="default" danger onClick={onDeleteClicked}>Delete</Button>
+                    <Popconfirm
+                        title="Are you sure you want to delete this guide?"
+                        onConfirm={onDeleteClicked}
+                        okText="Yes"
+                        cancelText="No">
+                        <Button type="default" danger>Delete</Button>
+                    </Popconfirm>
                 </Form.Item>}
             </Form>
         </Card>

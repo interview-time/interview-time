@@ -1,8 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
+import Arrays from "lodash";
 import Layout from "../../components/layout/layout";
 import {loadGuides} from "../../store/guides/actions";
-import {Statistic, Row, Col, Avatar, Button, PageHeader, List, Card} from "antd";
+import {Avatar, Button, Card, Col, List, PageHeader, Row, Statistic} from "antd";
 import styles from "../guides/guides.module.css";
 import {Link} from "react-router-dom";
 
@@ -41,7 +42,7 @@ const Guides = ({guides, loading, loadGuides}) => {
             dataSource={guides}
             loading={loading}
             renderItem={guide => <List.Item>
-                <Link to={`/guides/details/${guide.id}`}>
+                <Link to={`/guides/details/${guide.guideId}`}>
                     <Card hoverable>
                         <Meta
                             avatar={<Avatar src={guide.image} />}
@@ -50,7 +51,9 @@ const Guides = ({guides, loading, loadGuides}) => {
                         <Row span={24}>
                             <Col span={12}>
                                 <Statistic title="Questions"
-                                           value={guide.totalQuestions}
+                                           value={Arrays.sumBy(guide.structure.groups, (group) => {
+                                               return group.questions ? group.questions.length : 0;
+                                           })}
                                            valueStyle={{fontSize: "large"}} />
                             </Col>
                             <Col span={12}>
@@ -69,7 +72,7 @@ const Guides = ({guides, loading, loadGuides}) => {
 const mapStateToProps = state => {
     const {guides, loading} = state.guides || {};
 
-    return {guides, loading};
+    return {guides: Arrays.sortBy(guides, ['title']), loading: loading};
 };
 
 export default connect(mapStateToProps, {loadGuides})(Guides);
