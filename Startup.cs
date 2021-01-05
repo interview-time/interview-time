@@ -93,6 +93,7 @@ namespace caf_api
             app.UseCors();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
