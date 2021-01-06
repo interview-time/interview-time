@@ -41,7 +41,7 @@ namespace caf_api
                 options.Audience = Configuration["Auth0:Audience"];
                 options.RequireHttpsMetadata = false;
             });
-            
+
             services.AddCors(options =>
                    {
                        options.AddDefaultPolicy(
@@ -91,9 +91,8 @@ namespace caf_api
             app.UseRouting();
 
             app.UseCors();
-
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

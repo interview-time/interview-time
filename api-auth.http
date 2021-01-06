@@ -1,0 +1,9 @@
+POST https://interviewer.au.auth0.com/oauth/token
+Content-Type: application/json
+
+{
+    "client_id": "aynSzKpAy3V6fUzPfw8mgtorRQKUsaxF",
+    "client_secret": "3mpKLeBGBgwqMZz6IEfBqL3vlTcT7DFG0ZkkhymXJXCGB4OeYMYfYTwDGDVK9cDv",
+    "audience": "http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com",
+    "grant_type": "client_credentials"
+}
