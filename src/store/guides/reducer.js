@@ -40,6 +40,7 @@ export default function (state = initialState, action) {
         case ADD_GUIDE: {
             const {guide} = action.payload;
             const localId = Date.now().toString()
+            guide.guideId = localId
             axios
                 .post(URL, guide, null)
                 .then(res => {
@@ -49,7 +50,6 @@ export default function (state = initialState, action) {
                 })
                 .catch((reason) => console.error(reason));
 
-            guide.id = localId
             return {
                 ...state,
                 guides: [...state.guides, guide]
