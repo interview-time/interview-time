@@ -6,6 +6,7 @@ import InterviewDetails from "./pages/interview-details/interview-details";
 import InterviewStart from "./pages/interview-start/interview-start";
 import Guides from "./pages/guides/guides";
 import GuideDetails from "./pages/guide-details/guide-details";
+import Account from "./pages/account/account";
 import { useAuth0 } from "./react-auth0-spa";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
@@ -30,6 +31,7 @@ function App() {
       <PrivateRoute path="/guides" exact component={Guides} />
       <PrivateRoute path="/guides/add/" exact component={GuideDetails} />
       <PrivateRoute path="/guides/details/:id" exact component={GuideDetails} />
+      <PrivateRoute path="/account" exact component={Account} />
     </Switch>
   );
 }
