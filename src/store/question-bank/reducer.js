@@ -3,7 +3,8 @@ import {
     SET_QUESTION_BANK,
     ADD_QUESTION,
     UPDATE_QUESTION,
-    DELETE_QUESTION
+    DELETE_QUESTION,
+    ADD_CATEGORY
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -128,6 +129,17 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 questions: questions
+            };            
+        }
+
+        case ADD_CATEGORY: {
+            const { newCategory } = action.payload;
+
+            return {
+                ...state,
+                categories: [
+                    ...state.categories, newCategory
+                ]
             };
         }
 

@@ -1,6 +1,7 @@
-import {ADD_GUIDE, DELETE_GUIDE, LOAD_GUIDES, SET_GUIDES, setGuides, UPDATE_GUIDE} from "./actions";
+import { ADD_GUIDE, DELETE_GUIDE, LOAD_GUIDES, SET_GUIDES, setGuides, UPDATE_GUIDE } from "./actions";
 import axios from "axios";
 import store from "../../store";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
 
 const initialState = {
     guides: [],
@@ -14,22 +15,28 @@ export default function (state = initialState, action) {
     switch (action.type) {
         case LOAD_GUIDES: {
             if (state.guides.length === 0) {
-                axios
-                    .get(URL, null)
-                    .then(res => {
-                        store.dispatch(setGuides(res.data || []));
-                        console.log("Guides loaded.")
-                    })
-                    .catch((reason) => console.error(reason));
+                getAccessTokenSilently().then((token) => {
+                    axios
+                        .get(URL, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
+                        .then(res => {
+                            store.dispatch(setGuides(res.data || []));
+                            console.log("Guides loaded.")
+                        })
+                        .catch((reason) => console.error(reason));
+                });
 
-                return {...state, loading: true};
+                return { ...state, loading: true };
             }
 
             return state;
         }
 
         case SET_GUIDES: {
-            const {guides} = action.payload;
+            const { guides } = action.payload;
             return {
                 ...state,
                 guides: guides,
@@ -38,17 +45,24 @@ export default function (state = initialState, action) {
         }
 
         case ADD_GUIDE: {
-            const {guide} = action.payload;
+            const { guide } = action.payload;
             const localId = Date.now().toString()
             guide.guideId = localId
-            axios
-                .post(URL, guide, null)
-                .then(res => {
-                    const guides = state.guides.filter(item => item.guideId !== localId);
-                    store.dispatch(setGuides([...guides, res.data]))
-                    console.log("Guide added.")
-                })
-                .catch((reason) => console.error(reason));
+
+            getAccessTokenSilently().then((token) => {
+                axios
+                    .post(URL, guide, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    .then(res => {
+                        const guides = state.guides.filter(item => item.guideId !== localId);
+                        store.dispatch(setGuides([...guides, res.data]))
+                        console.log("Guide added.")
+                    })
+                    .catch((reason) => console.error(reason));
+            });
 
             return {
                 ...state,
@@ -57,11 +71,18 @@ export default function (state = initialState, action) {
         }
 
         case UPDATE_GUIDE: {
-            const {guide} = action.payload;
-            axios
-                .put(URL, guide, null)
-                .then(() => console.log("Guide updated."))
-                .catch((reason) => console.error(reason));
+            const { guide } = action.payload;
+
+            getAccessTokenSilently().then((token) => {
+                axios
+                    .put(URL, guide, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    .then(() => console.log("Guide updated."))
+                    .catch((reason) => console.error(reason));
+            });
 
             const guides = state.guides.map(item => {
                 if (item.guideId !== guide.guideId) {
@@ -80,12 +101,18 @@ export default function (state = initialState, action) {
         }
 
         case DELETE_GUIDE: {
-            const {guideId} = action.payload;
+            const { guideId } = action.payload;
 
-            axios
-                .delete(`${URL}/${guideId}`)
-                .then(() => console.log("Guide removed."))
-                .catch((reason) => console.error(reason));
+            getAccessTokenSilently().then((token) => {
+                axios
+                    .delete(`${URL}/${guideId}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    .then(() => console.log("Guide removed."))
+                    .catch((reason) => console.error(reason));
+            });
 
             const guides = state.guides.filter(item => item.guideId !== guideId);
             return {
