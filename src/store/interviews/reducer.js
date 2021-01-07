@@ -14,92 +14,7 @@ const initialState = {
     loading: false
 };
 
-const ASSESSMENT_YES = 'yes';
-const ASSESSMENT_NO = 'no';
-const ASSESSMENT_STRONG_YES = 'strong yes';
-const ASSESSMENT_STRONG_NO = 'strong no';
-const STATUS_COMPLETED = 'Completed';
-const STATUS_SCHEDULED = 'Scheduled';
-
-const data = [
-    {
-        id: '1',
-        name: 'John Brown',
-        position: 'Software Engineer',
-        guide: 'Android Developer',
-        date: '2020-12-25 22:51',
-        tags: [ASSESSMENT_STRONG_YES],
-        status: STATUS_COMPLETED,
-        structure: {
-            header: 'Hello world header',
-            footer: 'Hello World footer',
-            groups: [
-                {
-                    id: '1',
-                    name: 'Android',
-                    questions: [
-                        "What are configuration changes and when do they happen?",
-                        "What are configuration changes and when do they happen?"
-                    ]
-                },
-                {
-                    id: '2',
-                    name: 'Java',
-                    questions: [
-                        "What are configuration changes and when do they happen?",
-                        "What are configuration changes and when do they happen?"
-                    ]
-                }
-            ]
-        },
-    },
-    {
-        id: '2',
-        name: 'Dmytro Danylyk',
-        position: 'Software Engineer',
-        guide: 'Android Developer',
-        date: '12-02-2020 09:30',
-        tags: [ASSESSMENT_NO],
-        status: STATUS_COMPLETED,
-        structure: {
-            header: 'Hello world header',
-            footer: 'Hello World footer',
-            groups: [
-                {
-                    id: '1',
-                    name: 'Android',
-                    questions: [
-                        "What are configuration changes and when do they happen?",
-                        "What are configuration changes and when do they happen?"
-                    ]
-                }
-            ]
-        },
-    },
-    {
-        id: '3',
-        name: 'Julia Danylyk',
-        position: 'Software Engineer',
-        guide: 'Android Developer',
-        date: '14-03-2020 09:30',
-        tags: [],
-        status: STATUS_SCHEDULED,
-        structure: {
-            header: 'Hello world header',
-            footer: 'Hello World footer',
-            groups: [
-                {
-                    id: '1',
-                    name: 'Android',
-                    questions: [
-                        "What are configuration changes and when do they happen?",
-                        "What are configuration changes and when do they happen?",
-                    ]
-                }
-            ]
-        },
-    },
-];
+const URL = `${process.env.REACT_APP_API_URL}/interview`;
 
 export default function (state = initialState, action) {
     console.log(action.type)
@@ -107,14 +22,12 @@ export default function (state = initialState, action) {
         case LOAD_INTERVIEWS: {
             if (state.interviews.length === 0) {
                 axios
-                    // TODO replace with valid network request
-                    .get(`${process.env.REACT_APP_API_URL}/question-bank/categories`, null)
+                    .get(URL, null)
                     .then(res => {
-                        store.dispatch(setInterviews(data || []));
+                        store.dispatch(setInterviews(res.data || []));
+                        console.log("Interviews loaded.")
                     })
-                    .catch((reason) => {
-                        console.error(reason)
-                    });
+                    .catch((reason) => console.error(reason));
 
                 return {...state, loading: true};
             }
@@ -133,10 +46,19 @@ export default function (state = initialState, action) {
 
         case ADD_INTERVIEW: {
             const {interview} = action.payload;
+            interview.guideId = "653529ed-d588-4c03-9fea-1dfac630ad38"
+            const localId = Date.now().toString()
+            interview.interviewId = Date.now().toString()
+            console.log(JSON.stringify(interview))
+            axios
+                .post(URL, interview, null)
+                .then(res => {
+                    const interviews = state.interviews.filter(item => item.interviewId !== localId);
+                    store.dispatch(setInterviews([...interviews, res.data]))
+                    console.log("Interview added.")
+                })
+                .catch((reason) => console.error(reason));
 
-            // TODO add network request
-
-            interview.id = Date.now().toString()
             return {
                 ...state,
                 interviews: [...state.interviews, interview]
@@ -146,22 +68,36 @@ export default function (state = initialState, action) {
         case UPDATE_INTERVIEW: {
             const {interview} = action.payload;
 
-            // TODO add network request
+            axios
+                .put(URL, interview, null)
+                .then(() => console.log("Interview updated."))
+                .catch((reason) => console.error(reason));
 
-            const index = state.interviews.findIndex(item => item.id === interview.id);
-            if (index >= 0) {
-                state.interviews[index] = interview;
-            }
+            const interviews = state.interviews.map(item => {
+                if (item.interviewId !== interview.interviewId) {
+                    return item;
+                }
 
-            return state;
+                return {
+                    ...item, ...interview
+                }
+            });
+
+            return {
+                ...state,
+                interviews: interviews
+            };
         }
 
         case DELETE_INTERVIEW: {
             const {interviewId} = action.payload;
 
-            // TODO add network request
+            axios
+                .delete(`${URL}/${interviewId}`)
+                .then(() => console.log("Interview removed."))
+                .catch((reason) => console.error(reason));
 
-            const interviews = state.interviews.filter(item => item.id !== interviewId);
+            const interviews = state.interviews.filter(item => item.interviewId !== interviewId);
             return {
                 ...state,
                 interviews: interviews

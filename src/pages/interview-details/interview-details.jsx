@@ -5,19 +5,16 @@ import moment from 'moment';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-details.module.css";
 import {addInterview, deleteInterview, loadInterviews, updateInterview} from "../../store/interviews/actions";
-import {Button, Card, Col, DatePicker, Form, Input, PageHeader, Row, Select, Tabs} from 'antd';
+import {loadGuides} from "../../store/guides/actions";
+import {Button, Card, Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Select, Tabs} from 'antd';
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
+import lang from "lodash/lang";
+import Arrays from "lodash";
 
 const {TabPane} = Tabs;
-
-const guides = [
-    {value: 'Android Developer'},
-    {value: 'Java Developer'},
-    {value: 'Behavioural'},
-];
 
 const layout = {
     labelCol: {span: 10},
@@ -36,26 +33,30 @@ const STEP_QUESTIONS = 4
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
-const DATE_FORMAT = "YYYY-MM-DD HH:mm"
+const DATE_FORMAT = "YYYY-MM-DDTHH:mm:ssZ"
 
 const emptyInterview = {
     id: undefined,
-    name: '',
+    candidate: '',
     position: '',
-    guide: '',
-    date: '',
-    tags: [],
-    status: '',
-    structure: {
-        header: '',
-        footer: '',
-        groups: []
-    }
+    guideId: '',
+    interviewDateTime: '',
+    structure : {}
 }
 
-const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, deleteInterview, updateInterview}) => {
+const InterviewDetails = ({
+                              interviews,
+                              guides,
+                              loading,
+                              loadInterviews,
+                              addInterview,
+                              deleteInterview,
+                              updateInterview,
+                              loadGuides
+                          }) => {
     const [step, setStep] = useState(STEP_DETAILS)
     const [interview, setInterview] = useState(emptyInterview);
+    const [originalInterview, setOriginalInterview] = useState(emptyInterview);
     const [form] = Form.useForm();
     const history = useHistory();
     const {id} = useParams();
@@ -63,23 +64,35 @@ const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, de
     const isNewInterviewFlow = () => !id;
 
     React.useEffect(() => {
-        if (!isNewInterviewFlow() && !interview.id && !loading) {
-            const interview = interviews.find(interview => interview.id === id);
+        if (!isNewInterviewFlow() && !interview.interviewId && !loading) {
+            const interview = interviews.find(interview => interview.interviewId === id);
             if (interview) {
-                setInterview(interview)
+                setInterview(lang.cloneDeep(interview))
+                setOriginalInterview(lang.cloneDeep(interview))
                 form.setFieldsValue({
-                    name: interview.name,
+                    name: interview.candidate,
                     position: interview.position,
-                    guide: interview.guide,
-                    date: moment(interview.date)
+                    date: moment(interview.interviewDateTime)
                 })
             }
         }
     }, [interviews, id]);
 
     React.useEffect(() => {
+        if (interview.interviewId) {
+            const guide = guides.find((guide) => guide.guideId === interview.guideId)
+            if (guide) {
+                form.setFieldsValue({
+                    guide: guide.title,
+                })
+            }
+        }
+    }, [interview, guides]);
+
+    React.useEffect(() => {
         if (!isNewInterviewFlow() && interviews.length === 0 && !loading) {
             loadInterviews();
+            loadGuides()
         }
     });
 
@@ -100,7 +113,20 @@ const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, de
     }
 
     const onBackClicked = () => {
-        window.history.back()
+        let interview = createUpdatedInterview();
+
+        if (!lang.isEqual(interview, originalInterview)) {
+            Modal.confirm({
+                title: "It seems that you have unsaved changes. Are you sure that you want to exit?",
+                okText: "Yes",
+                cancelText: "No",
+                onOk() {
+                    window.history.back()
+                }
+            })
+        } else {
+            window.history.back()
+        }
     }
 
     const getActiveTab = () => {
@@ -112,26 +138,61 @@ const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, de
     }
 
     const onDeleteClicked = () => {
-        deleteInterview(interview.id);
+        deleteInterview(interview.interviewId);
         history.push("/interviews");
+        message.success(`Interview '${interview.candidate}' removed.`);
     }
 
     const onSaveClicked = () => {
-        const updatedInterview = {
-            ...interview,
-            name: form.getFieldValue("name"),
-            position: form.getFieldValue("position"),
-            guide: form.getFieldValue("guide"),
-            date: form.getFieldValue("date").format(DATE_FORMAT),
-            status: 'Scheduled'
-        }
-        if (isNewInterviewFlow()) {
-            addInterview(updatedInterview);
+        let interview = createUpdatedInterview();
+
+        console.log(interview)
+
+        if (lang.isEmpty(interview.candidate)) {
+            Modal.warn({
+                title: "Interview 'candidate name' must not be empty.",
+            })
+        } else if (lang.isEmpty(interview.position)) {
+            Modal.warn({
+                title: "Interview 'position' must not be empty.",
+            })
+        } else if (lang.isEmpty(interview.guideId)) {
+            Modal.warn({
+                title: "Interview 'guide' must not be empty.",
+            })
+        } else if (lang.isEmpty(interview.interviewDateTime)) {
+            Modal.warn({
+                title: "Interview 'date' must not be empty.",
+            })
         } else {
-            updateInterview(updatedInterview);
+            if (isNewInterviewFlow()) {
+                addInterview(interview);
+                message.success(`Interview '${interview.candidate}' created.`);
+            } else {
+                updateInterview(interview);
+                message.success(`Interview '${interview.candidate}' updated.`);
+            }
+            history.push("/interviews");
         }
-        history.push("/interviews");
     }
+
+    const createUpdatedInterview = () => {
+        let interviewDateTime = form.getFieldValue("date")
+        if (interviewDateTime) {
+            interviewDateTime = interviewDateTime.utc().format(DATE_FORMAT)
+        }
+
+        const guideTitle = form.getFieldValue("guide")
+        const guide = Arrays.find(guides, (guide) => guide.title === guideTitle)
+
+        return {
+            ...lang.cloneDeep(interview),
+            candidate: form.getFieldValue("name") || '',
+            position: form.getFieldValue("position") || '',
+            guideId: guide ? guide.guideId : '',
+            interviewDateTime: interviewDateTime || ''
+        };
+    };
 
     const createDetailsCard = <Col className={styles.detailsCard}>
         <Card title="Interview Details" bordered={false} headStyle={{textAlign: 'center'}}>
@@ -143,8 +204,8 @@ const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, de
                     <Input placeholder="Jon Doe" className={styles.input} />
                 </Form.Item>
 
-                <Form.Item name="date" label="Interview Time">
-                    <DatePicker showTime format={DATE_FORMAT} className={styles.input} />
+                <Form.Item name="date" label="Interview Date">
+                    <DatePicker showTime format='LLL' className={styles.input} />
                 </Form.Item>
 
                 <Form.Item label="Position" name="position">
@@ -154,7 +215,9 @@ const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, de
                 <Form.Item label="Guide" name="guide">
                     <Select
                         className={styles.input}
-                        options={guides}
+                        options={guides.map(guide => ({
+                            value: guide.title
+                        }))}
                         showSearch
                         placeholder="Select guide"
                         filterOption={(inputValue, option) =>
@@ -172,7 +235,7 @@ const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, de
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
         onBack={() => onBackClicked()}
-        title="New Interview"
+        title={isNewInterviewFlow() ? "New Interview" : "Edit Interview"}
         extra={[
             <>{(isDetailsStep() || isStructureStep()) && <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
                 <span className="nav-text">Preview</span>
@@ -232,13 +295,15 @@ const InterviewDetails = ({interviews, loading, loadInterviews, addInterview, de
 
 const mapStateToProps = state => {
     const {interviews, loading} = state.interviews || {};
+    const {guides} = state.guides || {};
 
-    return {interviews, loading};
+    return {interviews, guides: Arrays.sortBy(guides, ['title']), loading};
 };
 
 export default connect(mapStateToProps, {
     loadInterviews,
     addInterview,
     deleteInterview,
-    updateInterview
+    updateInterview,
+    loadGuides
 })(InterviewDetails);
