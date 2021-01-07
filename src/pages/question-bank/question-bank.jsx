@@ -43,6 +43,7 @@ const columns = [
 const QuestionBank = ({ questions, loading, loadQuestionBank, deleteQuestion }) => {
 
     React.useEffect(() => {
+
         if ((!questions || questions.length === 0) && !loading) {
             loadQuestionBank();
         }

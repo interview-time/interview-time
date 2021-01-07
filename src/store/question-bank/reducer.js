@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import store from "../../store";
 import { setQuestionBank } from "./actions";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
 
 const initialState = {
     questions: [],
@@ -21,12 +22,18 @@ export default function (state = initialState, action) {
         case LOAD_QUESTION_BANK: {
 
             if (state.questions.length === 0) {
-                axios
-                    .get(`${process.env.REACT_APP_API_URL}/question-bank`, null)
-                    .then(res => {                        
-                        store.dispatch(setQuestionBank(res.data));
-                    })
-                    .catch(() => { });
+                getAccessTokenSilently().then((token) => {
+                    axios
+                        .get(`${process.env.REACT_APP_API_URL}/question-bank`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
+                        .then(res => {
+                            store.dispatch(setQuestionBank(res.data));
+                        })
+                        .catch(() => { });
+                });
 
                 return { ...state, loading: true };
             }
@@ -47,11 +54,16 @@ export default function (state = initialState, action) {
 
         case ADD_QUESTION: {
             const { question } = action.payload;
-
-            axios
-                .post(`${process.env.REACT_APP_API_URL}/question-bank`, question, null)
-                .then(res => { })
-                .catch(() => { });
+            getAccessTokenSilently().then((token) => {
+                axios
+                    .post(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    .then(res => { })
+                    .catch(() => { });
+            });
 
             return {
                 ...state,
@@ -64,10 +76,16 @@ export default function (state = initialState, action) {
         case UPDATE_QUESTION: {
             const { question } = action.payload;
 
-            axios
-                .put(`${process.env.REACT_APP_API_URL}/question-bank`, question, null)
-                .then(res => { })
-                .catch(() => { });
+            getAccessTokenSilently().then((token) => {
+                axios
+                    .put(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                    .then(res => { })
+                    .catch(() => { });
+            });
 
             var questions = state.questions.map(q => {
                 if (q.id !== question.id) {
@@ -88,17 +106,22 @@ export default function (state = initialState, action) {
         case DELETE_QUESTION: {
             const { questionId } = action.payload;
 
-            axios
-                .delete(
-                    `${process.env.REACT_APP_API_URL}/question-bank`,
-                    {
-                        data: {
-                            questionId: questionId
+            getAccessTokenSilently().then((token) => {
+                axios
+                    .delete(
+                        `${process.env.REACT_APP_API_URL}/question-bank`,
+                        {
+                            data: {
+                                questionId: questionId
+                            },
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
                         }
-                    }
-                )
-                .then(res => { })
-                .catch(() => { });
+                    )
+                    .then(res => { })
+                    .catch(() => { });
+            });
 
             var questions = state.questions.filter(question => question.id !== questionId);
 
