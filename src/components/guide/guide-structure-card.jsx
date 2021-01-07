@@ -16,7 +16,11 @@ const tailLayout = {
 };
 
 const GuideStructureCard = (props) => {
-    const [structure, setStructure] = useState({...props.structure, groups: Arrays.cloneDeep(props.structure.groups)});
+    const [structure, setStructure] = useState({
+        groups: props.structure.groups ? Arrays.cloneDeep(props.structure.groups) : [],
+        header: props.structure.header,
+        footer: props.structure.footer,
+    });
 
     React.useEffect(() => {
         props.onChanges(structure)
