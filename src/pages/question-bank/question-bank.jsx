@@ -67,10 +67,10 @@ const QuestionBank = ({ questions, loading, loadQuestionBank, deleteQuestion }) 
 }
 
 const mapStateToProps = state => {
-    const { loading } = state.questionBank || {};
+    const { loading, questions } = state.questionBank || {};
 
     return {
-        questions: getQuestions(state),
+        questions, //: getQuestions(state),
         loading
     };
 };

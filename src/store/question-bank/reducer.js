@@ -23,18 +23,18 @@ export default function (state = initialState, action) {
         case LOAD_QUESTION_BANK: {
 
             if (state.questions.length === 0) {
-                getAccessTokenSilently().then((token) => {
-                    axios
-                        .get(`${process.env.REACT_APP_API_URL}/question-bank`, {
+                getAccessTokenSilently()
+                    .then((token) =>
+                        axios.get(`${process.env.REACT_APP_API_URL}/question-bank`, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
                         })
-                        .then(res => {
-                            store.dispatch(setQuestionBank(res.data));
-                        })
-                        .catch(() => { });
-                });
+                    )
+                    .then(res => {
+                        store.dispatch(setQuestionBank(res.data));
+                    })
+                    .catch(() => { });
 
                 return { ...state, loading: true };
             }
@@ -55,16 +55,16 @@ export default function (state = initialState, action) {
 
         case ADD_QUESTION: {
             const { question } = action.payload;
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .post(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.post(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(res => { })
-                    .catch(() => { });
-            });
+                    });
+                })
+                .then(res => { })
+                .catch(() => { });
 
             return {
                 ...state,
@@ -77,16 +77,16 @@ export default function (state = initialState, action) {
         case UPDATE_QUESTION: {
             const { question } = action.payload;
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .put(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.put(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(res => { })
-                    .catch(() => { });
-            });
+                    });
+                })
+                .then(res => { })
+                .catch(() => { });
 
             var questions = state.questions.map(q => {
                 if (q.id !== question.id) {
@@ -107,9 +107,9 @@ export default function (state = initialState, action) {
         case DELETE_QUESTION: {
             const { questionId } = action.payload;
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .delete(
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.delete(
                         `${process.env.REACT_APP_API_URL}/question-bank`,
                         {
                             data: {
@@ -119,17 +119,17 @@ export default function (state = initialState, action) {
                                 Authorization: `Bearer ${token}`
                             }
                         }
-                    )
-                    .then(res => { })
-                    .catch(() => { });
-            });
+                    );
+                })
+                .then(res => { })
+                .catch(() => { });
 
             var questions = state.questions.filter(question => question.id !== questionId);
 
             return {
                 ...state,
                 questions: questions
-            };            
+            };
         }
 
         case ADD_CATEGORY: {

@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import store from "../../store";
 import { setInterviews } from "./actions";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
 
 const initialState = {
     interviews: [],
@@ -22,19 +23,19 @@ export default function (state = initialState, action) {
         case LOAD_INTERVIEWS: {
             if (state.interviews.length === 0) {
 
-                getAccessTokenSilently().then((token) => {
-                    axios
-                        .get(URL, {
+                getAccessTokenSilently()
+                    .then((token) => {
+                        axios.get(URL, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
-                        })
-                        .then(res => {
-                            store.dispatch(setInterviews(res.data || []));
-                            console.log("Interviews loaded.")
-                        })
-                        .catch((reason) => console.error(reason));
-                });
+                        });
+                    })
+                    .then(res => {
+                        store.dispatch(setInterviews(res.data || []));
+                        console.log("Interviews loaded.")
+                    })
+                    .catch((reason) => console.error(reason));
 
                 return { ...state, loading: true };
             }
@@ -58,20 +59,20 @@ export default function (state = initialState, action) {
             interview.interviewId = Date.now().toString()
             console.log(JSON.stringify(interview))
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .post(URL, interview, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.post(URL, interview, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(res => {
-                        const interviews = state.interviews.filter(item => item.interviewId !== localId);
-                        store.dispatch(setInterviews([...interviews, res.data]))
-                        console.log("Interview added.")
-                    })
-                    .catch((reason) => console.error(reason));
-            });
+                    });
+                })
+                .then(res => {
+                    const interviews = state.interviews.filter(item => item.interviewId !== localId);
+                    store.dispatch(setInterviews([...interviews, res.data]))
+                    console.log("Interview added.")
+                })
+                .catch((reason) => console.error(reason));
 
             return {
                 ...state,
@@ -82,16 +83,16 @@ export default function (state = initialState, action) {
         case UPDATE_INTERVIEW: {
             const { interview } = action.payload;
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .put(URL, interview, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.put(URL, interview, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(() => console.log("Interview updated."))
-                    .catch((reason) => console.error(reason));
-            });
+                    });
+                })
+                .then(() => console.log("Interview updated."))
+                .catch((reason) => console.error(reason));
 
             const interviews = state.interviews.map(item => {
                 if (item.interviewId !== interview.interviewId) {
@@ -112,16 +113,16 @@ export default function (state = initialState, action) {
         case DELETE_INTERVIEW: {
             const { interviewId } = action.payload;
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .delete(`${URL}/${interviewId}`, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.delete(`${URL}/${interviewId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(() => console.log("Interview removed."))
-                    .catch((reason) => console.error(reason));
-            });
+                    });
+                })
+                .then(() => console.log("Interview removed."))
+                .catch((reason) => console.error(reason));
 
             const interviews = state.interviews.filter(item => item.interviewId !== interviewId);
             return {

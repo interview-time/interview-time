@@ -22,6 +22,7 @@ const AddQuestion = ({ categories, addQuestion, addCategory }) => {
                         .then((values) => {
                             form.resetFields();
                             addQuestion(values);
+                            setIsModalVisible(false);
                         })
                         .catch((info) => {
                             console.log('Validate Failed:', info);

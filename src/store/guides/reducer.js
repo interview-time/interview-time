@@ -15,19 +15,19 @@ export default function (state = initialState, action) {
     switch (action.type) {
         case LOAD_GUIDES: {
             if (state.guides.length === 0) {
-                getAccessTokenSilently().then((token) => {
-                    axios
-                        .get(URL, {
+                getAccessTokenSilently()
+                    .then((token) => {
+                        axios.get(URL, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
-                        })
-                        .then(res => {
-                            store.dispatch(setGuides(res.data || []));
-                            console.log("Guides loaded.")
-                        })
-                        .catch((reason) => console.error(reason));
-                });
+                        });
+                    })
+                    .then(res => {
+                        store.dispatch(setGuides(res.data || []));
+                        console.log("Guides loaded.")
+                    })
+                    .catch((reason) => console.error(reason));
 
                 return { ...state, loading: true };
             }
@@ -49,20 +49,20 @@ export default function (state = initialState, action) {
             const localId = Date.now().toString()
             guide.guideId = localId
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .post(URL, guide, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.post(URL, guide, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(res => {
-                        const guides = state.guides.filter(item => item.guideId !== localId);
-                        store.dispatch(setGuides([...guides, res.data]))
-                        console.log("Guide added.")
-                    })
-                    .catch((reason) => console.error(reason));
-            });
+                    });
+                })
+                .then(res => {
+                    const guides = state.guides.filter(item => item.guideId !== localId);
+                    store.dispatch(setGuides([...guides, res.data]))
+                    console.log("Guide added.")
+                })
+                .catch((reason) => console.error(reason));
 
             return {
                 ...state,
@@ -73,16 +73,16 @@ export default function (state = initialState, action) {
         case UPDATE_GUIDE: {
             const { guide } = action.payload;
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .put(URL, guide, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.put(URL, guide, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(() => console.log("Guide updated."))
-                    .catch((reason) => console.error(reason));
-            });
+                    });
+                })
+                .then(() => console.log("Guide updated."))
+                .catch((reason) => console.error(reason));
 
             const guides = state.guides.map(item => {
                 if (item.guideId !== guide.guideId) {
@@ -103,16 +103,16 @@ export default function (state = initialState, action) {
         case DELETE_GUIDE: {
             const { guideId } = action.payload;
 
-            getAccessTokenSilently().then((token) => {
-                axios
-                    .delete(`${URL}/${guideId}`, {
+            getAccessTokenSilently()
+                .then((token) => {
+                    axios.delete(`${URL}/${guideId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    })
-                    .then(() => console.log("Guide removed."))
-                    .catch((reason) => console.error(reason));
-            });
+                    });
+                })
+                .then(() => console.log("Guide removed."))
+                .catch((reason) => console.error(reason));
 
             const guides = state.guides.filter(item => item.guideId !== guideId);
             return {
