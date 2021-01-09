@@ -50,7 +50,7 @@ namespace caf_api
                                              builder.WithOrigins(
                                                  "http://localhost:3000",
                                                  "https://*.netlify.app",
-                                                 "app.interviewer.space")
+                                                 "https://app.interviewer.space")
                                                 .SetIsOriginAllowedToAllowWildcardSubdomains()
                                                 .AllowAnyHeader()
                                                 .AllowAnyMethod()
