@@ -45,7 +45,6 @@ namespace CafApi.Services
         public async Task<Interview> AddInterview(Interview interview)
         {
             interview.InterviewId = Guid.NewGuid().ToString();
-            interview.Status = InterviewStatusType.NEW.ToString();
 
             if (interview.Structure != null && interview.Structure.Groups != null)
             {
@@ -62,7 +61,6 @@ namespace CafApi.Services
 
         public async Task UpdateInterview(Interview interview)
         {
-            interview.Status = InterviewStatusType.NEW.ToString();
 
             if (interview.Structure != null && interview.Structure.Groups != null)
             {
@@ -88,8 +86,8 @@ namespace CafApi.Services
             var interview = await GetInterview(userId, scoreCard.InterviewId);
 
             interview.Notes = scoreCard.Notes;
-            interview.Decison = scoreCard.Decision;
-            interview.Status = InterviewStatusType.COMPLETED.ToString();
+            interview.Decision = scoreCard.Decision;
+            interview.Status = scoreCard.Status;
 
             if (scoreCard.QuestionGroups != null)
             {
