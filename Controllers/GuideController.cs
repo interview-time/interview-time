@@ -2,11 +2,13 @@
 using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace CafApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("guide")]
     public class GuideController : ControllerBase

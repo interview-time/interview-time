@@ -1,32 +1,37 @@
 
-@baseUrl = https://localhost:5001
-###@baseUrl = http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com
+###@baseUrl = https://localhost:5001
+@baseUrl = http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com
+
+@token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InhJQUpFVVpoWm0tWE5DNVdTNzlNRiJ9.eyJpc3MiOiJodHRwczovL2ludGVydmlld2VyLmF1LmF1dGgwLmNvbS8iLCJzdWIiOiJheW5TektwQXkzVjZmVXpQZnc4bWd0b3JSUUtVc2F4RkBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2ludGVydmlld2VyYXBpLWVudi0xLmViYS1hY3BtZXBiaC5hcC1zb3V0aGVhc3QtMi5lbGFzdGljYmVhbnN0YWxrLmNvbSIsImlhdCI6MTYwOTkxNTczNSwiZXhwIjoxNjEwMDAyMTM1LCJhenAiOiJheW5TektwQXkzVjZmVXpQZnc4bWd0b3JSUUtVc2F4RiIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.AKANjj5Vkm_nqeRYZnsLpq2heFhxcQKYdP6H4eJQtcmjfpe0856sCogo63NEhxxeTgl3jCG5wyvdbg7yVacYk6AdU7d7AtwfzPEDUuAs-VzcT8HPO-qkXN2RD7TVYdQMf8mtr-CRQwQ-0fXHSf7saM3rGmxUvG832QN2-SvU3QXdihQFjAlzWiUWK9CddGLM1WdHXU11h9a-JMlpz4W-dvO0l_hSe1u26nn1_i4Vff-VWOT6JYWKcZRqEKB4ZOtTj632ZQfxH9myzXkaXptsTuIeQzq8t3_NN-yR9oRYVQYySZkr8Ql-Jp9p84QLkZL9BKalhsGhfJUySoIgtzaaeg
+
 
 ### Get all personal questions
 GET {{baseUrl}}/question-bank
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InhJQUpFVVpoWm0tWE5DNVdTNzlNRiJ9.eyJpc3MiOiJodHRwczovL2ludGVydmlld2VyLmF1LmF1dGgwLmNvbS8iLCJzdWIiOiJheW5TektwQXkzVjZmVXpQZnc4bWd0b3JSUUtVc2F4RkBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2ludGVydmlld2VyYXBpLWVudi0xLmViYS1hY3BtZXBiaC5hcC1zb3V0aGVhc3QtMi5lbGFzdGljYmVhbnN0YWxrLmNvbSIsImlhdCI6MTYwOTkxNTczNSwiZXhwIjoxNjEwMDAyMTM1LCJhenAiOiJheW5TektwQXkzVjZmVXpQZnc4bWd0b3JSUUtVc2F4RiIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.AKANjj5Vkm_nqeRYZnsLpq2heFhxcQKYdP6H4eJQtcmjfpe0856sCogo63NEhxxeTgl3jCG5wyvdbg7yVacYk6AdU7d7AtwfzPEDUuAs-VzcT8HPO-qkXN2RD7TVYdQMf8mtr-CRQwQ-0fXHSf7saM3rGmxUvG832QN2-SvU3QXdihQFjAlzWiUWK9CddGLM1WdHXU11h9a-JMlpz4W-dvO0l_hSe1u26nn1_i4Vff-VWOT6JYWKcZRqEKB4ZOtTj632ZQfxH9myzXkaXptsTuIeQzq8t3_NN-yR9oRYVQYySZkr8Ql-Jp9p84QLkZL9BKalhsGhfJUySoIgtzaaeg
+Authorization: Bearer {{token}}
 
 ### Get all personal questions in a category
 GET {{baseUrl}}/question-bank/C%23
 Content-Type: application/json
-
+Authorization: Bearer {{token}}
 
 ### Save new question
 POST {{baseUrl}}/question-bank
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "category": "C#",
-    "question": "Explain in detail the finalize method in C#?",
+    "category": "JavaScript",
+    "question": "What is the significance of, and reason for, wrapping the entire content of a JavaScript source file in a function block?",
     "tags": ["fundamentals"],
-    "time": 2
+    "time": 5
 }
 
 ### Update question
 
 PUT {{baseUrl}}/question-bank
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "questionId": "7bab9df9-3b35-4661-a8a4-03c6fa6aeb98",
@@ -42,3 +47,4 @@ Content-Type: application/json
 
 DELETE {{baseUrl}}/question-bank/{{questionId}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
