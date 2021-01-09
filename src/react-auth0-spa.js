@@ -6,6 +6,31 @@ const DEFAULT_REDIRECT_CALLBACK = () =>
 
 export const Auth0Context = React.createContext();
 export const useAuth0 = () => useContext(Auth0Context);
+
+let _initOptions, _client;
+
+const getAuth0Client = () => {
+  return new Promise(async (resolve, reject) => {
+    let client;
+    if (!client)  {
+      try {
+        client = await createAuth0Client(_initOptions);
+        resolve(client);
+      } catch (e) {
+        reject(new Error('getAuth0Client Error', e));
+      }
+    }
+  })
+}
+
+export const getAccessTokenSilently = async (...p) => {
+  if(!_client) {
+      _client = await getAuth0Client();
+  }
+  
+  return await _client.getTokenSilently(...p);
+}
+
 export const Auth0Provider = ({
     children,
     onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
@@ -19,21 +44,22 @@ export const Auth0Provider = ({
 
     useEffect(() => {
         const initAuth0 = async () => {
-            const auth0FromHook = await createAuth0Client(initOptions);
-            setAuth0(auth0FromHook);
+            _initOptions = initOptions;
+            _client = await createAuth0Client(initOptions);
+            setAuth0(_client);
 
             if (window.location.search.includes("code=")) {
-                const { appState } = await auth0FromHook.handleRedirectCallback();
+                const { appState } = await _client.handleRedirectCallback();
                 onRedirectCallback(appState);
             }
 
-            const isAuthenticated = await auth0FromHook.isAuthenticated();
+            const isAuthenticated = await _client.isAuthenticated();
 
             setIsAuthenticated(isAuthenticated);
 
             if (isAuthenticated) {
-                const user = await auth0FromHook.getUser();
-                setUser(user);
+                const user = await _client.getUser();
+                setUser(user);                
             }
 
             setLoading(false);

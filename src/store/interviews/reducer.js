@@ -7,7 +7,8 @@ import {
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
-import {setInterviews} from "./actions";
+import { setInterviews } from "./actions";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
 
 const initialState = {
     interviews: [],
@@ -16,27 +17,34 @@ const initialState = {
 
 const URL = `${process.env.REACT_APP_API_URL}/interview`;
 
-export default function (state = initialState, action) {
+const interviewsReducer = (state = initialState, action) => {
     console.log(action.type)
     switch (action.type) {
         case LOAD_INTERVIEWS: {
             if (state.interviews.length === 0) {
-                axios
-                    .get(URL, null)
+
+                getAccessTokenSilently()
+                    .then((token) =>
+                        axios.get(URL, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
+                    )
                     .then(res => {
                         store.dispatch(setInterviews(res.data || []));
                         console.log("Interviews loaded.")
                     })
                     .catch((reason) => console.error(reason));
 
-                return {...state, loading: true};
+                return { ...state, loading: true };
             }
 
             return state;
         }
 
         case SET_INTERVIEWS: {
-            const {interviews} = action.payload;
+            const { interviews } = action.payload;
             return {
                 ...state,
                 interviews: interviews,
@@ -45,13 +53,20 @@ export default function (state = initialState, action) {
         }
 
         case ADD_INTERVIEW: {
-            const {interview} = action.payload;
+            const { interview } = action.payload;
             interview.guideId = "653529ed-d588-4c03-9fea-1dfac630ad38"
             const localId = Date.now().toString()
             interview.interviewId = Date.now().toString()
             console.log(JSON.stringify(interview))
-            axios
-                .post(URL, interview, null)
+
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.post(URL, interview, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                )
                 .then(res => {
                     const interviews = state.interviews.filter(item => item.interviewId !== localId);
                     store.dispatch(setInterviews([...interviews, res.data]))
@@ -66,10 +81,16 @@ export default function (state = initialState, action) {
         }
 
         case UPDATE_INTERVIEW: {
-            const {interview} = action.payload;
+            const { interview } = action.payload;
 
-            axios
-                .put(URL, interview, null)
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.put(URL, interview, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                )
                 .then(() => console.log("Interview updated."))
                 .catch((reason) => console.error(reason));
 
@@ -90,10 +111,16 @@ export default function (state = initialState, action) {
         }
 
         case DELETE_INTERVIEW: {
-            const {interviewId} = action.payload;
+            const { interviewId } = action.payload;
 
-            axios
-                .delete(`${URL}/${interviewId}`)
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.delete(`${URL}/${interviewId}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                )
                 .then(() => console.log("Interview removed."))
                 .catch((reason) => console.error(reason));
 
@@ -108,3 +135,5 @@ export default function (state = initialState, action) {
             return state;
     }
 }
+
+export default interviewsReducer;

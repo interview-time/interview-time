@@ -71,6 +71,7 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
                 })
             }
         }
+        // eslint-disable-next-line 
     }, [guides, id]);
 
     React.useEffect(() => {

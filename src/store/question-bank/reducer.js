@@ -3,11 +3,13 @@ import {
     SET_QUESTION_BANK,
     ADD_QUESTION,
     UPDATE_QUESTION,
-    DELETE_QUESTION
+    DELETE_QUESTION,
+    ADD_CATEGORY
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { setQuestionBank } from "./actions";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
 
 const initialState = {
     questions: [],
@@ -15,15 +17,21 @@ const initialState = {
     loading: false
 };
 
-export default function (state = initialState, action) {
+const questionBankReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case LOAD_QUESTION_BANK: {
 
             if (state.questions.length === 0) {
-                axios
-                    .get(`${process.env.REACT_APP_API_URL}/question-bank`, null)
-                    .then(res => {                        
+                getAccessTokenSilently()
+                    .then((token) =>
+                        axios.get(`${process.env.REACT_APP_API_URL}/question-bank`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
+                    )
+                    .then(res => {
                         store.dispatch(setQuestionBank(res.data));
                     })
                     .catch(() => { });
@@ -47,9 +55,14 @@ export default function (state = initialState, action) {
 
         case ADD_QUESTION: {
             const { question } = action.payload;
-
-            axios
-                .post(`${process.env.REACT_APP_API_URL}/question-bank`, question, null)
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.post(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                )
                 .then(res => { })
                 .catch(() => { });
 
@@ -64,8 +77,14 @@ export default function (state = initialState, action) {
         case UPDATE_QUESTION: {
             const { question } = action.payload;
 
-            axios
-                .put(`${process.env.REACT_APP_API_URL}/question-bank`, question, null)
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.put(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                )
                 .then(res => { })
                 .catch(() => { });
 
@@ -88,23 +107,39 @@ export default function (state = initialState, action) {
         case DELETE_QUESTION: {
             const { questionId } = action.payload;
 
-            axios
-                .delete(
-                    `${process.env.REACT_APP_API_URL}/question-bank`,
-                    {
-                        data: {
-                            questionId: questionId
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.delete(
+                        `${process.env.REACT_APP_API_URL}/question-bank`,
+                        {
+                            data: {
+                                questionId: questionId
+                            },
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
                         }
-                    }
+                    )
                 )
                 .then(res => { })
                 .catch(() => { });
 
-            var questions = state.questions.filter(question => question.id !== questionId);
+            var reducedQuestions = state.questions.filter(question => question.id !== questionId);
 
             return {
                 ...state,
-                questions: questions
+                questions: reducedQuestions
+            };
+        }
+
+        case ADD_CATEGORY: {
+            const { newCategory } = action.payload;
+
+            return {
+                ...state,
+                categories: [
+                    ...state.categories, newCategory
+                ]
             };
         }
 
@@ -112,3 +147,5 @@ export default function (state = initialState, action) {
             return state;
     }
 }
+
+export default questionBankReducer;

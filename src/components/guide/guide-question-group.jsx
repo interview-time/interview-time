@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import styles from "./guide-question-group.module.css";
-import {PlusCircleOutlined, DragOutlined, DeleteTwoTone} from '@ant-design/icons';
-import {List, Card, Space, Form, Button, Input, Row, Col, AutoComplete, Select, Tag} from "antd";
+import { DragOutlined, DeleteTwoTone } from '@ant-design/icons';
+import { List, Card, Space, Input, Row, Col, Select, Tag } from "antd";
 import Typography from "antd/es/typography";
 
 const categories = [
-    {value: 'Android'},
-    {value: 'Java'},
-    {value: 'Behavioural'},
+    { value: 'Android' },
+    { value: 'Java' },
+    { value: 'Behavioural' },
 ];
 
-const {Search} = Input;
-const {Text} = Typography;
+const { Search } = Input;
+const { Text } = Typography;
 
 const data = [
     {
@@ -117,7 +117,7 @@ const GuideQuestionGroup = (props) => {
                         }
                     />
                     <Search placeholder="Search" allowClear enterButton onSearch={onSearchClicked}
-                            onChange={onSearchTextChanged} />
+                        onChange={onSearchTextChanged} />
                 </div>
 
                 <List

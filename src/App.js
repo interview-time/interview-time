@@ -1,4 +1,4 @@
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 import Default from "./pages/default/default";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";

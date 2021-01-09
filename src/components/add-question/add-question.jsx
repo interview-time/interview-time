@@ -1,12 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addQuestion } from "../../store/question-bank/actions";
-import { Button, Modal, Form, Input, Select, InputNumber } from 'antd';
-import { getCategories } from "../../store/question-bank/selector";
+import { addQuestion, addCategory } from "../../store/question-bank/actions";
+import { Button, Modal, Form, Input, Select, InputNumber, Divider } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
-const AddQuestion = ({ categories, addQuestion }) => {
+const AddQuestion = ({ categories, addQuestion, addCategory }) => {
     const [isModalVisible, setIsModalVisible] = React.useState(false);
     const [form] = Form.useForm();
+    const [newCategory, setNewCategory] = React.useState();
 
     return (
         <>
@@ -21,6 +22,7 @@ const AddQuestion = ({ categories, addQuestion }) => {
                         .then((values) => {
                             form.resetFields();
                             addQuestion(values);
+                            setIsModalVisible(false);
                         })
                         .catch((info) => {
                             console.log('Validate Failed:', info);
@@ -35,12 +37,30 @@ const AddQuestion = ({ categories, addQuestion }) => {
                     <Form.Item name="category" label="Category"
                         rules={[
                             {
-                                required: true,
+                                required: false,
                                 message: 'Category is required.',
                             },
                         ]}>
                         {categories &&
-                            <Select style={{ width: 120 }}>
+                            <Select style={{ width: 200 }} dropdownRender={menu => (
+                                <div>
+                                    {menu}
+                                    <Divider style={{ margin: '4px 0' }} />
+                                    <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
+                                        <Input style={{ flex: 'auto' }} value={newCategory} onChange={(event) => setNewCategory(event.target.value)} />
+                                        <Button
+                                            type="link"
+                                            style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }}
+                                            onClick={() => {
+                                                addCategory(newCategory);
+                                                setNewCategory('');
+                                            }}
+                                        >
+                                            <PlusOutlined />
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}>
                                 {categories.map(c => <Select.Option key={c} value={c}>{c}</Select.Option>)}
                             </Select>}
                     </Form.Item>
@@ -72,4 +92,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, { addQuestion })(AddQuestion);
+export default connect(mapStateToProps, { addQuestion, addCategory })(AddQuestion);
