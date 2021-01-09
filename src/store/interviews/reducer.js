@@ -17,20 +17,20 @@ const initialState = {
 
 const URL = `${process.env.REACT_APP_API_URL}/interview`;
 
-export default function (state = initialState, action) {
+const interviewsReducer = (state = initialState, action) => {
     console.log(action.type)
     switch (action.type) {
         case LOAD_INTERVIEWS: {
             if (state.interviews.length === 0) {
 
                 getAccessTokenSilently()
-                    .then((token) => {
+                    .then((token) =>
                         axios.get(URL, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
-                        });
-                    })
+                        })
+                    )
                     .then(res => {
                         store.dispatch(setInterviews(res.data || []));
                         console.log("Interviews loaded.")
@@ -60,13 +60,13 @@ export default function (state = initialState, action) {
             console.log(JSON.stringify(interview))
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.post(URL, interview, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(res => {
                     const interviews = state.interviews.filter(item => item.interviewId !== localId);
                     store.dispatch(setInterviews([...interviews, res.data]))
@@ -84,13 +84,13 @@ export default function (state = initialState, action) {
             const { interview } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.put(URL, interview, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(() => console.log("Interview updated."))
                 .catch((reason) => console.error(reason));
 
@@ -114,13 +114,13 @@ export default function (state = initialState, action) {
             const { interviewId } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.delete(`${URL}/${interviewId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(() => console.log("Interview removed."))
                 .catch((reason) => console.error(reason));
 
@@ -135,3 +135,5 @@ export default function (state = initialState, action) {
             return state;
     }
 }
+
+export default interviewsReducer;

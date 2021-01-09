@@ -16,7 +16,7 @@ const Layout = ({ children, pageHeader }) => {
     return (
         <AntLayout className={styles.globalLayout}>
             <AntLayout.Sider theme='light' className={styles.globalSider}>
-                <img src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
+                <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 <Menu theme="light" mode="inline" defaultSelectedKeys={['question-bank']} className={styles.menu}>
                     <Menu.Item key="question-bank" className={styles.menuItem} icon={<QuestionBankIcon style={menuIconStyle} />}>
                         <Link to={`/question-bank`}>

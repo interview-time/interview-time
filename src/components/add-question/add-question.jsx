@@ -48,7 +48,8 @@ const AddQuestion = ({ categories, addQuestion, addCategory }) => {
                                     <Divider style={{ margin: '4px 0' }} />
                                     <div style={{ display: 'flex', flexWrap: 'nowrap', padding: 8 }}>
                                         <Input style={{ flex: 'auto' }} value={newCategory} onChange={(event) => setNewCategory(event.target.value)} />
-                                        <a
+                                        <Button
+                                            type="link"
                                             style={{ flex: 'none', padding: '8px', display: 'block', cursor: 'pointer' }}
                                             onClick={() => {
                                                 addCategory(newCategory);
@@ -56,7 +57,7 @@ const AddQuestion = ({ categories, addQuestion, addCategory }) => {
                                             }}
                                         >
                                             <PlusOutlined />
-                                        </a>
+                                        </Button>
                                     </div>
                                 </div>
                             )}>

@@ -24,6 +24,7 @@ const GuideStructureCard = (props) => {
 
     React.useEffect(() => {
         props.onChanges(structure)
+        // eslint-disable-next-line 
     }, [structure]);
 
     const onGroupNameChanges = (groupId, groupName) => {

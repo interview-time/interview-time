@@ -10,19 +10,19 @@ const initialState = {
 
 const URL = `${process.env.REACT_APP_API_URL}/guide`;
 
-export default function (state = initialState, action) {
+const guidesReducer = (state = initialState, action) => {
     console.log(action.type)
     switch (action.type) {
         case LOAD_GUIDES: {
             if (state.guides.length === 0) {
                 getAccessTokenSilently()
-                    .then((token) => {
+                    .then((token) =>
                         axios.get(URL, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
-                        });
-                    })
+                        })
+                    )
                     .then(res => {
                         store.dispatch(setGuides(res.data || []));
                         console.log("Guides loaded.")
@@ -50,13 +50,13 @@ export default function (state = initialState, action) {
             guide.guideId = localId
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.post(URL, guide, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(res => {
                     const guides = state.guides.filter(item => item.guideId !== localId);
                     store.dispatch(setGuides([...guides, res.data]))
@@ -74,13 +74,13 @@ export default function (state = initialState, action) {
             const { guide } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.put(URL, guide, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(() => console.log("Guide updated."))
                 .catch((reason) => console.error(reason));
 
@@ -104,13 +104,13 @@ export default function (state = initialState, action) {
             const { guideId } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.delete(`${URL}/${guideId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(() => console.log("Guide removed."))
                 .catch((reason) => console.error(reason));
 
@@ -125,3 +125,5 @@ export default function (state = initialState, action) {
             return state;
     }
 }
+
+export default guidesReducer;

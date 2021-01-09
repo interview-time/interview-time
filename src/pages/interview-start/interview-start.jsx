@@ -1,12 +1,12 @@
-import React, {useState} from "react";
-import {Link, useParams} from "react-router-dom";
-import {Button, PageHeader} from 'antd';
+import React from "react";
+import { Link, useParams } from "react-router-dom";
+import { Button, PageHeader } from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-start.module.css";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 
 const InterviewStart = () => {
-    const {id} = useParams();
+    const { id } = useParams();
 
     return (
         <Layout pageHeader={<PageHeader

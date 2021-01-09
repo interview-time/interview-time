@@ -15,6 +15,7 @@ const Guides = ({guides, loading, loadGuides}) => {
         if (guides.length === 0 && !loading) {
             loadGuides();
         }
+        // eslint-disable-next-line 
     }, []);
 
     return <Layout pageHeader={<PageHeader

@@ -17,7 +17,7 @@ const initialState = {
     loading: false
 };
 
-export default function (state = initialState, action) {
+const questionBankReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case LOAD_QUESTION_BANK: {
@@ -56,13 +56,13 @@ export default function (state = initialState, action) {
         case ADD_QUESTION: {
             const { question } = action.payload;
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.post(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(res => { })
                 .catch(() => { });
 
@@ -78,13 +78,13 @@ export default function (state = initialState, action) {
             const { question } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.put(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
-                    });
-                })
+                    })
+                )
                 .then(res => { })
                 .catch(() => { });
 
@@ -108,7 +108,7 @@ export default function (state = initialState, action) {
             const { questionId } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => {
+                .then((token) =>
                     axios.delete(
                         `${process.env.REACT_APP_API_URL}/question-bank`,
                         {
@@ -119,16 +119,16 @@ export default function (state = initialState, action) {
                                 Authorization: `Bearer ${token}`
                             }
                         }
-                    );
-                })
+                    )
+                )
                 .then(res => { })
                 .catch(() => { });
 
-            var questions = state.questions.filter(question => question.id !== questionId);
+            var reducedQuestions = state.questions.filter(question => question.id !== questionId);
 
             return {
                 ...state,
-                questions: questions
+                questions: reducedQuestions
             };
         }
 
@@ -147,3 +147,5 @@ export default function (state = initialState, action) {
             return state;
     }
 }
+
+export default questionBankReducer;

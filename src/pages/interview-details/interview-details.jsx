@@ -76,6 +76,7 @@ const InterviewDetails = ({
                 })
             }
         }
+        // eslint-disable-next-line 
     }, [interviews, id]);
 
     React.useEffect(() => {
@@ -87,6 +88,7 @@ const InterviewDetails = ({
                 })
             }
         }
+        // eslint-disable-next-line 
     }, [interview, guides]);
 
     React.useEffect(() => {
