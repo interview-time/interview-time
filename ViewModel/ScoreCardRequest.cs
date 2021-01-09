@@ -13,6 +13,9 @@ namespace CafApi.ViewModel
         [Required]
         public string Decision { get; set; }
 
+        [Required]
+        public string Status { get; set; }
+
         public List<QuestionGroupResult> QuestionGroups { get; set; }
     }
 
