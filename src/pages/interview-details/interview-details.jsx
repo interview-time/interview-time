@@ -13,6 +13,7 @@ import Text from "antd/es/typography/Text";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import lang from "lodash/lang";
 import Arrays from "lodash";
+import { Status } from "../common/constants";
 
 const {TabPane} = Tabs;
 
@@ -41,7 +42,9 @@ const emptyInterview = {
     position: '',
     guideId: '',
     interviewDateTime: '',
-    structure : {}
+    structure : {
+        groups: []
+    }
 }
 
 const InterviewDetails = ({
@@ -59,6 +62,7 @@ const InterviewDetails = ({
     const [originalInterview, setOriginalInterview] = useState(emptyInterview);
     const [form] = Form.useForm();
     const history = useHistory();
+    const header = React.createRef();
     const {id} = useParams();
 
     const isNewInterviewFlow = () => !id;
@@ -189,6 +193,7 @@ const InterviewDetails = ({
 
         return {
             ...lang.cloneDeep(interview),
+            status: Status.NEW,
             candidate: form.getFieldValue("name") || '',
             position: form.getFieldValue("position") || '',
             guideId: guide ? guide.guideId : '',
@@ -234,7 +239,7 @@ const InterviewDetails = ({
         </Card>
     </Col>
 
-    return <Layout pageHeader={<PageHeader
+    return <Layout pageHeader={<div ref={header}><PageHeader
         className={styles.pageHeader}
         onBack={() => onBackClicked()}
         title={isNewInterviewFlow() ? "New Interview" : "Edit Interview"}
@@ -273,14 +278,16 @@ const InterviewDetails = ({
         {isQuestionsStep() && <Text>
             Drag and drop questions from your question bank to the question group.
         </Text>}
-    </PageHeader>}>
+    </PageHeader></div>}>
         <Row gutter={16} justify="center">
             {isDetailsStep() && createDetailsCard}
-            {isPreviewStep() && <Col><InterviewDetailsCard /></Col>}
+            {isPreviewStep() && <Col span={24}>
+                <InterviewDetailsCard interview={interview} header={header} disabled={true} />
+            </Col>}
             {isStructureStep() && <Col>
                 <GuideStructureCard
                     structure={interview.structure}
-                    onChanges={structure => {
+                    onChange={structure => {
                         setInterview({
                             ...interview,
                             structure: structure

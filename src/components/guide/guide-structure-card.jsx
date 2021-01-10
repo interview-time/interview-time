@@ -23,7 +23,7 @@ const GuideStructureCard = (props) => {
     });
 
     React.useEffect(() => {
-        props.onChanges(structure)
+        props.onChange(structure)
         // eslint-disable-next-line 
     }, [structure]);
 

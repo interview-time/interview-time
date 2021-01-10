@@ -3,7 +3,7 @@ import {
     SET_INTERVIEWS,
     ADD_INTERVIEW,
     UPDATE_INTERVIEW,
-    DELETE_INTERVIEW
+    DELETE_INTERVIEW,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -70,7 +70,7 @@ const interviewsReducer = (state = initialState, action) => {
                 .then(res => {
                     const interviews = state.interviews.filter(item => item.interviewId !== localId);
                     store.dispatch(setInterviews([...interviews, res.data]))
-                    console.log("Interview added.")
+                    console.log(`Interview added: ${JSON.stringify(interview)}`)
                 })
                 .catch((reason) => console.error(reason));
 
@@ -91,7 +91,11 @@ const interviewsReducer = (state = initialState, action) => {
                         }
                     })
                 )
-                .then(() => console.log("Interview updated."))
+                .then(() => {
+                    const interviews = state.interviews.filter(item => item.interviewId !== interview.interviewId);
+                    store.dispatch(setInterviews([...interviews, interview]))
+                    console.log(`Interview updated: ${JSON.stringify(interview)}`)
+                })
                 .catch((reason) => console.error(reason));
 
             const interviews = state.interviews.map(item => {
