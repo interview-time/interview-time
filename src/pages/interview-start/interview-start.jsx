@@ -21,7 +21,7 @@ const emptyInterview = {
     }
 }
 
-const DATA_UPLOAD_INTERVAL = 30000 // 30 sec
+const DATA_UPLOAD_INTERVAL = 10000 // 10 sec
 
 const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, deleteInterview }) => {
     const [interview, setInterview] = useState(emptyInterview);
