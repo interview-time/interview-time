@@ -1,19 +1,19 @@
 import React from "react";
-import {Link, useLocation} from "react-router-dom";
-import {Divider, Layout as AntLayout, Menu} from "antd";
+import { Link, useLocation } from "react-router-dom";
+import { Divider, Layout as AntLayout, Menu } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import styles from "./layout.module.css";
-import {GuideIcon, InterviewIcon, QuestionBankIcon} from "../utils/icons";
+import { GuideIcon, InterviewIcon, QuestionBankIcon } from "../utils/icons";
 import String from "lodash/string";
 
-const menuIconStyle = {fontSize: '24px'}
+const menuIconStyle = { fontSize: '24px' }
 
 const PATH_QUESTION_BANK = `question-bank`;
 const PATH_GUIDES = `guides`;
 const PATH_INTERVIEWS = `interviews`;
 const PATH_ACCOUNT = `account`;
 
-const Layout = ({children, pageHeader}) => {
+const Layout = ({ children, pageHeader }) => {
 
     const location = useLocation();
 
@@ -52,7 +52,7 @@ const Layout = ({children, pageHeader}) => {
                             src='https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg'
                             size="24" />
                     }>
-                        <Link to={`/${PATH_ACCOUNT}`} style={{marginLeft: '12px'}}>
+                        <Link to={`/${PATH_ACCOUNT}`} style={{ marginLeft: '12px' }}>
                             <span className="nav-text">Kristin Watson</span>
                         </Link>
                     </Menu.Item>

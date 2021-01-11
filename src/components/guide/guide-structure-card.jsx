@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import styles from "./guide-structure-card.module.css";
 import {DeleteTwoTone, PlusCircleTwoTone} from '@ant-design/icons';
 import {Button, Card, Form, Input, Popconfirm, Space} from "antd";
-import Arrays from "lodash";
+import lang from "lodash/lang";
+import array from "lodash/array";
 
 const {TextArea} = Input;
 
@@ -16,16 +17,8 @@ const tailLayout = {
 };
 
 const GuideStructureCard = (props) => {
-    const [structure, setStructure] = useState({
-        groups: props.structure.groups ? Arrays.cloneDeep(props.structure.groups) : [],
-        header: props.structure.header,
-        footer: props.structure.footer,
-    });
-
-    React.useEffect(() => {
-        props.onChanges(structure)
-        // eslint-disable-next-line 
-    }, [structure]);
+    const structure = props.structure
+    const [groups, setGroups] = useState(structure.groups ? lang.cloneDeep(structure.groups) : [])
 
     const onGroupNameChanges = (groupId, groupName) => {
         structure.groups.find(group => group.groupId === groupId).name = groupName
@@ -36,31 +29,22 @@ const GuideStructureCard = (props) => {
             groupId: Date.now().toString(),
             questions: []
         }
-        setStructure({
-            ...structure,
-            groups: [...structure.groups, newGroup]
-        })
+
+        structure.groups.push(newGroup)
+        setGroups([...groups, newGroup])
     }
 
     const onRemoveGroupClicked = id => {
-        setStructure({
-            ...structure,
-            groups: structure.groups.filter(group => group.groupId !== id)
-        })
+        array.remove(structure.groups, group => group.groupId === id)
+        setGroups(groups.filter(group => group.groupId !== id))
     }
 
     const onHeaderChanged = event => {
-        setStructure({
-            ...structure,
-            header: event.target.value
-        })
+        structure.header = event.target.value
     }
 
     const onFooterChanged = event => {
-        setStructure({
-            ...structure,
-            footer: event.target.value
-        })
+        structure.footer = event.target.value
     }
 
     return <Card title="Guide Structure" bordered={false} headStyle={{textAlign: 'center'}} style={{width: 700}}>
@@ -75,7 +59,7 @@ const GuideStructureCard = (props) => {
             </Form.Item>
 
             <>
-                {structure.groups.map((group) => {
+                {groups.map((group) => {
                     return <Form.Item label="Question Group" key={group.groupId}>
                         <Space>
                             <Input placeholder='e.g. Software Design Patterns'

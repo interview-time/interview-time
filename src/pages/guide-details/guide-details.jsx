@@ -265,7 +265,7 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
             {isStructureStep() && <Col>
                 <GuideStructureCard
                     structure={currentGuide.structure}
-                    onChanges={structure => {
+                    onChange={structure => {
                         setCurrentGuide({
                             ...currentGuide,
                             structure: structure

@@ -8,10 +8,11 @@ export const loadInterviews = () => ({
     type: LOAD_INTERVIEWS
 });
 
-export const setInterviews = (interviews) => ({
+export const setInterviews = (interviews, uploading) => ({
     type: SET_INTERVIEWS,
     payload: {
-        interviews
+        interviews,
+        uploading
     }
 });
 

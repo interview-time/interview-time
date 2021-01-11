@@ -1,61 +1,102 @@
-import React from 'react';
-import {Anchor, Card, Col, Form, Input, Radio, Row, Statistic} from "antd";
+import React, { useState } from 'react';
+import { Affix, Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
 import Typography from "antd/es/typography";
+import { InterviewAssessment } from "../../pages/common/constants";
 
-const {TextArea} = Input;
-const {Text} = Typography;
-const {Countdown} = Statistic;
+const { TextArea } = Input;
+const { Text } = Typography;
 
-const INTERVIEW_TIME = Date.now() + 1000 * 60 * 60;
+const layout = {
+    labelCol: { span: 3 },
+    wrapperCol: { span: 20 },
+};
 
-const ASSESSMENT_YES = 'yes';
-const ASSESSMENT_NO = 'no';
-const ASSESSMENT_STRONG_YES = 'strong yes';
-const ASSESSMENT_STRONG_NO = 'strong no';
+const InterviewDetailsCard = (props) => {
 
-const InterviewDetailsCard = () => {
-    return <Row gutter={16}>
+    const [offset, setOffset] = useState(0);
+    const interview = props.interview
+
+    React.useEffect(() => {
+        setOffset(props.header.current.getBoundingClientRect().height + 26)
+    }, [props.header]);
+
+    const onAssessmentChanged = e => {
+        interview.decision = e.target.value
+    };
+
+    const onNoteChanges = e => {
+        interview.notes = e.target.value
+    };
+
+    const getHeader = () => {
+        if (interview && interview.structure && interview.structure.header) {
+            return interview.structure.header
+        } else {
+            return "Intro text is empty."
+        }
+    }
+
+    const getFooter = () => {
+        if (interview && interview.structure && interview.structure.footer) {
+            return interview.structure.footer
+        } else {
+            return "Overall text is empty."
+        }
+    }
+
+    const getGroups = () => {
+        if (interview && interview.structure && interview.structure.groups) {
+            return interview.structure.groups
+        } else {
+            return []
+        }
+    }
+
+    return <Row gutter={16} key={props.interview.interviewId}>
         <Col span={20}>
             <Card
+                id="intro"
                 title="Intro"
                 bordered={false}>
                 <Form.Item>
-                    <Text>Take 10 minutes to introduce yourself and make the candidate comfortable.</Text>
-                </Form.Item>
-                <Form.Item label="Notes">
-                    <TextArea placeholder="Capture any key moments that happened during the interview." />
+                    <Text>{getHeader()}</Text>
                 </Form.Item>
             </Card>
 
-            <InterviewQuestionsCard />
-            <InterviewQuestionsCard />
+            {getGroups().map(group => {
+                return <InterviewQuestionsCard group={group} disabled={props.disabled} />
+            })}
 
             <Card
+                id="overall"
                 title="Overall"
                 bordered={false}
-                style={{marginTop: 24}}>
+                style={{ marginTop: 24 }}>
                 <Form
-                    labelCol={{span: 3}}
-                    wrapperCol={{span: 20}}
-                    initialValues={{remember: true}}
-                    style={{marginTop: 24}}>
+                    {...layout}
+                    initialValues={{ remember: true }}
+                    style={{ marginTop: 24 }}>
 
                     <Form.Item>
-                        <Text>Should the candidate proceed to the next stage?</Text>
+                        <Text>{getFooter()}</Text>
                     </Form.Item>
 
                     <Form.Item label="Notes">
                         <TextArea
-                            placeholder="Capture any key moments that happened during the interview." />
+                            placeholder="Capture any key moments that happened during the interview."
+                            disabled={props.disabled}
+                            onChange={onNoteChanges}
+                            defaultValue={props.interview.notes} />
                     </Form.Item>
 
                     <Form.Item label="Assessment">
-                        <Radio.Group defaultValue="{a}">
-                            <Radio.Button value="a">{ASSESSMENT_STRONG_NO}</Radio.Button>
-                            <Radio.Button value="b">{ASSESSMENT_NO}</Radio.Button>
-                            <Radio.Button value="c">{ASSESSMENT_YES}</Radio.Button>
-                            <Radio.Button value="d">{ASSESSMENT_STRONG_YES}</Radio.Button>
+                        <Radio.Group defaultValue={interview.decision} disabled={props.disabled}
+                                     onChange={onAssessmentChanged}>
+                            <Radio.Button value={InterviewAssessment.STRONG_NO}>strong no</Radio.Button>
+                            <Radio.Button value={InterviewAssessment.NO}>no</Radio.Button>
+                            <Radio.Button value={InterviewAssessment.YES}>yes</Radio.Button>
+                            <Radio.Button value={InterviewAssessment.STRONG_YES}>strong  yes</Radio.Button>
                         </Radio.Group>
                     </Form.Item>
                 </Form>
@@ -64,21 +105,20 @@ const InterviewDetailsCard = () => {
 
         <Col span={4}>
 
-            <Card title="Structure" bordered={false}>
-                <Anchor>
-                    <Anchor.Link href="#test1" title="Intro" />
-                    <Anchor.Link href="#components-anchor-demo-basic2" title="Core Android" />
-                    <Anchor.Link href="#components-anchor-demo-basic3" title="Android Architecture" />
-                    <Anchor.Link href="#components-anchor-demo-basic4" title="Problem Solving" />
-                    <Anchor.Link href="#components-anchor-demo-basic5" title="Overall" />
-                </Anchor>
-            </Card>
+            <Affix offsetTop={offset}>
+                <div>
+                    <Card title="Structure" bordered={false}>
+                        <Anchor affix={false}>
+                            <Anchor.Link href="#intro" title="Intro" />
+                            {getGroups().map(group => {
+                                return <Anchor.Link href={`#${group.name}`} title={group.name} />
+                            })}
+                            <Anchor.Link href="#overall" title="Overall" />
+                        </Anchor>
+                    </Card>
+                </div>
+            </Affix>
 
-            <Card
-                bordered={false}
-                style={{marginTop: 12}}>
-                <Countdown title="Time" value={INTERVIEW_TIME} format="HH:mm:ss" />
-            </Card>
         </Col>
     </Row>
 }

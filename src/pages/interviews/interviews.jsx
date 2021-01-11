@@ -1,23 +1,17 @@
-import React, {useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Layout from "../../components/layout/layout";
-import {loadInterviews} from "../../store/interviews/actions";
-import {loadGuides} from "../../store/guides/actions";
+import { loadInterviews } from "../../store/interviews/actions";
+import { loadGuides } from "../../store/guides/actions";
 import styles from "../interviews/interviews.module.css";
-import {Badge, Button, Input, PageHeader, Table, Tag} from 'antd';
-import {connect} from "react-redux";
+import { Badge, Button, Input, PageHeader, Table, Tag } from 'antd';
+import { connect } from "react-redux";
 import moment from "moment";
 import lang from "lodash/lang"
 import Arrays from "lodash";
+import { DATE_FORMAT_DISPLAY, getDecisionColor, getDecisionText, Status } from "../common/constants";
 
-const {Search} = Input;
-
-const ASSESSMENT_YES = 'YES';
-const ASSESSMENT_NO = 'NO';
-const ASSESSMENT_STRONG_YES = 'STRONG_YES';
-const ASSESSMENT_STRONG_NO = 'STRONG_NO';
-const STATUS_COMPLETED = 'COMPLETED';
-const STATUS_NEW = 'NEW';
+const { Search } = Input;
 
 const columns = [
     {
@@ -51,7 +45,7 @@ const columns = [
         dataIndex: 'interviewDateTime',
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a.interviewDateTime.localeCompare(b.interviewDateTime),
-        render: interviewDateTime => <span className="nav-text">{moment(interviewDateTime).format('lll')}</span>
+        render: interviewDateTime => <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
     },
     {
         title: 'Status',
@@ -63,63 +57,41 @@ const columns = [
     },
     {
         title: 'Assessment',
-        key: 'decison',
-        dataIndex: 'decison',
+        key: 'decision',
+        dataIndex: 'decision',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.decison.localeCompare(b.decison),
-        render: decison => (
+        sorter: (a, b) => (a.decision ? a.decision : '').localeCompare((b.decision ? b.decision : '')),
+        render: decision => (
             <>
-                {decison && <Tag color={getDecisionColor(decison)} key={decison}>
-                    {getDecisionText(decison)}
+                {decision && <Tag color={getDecisionColor(decision)} key={decision}>
+                    {getDecisionText(decision)}
                 </Tag>}
             </>
         ),
     }
 ];
 
-const getDecisionColor = (decison) => {
-    if (decison === ASSESSMENT_YES || decison === ASSESSMENT_STRONG_YES) {
-        return '#73d13d';
-    } else if (decison === ASSESSMENT_NO || decison === ASSESSMENT_STRONG_NO) {
-        return '#ff4d4f';
-    }
-
-    return '#bfbfbf'
-}
-
 const getStatusColor = (status) => {
-    if (status === STATUS_COMPLETED) {
+    if (status === Status.COMPLETED) {
         return "default"
-    } else if (status === STATUS_NEW) {
+    } else if (status === Status.STARTED) {
         return "processing"
+    } else if (status === Status.NEW) {
+        return "success"
     }
-    return "default"
 }
 
 const getStatusText = (status) => {
-    if (status === STATUS_COMPLETED) {
+    if (status === Status.COMPLETED) {
         return "Completed"
-    } else if (status === STATUS_NEW) {
-        return "Scheduled"
+    } else if (status === Status.STARTED) {
+        return "Started"
+    } else if (status === Status.NEW) {
+        return "New"
     }
-    return "New"
 }
 
-const getDecisionText = (decision) => {
-    if (decision === ASSESSMENT_YES) {
-        return 'YES';
-    } else if (decision === ASSESSMENT_STRONG_YES) {
-        return 'STRONG YES';
-    } else if (decision === ASSESSMENT_NO) {
-        return 'NO';
-    } else if (decision === ASSESSMENT_STRONG_NO) {
-        return 'STRONG NO';
-    }
-
-    return ''
-}
-
-const Interviews = ({interviewsRemote, guides, loading, loadInterviews, loadGuides}) => {
+const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGuides }) => {
     const [interviews, setInterviews] = useState(interviewsRemote)
 
     React.useEffect(() => {
@@ -154,7 +126,7 @@ const Interviews = ({interviewsRemote, guides, loading, loadInterviews, loadGuid
             || item.position.toLocaleLowerCase().includes(lowerCaseText)
             || moment(item.interviewDateTime).format('lll').toLocaleLowerCase().includes(lowerCaseText)
             || getStatusText(item.status).toLocaleLowerCase().includes(lowerCaseText)
-            || getDecisionText(item.decison).toLocaleLowerCase().includes(lowerCaseText)
+            || getDecisionText(item.decision).toLocaleLowerCase().includes(lowerCaseText)
         ))
     };
 
@@ -163,7 +135,7 @@ const Interviews = ({interviewsRemote, guides, loading, loadInterviews, loadGuid
             className={styles.pageHeader}
             title="Interviews"
             extra={[
-                <Search placeholder="Search" key="search" style={{width: 400}} allowClear enterButton
+                <Search placeholder="Search" key="search" style={{ width: 400 }} allowClear enterButton
                         onSearch={onSearchClicked} onChange={onSearchTextChanged} />,
                 <Button type="primary" key="add-interview-button">
                     <Link to={`/interviews/add`}>
@@ -179,10 +151,10 @@ const Interviews = ({interviewsRemote, guides, loading, loadInterviews, loadGuid
 }
 
 const mapStateToProps = state => {
-    const {interviews, loading} = state.interviews || {};
-    const {guides} = state.guides || {};
+    const { interviews, loading } = state.interviews || {};
+    const { guides } = state.guides || {};
 
-    return {interviewsRemote: Arrays.reverse(Arrays.sortBy(interviews, ['interviewDateTime'])), guides, loading};
+    return { interviewsRemote: Arrays.reverse(Arrays.sortBy(interviews, ['interviewDateTime'])), guides, loading };
 };
 
-export default connect(mapStateToProps, {loadInterviews, loadGuides})(Interviews);
+export default connect(mapStateToProps, { loadInterviews, loadGuides })(Interviews);
