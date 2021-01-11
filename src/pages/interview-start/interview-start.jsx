@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { Button, message, Modal, PageHeader, Tag, Tooltip } from 'antd';
+import { Button, message, Modal, PageHeader, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-start.module.css";
 import { connect } from "react-redux";
@@ -37,6 +37,7 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
             }, DATA_UPLOAD_INTERVAL);
             return () => clearInterval(id);
         }
+        // eslint-disable-next-line
     }, [interview]);
 
     React.useEffect(() => {
@@ -51,6 +52,7 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
                 setInterview(updatedInterview)
             }
         }
+        // eslint-disable-next-line
     }, [interviews, id]);
 
     React.useEffect(() => {

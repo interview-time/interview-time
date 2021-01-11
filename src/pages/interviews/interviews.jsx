@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import moment from "moment";
 import lang from "lodash/lang"
 import Arrays from "lodash";
-import { getDecisionColor, getDecisionText, Status } from "../common/constants";
+import { DATE_FORMAT_DISPLAY, getDecisionColor, getDecisionText, Status } from "../common/constants";
 
 const { Search } = Input;
 
@@ -45,7 +45,7 @@ const columns = [
         dataIndex: 'interviewDateTime',
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a.interviewDateTime.localeCompare(b.interviewDateTime),
-        render: interviewDateTime => <span className="nav-text">{moment(interviewDateTime).format('lll')}</span>
+        render: interviewDateTime => <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
     },
     {
         title: 'Status',

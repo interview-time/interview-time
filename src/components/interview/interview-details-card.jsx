@@ -19,7 +19,7 @@ const InterviewDetailsCard = (props) => {
 
     React.useEffect(() => {
         setOffset(props.header.current.getBoundingClientRect().height + 26)
-    }, [interview]);
+    }, [props.header]);
 
     const onAssessmentChanged = e => {
         interview.decision = e.target.value

@@ -21,6 +21,7 @@ const AssessmentCheckbox = (props) => {
 
     React.useEffect(() => {
         props.onChange(assessment)
+        // eslint-disable-next-line
     }, [assessment]);
 
     const onDislikeClicked = () => {

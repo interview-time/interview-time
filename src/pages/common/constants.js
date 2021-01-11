@@ -1,3 +1,6 @@
+export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a"
+export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ"
+
 export const Status = {
     NEW: "NEW",
     STARTED: "STARTED",

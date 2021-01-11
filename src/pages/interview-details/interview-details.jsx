@@ -13,7 +13,7 @@ import Text from "antd/es/typography/Text";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import lang from "lodash/lang";
 import Arrays from "lodash";
-import { Status } from "../common/constants";
+import { DATE_FORMAT_SERVER, DATE_FORMAT_DISPLAY, Status } from "../common/constants";
 
 const {TabPane} = Tabs;
 
@@ -33,8 +33,6 @@ const STEP_QUESTIONS = 4
 
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
-
-const DATE_FORMAT = "YYYY-MM-DDTHH:mm:ssZ"
 
 const emptyInterview = {
     id: undefined,
@@ -59,7 +57,6 @@ const InterviewDetails = ({
                           }) => {
     const [step, setStep] = useState(STEP_DETAILS)
     const [interview, setInterview] = useState(emptyInterview);
-    const [originalInterview, setOriginalInterview] = useState(emptyInterview);
     const [form] = Form.useForm();
     const history = useHistory();
     const header = React.createRef();
@@ -72,12 +69,6 @@ const InterviewDetails = ({
             const interview = interviews.find(interview => interview.interviewId === id);
             if (interview) {
                 setInterview(lang.cloneDeep(interview))
-                setOriginalInterview(lang.cloneDeep(interview))
-                form.setFieldsValue({
-                    name: interview.candidate,
-                    position: interview.position,
-                    date: moment(interview.interviewDateTime)
-                })
             }
         }
         // eslint-disable-next-line 
@@ -119,20 +110,14 @@ const InterviewDetails = ({
     }
 
     const onBackClicked = () => {
-        let interview = createUpdatedInterview();
-
-        if (!lang.isEqual(interview, originalInterview)) {
-            Modal.confirm({
-                title: "It seems that you have unsaved changes. Are you sure that you want to exit?",
-                okText: "Yes",
-                cancelText: "No",
-                onOk() {
-                    window.history.back()
-                }
-            })
-        } else {
-            window.history.back()
-        }
+        Modal.confirm({
+            title: "If you have unsaved changes, they will be lost. Are you sure that you want to exit?",
+            okText: "Yes",
+            cancelText: "No",
+            onOk() {
+                history.push("/interviews");
+            }
+        })
     }
 
     const getActiveTab = () => {
@@ -151,8 +136,6 @@ const InterviewDetails = ({
 
     const onSaveClicked = () => {
         let interview = createUpdatedInterview();
-
-        console.log(interview)
 
         if (lang.isEmpty(interview.candidate)) {
             Modal.warn({
@@ -182,41 +165,51 @@ const InterviewDetails = ({
         }
     }
 
-    const createUpdatedInterview = () => {
-        let interviewDateTime = form.getFieldValue("date")
-        if (interviewDateTime) {
-            interviewDateTime = interviewDateTime.utc().format(DATE_FORMAT)
-        }
+    const onPositionChange = e => {
+        interview.position = e.target.value
+    };
 
+    const onCandidateChange = e => {
+        interview.candidate = e.target.value
+    };
+
+    const onDateChange = (date, dateString) => {
+        console.log(date)
+        console.log(dateString)
+
+        interview.interviewDateTime = date.utc().format(DATE_FORMAT_SERVER)
+    };
+
+    const createUpdatedInterview = () => {
         const guideTitle = form.getFieldValue("guide")
         const guide = Arrays.find(guides, (guide) => guide.title === guideTitle)
 
         return {
             ...lang.cloneDeep(interview),
             status: Status.NEW,
-            candidate: form.getFieldValue("name") || '',
-            position: form.getFieldValue("position") || '',
             guideId: guide ? guide.guideId : '',
-            interviewDateTime: interviewDateTime || ''
         };
     };
 
-    const createDetailsCard = <Col className={styles.detailsCard}>
+    const createDetailsCard = <Col key={interview.interviewId} className={styles.detailsCard}>
         <Card title="Interview Details" bordered={false} headStyle={{textAlign: 'center'}}>
             <Form
                 {...layout}
                 form={form}
                 initialValues={{remember: true}}>
-                <Form.Item label="Candidate Name" name="name">
-                    <Input placeholder="Jon Doe" className={styles.input} />
+                <Form.Item label="Candidate Name">
+                    <Input placeholder="Jon Doe" className={styles.input}
+                           defaultValue={interview.candidate} onChange={onCandidateChange}/>
                 </Form.Item>
 
                 <Form.Item name="date" label="Interview Date">
-                    <DatePicker showTime format='LLL' className={styles.input} />
+                    <DatePicker showTime format={DATE_FORMAT_DISPLAY} className={styles.input}
+                                defaultValue={moment(interview.interviewDateTime)} onChange={onDateChange} />
                 </Form.Item>
 
-                <Form.Item label="Position" name="position">
-                    <Input placeholder="Junior Software Developer" className={styles.input} />
+                <Form.Item label="Position">
+                    <Input placeholder="Junior Software Developer" className={styles.input}
+                           defaultValue={interview.position} onChange={onPositionChange} />
                 </Form.Item>
 
                 <Form.Item label="Guide" name="guide">
