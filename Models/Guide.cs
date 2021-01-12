@@ -41,6 +41,17 @@ namespace CafApi.Models
         
         public string Name { get; set; }
 
-        public List<string> Questions { get; set; }
+        public List<GuideQuestion> Questions { get; set; }
+    }
+    
+    public class GuideQuestion
+    {
+        public string QuestionId { get; set; }
+        
+        public string Question { get; set; }
+
+        public List<string> Tags { get; set; }
+
+        public int Time { get; set; }
     }
 }

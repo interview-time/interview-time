@@ -56,6 +56,12 @@ namespace CafApi.Models
     public class InterviewQuestion
     {
         public string QuestionId { get; set; }
+        
+        public string Question { get; set; }
+
+        public List<string> Tags { get; set; }
+
+        public int Time { get; set; }
 
         public string Assessment { get; set; }
     }
