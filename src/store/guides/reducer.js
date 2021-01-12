@@ -60,7 +60,7 @@ const guidesReducer = (state = initialState, action) => {
                 .then(res => {
                     const guides = state.guides.filter(item => item.guideId !== localId);
                     store.dispatch(setGuides([...guides, res.data]))
-                    console.log("Guide added.")
+                    console.log(`Guide added: ${JSON.stringify(guide)}`)
                 })
                 .catch((reason) => console.error(reason));
 
@@ -81,7 +81,7 @@ const guidesReducer = (state = initialState, action) => {
                         }
                     })
                 )
-                .then(() => console.log("Guide updated."))
+                .then(() => console.log(`Guide updated: ${JSON.stringify(guide)}`))
                 .catch((reason) => console.error(reason));
 
             const guides = state.guides.map(item => {

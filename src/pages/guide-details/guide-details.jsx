@@ -1,32 +1,33 @@
-import React, {useState} from "react";
-import {useHistory, useParams} from "react-router-dom";
-import {connect} from "react-redux";
-import {addGuide, deleteGuide, loadGuides, updateGuide} from "../../store/guides/actions";
+import React, { useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { connect } from "react-redux";
+import { addGuide, deleteGuide, loadGuides, updateGuide } from "../../store/guides/actions";
 import styles from "./guide-details.module.css";
 import Layout from "../../components/layout/layout";
-import {Button, Card, Col, Form, Input, message, Modal, PageHeader, Popconfirm, Row, Select, Tabs} from 'antd';
+import { Button, Card, Col, Form, Input, message, Modal, PageHeader, Popconfirm, Row, Select, Tabs } from 'antd';
 import Text from "antd/es/typography/Text";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Arrays from "lodash";
+import lang from "lodash/lang";
 
-const {TabPane} = Tabs;
-const {TextArea} = Input;
+const { TabPane } = Tabs;
+const { TextArea } = Input;
 
 const categories = [
-    {value: 'Behavioral'},
-    {value: 'Technical'},
-    {value: 'Management'},
+    { value: 'Behavioral' },
+    { value: 'Technical' },
+    { value: 'Management' },
 ];
 
 const layout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 18},
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
 };
 
 const tailLayout = {
-    wrapperCol: {offset: 6, span: 18},
+    wrapperCol: { offset: 6, span: 18 },
 };
 
 const STEP_DETAILS = 1
@@ -39,36 +40,25 @@ const TAB_STRUCTURE = "structure"
 
 const emptyGuide = {
     guideId: undefined,
-    title: '',
-    image: '',
     structure: {
-        header: '',
-        footer: '',
         groups: []
     }
 }
 
-const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updateGuide}) => {
+const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, updateGuide }) => {
     const [step, setStep] = useState(STEP_DETAILS);
-    const [currentGuide, setCurrentGuide] = useState(emptyGuide);
-    const [originalGuide, setOriginalGuide] = useState(emptyGuide);
-    const [form] = Form.useForm();
+    const [guide, setGuide] = useState(emptyGuide);
+    const header = React.createRef();
     const history = useHistory();
-    const {id} = useParams();
+    const { id } = useParams();
 
     const isNewGuideFlow = () => !id;
 
     React.useEffect(() => {
-        if (!isNewGuideFlow() && !currentGuide.guideId && !loading) {
+        if (!isNewGuideFlow() && !guide.guideId && !loading) {
             const guide = guides.find(guide => guide.guideId === id);
             if (guide) {
-                setCurrentGuide(guide)
-                setOriginalGuide(guide)
-                form.setFieldsValue({
-                    title: guide.title,
-                    category: guide.type,
-                    description: guide.description
-                })
+                setGuide(lang.cloneDeep(guide))
             }
         }
         // eslint-disable-next-line 
@@ -90,32 +80,21 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
 
     const getHeaderTitle = () => {
         if (isPreviewStep()) {
-            return "Interviewer Experience"
+            return "Interview Experience"
         } else {
             return isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide";
         }
     }
 
     const onBackClicked = () => {
-        const guide = {
-            ...currentGuide,
-            title: form.getFieldValue("title"),
-            description: form.getFieldValue("description"),
-            type: form.getFieldValue("category"),
-        }
-
-        if (isNewGuideFlow() || JSON.stringify(guide) !== JSON.stringify(originalGuide)) {
-            Modal.confirm({
-                title: "It seems that you have unsaved changes. Are you sure that you want to exit?",
-                okText: "Yes",
-                cancelText: "No",
-                onOk() {
-                    window.history.back()
-                }
-            })
-        } else {
-            window.history.back()
-        }
+        Modal.confirm({
+            title: "If you have unsaved changes, they will be lost. It seems that you have unsaved changes. Are you sure that you want to exit?",
+            okText: "Yes",
+            cancelText: "No",
+            onOk() {
+                history.push("/guides");
+            }
+        })
     }
 
     const onTabClicked = (key) => {
@@ -135,19 +114,12 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
     }
 
     const onDeleteClicked = () => {
-        deleteGuide(currentGuide.guideId);
+        deleteGuide(guide.guideId);
         history.push("/guides");
-        message.success(`Guide '${currentGuide.title}' removed.`);
+        message.success(`Guide '${guide.title}' removed.`);
     }
 
     const onSaveClicked = () => {
-        const guide = {
-            ...currentGuide,
-            title: form.getFieldValue("title"),
-            description: form.getFieldValue("description"),
-            type: form.getFieldValue("category"),
-        }
-
         const emptyGroupName = Arrays.find(guide.structure.groups, (group) => {
             return !group.name || group.name.length === 0
         })
@@ -176,21 +148,36 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
         }
     }
 
+    const onTitleChange = e => {
+        guide.title = e.target.value
+    };
+
+    const onTypeChange = value => {
+        guide.type = value
+    };
+
+    const onDescriptionChange = e => {
+        guide.description = e.target.value
+    };
+
     const createDetailsCard = <Col className={styles.detailsCard}>
-        <Card title="Guide Details" bordered={false} headStyle={{textAlign: 'center'}}>
+        <Card key={guide.guideId} title="Guide Details" bordered={false} headStyle={{ textAlign: 'center' }}>
             <Form
-                form={form}
                 name="details"
                 {...layout}>
-                <Form.Item label="Title" name="title">
+                <Form.Item label="Title">
                     <Input
                         placeholder="Software Developer"
+                        onChange={onTitleChange}
+                        defaultValue={guide.title}
                         className={styles.input}
                     />
                 </Form.Item>
-                <Form.Item label="Category" name="category">
+                <Form.Item label="Category">
                     <Select
                         placeholder="Select category"
+                        defaultValue={guide.type}
+                        onSelect={onTypeChange}
                         className={styles.input}
                         options={categories}
                         showSearch
@@ -199,9 +186,11 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
                         }
                     />
                 </Form.Item>
-                <Form.Item label="Description" name="description">
+                <Form.Item label="Description">
                     <TextArea
                         placeholder="Guide description"
+                        defaultValue={guide.description}
+                        onChange={onDescriptionChange}
                         className={styles.textArea}
                         autoSize
                     />
@@ -219,7 +208,7 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
         </Card>
     </Col>
 
-    return <Layout pageHeader={<PageHeader
+    return <Layout pageHeader={<div ref={header}><PageHeader
         className={styles.pageHeader}
         onBack={() => onBackClicked()}
         title={getHeaderTitle()}
@@ -239,11 +228,11 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
             <>{(!isQuestionsStep()) && <Button type="primary" onClick={onSaveClicked}>Save</Button>}</>
         ]}
         footer={
-            <>{(isDetailsStep() || isStructureStep()) &&
+            <div>{(isDetailsStep() || isStructureStep()) &&
             <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
                 <TabPane tab="Details" key={TAB_DETAILS} />
                 <TabPane tab="Structure" key={TAB_STRUCTURE} />
-            </Tabs>}</>
+            </Tabs>}</div>
         }
     >
         {isDetailsStep() && <Text>
@@ -259,30 +248,31 @@ const GuideDetails = ({guides, loading, loadGuides, addGuide, deleteGuide, updat
         {isQuestionsStep() && <Text>
             Drag and drop questions from your question bank to the question group.
         </Text>}
-    </PageHeader>}>
+    </PageHeader></div>}>
         <Row gutter={16} justify="center">
             {isDetailsStep() && createDetailsCard}
             {isStructureStep() && <Col>
                 <GuideStructureCard
-                    structure={currentGuide.structure}
-                    onChange={structure => {
-                        setCurrentGuide({
-                            ...currentGuide,
-                            structure: structure
-                        })
-                    }}
+                    structure={guide.structure}
                     onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />
             </Col>}
-            {isPreviewStep() && <Col span={24}><InterviewDetailsCard /></Col>}
+            {isPreviewStep() && <Col span={24}>
+                <InterviewDetailsCard
+                    interview={{
+                        structure: guide.structure
+                    }}
+                    header={header}
+                    disabled={true} />
+            </Col>}
             {isQuestionsStep() && <Col span={24}><GuideQuestionGroup /></Col>}
         </Row>
     </Layout>
 }
 
 const mapStateToProps = state => {
-    const {guides, loading} = state.guides || {};
+    const { guides, loading } = state.guides || {};
 
-    return {guides, loading};
+    return { guides, loading };
 };
 
-export default connect(mapStateToProps, {loadGuides, addGuide, deleteGuide, updateGuide})(GuideDetails);
+export default connect(mapStateToProps, { loadGuides, addGuide, deleteGuide, updateGuide })(GuideDetails);
