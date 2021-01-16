@@ -17,6 +17,7 @@ const CategoryDetailsModal = ({visible, onCreate, onCancel, categoryToUpdate}) =
     React.useEffect(() => {
         setCategory(categoryToUpdate ? categoryToUpdate : '')
         setError(noError)
+        // eslint-disable-next-line
     }, [categoryToUpdate]);
 
     const onCategoryChange = (e) => {
