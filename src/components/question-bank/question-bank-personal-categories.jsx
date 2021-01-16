@@ -6,7 +6,7 @@ import { getAvatarColor, getAvatarText } from "../../pages/common/constants";
 import { addCategory, addQuestion, deleteQuestion, updateQuestion } from "../../store/question-bank/actions";
 import Text from "antd/lib/typography/Text";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
-import AddCategoryModal from "./modal-add-category";
+import CategoryDetailsModal from "./modal-add-category";
 import QuestionDetailsModal from "./modal-question-details";
 import { Link } from "react-router-dom";
 
@@ -30,9 +30,11 @@ const QuestionBankPersonalCategories = ({
     const [categoriesData, setCategoriesData] = useState([]);
 
     const [selectedCategory, setSelectedCategory] = useState({});
-    // const [selectedQuestion, setSelectedQuestion] = useState({});
 
-    const [isCreateCategoryModalVisible, setCreateCategoryModalVisible] = useState(false);
+    const [categoryDetailsModal, setCategoryDetailsModal] = useState({
+        category: '',
+        visible: false
+    });
     const [questionDetailModal, setQuestionDetailModal] = useState({
         question: {},
         visible: false
@@ -92,10 +94,27 @@ const QuestionBankPersonalCategories = ({
         setState(STATE_CATEGORIES)
     };
 
-    const onAddCategoryClicked = (name) => {
-        setCreateCategoryModalVisible(false);
-        addCategory(name)
+    const onAddCategoryClicked = () => {
+        setCategoryDetailsModal({
+            category: '',
+            visible: true
+        })
+    }
+
+    const onUpdateCategoryClicked = (category) => {
+        setCategoryDetailsModal({
+            visible: false,
+            category: ''
+        });
+        addCategory(category)
     };
+
+    const onCategoryDetailCancel = () => {
+        setCategoryDetailsModal({
+            visible: false,
+            category: ''
+        });
+    }
 
     const onAddQuestionClicked = () => {
         setQuestionDetailModal({
@@ -141,28 +160,24 @@ const QuestionBankPersonalCategories = ({
         })
     }
 
-    const onCategoryMenuClicked = (e) => {
+    const onMenuClicked = (e) => {
         console.log(e)
     };
 
     const categoryMenu = (
-        <Menu onClick={onCategoryMenuClicked}>
-            <Menu.Item key="rename">Rename Category</Menu.Item>
-            <Menu.Item danger key="delete">Delete Category</Menu.Item>
+        <Menu onClick={onMenuClicked}>
+            <Menu.Item key="edit">Edit Category</Menu.Item>
         </Menu>
     );
 
     return (
         <>
             {isCategoriesState() && <div>
-                <AddCategoryModal
-                    visible={isCreateCategoryModalVisible}
-                    onCreate={(name) => {
-                        onAddCategoryClicked(name)
-                    }}
-                    onCancel={() => {
-                        setCreateCategoryModalVisible(false)
-                    }}
+                <CategoryDetailsModal
+                    visible={categoryDetailsModal.visible}
+                    categoryToUpdate={categoryDetailsModal.category}
+                    onCreate={onUpdateCategoryClicked}
+                    onCancel={onCategoryDetailCancel}
                 />
                 <Card>
                     <div className={styles.tabHeader}>
@@ -173,9 +188,7 @@ const QuestionBankPersonalCategories = ({
                                 // onSearch={onSearchClicked}
                                 // onChange={onSearchTextChanged}
                             />
-                            <Button type="primary" onClick={() => {
-                                setCreateCategoryModalVisible(true);
-                            }}>Add category</Button>
+                            <Button type="primary" onClick={onAddCategoryClicked}>Add category</Button>
                         </Space>
                     </div>
                 </Card>

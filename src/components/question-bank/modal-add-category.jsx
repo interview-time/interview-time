@@ -1,29 +1,40 @@
 import { Form, Input, Modal } from "antd";
+import React, { useState } from "react";
 
 const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
 };
 
-const AddCategoryModal = ({visible, onCreate, onCancel}) => {
-    const [form] = Form.useForm();
+const CategoryDetailsModal = ({visible, onCreate, onCancel, categoryToUpdate}) => {
+
+    const [category, setCategory] = useState('');
+
+    React.useEffect(() => {
+        setCategory(categoryToUpdate ? categoryToUpdate : '')
+    }, [categoryToUpdate]);
+
+    const onCategoryChange = (e) => {
+        setCategory(e.target.value)
+    }
 
     return (
-        <Modal destroyOnClose title="Add category" visible={visible}
-               okText="Add" canelText="Cancel"
+        <Modal destroyOnClose title={categoryToUpdate ? "Update category" : "Add category"}
+               visible={visible} closable={false}
+               okText={categoryToUpdate ? "Update" : "Add"} canelText="Cancel"
                onOk={() => {
-                   onCreate(form.getFieldValue('name'))
+                   onCreate(category)
                }}
                onCancel={() => {
                    onCancel()
                }}>
-            <Form {...layout} form={form} preserve={false} name="category">
-                <Form.Item label="Name" name="name">
-                    <Input />
+            <Form {...layout} preserve={false}>
+                <Form.Item label="Name">
+                    <Input defaultValue={category} onChange = {onCategoryChange}/>
                 </Form.Item>
             </Form>
         </Modal>
     );
 }
 
-export default AddCategoryModal
+export default CategoryDetailsModal

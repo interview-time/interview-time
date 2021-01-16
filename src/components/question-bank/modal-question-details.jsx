@@ -14,7 +14,6 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
 
     React.useEffect(() => {
         setQuestion(questionToUpdate ? lang.cloneDeep(questionToUpdate) : {})
-        // eslint-disable-next-line
     }, [questionToUpdate]);
 
     const onTagsChange = (tags) => {
@@ -47,22 +46,20 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
         <Modal destroyOnClose title={question.questionId ? "Update question" : "Add question"}
                visible={visible} closable={false}
                footer={[
-                   <Button key="back" onClick={onCancelClicked}>
+                   <Button onClick={onCancelClicked}>
                        Cancel
                    </Button>,
                    <>{question.questionId && <Button key="remove" danger onClick={onRemoveClicked}>
                        Remove
                    </Button>}</>,
-                   <Button key="submit" type="primary" onClick={onCreateClicked}>
+                   <Button type="primary" onClick={onCreateClicked}>
                        {question.questionId ? "Update" : "Add"}
                    </Button>,
                ]}
         >
             <Form {...layout} preserve={false}>
                 <Form.Item label="Tags">
-                    <EditableTagGroup tags={question.tags ? question.tags : []} onChange={(tags) => {
-                        onTagsChange(tags)
-                    }} />
+                    <EditableTagGroup tags={question.tags ? question.tags : []} onChange={onTagsChange} />
                 </Form.Item>
                 <Form.Item label="Question">
                     <Input.TextArea defaultValue={question.question} onChange = {onQuestionChange} />
