@@ -54,10 +54,8 @@ const interviewsReducer = (state = initialState, action) => {
 
         case ADD_INTERVIEW: {
             const { interview } = action.payload;
-            interview.guideId = "653529ed-d588-4c03-9fea-1dfac630ad38"
             const localId = Date.now().toString()
-            interview.interviewId = Date.now().toString()
-            console.log(JSON.stringify(interview))
+            interview.interviewId = localId
 
             getAccessTokenSilently()
                 .then((token) =>
@@ -91,11 +89,7 @@ const interviewsReducer = (state = initialState, action) => {
                         }
                     })
                 )
-                .then(() => {
-                    const interviews = state.interviews.filter(item => item.interviewId !== interview.interviewId);
-                    store.dispatch(setInterviews([...interviews, interview]))
-                    console.log(`Interview updated: ${JSON.stringify(interview)}`)
-                })
+                .then(() => console.log(`Interview updated: ${JSON.stringify(interview)}`))
                 .catch((reason) => console.error(reason));
 
             const interviews = state.interviews.map(item => {

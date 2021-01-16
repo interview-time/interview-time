@@ -1,14 +1,14 @@
 import {
+    ADD_CATEGORY,
+    ADD_QUESTION,
+    DELETE_QUESTION,
     LOAD_QUESTION_BANK,
     SET_QUESTION_BANK,
-    ADD_QUESTION,
-    UPDATE_QUESTION,
-    DELETE_QUESTION,
-    ADD_CATEGORY
+    setQuestionBank,
+    UPDATE_QUESTION
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
-import { setQuestionBank } from "./actions";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 
 const initialState = {
@@ -17,7 +17,10 @@ const initialState = {
     loading: false
 };
 
+const URL = `${process.env.REACT_APP_API_URL}/question-bank`;
+
 const questionBankReducer = (state = initialState, action) => {
+    console.log(action.type)
     switch (action.type) {
 
         case LOAD_QUESTION_BANK: {
@@ -25,16 +28,14 @@ const questionBankReducer = (state = initialState, action) => {
             if (state.questions.length === 0) {
                 getAccessTokenSilently()
                     .then((token) =>
-                        axios.get(`${process.env.REACT_APP_API_URL}/question-bank`, {
+                        axios.get(URL, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
                         })
                     )
-                    .then(res => {
-                        store.dispatch(setQuestionBank(res.data));
-                    })
-                    .catch(() => { });
+                    .then(res => store.dispatch(setQuestionBank(res.data)))
+                    .catch((reason) => console.error(reason));
 
                 return { ...state, loading: true };
             }
@@ -55,16 +56,28 @@ const questionBankReducer = (state = initialState, action) => {
 
         case ADD_QUESTION: {
             const { question } = action.payload;
+            const localId = Date.now().toString()
+            question.questionId = localId
+
             getAccessTokenSilently()
                 .then((token) =>
-                    axios.post(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+                    axios.post(URL, question, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
                     })
                 )
-                .then(res => { })
-                .catch(() => { });
+                .then(res => {
+                    const question = state.questions.filter(item => item.questionId !== localId);
+                    store.dispatch(setQuestionBank(
+                        {
+                            ...state,
+                            questions: [...state.questions, res.data]
+                        }
+                    ))
+                    console.log(`Question added: ${JSON.stringify(question)}`)
+                })
+                .catch((reason) => console.error(reason));
 
             return {
                 ...state,
@@ -79,17 +92,17 @@ const questionBankReducer = (state = initialState, action) => {
 
             getAccessTokenSilently()
                 .then((token) =>
-                    axios.put(`${process.env.REACT_APP_API_URL}/question-bank`, question, {
+                    axios.put(URL, question, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }
                     })
                 )
-                .then(res => { })
-                .catch(() => { });
+                .then(() => console.log(`Question updated: ${JSON.stringify(question)}`))
+                .catch((reason) => console.error(reason));
 
-            var questions = state.questions.map(q => {
-                if (q.id !== question.id) {
+            const questions = state.questions.map(q => {
+                if (q.questionId !== question.questionId) {
                     return q;
                 }
 
@@ -109,22 +122,18 @@ const questionBankReducer = (state = initialState, action) => {
 
             getAccessTokenSilently()
                 .then((token) =>
-                    axios.delete(
-                        `${process.env.REACT_APP_API_URL}/question-bank`,
+                    axios.delete(`${URL}/${questionId}`,
                         {
-                            data: {
-                                questionId: questionId
-                            },
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
                         }
                     )
                 )
-                .then(res => { })
-                .catch(() => { });
+                .then(() => console.log(`Question removed: ${JSON.stringify(questionId)}`))
+                .catch((reason) => console.error(reason));
 
-            var reducedQuestions = state.questions.filter(question => question.id !== questionId);
+            const reducedQuestions = state.questions.filter(question => question.questionId !== questionId);
 
             return {
                 ...state,

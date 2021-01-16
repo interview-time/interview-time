@@ -138,7 +138,7 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
                     </Button>}</>,
                     <>{isNewStatus() && <Button type="primary" onClick={onStartClicked}>Start</Button>}</>,
                     <>{(isStartedStatus() || isCompletedStatus()) &&
-                    <Button onClick={onDeleteClicked}>Delete</Button>}</>,
+                    <Button danger onClick={onDeleteClicked}>Delete</Button>}</>,
                     <>{isStartedStatus() &&
                     <Button type="primary" onClick={onCompletedClicked}>Complete</Button>}</>,
                 ]}>

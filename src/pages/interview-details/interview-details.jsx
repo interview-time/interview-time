@@ -1,29 +1,29 @@
-import React, {useState} from "react";
-import {connect} from "react-redux";
-import {useHistory, useParams} from "react-router-dom";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
 import moment from 'moment';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-details.module.css";
-import {addInterview, deleteInterview, loadInterviews, updateInterview} from "../../store/interviews/actions";
-import {loadGuides} from "../../store/guides/actions";
-import {Button, Card, Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Select, Tabs} from 'antd';
+import { addInterview, deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
+import { loadGuides } from "../../store/guides/actions";
+import { Button, Card, Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Select, Tabs } from 'antd';
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import lang from "lodash/lang";
 import Arrays from "lodash";
-import { DATE_FORMAT_SERVER, DATE_FORMAT_DISPLAY, Status } from "../common/constants";
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../common/constants";
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 const layout = {
-    labelCol: {span: 10},
-    wrapperCol: {span: 14},
+    labelCol: { span: 10 },
+    wrapperCol: { span: 14 },
 };
 
 const tailLayout = {
-    wrapperCol: {offset: 10, span: 14},
+    wrapperCol: { offset: 10, span: 14 },
 };
 
 const STEP_DETAILS = 1
@@ -35,12 +35,12 @@ const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
 const emptyInterview = {
-    id: undefined,
+    interviewId: undefined,
     candidate: '',
     position: '',
     guideId: '',
     interviewDateTime: '',
-    structure : {
+    structure: {
         groups: []
     }
 }
@@ -60,7 +60,7 @@ const InterviewDetails = ({
     const [form] = Form.useForm();
     const history = useHistory();
     const header = React.createRef();
-    const {id} = useParams();
+    const { id } = useParams();
 
     const isNewInterviewFlow = () => !id;
 
@@ -173,38 +173,41 @@ const InterviewDetails = ({
         interview.candidate = e.target.value
     };
 
-    const onDateChange = (date, dateString) => {
-        console.log(date)
-        console.log(dateString)
-
+    const onDateChange = (date) => {
         interview.interviewDateTime = date.utc().format(DATE_FORMAT_SERVER)
     };
 
-    const createUpdatedInterview = () => {
-        const guideTitle = form.getFieldValue("guide")
-        const guide = Arrays.find(guides, (guide) => guide.title === guideTitle)
+    const onGuideChange = (guideTitle) => {
+        const guide = lang.cloneDeep(Arrays.find(guides, (guide) => guide.title === guideTitle))
+        setInterview({
+            ...interview,
+            guideId: guide.guideId,
+            structure: guide.structure
+        })
+    }
 
+    const createUpdatedInterview = () => {
         return {
-            ...lang.cloneDeep(interview),
+            ...interview,
             status: Status.NEW,
-            guideId: guide ? guide.guideId : '',
         };
     };
 
     const createDetailsCard = <Col key={interview.interviewId} className={styles.detailsCard}>
-        <Card title="Interview Details" bordered={false} headStyle={{textAlign: 'center'}}>
+        <Card title="Interview Details" bordered={false} headStyle={{ textAlign: 'center' }}>
             <Form
                 {...layout}
-                form={form}
-                initialValues={{remember: true}}>
+                form={form}>
                 <Form.Item label="Candidate Name">
                     <Input placeholder="Jon Doe" className={styles.input}
-                           defaultValue={interview.candidate} onChange={onCandidateChange}/>
+                           defaultValue={interview.candidate} onChange={onCandidateChange} />
                 </Form.Item>
 
                 <Form.Item name="date" label="Interview Date">
                     <DatePicker showTime format={DATE_FORMAT_DISPLAY} className={styles.input}
-                                defaultValue={moment(interview.interviewDateTime)} onChange={onDateChange} />
+                                defaultValue={interview.interviewDateTime
+                                    ? moment(interview.interviewDateTime) : moment()}
+                                onChange={onDateChange} />
                 </Form.Item>
 
                 <Form.Item label="Position">
@@ -215,6 +218,7 @@ const InterviewDetails = ({
                 <Form.Item label="Guide" name="guide">
                     <Select
                         className={styles.input}
+                        onSelect={onGuideChange}
                         options={guides.map(guide => ({
                             value: guide.title
                         }))}
@@ -296,10 +300,10 @@ const InterviewDetails = ({
 }
 
 const mapStateToProps = state => {
-    const {interviews, loading} = state.interviews || {};
-    const {guides} = state.guides || {};
+    const { interviews, loading } = state.interviews || {};
+    const { guides } = state.guides || {};
 
-    return {interviews, guides: Arrays.sortBy(guides, ['title']), loading};
+    return { interviews, guides: Arrays.sortBy(guides, ['title']), loading };
 };
 
 export default connect(mapStateToProps, {

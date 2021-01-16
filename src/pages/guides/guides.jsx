@@ -1,22 +1,47 @@
 import React from "react";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import Arrays from "lodash";
 import Layout from "../../components/layout/layout";
-import {loadGuides} from "../../store/guides/actions";
-import {Avatar, Button, Card, Col, List, PageHeader, Row, Statistic} from "antd";
+import { loadGuides } from "../../store/guides/actions";
+import { Avatar, Button, Card, Col, List, PageHeader, Row, Statistic } from "antd";
 import styles from "../guides/guides.module.css";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const {Meta} = Card;
+const { Meta } = Card;
 
-const Guides = ({guides, loading, loadGuides}) => {
+const Guides = ({ guides, loading, loadGuides }) => {
+
+    const colors = [
+        '#2f54eb',
+        '#722ed1',
+        '#eb2f96',
+        '#52c41a',
+        '#13c2c2',
+        '#1890ff',
+        '#faad14',
+        '#a0d911',
+        '#f5222d',
+    ]
+
+    const getAvatarColor = (text) => {
+        let index = text.charCodeAt(0);
+        while (index > colors.length - 1) {
+            index = index % 10
+        }
+        return colors[index]
+    }
+
+    const getTotalQuestions = (groups) =>
+        Arrays.sumBy(groups, (group) => group.questions ? group.questions.length : 0)
+
+    const getAvatarText = (text) => text.split(' ').map(item => item.charAt(0)).join('')
 
     React.useEffect(() => {
         if (guides.length === 0 && !loading) {
             loadGuides();
         }
         // eslint-disable-next-line 
-    }, []);
+    }, [guides]);
 
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
@@ -45,22 +70,23 @@ const Guides = ({guides, loading, loadGuides}) => {
             renderItem={guide => <List.Item>
                 <Link to={`/guides/details/${guide.guideId}`}>
                     <Card hoverable>
-                        <Meta
-                            avatar={<Avatar src={guide.image} />}
-                            title={guide.title}
+                        <Meta avatar={
+                            <Avatar size="large"
+                                    style={{ backgroundColor: getAvatarColor(guide.title), verticalAlign: 'middle', }}>
+                                {getAvatarText(guide.title)}
+                            </Avatar>}
+                              title={guide.title}
                         />
                         <Row span={24}>
                             <Col span={12}>
                                 <Statistic title="Questions"
-                                           value={Arrays.sumBy(guide.structure.groups, (group) => {
-                                               return group.questions ? group.questions.length : 0;
-                                           })}
-                                           valueStyle={{fontSize: "large"}} />
+                                           value={getTotalQuestions(guide.structure.groups)}
+                                           valueStyle={{ fontSize: "large" }} />
                             </Col>
                             <Col span={12}>
                                 <Statistic title="Interviews"
                                            value={guide.totalInterviews}
-                                           valueStyle={{fontSize: "large"}} />
+                                           valueStyle={{ fontSize: "large" }} />
                             </Col>
                         </Row>
                     </Card>
@@ -71,9 +97,9 @@ const Guides = ({guides, loading, loadGuides}) => {
 }
 
 const mapStateToProps = state => {
-    const {guides, loading} = state.guides || {};
+    const { guides, loading } = state.guides || {};
 
-    return {guides: Arrays.sortBy(guides, ['title']), loading: loading};
+    return { guides: Arrays.sortBy(guides, ['title']), loading: loading };
 };
 
-export default connect(mapStateToProps, {loadGuides})(Guides);
+export default connect(mapStateToProps, { loadGuides })(Guides);
