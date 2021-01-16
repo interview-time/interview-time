@@ -6,7 +6,7 @@ import { getAvatarColor, getAvatarText } from "../../pages/common/constants";
 import { addCategory, addQuestion, deleteQuestion, updateQuestion } from "../../store/question-bank/actions";
 import Text from "antd/lib/typography/Text";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
-import CategoryDetailsModal from "./modal-add-category";
+import CategoryDetailsModal from "./modal-category-details";
 import QuestionDetailsModal from "./modal-question-details";
 import { Link } from "react-router-dom";
 
@@ -96,8 +96,8 @@ const QuestionBankPersonalCategories = ({
 
     const onAddCategoryClicked = () => {
         setCategoryDetailsModal({
-            category: '',
-            visible: true
+            visible: true,
+            category: ''
         })
     }
 

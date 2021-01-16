@@ -9,8 +9,12 @@ const layout = {
 };
 
 const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate }) => {
-
+    const noError = {
+        status: '',
+        help: '',
+    }
     const [question, setQuestion] = useState({});
+    const [error, setError] = useState(noError);
 
     React.useEffect(() => {
         setQuestion(questionToUpdate ? lang.cloneDeep(questionToUpdate) : {})
@@ -24,6 +28,7 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
     }
 
     const onQuestionChange = (e) => {
+        setError(noError)
         setQuestion({
             ...question,
             question: e.target.value
@@ -31,14 +36,23 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
     }
 
     const onCreateClicked = () => {
-        onCreate(question)
+        if(!question.question || question.question.length === 0) {
+            setError({
+                status: 'error',
+                help: 'Question field is required.',
+            })
+        } else {
+            onCreate(question)
+        }
     }
 
     const onRemoveClicked = () => {
+        setError(noError)
         onRemove(questionToUpdate)
     }
 
     const onCancelClicked = () => {
+        setError(noError)
         onCancel()
     }
 
@@ -61,7 +75,7 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                 <Form.Item label="Tags">
                     <EditableTagGroup tags={question.tags ? question.tags : []} onChange={onTagsChange} />
                 </Form.Item>
-                <Form.Item label="Question">
+                <Form.Item label="Question" validateStatus={error.status} help={error.help}>
                     <Input.TextArea defaultValue={question.question} onChange = {onQuestionChange} />
                 </Form.Item>
             </Form>
