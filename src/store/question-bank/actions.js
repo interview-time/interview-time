@@ -28,10 +28,10 @@ export const updateQuestion = (question) => ({
     }
 });
 
-export const deleteQuestion = (question) => ({
+export const deleteQuestion = (questionId) => ({
     type: DELETE_QUESTION,
     payload: {
-        question
+        questionId
     }
 });
 

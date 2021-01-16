@@ -1,45 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
-import { loadQuestionBank, deleteQuestion } from "../../store/question-bank/actions";
-import { Table, Tag, Row, Col, PageHeader } from 'antd';
-import AddQuestion from "../../components/add-question/add-question";
+import { deleteQuestion, loadQuestionBank } from "../../store/question-bank/actions";
+import { PageHeader, Tabs } from 'antd';
 import styles from "./question-bank.module.css";
+import QuestionBankPersonalCategories from "../../components/question-bank/question-bank-personal-categories";
 
-const columns = [
-    {
-        title: 'Question',
-        dataIndex: 'question',
-        key: 'questions',
-    },
-    {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-            <>
-                {tags && tags.map(tag => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green';
-                    if (tag === 'loser') {
-                        color = 'volcano';
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </>
-        ),
-    },
-    {
-        title: 'Time',
-        dataIndex: 'time',
-        key: 'time',
-    },
-];
+const { TabPane } = Tabs;
 
-const QuestionBank = ({ questions, loading, loadQuestionBank, deleteQuestion }) => {
+const TAB_PERSONAL = "personal"
+const TAB_COMMUNITY = "community"
+
+const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
+    const [tab, setTab] = useState(TAB_PERSONAL)
 
     React.useEffect(() => {
         if ((!questions || questions.length === 0) && !loading) {
@@ -48,28 +21,39 @@ const QuestionBank = ({ questions, loading, loadQuestionBank, deleteQuestion }) 
         // eslint-disable-next-line 
     }, []);
 
+    const onTabClicked = (key) => {
+        if (key === TAB_PERSONAL) {
+            setTab(TAB_PERSONAL)
+        } else if (key === TAB_COMMUNITY) {
+            setTab(TAB_COMMUNITY)
+        }
+    }
+
+    const isPersonalTab = () => tab === TAB_PERSONAL
+
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
             title="Question Bank"
+            footer={
+                <Tabs defaultActiveKey={tab} onChange={onTabClicked}>
+                    <TabPane key={TAB_PERSONAL} tab="Personal" />
+                    <TabPane key={TAB_COMMUNITY} tab="Community" />
+                </Tabs>
+            }
         />}>
-            <AddQuestion />
-
-            <Row gutter={16}>
-                <Col span={24}>
-                    <Table columns={columns} dataSource={questions} loading={loading} />
-                </Col>
-            </Row>
+            {isPersonalTab() && <QuestionBankPersonalCategories />}
 
         </Layout>
     )
 }
 
 const mapStateToProps = state => {
-    const { loading, questions } = state.questionBank || {};
+    const { loading, categories, questions } = state.questionBank || {};
 
     return {
-        questions, //: getQuestions(state),
+        questions,
+        categories,
         loading
     };
 };

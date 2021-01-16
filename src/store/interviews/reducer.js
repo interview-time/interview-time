@@ -55,7 +55,7 @@ const interviewsReducer = (state = initialState, action) => {
         case ADD_INTERVIEW: {
             const { interview } = action.payload;
             const localId = Date.now().toString()
-            interview.interviewId = Date.now().toString()
+            interview.interviewId = localId
 
             getAccessTokenSilently()
                 .then((token) =>

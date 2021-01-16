@@ -44,3 +44,25 @@ export const getDecisionColor = (decision) => {
 
     return '#bfbfbf'
 }
+
+export const colors = [
+    '#2f54eb',
+    '#722ed1',
+    '#eb2f96',
+    '#52c41a',
+    '#13c2c2',
+    '#1890ff',
+    '#faad14',
+    '#a0d911',
+    '#f5222d',
+]
+
+export const getAvatarColor = (text) => {
+    let index = text.charCodeAt(0);
+    while (index > colors.length - 1) {
+        index = index % 10
+    }
+    return colors[index]
+}
+
+export const getAvatarText = (text) => text.split(' ').map(item => item.charAt(0)).join('')
