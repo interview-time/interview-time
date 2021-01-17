@@ -41,7 +41,7 @@ const Guides = ({ guides, loading, loadGuides }) => {
             loadGuides();
         }
         // eslint-disable-next-line 
-    }, [guides]);
+    }, []);
 
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
