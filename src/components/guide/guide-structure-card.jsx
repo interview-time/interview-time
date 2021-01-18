@@ -68,7 +68,7 @@ const GuideStructureCard = (props) => {
                                    defaultValue={group.name} />
                             <Button type="dashed" block icon={<PlusCircleTwoTone />}
                                     className={styles.addQuestionButton}
-                                    onClick={props.onAddQuestionClicked}>Question</Button>
+                                    onClick={() => {props.onAddQuestionClicked(group)}}>Question</Button>
                             <Popconfirm
                                 title="Are you sure you want to delete this group?"
                                 onConfirm={() => onRemoveGroupClicked(group.groupId)}

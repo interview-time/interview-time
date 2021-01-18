@@ -17,7 +17,7 @@
     width: 100%;
 }
 
-.questionBody {
+.questionWrapper {
     display: flex;
     width: 100%;
 }
