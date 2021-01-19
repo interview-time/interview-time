@@ -12,14 +12,13 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const InterviewDetailsCard = (props) => {
+const InterviewDetailsCard = ({interview, header, disabled}) => {
 
     const [offset, setOffset] = useState(0);
-    const interview = props.interview
 
     React.useEffect(() => {
-        setOffset(props.header.current.getBoundingClientRect().height + 26)
-    }, [props.header]);
+        setOffset(header.current.getBoundingClientRect().height + 26)
+    }, [header]);
 
     const onAssessmentChanged = e => {
         interview.decision = e.target.value
@@ -53,7 +52,7 @@ const InterviewDetailsCard = (props) => {
         }
     }
 
-    return <Row gutter={16} key={props.interview.interviewId}>
+    return <Row gutter={16} key={interview.interviewId}>
         <Col span={20}>
             <Card
                 id="intro"
@@ -65,7 +64,7 @@ const InterviewDetailsCard = (props) => {
             </Card>
 
             {getGroups().map(group => {
-                return <InterviewQuestionsCard group={group} disabled={props.disabled} />
+                return <InterviewQuestionsCard group={group} disabled={disabled} />
             })}
 
             <Card
@@ -85,13 +84,13 @@ const InterviewDetailsCard = (props) => {
                     <Form.Item label="Notes">
                         <TextArea
                             placeholder="Capture any key moments that happened during the interview."
-                            disabled={props.disabled}
+                            disabled={disabled}
                             onChange={onNoteChanges}
-                            defaultValue={props.interview.notes} />
+                            defaultValue={interview.notes} />
                     </Form.Item>
 
                     <Form.Item label="Assessment">
-                        <Radio.Group defaultValue={interview.decision} disabled={props.disabled}
+                        <Radio.Group defaultValue={interview.decision} disabled={disabled}
                                      onChange={onAssessmentChanged}>
                             <Radio.Button value={InterviewAssessment.STRONG_NO}>strong no</Radio.Button>
                             <Radio.Button value={InterviewAssessment.NO}>no</Radio.Button>

@@ -8,7 +8,7 @@ import { Button, Card, Col, Form, Input, message, Modal, PageHeader, Popconfirm,
 import Text from "antd/es/typography/Text";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
-import InterviewDetailsCard from "../../components/interview/interview-details-card";
+import GuideInterviewDetailsCard from "../../components/guide/guide-interview-details-card";
 import Arrays from "lodash";
 import lang from "lodash/lang";
 
@@ -48,6 +48,10 @@ const emptyGuide = {
 const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, updateGuide }) => {
     const [step, setStep] = useState(STEP_DETAILS);
     const [guide, setGuide] = useState(emptyGuide);
+    const [selectedGroup, setSelectedGroup] = useState({
+        group: {},
+        questions: []
+    });
     const header = React.createRef();
     const history = useHistory();
     const { id } = useParams();
@@ -78,17 +82,9 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
 
     const isQuestionsStep = () => step === STEP_QUESTIONS
 
-    const getHeaderTitle = () => {
-        if (isPreviewStep()) {
-            return "Interview Experience"
-        } else {
-            return isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide";
-        }
-    }
-
     const onBackClicked = () => {
         Modal.confirm({
-            title: "If you have unsaved changes, they will be lost. It seems that you have unsaved changes. Are you sure that you want to exit?",
+            title: "If you have unsaved changes, they will be lost. Are you sure that you want to exit?",
             okText: "Yes",
             cancelText: "No",
             onOk() {
@@ -160,6 +156,30 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
         guide.description = e.target.value
     };
 
+    const onGroupQuestionsChange = (groupQuestions) => {
+        setSelectedGroup({
+            ...selectedGroup,
+            questions: groupQuestions
+        })
+    }
+
+    const onAddQuestionDiscard = () => {
+        setStep(STEP_STRUCTURE)
+        setSelectedGroup({
+            group: {},
+            questions: []
+        })
+    }
+    const onAddQuestionConfirmed = () => {
+        const updatedGuide = lang.cloneDeep(guide)
+        updatedGuide.structure.groups
+            .find(group => group.groupId === selectedGroup.group.groupId)
+            .questions = lang.cloneDeep(selectedGroup.questions.map(question => question.questionId))
+
+        setStep(STEP_STRUCTURE)
+        setGuide(updatedGuide)
+    }
+
     const createDetailsCard = <Col className={styles.detailsCard}>
         <Card key={guide.guideId} title="Guide Details" bordered={false} headStyle={{ textAlign: 'center' }}>
             <Form
@@ -208,63 +228,90 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
         </Card>
     </Col>
 
-    return <Layout pageHeader={<div ref={header}><PageHeader
-        className={styles.pageHeader}
-        onBack={() => onBackClicked()}
-        title={getHeaderTitle()}
-        extra={[
-            <>{(isPreviewStep()) && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
-                <span className="nav-text">Edit</span>
-            </Button>}</>,
-            <>{(isDetailsStep() || isStructureStep()) && <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
-                <span className="nav-text">Preview</span>
-            </Button>}</>,
-            <>{isQuestionsStep() && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
-                <span className="nav-text">Discard</span>
-            </Button>}</>,
-            <>{isQuestionsStep() && <Button type="primary" onClick={() => setStep(STEP_STRUCTURE)}>
-                <span className="nav-text">Done</span>
-            </Button>}</>,
-            <>{(!isQuestionsStep()) && <Button type="primary" onClick={onSaveClicked}>Save</Button>}</>
-        ]}
-        footer={
-            <div>{(isDetailsStep() || isStructureStep()) &&
-            <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
-                <TabPane tab="Details" key={TAB_DETAILS} />
-                <TabPane tab="Structure" key={TAB_STRUCTURE} />
-            </Tabs>}</div>
-        }
-    >
-        {isDetailsStep() && <Text>
-            Enter interview guide detail information so you can easily discover it among other guides.</Text>}
-        {isPreviewStep() && <Text>
-            This is a <Text strong>preview</Text> of the guide which will be used during the interview. To go back click
-            on <Text strong>edit</Text> button.</Text>}
-        {isStructureStep() && <Text>
-            Stay organized and structure the interview guide. <Text strong>Grouping</Text> questions helps to evaluate
-            skills in a particular area and make a more granular assessment. Click on the <Text
-            strong>preview</Text> button to see
-            the changes.</Text>}
-        {isQuestionsStep() && <Text>
-            Drag and drop questions from your question bank to the question group.
-        </Text>}
-    </PageHeader></div>}>
+    return <Layout pageHeader={
+        <>
+            {(isDetailsStep() || isStructureStep()) && <PageHeader
+                className={styles.pageHeader}
+                onBack={() => onBackClicked()}
+                title={isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide"}
+                extra={[
+                    <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
+                        <span className="nav-text">Preview</span>
+                    </Button>,
+                    <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                ]}
+                footer={
+                    <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
+                        <TabPane tab="Details" key={TAB_DETAILS} />
+                        <TabPane tab="Structure" key={TAB_STRUCTURE} />
+                    </Tabs>
+                }
+            >
+                {isDetailsStep() && <Text>
+                    Enter interview guide detail information so you can easily discover it among other
+                    guides.</Text>}
+                {isStructureStep() && <Text>
+                    Stay organized and structure the interview guide. <Text strong>Grouping</Text> questions helps
+                    to
+                    evaluate
+                    skills in a particular area and make a more granular assessment. Click on the <Text
+                    strong>preview</Text> button to see
+                    the changes.</Text>}
+            </PageHeader>
+            }
+            {isQuestionsStep() && <PageHeader
+                className={styles.pageHeader}
+                onBack={() => onBackClicked()}
+                title="Add questions to question group"
+                extra={[
+                    <Button type="default" onClick={onAddQuestionDiscard}>
+                        <span className="nav-text">Discard</span>
+                    </Button>,
+                    <Button type="primary" onClick={onAddQuestionConfirmed}>
+                        <span className="nav-text">Done</span>
+                    </Button>
+                ]}>
+                <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
+            </PageHeader>}
+            {isPreviewStep() && <div ref={header}><PageHeader
+                className={styles.pageHeader}
+                onBack={() => onBackClicked()}
+                title="Interview Experience"
+                extra={[
+                    <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+                        <span className="nav-text">Edit</span>
+                    </Button>,
+                    <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                ]}>
+                <Text>
+                    This is a <Text strong>preview</Text> of the guide which will be used during the interview. To
+                    go back click on <Text strong>edit</Text> button.</Text>
+            </PageHeader></div>}
+        </>
+    }>
         <Row gutter={16} justify="center">
             {isDetailsStep() && createDetailsCard}
             {isStructureStep() && <Col>
                 <GuideStructureCard
                     structure={guide.structure}
-                    onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />
+                    onAddQuestionClicked={(group) => {
+                        setStep(STEP_QUESTIONS)
+                        setSelectedGroup({
+                            ...selectedGroup,
+                            group: group
+                        })
+                    }} />
             </Col>}
             {isPreviewStep() && <Col span={24}>
-                <InterviewDetailsCard
-                    interview={{
-                        structure: guide.structure
-                    }}
-                    header={header}
-                    disabled={true} />
+                <GuideInterviewDetailsCard
+                    guide={guide}
+                    header={header} />
             </Col>}
-            {isQuestionsStep() && <Col span={24}><GuideQuestionGroup /></Col>}
+            {isQuestionsStep() && <Col span={24}>
+                <GuideQuestionGroup
+                    group={selectedGroup.group}
+                    onGroupQuestionsChange={onGroupQuestionsChange} />
+            </Col>}
         </Row>
     </Layout>
 }
