@@ -48,8 +48,8 @@ const questionBankReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                questions: questions,
-                categories: categories,
+                questions: questions ? questions : [],
+                categories: categories ? categories : [],
                 loading: false
             };
         }

@@ -18,6 +18,7 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
     React.useEffect(() => {
         if (groupQuestions) {
             let questions = lang.cloneDeep(groupQuestions)
+            // question key and index required for drag & drop sorting
             questions.forEach((item, index) => {
                 item.key = index
                 item.index = index

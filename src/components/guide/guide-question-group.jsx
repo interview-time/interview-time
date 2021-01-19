@@ -8,17 +8,19 @@ import { loadQuestionBank } from "../../store/question-bank/actions";
 
 const GuideQuestionGroup = ({ group, questions, categories, loading, loadQuestionBank, onGroupQuestionsChange }) => {
 
-    const [groupQuestions, setGroupQuestions] = useState([])
+    const [groupQuestions, setGroupQuestions] = useState()
 
     React.useEffect(() => {
-        if ((!questions || questions.length === 0) && !loading) {
+        // initial question bank loading
+        if (questions.length === 0 && !loading) {
             loadQuestionBank();
         }
         // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
-        if (questions && groupQuestions.length === 0) {
+        // load group related questions
+        if (questions.length !== 0 && !groupQuestions) {
             setGroupQuestions(
                 group.questions.map(questionId => questions.find(item => item.questionId === questionId))
             )
@@ -26,7 +28,8 @@ const GuideQuestionGroup = ({ group, questions, categories, loading, loadQuestio
     }, [questions]);
 
     React.useEffect(() => {
-        if(groupQuestions) {
+        // propagate group question changes to upper component
+        if (groupQuestions) {
             onGroupQuestionsChange(groupQuestions)
         }
     }, [groupQuestions]);

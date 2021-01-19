@@ -10,13 +10,15 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
     const [selectedCategoryQuestions, setSelectedCategoryQuestions] = useState([])
 
     React.useEffect(() => {
-        if (categories && categories.length !== 0 && !selectedCategory) {
+        // select first category when categories are loaded
+        if (categories.length !== 0 && !selectedCategory) {
             setSelectedCategory(categories[0])
         }
     }, [categories]);
 
     React.useEffect(() => {
-        if (selectedCategory && questions) {
+        // show selected category questions without questions in the group
+        if (questions.length !== 0 && selectedCategory && groupQuestions) {
             setSelectedCategoryQuestions((questions ? questions : [])
                 .filter((question) => question.category === selectedCategory
                     && !groupQuestions.find(element => element.questionId === question.questionId))
@@ -67,7 +69,7 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                     defaultValue={selectedCategory}
                     onSelect={onCategoryChange}
                     style={{ width: 200 }}
-                    options={(categories ? categories : []).map(category => ({ value: category }))}
+                    options={categories.map(category => ({ value: category }))}
                     showSearch
                     filterOption={(inputValue, option) =>
                         option.value.toLocaleLowerCase().includes(inputValue)
