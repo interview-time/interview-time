@@ -48,8 +48,10 @@ const emptyGuide = {
 const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, updateGuide }) => {
     const [step, setStep] = useState(STEP_DETAILS);
     const [guide, setGuide] = useState(emptyGuide);
-    const [selectedGroup, setSelectedGroup] = useState({});
-    const [groupQuestions, setGroupQuestions] = useState([])
+    const [selectedGroup, setSelectedGroup] = useState({
+        group: {},
+        questions: []
+    });
     const header = React.createRef();
     const history = useHistory();
     const { id } = useParams();
@@ -163,14 +165,24 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
     };
 
     const onGroupQuestionsChange = (groupQuestions) => {
-        setGroupQuestions(groupQuestions)
+        setSelectedGroup({
+            ...selectedGroup,
+            questions: groupQuestions
+        })
     }
 
+    const onAddQuestionDiscard = () => {
+        setStep(STEP_STRUCTURE)
+        setSelectedGroup({
+            group: {},
+            questions: []
+        })
+    }
     const onAddQuestionConfirmed = () => {
         const updatedGuide = lang.cloneDeep(guide)
         updatedGuide.structure.groups
-            .find(group => group.groupId === selectedGroup.groupId)
-            .questions = lang.cloneDeep(groupQuestions.map(question => question.questionId))
+            .find(group => group.groupId === selectedGroup.group.groupId)
+            .questions = lang.cloneDeep(selectedGroup.questions.map(question => question.questionId))
 
         setStep(STEP_STRUCTURE)
         setGuide(updatedGuide)
@@ -271,7 +283,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                 onBack={() => onBackClicked()}
                 title="Add questions to question group"
                 extra={[
-                    <Button type="default" onClick={onAddQuestionConfirmed}>
+                    <Button type="default" onClick={onAddQuestionDiscard}>
                         <span className="nav-text">Discard</span>
                     </Button>,
                     <Button type="primary" onClick={onAddQuestionConfirmed}>
@@ -289,7 +301,10 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                     structure={guide.structure}
                     onAddQuestionClicked={(group) => {
                         setStep(STEP_QUESTIONS)
-                        setSelectedGroup(group)
+                        setSelectedGroup({
+                            ...selectedGroup,
+                            group: group
+                        })
                     }} />
             </Col>}
             {isPreviewStep() && <Col span={24}>
@@ -301,7 +316,9 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                     disabled={true} />
             </Col>}
             {isQuestionsStep() && <Col span={24}>
-                <GuideQuestionGroup group={selectedGroup} onGroupQuestionsChange={onGroupQuestionsChange} />
+                <GuideQuestionGroup
+                    group={selectedGroup.group}
+                    onGroupQuestionsChange={onGroupQuestionsChange} />
             </Col>}
         </Row>
     </Layout>
