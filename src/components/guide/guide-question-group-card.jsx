@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./guide-question-group-card.module.css";
+import styles from "./guide-question-group.module.css";
 import { Card, Divider, Space, Table, Tag } from 'antd';
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import { DeleteTwoTone } from '@ant-design/icons';
@@ -39,7 +39,7 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
         <SortableContainer
             useDragHandle
             disableAutoscroll
-            helperClass={styles.rowDragging}
+            helperClass={styles.questionDragging}
             onSortEnd={onSortEnd}
             {...props}
         />
@@ -52,7 +52,7 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
     };
 
     const DragHandle = sortableHandle(() => (
-        <ReorderIcon style={{ cursor: 'pointer', fontSize: '20px' }} />
+        <ReorderIcon className={styles.reorderIcon} />
     ));
 
     const columns = [
@@ -66,7 +66,7 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
         {
             title: 'Question',
             dataIndex: 'question',
-            className: styles.dragVisible,
+            className: styles.questionVisible,
             render: (text, question) => <div className={styles.questionWrapper}>
                 <div className={styles.questionBody}>
                     <Space direction="vertical">
@@ -83,16 +83,19 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
     ];
 
     return (
-        <Card bordered={false} bodyStyle={{ paddingLeft: 0, paddingRight: 0, paddingTop: 32, paddingBottom: 32 }}>
-            <Space style={{ paddingLeft: 24 }}>
-                <Text strong>{group.name}</Text> <Text>{questions.length} questions</Text>
-            </Space>
-            <Divider style={{ marginBottom: 0 }} />
+        <Card bordered={false} className={styles.questionGroupCard} bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}>
+            <div className={styles.cardHeader}>
+                <Space>
+                    <Text strong>{group.name}</Text> <Text>{questions.length} questions</Text>
+                </Space>
+            </div>
+            <Divider className={styles.divider} />
             <Table
                 pagination={false}
                 showHeader={false}
                 dataSource={questions}
                 columns={columns}
+                scroll={{ y: 700 }}
                 rowKey="index"
                 components={{
                     body: {

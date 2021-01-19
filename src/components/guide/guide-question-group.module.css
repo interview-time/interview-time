@@ -4,34 +4,80 @@
 
 .questionGroupCard {
     margin-right: 12px;
-    min-height: 600px;
+    height: 700px;
 }
 
 .questionBankCard {
     margin-left: 12px;
-    min-height: 600px;
+    height: 700px;
 }
 
-.questionBankBody {
+.divider {
+    margin-bottom: 0;
+}
+
+.questionDragging {
+    background: #fafafa;
+    border: 1px solid #ccc;
     display: flex;
+    align-items: center;
     width: 100%;
+    padding-left: 16px;
+}
+
+.questionDragging td {
+    visibility: visible;
+}
+
+.questionDragging .dragVisible {
+    visibility: visible;
+}
+
+.questionDragging .questionVisible {
+    visibility: visible;
+    padding-left: 12px;
+    padding-right: 12px;
+    flex-grow: 1;
 }
 
 .questionWrapper {
     display: flex;
+    align-items: center;
     width: 100%;
 }
 
-.categorySelect {
-    min-width: 200px;
-    margin-right: 16px;
+.questionBody {
+    padding-left: 12px;
+    flex-grow: 1;
 }
 
-.dragIcon {
-    font-size: 18px;
-    margin-right: 16px;
+.space {
+    flex-grow: 1;
 }
 
-.metaBody {
-    min-width: 80px;
+.cardHeader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-right: 24px;
+    padding-left: 24px;
+    height: 32px;
+}
+
+.reorderIcon {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.addIcon  {
+    cursor: pointer;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.removeIcon  {
+    cursor: pointer;
+    padding-left: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
 }

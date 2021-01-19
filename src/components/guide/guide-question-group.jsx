@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styles from "./guide-question-group.module.css";
 import { Col, Row } from "antd";
 import GuideQuestionGroupCard from "./guide-question-group-card";
 import GuideQuestionBankCard from "./guide-question-bank-card";
@@ -49,7 +48,7 @@ const GuideQuestionGroup = ({ group, questions, categories, loading, loadQuestio
 
     return <Row>
         <Col span={12}>
-            <div className={styles.questionGroupCard}>
+            <div>
                 <GuideQuestionGroupCard
                     group={group}
                     groupQuestions={groupQuestions}
@@ -58,7 +57,7 @@ const GuideQuestionGroup = ({ group, questions, categories, loading, loadQuestio
             </div>
         </Col>
         <Col span={12}>
-            <div className={styles.questionBankCard}>
+            <div>
                 <GuideQuestionBankCard
                     questions={questions}
                     categories={categories}

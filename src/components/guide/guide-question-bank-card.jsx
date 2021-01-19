@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./guide-question-bank-card.module.css";
+import styles from "./guide-question-group.module.css";
 import { Card, Divider, Select, Space, Table, Tag } from 'antd';
 import Text from "antd/lib/typography/Text";
 import { PlusCircleTwoTone } from "@ant-design/icons";
@@ -57,8 +57,8 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
     ];
 
     return (
-        <Card bordered={false} bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}>
-            <div className={styles.questionHeader}>
+        <Card bordered={false} className={styles.questionBankCard} bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}>
+            <div className={styles.cardHeader}>
                 <Space>
                     <Text strong>Question Bank</Text> <Text>{selectedCategoryQuestions.length} questions</Text>
                 </Space>
@@ -76,7 +76,7 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                     }
                 />
             </div>
-            <Divider style={{ marginBottom: 0 }} />
+            <Divider className={styles.divider} />
             <Table
                 pagination={false}
                 showHeader={false}

@@ -278,7 +278,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                         <span className="nav-text">Done</span>
                     </Button>
                 ]}>
-                <Text>Click on the '+' icon to add questions from your question bank (right table) to the question group (left table).</Text>
+                <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
             </PageHeader>}
         </>
     }>
