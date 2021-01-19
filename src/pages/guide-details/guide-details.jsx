@@ -8,7 +8,7 @@ import { Button, Card, Col, Form, Input, message, Modal, PageHeader, Popconfirm,
 import Text from "antd/es/typography/Text";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
-import InterviewDetailsCard from "../../components/interview/interview-details-card";
+import GuideInterviewDetailsCard from "../../components/guide/guide-interview-details-card";
 import Arrays from "lodash";
 import lang from "lodash/lang";
 
@@ -81,14 +81,6 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
     const isStructureStep = () => step === STEP_STRUCTURE
 
     const isQuestionsStep = () => step === STEP_QUESTIONS
-
-    const getHeaderTitle = () => {
-        if (isPreviewStep()) {
-            return "Interview Experience"
-        } else {
-            return isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide";
-        }
-    }
 
     const onBackClicked = () => {
         Modal.confirm({
@@ -238,46 +230,35 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
 
     return <Layout pageHeader={
         <>
-            {(isDetailsStep() || isStructureStep()) && <div ref={header}>
-                <PageHeader
-                    className={styles.pageHeader}
-                    onBack={() => onBackClicked()}
-                    title={getHeaderTitle()}
-                    extra={[
-                        <>{(isPreviewStep()) && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
-                            <span className="nav-text">Edit</span>
-                        </Button>}</>,
-                        <>{(isDetailsStep() || isStructureStep()) &&
-                        <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
-                            <span className="nav-text">Preview</span>
-                        </Button>}</>,
-                        <Button type="primary" onClick={onSaveClicked}>Save</Button>
-                    ]}
-                    footer={
-                        <div>{(isDetailsStep() || isStructureStep()) &&
-                        <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
-                            <TabPane tab="Details" key={TAB_DETAILS} />
-                            <TabPane tab="Structure" key={TAB_STRUCTURE} />
-                        </Tabs>}</div>
-                    }
-                >
-                    {isDetailsStep() && <Text>
-                        Enter interview guide detail information so you can easily discover it among other
-                        guides.</Text>}
-                    {isPreviewStep() && <Text>
-                        This is a <Text strong>preview</Text> of the guide which will be used during the interview. To
-                        go back
-                        click
-                        on <Text strong>edit</Text> button.</Text>}
-                    {isStructureStep() && <Text>
-                        Stay organized and structure the interview guide. <Text strong>Grouping</Text> questions helps
-                        to
-                        evaluate
-                        skills in a particular area and make a more granular assessment. Click on the <Text
-                        strong>preview</Text> button to see
-                        the changes.</Text>}
-                </PageHeader>
-            </div>}
+            {(isDetailsStep() || isStructureStep()) && <PageHeader
+                className={styles.pageHeader}
+                onBack={() => onBackClicked()}
+                title={isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide"}
+                extra={[
+                    <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
+                        <span className="nav-text">Preview</span>
+                    </Button>,
+                    <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                ]}
+                footer={
+                    <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
+                        <TabPane tab="Details" key={TAB_DETAILS} />
+                        <TabPane tab="Structure" key={TAB_STRUCTURE} />
+                    </Tabs>
+                }
+            >
+                {isDetailsStep() && <Text>
+                    Enter interview guide detail information so you can easily discover it among other
+                    guides.</Text>}
+                {isStructureStep() && <Text>
+                    Stay organized and structure the interview guide. <Text strong>Grouping</Text> questions helps
+                    to
+                    evaluate
+                    skills in a particular area and make a more granular assessment. Click on the <Text
+                    strong>preview</Text> button to see
+                    the changes.</Text>}
+            </PageHeader>
+            }
             {isQuestionsStep() && <PageHeader
                 className={styles.pageHeader}
                 onBack={() => onBackClicked()}
@@ -292,6 +273,20 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                 ]}>
                 <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
             </PageHeader>}
+            {isPreviewStep() && <div ref={header}><PageHeader
+                className={styles.pageHeader}
+                onBack={() => onBackClicked()}
+                title="Interview Experience"
+                extra={[
+                    <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+                        <span className="nav-text">Edit</span>
+                    </Button>,
+                    <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                ]}>
+                <Text>
+                    This is a <Text strong>preview</Text> of the guide which will be used during the interview. To
+                    go back click on <Text strong>edit</Text> button.</Text>
+            </PageHeader></div>}
         </>
     }>
         <Row gutter={16} justify="center">
@@ -308,12 +303,9 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                     }} />
             </Col>}
             {isPreviewStep() && <Col span={24}>
-                <InterviewDetailsCard
-                    interview={{
-                        structure: guide.structure
-                    }}
-                    header={header}
-                    disabled={true} />
+                <GuideInterviewDetailsCard
+                    guide={guide}
+                    header={header} />
             </Col>}
             {isQuestionsStep() && <Col span={24}>
                 <GuideQuestionGroup

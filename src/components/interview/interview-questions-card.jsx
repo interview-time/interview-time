@@ -10,10 +10,10 @@ const { TextArea } = Input;
 const columns = [
     {
         title: 'Question',
-        dataIndex: 'questionId',
-        key: 'questionId',
+        dataIndex: 'question',
+        key: 'question',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.questionId.localeCompare(b.questionId)
+        sorter: (a, b) => a.question.localeCompare(b.question)
     },
     {
         title: 'Tags',
