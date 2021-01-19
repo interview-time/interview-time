@@ -236,46 +236,65 @@ const InterviewDetails = ({
         </Card>
     </Col>
 
-    return <Layout pageHeader={<div ref={header}><PageHeader
-        className={styles.pageHeader}
-        onBack={() => onBackClicked()}
-        title={isNewInterviewFlow() ? "New Interview" : "Edit Interview"}
-        extra={[
-            <>{(isDetailsStep() || isStructureStep()) && <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
-                <span className="nav-text">Preview</span>
-            </Button>}</>,
-            <>{isPreviewStep() && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
-                <span className="nav-text">Edit</span>
-            </Button>}</>,
-            <>{isQuestionsStep() && <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
-                <span className="nav-text">Discard</span>
-            </Button>}</>,
-            <>{isQuestionsStep() && <Button type="primary" onClick={() => setStep(STEP_STRUCTURE)}>
-                <span className="nav-text">Done</span>
-            </Button>}</>,
-            <>{(!isQuestionsStep()) && <Button type="primary" onClick={onSaveClicked}>Save</Button>}</>
-        ]}
-        footer={
-            <>{(isDetailsStep() || isStructureStep()) &&
-            <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
-                <TabPane tab="Details" key={TAB_DETAILS} />
-                <TabPane tab="Structure" key={TAB_STRUCTURE} />
-            </Tabs>}</>
-        }
-    >
-        {isDetailsStep() && <Text>
-            Enter interview detail information and select guide which will be used during the interview.</Text>}
-        {isPreviewStep() && <Text>
-            This is a <Text strong>preview</Text> of the guide which will be used during the interview. If you want
-            to make changes to the guide (only for this interview) click on <Text
-            strong>edit</Text> button.</Text>}
-        {isStructureStep() && <Text>
-            Make adjustments to this interview guide and click on the <Text strong>preview</Text> button to see the
-            changes.</Text>}
-        {isQuestionsStep() && <Text>
-            Drag and drop questions from your question bank to the question group.
-        </Text>}
-    </PageHeader></div>}>
+    return <Layout pageHeader={<>
+        {(isDetailsStep() || isStructureStep()) && <PageHeader
+            className={styles.pageHeader}
+            onBack={() => onBackClicked()}
+            title={isNewInterviewFlow() ? "New Interview" : "Edit Interview"}
+            extra={[
+                <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
+                    <span className="nav-text">Preview</span>
+                </Button>,
+                <Button type="primary" onClick={onSaveClicked}>Save</Button>
+            ]}
+            footer={
+                <Tabs defaultActiveKey={getActiveTab} onChange={onTabClicked}>
+                    <TabPane tab="Details" key={TAB_DETAILS} />
+                    <TabPane tab="Structure" key={TAB_STRUCTURE} />
+                </Tabs>
+            }
+        >
+            {isDetailsStep() && <Text>
+                Enter interview detail information and select guide which will be used during the interview.</Text>}
+            {isStructureStep() && <Text>
+                Make adjustments to this interview guide and click on the <Text strong>preview</Text> button to see the
+                changes.</Text>}
+        </PageHeader>}
+
+        {isQuestionsStep() && <PageHeader
+            className={styles.pageHeader}
+            onBack={() => onBackClicked()}
+            title="Add questions to question group"
+            extra={[
+                <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+                    <span className="nav-text">Discard</span>
+                </Button>,
+                <Button type="primary" onClick={() => setStep(STEP_STRUCTURE)}>
+                    <span className="nav-text">Done</span>
+                </Button>
+            ]}
+        >
+            <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
+        </PageHeader>}
+
+        {isPreviewStep() && <div ref={header}><PageHeader
+            className={styles.pageHeader}
+            onBack={() => onBackClicked()}
+            title="Interview Experience"
+            extra={[
+                <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+                    <span className="nav-text">Edit</span>
+                </Button>,
+                <Button type="primary" onClick={onSaveClicked}>Save</Button>
+            ]}
+        >
+            <Text>This is a <Text strong>preview</Text> of the guide which will be used during the interview.
+                If you want to make changes to the guide (only for this interview) click on
+                <Text strong>edit</Text> button.
+            </Text>
+        </PageHeader></div>}
+
+    </>}>
         <Row gutter={16} justify="center">
             {isDetailsStep() && createDetailsCard}
             {isPreviewStep() && <Col span={24}>
