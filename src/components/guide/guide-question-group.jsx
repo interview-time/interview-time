@@ -25,6 +25,7 @@ const GuideQuestionGroup = ({ group, questions, categories, loading, loadQuestio
                 group.questions.map(questionId => questions.find(item => item.questionId === questionId))
             )
         }
+        // eslint-disable-next-line
     }, [questions]);
 
     React.useEffect(() => {
@@ -32,6 +33,7 @@ const GuideQuestionGroup = ({ group, questions, categories, loading, loadQuestio
         if (groupQuestions) {
             onGroupQuestionsChange(groupQuestions)
         }
+        // eslint-disable-next-line
     }, [groupQuestions]);
 
     const onQuestionsSortChange = (groupQuestions) => {

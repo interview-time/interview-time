@@ -14,6 +14,7 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
         if (categories.length !== 0 && !selectedCategory) {
             setSelectedCategory(categories[0])
         }
+        // eslint-disable-next-line
     }, [categories]);
 
     React.useEffect(() => {

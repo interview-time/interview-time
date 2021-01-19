@@ -29,7 +29,7 @@ const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQues
             console.log(interview)
             setInterview(interview)
         }
-
+        // eslint-disable-next-line
     }, [questions, guide]);
 
     return <InterviewDetailsCard
