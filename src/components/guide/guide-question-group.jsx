@@ -5,6 +5,7 @@ import GuideQuestionGroupCard from "./guide-question-group-card";
 import GuideQuestionBankCard from "./guide-question-bank-card";
 import { connect } from "react-redux";
 import { loadQuestionBank } from "../../store/question-bank/actions";
+import Collection from "lodash/collection";
 
 const GuideQuestionGroup = ({ group, questions, categories, loading, loadQuestionBank, onGroupQuestionsChange }) => {
 
@@ -72,8 +73,8 @@ const mapStateToProps = state => {
     const { loading, categories, questions } = state.questionBank || {};
 
     return {
-        questions,
-        categories,
+        questions: Collection.sortBy(questions, ['question']),
+        categories: categories.sort(),
         loading
     };
 };
