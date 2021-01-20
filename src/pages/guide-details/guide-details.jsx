@@ -180,6 +180,43 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
         setGuide(updatedGuide)
     }
 
+    const onAddQuestionClicked = (group) => {
+        setStep(STEP_QUESTIONS)
+        setSelectedGroup({
+            ...selectedGroup,
+            group: group
+        })
+    }
+
+    const onGroupNameChanges = (groupId, groupName) => {
+        guide.structure.groups.find(group => group.groupId === groupId).name = groupName
+    };
+
+    const onAddGroupClicked = () => {
+        const newGroup = {
+            groupId: Date.now().toString(),
+            questions: []
+        }
+
+        let newGuide = lang.cloneDeep(guide)
+        newGuide.structure.groups.push(newGroup)
+        setGuide(newGuide)
+    }
+
+    const onRemoveGroupClicked = id => {
+        let newGuide = lang.cloneDeep(guide)
+        newGuide.structure.groups = newGuide.structure.groups.filter(group => group.groupId !== id)
+        setGuide(newGuide)
+    }
+
+    const onHeaderChanged = event => {
+        guide.structure.header = event.target.value
+    }
+
+    const onFooterChanged = event => {
+        guide.structure.footer = event.target.value
+    }
+
     const createDetailsCard = <Col className={styles.detailsCard}>
         <Card key={guide.guideId} title="Guide Details" bordered={false} headStyle={{ textAlign: 'center' }}>
             <Form
@@ -252,11 +289,8 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                     guides.</Text>}
                 {isStructureStep() && <Text>
                     Stay organized and structure the interview guide. <Text strong>Grouping</Text> questions helps
-                    to
-                    evaluate
-                    skills in a particular area and make a more granular assessment. Click on the <Text
-                    strong>preview</Text> button to see
-                    the changes.</Text>}
+                    to evaluate skills in a particular area and make a more granular assessment. Click on the <Text
+                    strong>preview</Text> button to see the changes.</Text>}
             </PageHeader>
             }
             {isQuestionsStep() && <PageHeader
@@ -294,13 +328,12 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
             {isStructureStep() && <Col>
                 <GuideStructureCard
                     structure={guide.structure}
-                    onAddQuestionClicked={(group) => {
-                        setStep(STEP_QUESTIONS)
-                        setSelectedGroup({
-                            ...selectedGroup,
-                            group: group
-                        })
-                    }} />
+                    onAddQuestionClicked={onAddQuestionClicked}
+                    onHeaderChanged={onHeaderChanged}
+                    onFooterChanged={onFooterChanged}
+                    onAddGroupClicked={onAddGroupClicked}
+                    onRemoveGroupClicked={onRemoveGroupClicked}
+                    onGroupNameChanges={onGroupNameChanges} />
             </Col>}
             {isPreviewStep() && <Col span={24}>
                 <GuideInterviewDetailsCard

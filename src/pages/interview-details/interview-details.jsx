@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import moment from 'moment';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-details.module.css";
 import { addInterview, deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
+import { loadQuestionBank } from "../../store/question-bank/actions";
 import { loadGuides } from "../../store/guides/actions";
-import { Button, Card, Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Select, Tabs } from 'antd';
-import GuideStructureCard from "../../components/guide/guide-structure-card";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { Button, Card, Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Tabs } from 'antd';
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import lang from "lodash/lang";
-import Arrays from "lodash";
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../common/constants";
+import GuideStructureCard from "../../components/guide/guide-structure-card";
 
 const { TabPane } = Tabs;
 
@@ -45,18 +45,33 @@ const emptyInterview = {
     }
 }
 
-const InterviewDetails = ({
-                              interviews,
-                              guides,
-                              loading,
-                              loadInterviews,
-                              addInterview,
-                              deleteInterview,
-                              updateInterview,
-                              loadGuides
-                          }) => {
+const InterviewDetails = () => {
+
+    const {interviews, interviewsLoading} = useSelector(state => ({
+        interviews: state.interviews.interviews,
+        interviewsLoading: state.interviews.loading
+    }), shallowEqual);
+
+    const {questions, questionsLoading} = useSelector(state => ({
+        questions: state.questionBank.questions,
+        questionsLoading: state.questionBank.loading
+    }), shallowEqual);
+
+    const {guides, guidesLoading} = useSelector(state => ({
+        guides: state.guides.guides,
+        guidesLoading: state.guides.loading
+    }), shallowEqual);
+
+    const dispatch = useDispatch();
+
     const [step, setStep] = useState(STEP_DETAILS)
     const [interview, setInterview] = useState(emptyInterview);
+
+    const [selectedGroup, setSelectedGroup] = useState({
+        group: {},
+        questions: []
+    });
+
     const [form] = Form.useForm();
     const history = useHistory();
     const header = React.createRef();
@@ -65,7 +80,7 @@ const InterviewDetails = ({
     const isNewInterviewFlow = () => !id;
 
     React.useEffect(() => {
-        if (!isNewInterviewFlow() && !interview.interviewId && !loading) {
+        if (!isNewInterviewFlow() && !interview.interviewId && !interviewsLoading) {
             const interview = interviews.find(interview => interview.interviewId === id);
             if (interview) {
                 setInterview(lang.cloneDeep(interview))
@@ -75,23 +90,19 @@ const InterviewDetails = ({
     }, [interviews, id]);
 
     React.useEffect(() => {
-        if (interview.interviewId) {
-            const guide = guides.find((guide) => guide.guideId === interview.guideId)
-            if (guide) {
-                form.setFieldsValue({
-                    guide: guide.title,
-                })
-            }
+        // initial data loading
+        if (!isNewInterviewFlow() && interviews.length === 0 && !interviewsLoading) {
+            dispatch(loadInterviews());
         }
-        // eslint-disable-next-line 
-    }, [interview, guides]);
+        if (questions.length === 0 && !questionsLoading) {
+            dispatch(loadQuestionBank())
+        }
 
-    React.useEffect(() => {
-        if (!isNewInterviewFlow() && interviews.length === 0 && !loading) {
-            loadInterviews();
-            loadGuides()
+        if (guides.length === 0 && !guidesLoading) {
+            dispatch(loadGuides())
         }
-    });
+        // eslint-disable-next-line
+    }, []);
 
     const isDetailsStep = () => step === STEP_DETAILS
 
@@ -129,7 +140,7 @@ const InterviewDetails = ({
     }
 
     const onDeleteClicked = () => {
-        deleteInterview(interview.interviewId);
+        dispatch(deleteInterview(interview.interviewId));
         history.push("/interviews");
         message.success(`Interview '${interview.candidate}' removed.`);
     }
@@ -145,20 +156,16 @@ const InterviewDetails = ({
             Modal.warn({
                 title: "Interview 'position' must not be empty.",
             })
-        } else if (lang.isEmpty(interview.guideId)) {
-            Modal.warn({
-                title: "Interview 'guide' must not be empty.",
-            })
         } else if (lang.isEmpty(interview.interviewDateTime)) {
             Modal.warn({
                 title: "Interview 'date' must not be empty.",
             })
         } else {
             if (isNewInterviewFlow()) {
-                addInterview(interview);
+                dispatch(addInterview(interview));
                 message.success(`Interview '${interview.candidate}' created.`);
             } else {
-                updateInterview(interview);
+                dispatch(updateInterview(interview));
                 message.success(`Interview '${interview.candidate}' updated.`);
             }
             history.push("/interviews");
@@ -177,13 +184,59 @@ const InterviewDetails = ({
         interview.interviewDateTime = date.utc().format(DATE_FORMAT_SERVER)
     };
 
-    const onGuideChange = (guideTitle) => {
-        const guide = lang.cloneDeep(Arrays.find(guides, (guide) => guide.title === guideTitle))
+    const onAddQuestionClicked = (group) => {
+        setStep(STEP_QUESTIONS);
+        setSelectedGroup({
+            ...selectedGroup,
+            group: group
+        })
+    }
+    const onGuideChange = (guide) => {
+        const structure = lang.cloneDeep(guide.structure)
+        structure.groups.forEach((group, index) =>
+            structure.groups[index].questions
+                = group.questions.map(questionId => questions.find(item => item.questionId === questionId))
+        )
         setInterview({
             ...interview,
-            guideId: guide.guideId,
-            structure: guide.structure
+            structure: structure
         })
+    }
+
+    const onGroupQuestionsChange = (groupQuestions) => {
+        setSelectedGroup({
+            ...selectedGroup,
+            questions: groupQuestions
+        })
+    }
+
+    const onGroupNameChanges = (groupId, groupName) => {
+        interview.structure.groups.find(group => group.groupId === groupId).name = groupName
+    };
+
+    const onAddGroupClicked = () => {
+        const newGroup = {
+            groupId: Date.now().toString(),
+            questions: []
+        }
+
+        let newInterview = lang.cloneDeep(interview)
+        newInterview.structure.groups.push(newGroup)
+        setInterview(newInterview)
+    }
+
+    const onRemoveGroupClicked = id => {
+        let newInterview = lang.cloneDeep(interview)
+        newInterview.structure.groups = newInterview.structure.groups.filter(group => group.groupId !== id)
+        setInterview(newInterview)
+    }
+
+    const onHeaderChanged = event => {
+        interview.structure.header = event.target.value
+    }
+
+    const onFooterChanged = event => {
+        interview.structure.footer = event.target.value
     }
 
     const createUpdatedInterview = () => {
@@ -215,20 +268,6 @@ const InterviewDetails = ({
                            defaultValue={interview.position} onChange={onPositionChange} />
                 </Form.Item>
 
-                <Form.Item label="Guide" name="guide">
-                    <Select
-                        className={styles.input}
-                        onSelect={onGuideChange}
-                        options={guides.map(guide => ({
-                            value: guide.title
-                        }))}
-                        showSearch
-                        placeholder="Select guide"
-                        filterOption={(inputValue, option) =>
-                            option.value.toLocaleLowerCase().includes(inputValue)
-                        }
-                    />
-                </Form.Item>
                 {!isNewInterviewFlow() && <Form.Item {...tailLayout}>
                     <Button type="default" danger onClick={onDeleteClicked}>Delete</Button>
                 </Form.Item>}
@@ -256,9 +295,11 @@ const InterviewDetails = ({
         >
             {isDetailsStep() && <Text>
                 Enter interview detail information and select guide which will be used during the interview.</Text>}
-            {isStructureStep() && <Text>
-                Make adjustments to this interview guide and click on the <Text strong>preview</Text> button to see the
-                changes.</Text>}
+            {isStructureStep() &&
+            <Text>
+                Stay organized and structure the interview. <Text strong>Grouping</Text> questions helps
+                to evaluate skills in a particular area and make a more granular assessment. Click on the <Text
+                strong>preview</Text> button to see the changes.</Text>}
         </PageHeader>}
 
         {isQuestionsStep() && <PageHeader
@@ -298,37 +339,31 @@ const InterviewDetails = ({
         <Row gutter={16} justify="center">
             {isDetailsStep() && createDetailsCard}
             {isPreviewStep() && <Col span={24}>
-                <InterviewDetailsCard interview={interview} header={header} disabled={true} />
+                <InterviewDetailsCard
+                    interview={interview}
+                    header={header}
+                    disabled={true} />
             </Col>}
             {isStructureStep() && <Col>
                 <GuideStructureCard
+                    guides={guides}
                     structure={interview.structure}
-                    onChange={structure => {
-                        setInterview({
-                            ...interview,
-                            structure: structure
-                        })
-                    }}
-                    onAddQuestionClicked={() => setStep(STEP_QUESTIONS)} />
+                    onHeaderChanged={onHeaderChanged}
+                    onFooterChanged={onFooterChanged}
+                    onAddGroupClicked={onAddGroupClicked}
+                    onRemoveGroupClicked={onRemoveGroupClicked}
+                    onGroupNameChanges={onGroupNameChanges}
+                    onGuideChange={onGuideChange}
+                    onAddQuestionClicked={onAddQuestionClicked}
+                />
             </Col>}
             {isQuestionsStep() && <Col span={24}>
-                <GuideQuestionGroup />
+                <GuideQuestionGroup
+                    group={selectedGroup.group}
+                    onGroupQuestionsChange={onGroupQuestionsChange}
+                />
             </Col>}
         </Row>
     </Layout>
 }
-
-const mapStateToProps = state => {
-    const { interviews, loading } = state.interviews || {};
-    const { guides } = state.guides || {};
-
-    return { interviews, guides: Arrays.sortBy(guides, ['title']), loading };
-};
-
-export default connect(mapStateToProps, {
-    loadInterviews,
-    addInterview,
-    deleteInterview,
-    updateInterview,
-    loadGuides
-})(InterviewDetails);
+export default InterviewDetails
