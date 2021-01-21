@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { deleteQuestion, loadQuestionBank } from "../../store/question-bank/actions";
-import { PageHeader, Tabs } from 'antd';
+import { PageHeader, Result, Tabs } from 'antd';
 import styles from "./question-bank.module.css";
 import QuestionBankPersonalCategories from "../../components/question-bank/question-bank-personal-categories";
 
@@ -31,6 +31,8 @@ const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
 
     const isPersonalTab = () => tab === TAB_PERSONAL
 
+    const isCommunityTab = () => tab === TAB_COMMUNITY
+
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
@@ -43,6 +45,12 @@ const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
             }
         />}>
             {isPersonalTab() && <QuestionBankPersonalCategories />}
+
+            {isCommunityTab() && <Result
+                status="403"
+                title="Coming soon"
+                subTitle="Explore question banks made by others."
+            />}
 
         </Layout>
     )
