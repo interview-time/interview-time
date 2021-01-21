@@ -49,7 +49,7 @@ const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
             {isCommunityTab() && <Result
                 status="403"
                 title="Coming soon"
-                subTitle="Explore question banks made by others."
+                subTitle="Sorry, this page is under construction."
             />}
 
         </Layout>

@@ -1,8 +1,8 @@
 import styles from "./account.module.css";
 import Layout from "../../components/layout/layout";
-import {Button, Card, Col, PageHeader, Row} from "antd";
+import { Button, PageHeader, Result } from "antd";
 import React from "react";
-import {useAuth0} from "../../react-auth0-spa";
+import { useAuth0 } from "../../react-auth0-spa";
 
 const Account = () => {
 
@@ -11,18 +11,16 @@ const Account = () => {
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
-            title="Account  Details"
+            title="Profile"
         >
         </PageHeader>}>
 
-            <Row gutter={16} justify="center">
-                <Col className={styles.detailsCard}>
-                    <Card title="Kristin Watson" bordered={false} headStyle={{textAlign: 'center'}}>
-                        <Button type="primary" onClick={() => logout()}>Logout</Button>
-                    </Card>
-                </Col>
-            </Row>
-
+            <Result
+                status="404"
+                title="Coming soon"
+                subTitle="Sorry, this page is under construction."
+                extra={<Button type="primary" onClick={() => logout()}>Logout</Button>}
+            />
         </Layout>
     )
 }

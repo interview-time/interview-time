@@ -1,9 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Divider, Layout as AntLayout, Menu } from "antd";
-import Avatar from "antd/es/avatar/avatar";
 import styles from "./layout.module.css";
-import { GuideIcon, InterviewIcon, QuestionBankIcon } from "../utils/icons";
+import { GuideIcon, InterviewIcon, ProfileIcon, QuestionBankIcon } from "../utils/icons";
 import String from "lodash/string";
 
 const menuIconStyle = { fontSize: '24px' }
@@ -47,13 +46,10 @@ const Layout = ({ children, pageHeader }) => {
                         </Link>
                     </Menu.Item>
                     <Divider />
-                    <Menu.Item key={PATH_ACCOUNT} lassName={styles.menuItem} icon={
-                        <Avatar
-                            src='https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg'
-                            size="24" />
-                    }>
-                        <Link to={`/${PATH_ACCOUNT}`} style={{ marginLeft: '12px' }}>
-                            <span className="nav-text">Kristin Watson</span>
+                    <Menu.Item key={PATH_ACCOUNT} className={styles.menuItem}
+                               icon={<ProfileIcon style={{ fontSize: '20px' }} />}>
+                        <Link to={`/${PATH_ACCOUNT}`}>
+                            <span className="nav-text">Profile</span>
                         </Link>
                     </Menu.Item>
                 </Menu>
