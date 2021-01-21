@@ -37,6 +37,15 @@ const guidesReducer = (state = initialState, action) => {
 
         case SET_GUIDES: {
             const { guides } = action.payload;
+
+            // helps to avoid dealing with null collections
+            guides.forEach(guide => {
+                guide.structure.groups.forEach(group => {
+                    if (!group.questions) {
+                        group.questions = []
+                    }
+                })
+            })
             return {
                 ...state,
                 guides: guides,

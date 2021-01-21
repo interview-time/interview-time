@@ -1,55 +1,53 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styles from "./guide-structure-card.module.css";
-import {DeleteTwoTone, PlusCircleTwoTone} from '@ant-design/icons';
-import {Button, Card, Form, Input, Popconfirm, Space} from "antd";
-import lang from "lodash/lang";
-import array from "lodash/array";
+import { DeleteTwoTone, DownOutlined, PlusCircleTwoTone } from '@ant-design/icons';
+import { Button, Card, Dropdown, Form, Input, Menu, Popconfirm, Space } from "antd";
+import Text from "antd/lib/typography/Text";
+import { Link } from "react-router-dom";
 
-const {TextArea} = Input;
+const { TextArea } = Input;
 
 const layout = {
-    labelCol: {span: 6},
-    wrapperCol: {span: 18},
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
 };
 
 const tailLayout = {
-    wrapperCol: {offset: 6, span: 18},
+    wrapperCol: { offset: 6, span: 18 },
 };
 
-const GuideStructureCard = (props) => {
-    const structure = props.structure
-    const [groups, setGroups] = useState(structure.groups ? lang.cloneDeep(structure.groups) : [])
+const GuideStructureCard = ({
+                                guides,
+                                structure,
+                                onHeaderChanged,
+                                onFooterChanged,
+                                onGuideChange,
+                                onAddGroupClicked,
+                                onRemoveGroupClicked,
+                                onGroupNameChanges,
+                                onAddQuestionClicked
+                            }) => {
 
-    const onGroupNameChanges = (groupId, groupName) => {
-        structure.groups.find(group => group.groupId === groupId).name = groupName
-    };
+    const menu = <Menu>
+        {guides && guides.map(guide => {
+            return <Menu.Item onClick={() => {
+                onGuideChange(guide)
+            }}>{guide.title}</Menu.Item>
+        })}
+    </Menu>;
 
-    const onAddGroupClicked = () => {
-        const newGroup = {
-            groupId: Date.now().toString(),
-            questions: []
-        }
-
-        structure.groups.push(newGroup)
-        setGroups([...groups, newGroup])
-    }
-
-    const onRemoveGroupClicked = id => {
-        array.remove(structure.groups, group => group.groupId === id)
-        setGroups(groups.filter(group => group.groupId !== id))
-    }
-
-    const onHeaderChanged = event => {
-        structure.header = event.target.value
-    }
-
-    const onFooterChanged = event => {
-        structure.footer = event.target.value
-    }
-
-    return <Card title="Guide Structure" bordered={false} headStyle={{textAlign: 'center'}} style={{width: 700}}>
+    return <Card title={guides ? "Interview Structure" : "Guide Structure"} bordered={false}
+                 headStyle={{ textAlign: 'center' }} style={{ width: 700 }}>
         <Form {...layout}>
-            <Form.Item label="Intro" {...layout}>
+            {guides && <Form.Item {...tailLayout}>
+                <Text>Don't start from scratch, </Text>
+                <Dropdown overlay={menu}>
+                    <Link className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                        select guide <DownOutlined />
+                    </Link>
+                </Dropdown>
+            </Form.Item>}
+            <Form.Item label="Intro" {...layout} key={structure.header}>
                 <TextArea
                     className={styles.input}
                     defaultValue={structure.header}
@@ -59,7 +57,7 @@ const GuideStructureCard = (props) => {
             </Form.Item>
 
             <>
-                {groups.map((group) => {
+                {structure.groups.map((group) => {
                     return <Form.Item label="Question Group" key={group.groupId}>
                         <Space>
                             <Input placeholder='e.g. Software Design Patterns'
@@ -68,13 +66,15 @@ const GuideStructureCard = (props) => {
                                    defaultValue={group.name} />
                             <Button type="dashed" block icon={<PlusCircleTwoTone />}
                                     className={styles.addQuestionButton}
-                                    onClick={() => {props.onAddQuestionClicked(group)}}>Question</Button>
+                                    onClick={() => {
+                                        onAddQuestionClicked(group)
+                                    }}>Question</Button>
                             <Popconfirm
                                 title="Are you sure you want to delete this group?"
                                 onConfirm={() => onRemoveGroupClicked(group.groupId)}
                                 okText="Yes"
                                 cancelText="No">
-                                <DeleteTwoTone twoToneColor="red"  />
+                                <DeleteTwoTone twoToneColor="red" />
                             </Popconfirm>
                         </Space>
                     </Form.Item>;
@@ -86,7 +86,7 @@ const GuideStructureCard = (props) => {
                         onClick={onAddGroupClicked}>Group</Button>
             </Form.Item>
 
-            <Form.Item label="Overall">
+            <Form.Item label="Overall" key={structure.footer}>
                 <TextArea
                     className={styles.input}
                     defaultValue={structure.footer}
