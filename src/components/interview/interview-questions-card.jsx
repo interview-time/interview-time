@@ -33,12 +33,6 @@ const columns = [
         ),
     },
     {
-        title: 'Time',
-        key: 'time',
-        width: 100,
-        dataIndex: 'time',
-    },
-    {
         title: 'Assessment',
         key: 'question',
         render: (question) => <AssessmentCheckbox

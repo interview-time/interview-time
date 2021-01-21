@@ -10,10 +10,11 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Button, Card, Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Tabs } from 'antd';
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
-import GuideQuestionGroup from "../../components/guide/guide-question-group";
 import lang from "lodash/lang";
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../common/constants";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
+import Collection from "lodash/collection";
+import InterviewQuestionGroup from "../../components/interview/interview-question-group";
 
 const { TabPane } = Tabs;
 
@@ -52,8 +53,9 @@ const InterviewDetails = () => {
         interviewsLoading: state.interviews.loading
     }), shallowEqual);
 
-    const {questions, questionsLoading} = useSelector(state => ({
-        questions: state.questionBank.questions,
+    const {categories, questions, questionsLoading} = useSelector(state => ({
+        categories: state.questionBank.categories.sort(),
+        questions: Collection.sortBy(state.questionBank.questions, ['question']),
         questionsLoading: state.questionBank.loading
     }), shallowEqual);
 
@@ -72,7 +74,6 @@ const InterviewDetails = () => {
         questions: []
     });
 
-    const [form] = Form.useForm();
     const history = useHistory();
     const header = React.createRef();
     const { id } = useParams();
@@ -191,6 +192,24 @@ const InterviewDetails = () => {
             group: group
         })
     }
+
+    const onAddQuestionDiscard = () => {
+        setStep(STEP_STRUCTURE)
+        setSelectedGroup({
+            group: {},
+            questions: []
+        })
+    }
+    const onAddQuestionConfirmed = () => {
+        const updatedInterview = lang.cloneDeep(interview)
+        updatedInterview.structure.groups
+            .find(group => group.groupId === selectedGroup.group.groupId)
+            .questions = lang.cloneDeep(selectedGroup.questions)
+
+        setStep(STEP_STRUCTURE)
+        setInterview(updatedInterview)
+    }
+
     const onGuideChange = (guide) => {
         const structure = lang.cloneDeep(guide.structure)
         structure.groups.forEach((group, index) =>
@@ -248,9 +267,7 @@ const InterviewDetails = () => {
 
     const createDetailsCard = <Col key={interview.interviewId} className={styles.detailsCard}>
         <Card title="Interview Details" bordered={false} headStyle={{ textAlign: 'center' }}>
-            <Form
-                {...layout}
-                form={form}>
+            <Form {...layout} preserve={false}>
                 <Form.Item label="Candidate Name">
                     <Input placeholder="Jon Doe" className={styles.input}
                            defaultValue={interview.candidate} onChange={onCandidateChange} />
@@ -307,10 +324,10 @@ const InterviewDetails = () => {
             onBack={() => onBackClicked()}
             title="Add questions to question group"
             extra={[
-                <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
+                <Button type="default" onClick={onAddQuestionDiscard}>
                     <span className="nav-text">Discard</span>
                 </Button>,
-                <Button type="primary" onClick={() => setStep(STEP_STRUCTURE)}>
+                <Button type="primary" onClick={onAddQuestionConfirmed}>
                     <span className="nav-text">Done</span>
                 </Button>
             ]}
@@ -358,7 +375,9 @@ const InterviewDetails = () => {
                 />
             </Col>}
             {isQuestionsStep() && <Col span={24}>
-                <GuideQuestionGroup
+                <InterviewQuestionGroup
+                    categories={categories}
+                    questions={questions}
                     group={selectedGroup.group}
                     onGroupQuestionsChange={onGroupQuestionsChange}
                 />

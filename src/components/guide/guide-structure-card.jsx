@@ -3,6 +3,7 @@ import styles from "./guide-structure-card.module.css";
 import { DeleteTwoTone, DownOutlined, PlusCircleTwoTone } from '@ant-design/icons';
 import { Button, Card, Dropdown, Form, Input, Menu, Popconfirm, Space } from "antd";
 import Text from "antd/lib/typography/Text";
+import { Link } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -41,9 +42,9 @@ const GuideStructureCard = ({
             {guides && <Form.Item {...tailLayout}>
                 <Text>Don't start from scratch, </Text>
                 <Dropdown overlay={menu}>
-                    <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                    <Link className="ant-dropdown-link" onClick={e => e.preventDefault()}>
                         select guide <DownOutlined />
-                    </a>
+                    </Link>
                 </Dropdown>
             </Form.Item>}
             <Form.Item label="Intro" {...layout} key={structure.header}>
