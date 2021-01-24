@@ -7,6 +7,8 @@ namespace CafApi.Services
     public interface IQuestionBankService
     {
         Task<List<QuestionBank>> GetQuestionBank(string userId, string category);
+        
+        Task DeleteQuestionBank(string userId, string category);
 
         Task<QuestionBank> AddQuestion(QuestionBank questionBank);
 
