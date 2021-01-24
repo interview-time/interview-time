@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
@@ -16,7 +18,13 @@ namespace CafApi.Controllers
     {
         private readonly IInterviewService _interviewService;
         private readonly ILogger<InterviewController> _logger;
-        private readonly string _userId = "a653da88-78d6-4cad-a24c-33a9d7a87a69";
+        private string UserId
+        {
+            get
+            {
+                return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            }
+        }
 
         public InterviewController(ILogger<InterviewController> logger, IInterviewService interviewService)
         {
@@ -27,7 +35,7 @@ namespace CafApi.Controllers
         [HttpGet()]
         public async Task<List<Interview>> Get()
         {
-            var interviews = await _interviewService.GetInterviews(_userId);
+            var interviews = await _interviewService.GetInterviews(UserId);
 
             return interviews;
         }
@@ -35,27 +43,27 @@ namespace CafApi.Controllers
         [HttpPost()]
         public async Task<Interview> AddInterview([FromBody] Interview interview)
         {
-            interview.UserId = _userId;
+            interview.UserId = UserId;
             return await _interviewService.AddInterview(interview);
         }
 
         [HttpPut()]
         public async Task UpdateInterview([FromBody] Interview interview)
         {
-            interview.UserId = _userId;
+            interview.UserId = UserId;
             await _interviewService.UpdateInterview(interview);
         }
 
         [HttpDelete("{guideId}")]
         public async Task DeleteInterview(string guideId)
         {
-            await _interviewService.DeleteInterview(_userId, guideId);
+            await _interviewService.DeleteInterview(UserId, guideId);
         }
 
         [HttpPatch("scorecard")]
         public async Task SubmitScoreCard([FromBody] ScoreCardRequest scoreCard)
         {
-            await _interviewService.SubmitScorecard(_userId, scoreCard);
+            await _interviewService.SubmitScorecard(UserId, scoreCard);
         }
     }
 }
