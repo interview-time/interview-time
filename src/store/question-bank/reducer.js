@@ -1,10 +1,12 @@
 import {
     ADD_CATEGORY,
     ADD_QUESTION,
+    DELETE_CATEGORY,
     DELETE_QUESTION,
     LOAD_QUESTION_BANK,
     SET_QUESTION_BANK,
     setQuestionBank,
+    UPDATE_CATEGORY,
     UPDATE_QUESTION
 } from "./actions";
 import axios from "axios";
@@ -51,6 +53,68 @@ const questionBankReducer = (state = initialState, action) => {
                 questions: questions ? questions : [],
                 categories: categories ? categories : [],
                 loading: false
+            };
+        }
+
+        case UPDATE_CATEGORY: {
+            const { category, newCategory } = action.payload;
+
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.post(`${URL}/category/${category}/${newCategory}`, null,{
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        }
+                    )
+                )
+                .then(() => console.log(`Questions with category ${category} updated to ${newCategory}`))
+                .catch((reason) => console.error(reason));
+
+            const questions = state.questions.map(item => {
+                if(item.category === category) {
+                    item.category = newCategory
+                }
+                return item
+            });
+
+            const categories = state.categories.map(item => {
+                if (item === category) {
+                    return newCategory
+                } else {
+                    return item
+                }
+            });
+
+            return {
+                ...state,
+                questions: questions,
+                categories: categories
+            };
+        }
+
+        case DELETE_CATEGORY: {
+            const { category } = action.payload;
+
+            getAccessTokenSilently()
+                .then((token) =>
+                    axios.delete(`${URL}/category/${category}`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        }
+                    )
+                )
+                .then(() => console.log(`Questions with category removed: ${category}`))
+                .catch((reason) => console.error(reason));
+
+            const questions = state.questions.filter(question => question.category !== category);
+            const categories = state.categories.filter(item => item !== category);
+
+            return {
+                ...state,
+                questions: questions,
+                categories: categories,
             };
         }
 

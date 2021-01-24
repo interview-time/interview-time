@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import styles from "./question-bank-personal-categories.module.css";
 import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, Row, Space, Statistic, Table, Tag } from "antd";
 import { getAvatarColor, getAvatarText } from "../../pages/common/constants";
-import { addCategory, addQuestion, deleteQuestion, updateQuestion } from "../../store/question-bank/actions";
+import { addCategory, deleteCategory, addQuestion, deleteQuestion, updateQuestion, updateCategory } from "../../store/question-bank/actions";
 import Text from "antd/lib/typography/Text";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import CategoryDetailsModal from "./modal-category-details";
@@ -16,6 +16,9 @@ const { Search } = Input;
 const STATE_CATEGORIES = "categories"
 const STATE_CATEGORY_DETAILS = "category-details"
 
+const KEY_DELETE = "delete"
+const KEY_EDIT = "edit"
+
 const QuestionBankPersonalCategories = ({
                                             categories,
                                             questions,
@@ -23,7 +26,9 @@ const QuestionBankPersonalCategories = ({
                                             addQuestion,
                                             updateQuestion,
                                             deleteQuestion,
-                                            addCategory
+                                            addCategory,
+                                            deleteCategory,
+                                            updateCategory,
                                         }) => {
 
     const [state, setState] = useState(STATE_CATEGORIES);
@@ -101,12 +106,22 @@ const QuestionBankPersonalCategories = ({
         })
     }
 
-    const onUpdateCategoryClicked = (category) => {
+    const onUpdateCategoryClicked = (oldCategory, newCategory) => {
+        setCategoryDetailsModal({
+            visible: false,
+            category: ''
+        });
+        updateCategory(oldCategory, newCategory)
+        setState(STATE_CATEGORIES)
+    };
+
+    const onCreateCategoryClicked = (category) => {
         setCategoryDetailsModal({
             visible: false,
             category: ''
         });
         addCategory(category)
+        setState(STATE_CATEGORIES)
     };
 
     const onCategoryDetailCancel = () => {
@@ -161,24 +176,34 @@ const QuestionBankPersonalCategories = ({
     }
 
     const onMenuClicked = (e) => {
-        console.log(e)
+        if(e.key === KEY_DELETE) {
+            deleteCategory(selectedCategory.categoryName)
+            setState(STATE_CATEGORIES)
+        }  else if(e.key === KEY_EDIT) {
+            setCategoryDetailsModal({
+                visible: true,
+                category: selectedCategory.categoryName
+            });
+        }
     };
 
     const categoryMenu = (
         <Menu onClick={onMenuClicked}>
-            <Menu.Item key="edit">Edit Category</Menu.Item>
+            <Menu.Item key={KEY_EDIT}>Edit Category</Menu.Item>
+            <Menu.Item key={KEY_DELETE}>Delete Category</Menu.Item>
         </Menu>
     );
 
     return (
         <>
+            <CategoryDetailsModal
+                visible={categoryDetailsModal.visible}
+                categoryToUpdate={categoryDetailsModal.category}
+                onUpdate={onUpdateCategoryClicked}
+                onCreate={onCreateCategoryClicked}
+                onCancel={onCategoryDetailCancel}
+            />
             {isCategoriesState() && <div>
-                <CategoryDetailsModal
-                    visible={categoryDetailsModal.visible}
-                    categoryToUpdate={categoryDetailsModal.category}
-                    onCreate={onUpdateCategoryClicked}
-                    onCancel={onCategoryDetailCancel}
-                />
                 <Card>
                     <div className={styles.tabHeader}>
                         <Text>Select category</Text>
@@ -277,5 +302,7 @@ export default connect(mapStateToProps, {
     addQuestion,
     updateQuestion,
     deleteQuestion,
-    addCategory
+    addCategory,
+    deleteCategory,
+    updateCategory
 })(QuestionBankPersonalCategories);

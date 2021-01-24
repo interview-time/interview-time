@@ -1,5 +1,4 @@
-import { Switch, Redirect } from "react-router-dom";
-import Default from "./pages/default/default";
+import { Switch} from "react-router-dom";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
 import InterviewDetails from "./pages/interview-details/interview-details";
@@ -21,8 +20,7 @@ function App() {
 
   return (
     <Switch>
-      <PrivateRoute path="/" exact component={Default} />
-      <PrivateRoute path="/default" render={() => <Redirect to="/" />} />
+      <PrivateRoute path="/" exact component={QuestionBank} />
       <PrivateRoute path="/question-bank" exact component={QuestionBank} />
       <PrivateRoute path="/interviews" exact component={Interviews} />
       <PrivateRoute path="/interviews/add" exact component={InterviewDetails} />

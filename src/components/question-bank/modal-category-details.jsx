@@ -6,7 +6,7 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const CategoryDetailsModal = ({visible, onCreate, onCancel, categoryToUpdate}) => {
+const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryToUpdate }) => {
     const noError = {
         status: '',
         help: '',
@@ -26,12 +26,14 @@ const CategoryDetailsModal = ({visible, onCreate, onCancel, categoryToUpdate}) =
     }
 
     const onCreateClicked = () => {
-        if(category.length === 0) {
+        if (category.length === 0) {
             setError({
                 status: 'error',
                 help: 'Category name is required.',
             })
-        } else{
+        } else if (categoryToUpdate) {
+            onUpdate(categoryToUpdate, category)
+        } else {
             onCreate(category)
         }
     }
@@ -49,7 +51,7 @@ const CategoryDetailsModal = ({visible, onCreate, onCancel, categoryToUpdate}) =
                onCancel={onCancelClicked}>
             <Form {...layout} preserve={false}>
                 <Form.Item label="Name" validateStatus={error.status} help={error.help}>
-                    <Input defaultValue={category} onChange = {onCategoryChange}/>
+                    <Input defaultValue={category} onChange={onCategoryChange} />
                 </Form.Item>
             </Form>
         </Modal>
