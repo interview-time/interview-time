@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
@@ -15,7 +17,13 @@ namespace CafApi.Controllers
     {
         private readonly IGuideService _guideService;
         private readonly ILogger<GuideController> _logger;
-        private readonly string _userId = "a653da88-78d6-4cad-a24c-33a9d7a87a69";
+        private string UserId
+        {
+            get
+            {
+                return User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            }
+        }
 
         public GuideController(ILogger<GuideController> logger, IGuideService guideService)
         {
@@ -26,7 +34,7 @@ namespace CafApi.Controllers
         [HttpGet()]
         public async Task<List<Guide>> Get()
         {
-            var guides = await _guideService.GetGuides(_userId);
+            var guides = await _guideService.GetGuides(UserId);
 
             return guides;
         }
@@ -34,20 +42,20 @@ namespace CafApi.Controllers
         [HttpPost()]
         public async Task<Guide> AddGuide([FromBody] Guide guide)
         {
-            guide.UserId = _userId;
+            guide.UserId = UserId;
             return await _guideService.AddGuide(guide);
         }
 
         [HttpDelete("{guideId}")]
         public async Task DeleteGuide(string guideId)
         {
-            await _guideService.DeleteGuide(_userId, guideId);
+            await _guideService.DeleteGuide(UserId, guideId);
         }
 
         [HttpPut()]
         public async Task UpdateGuide([FromBody] Guide guide)
         {
-            guide.UserId = _userId;
+            guide.UserId = UserId;
             await _guideService.UpdateGuide(guide);
         }
     }
