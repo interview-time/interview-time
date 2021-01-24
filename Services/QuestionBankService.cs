@@ -32,6 +32,24 @@ namespace CafApi.Services
             return await _context.QueryAsync<QuestionBank>(userId, config).GetRemainingAsync();
         }
 
+        public async Task DeleteQuestionBank(IEnumerable<QuestionBank> questions)
+        {
+            var batch = _context.CreateBatchWrite<QuestionBank>();
+            
+            batch.AddDeleteItems(questions);
+
+            await batch.ExecuteAsync();
+        }
+
+        public async Task UpdateQuestionBank(IEnumerable<QuestionBank> questions)
+        {
+            var batch = _context.CreateBatchWrite<QuestionBank>();
+            
+            batch.AddPutItems(questions);
+
+            await batch.ExecuteAsync();
+        }
+
         public async Task<QuestionBank> AddQuestion(QuestionBank questionBank)
         {
             questionBank.QuestionId = Guid.NewGuid().ToString();
