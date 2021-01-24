@@ -9,6 +9,8 @@ namespace CafApi.Services
         Task<List<QuestionBank>> GetQuestionBank(string userId, string category);
         
         Task DeleteQuestionBank(IEnumerable<QuestionBank> questions);
+        
+        Task UpdateQuestionBank(IEnumerable<QuestionBank> questions);
 
         Task<QuestionBank> AddQuestion(QuestionBank questionBank);
 

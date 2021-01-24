@@ -60,6 +60,19 @@ namespace CafApi.Controllers
             
             await _questionBankService.DeleteQuestionBank(questions);
         }
+        
+        [HttpPost("category/{category}/{newCategory}")]
+        public async Task Update(string category, string newCategory)
+        {
+            var questions = await _questionBankService.GetQuestionBank(UserId, category);
+
+            foreach (var question in questions)
+            {
+                question.Category = newCategory;
+            }
+            
+            await _questionBankService.UpdateQuestionBank(questions);
+        }
 
         [HttpPost()]
         public async Task<QuestionBank> AddQuestion([FromBody] QuestionBank questionBank)
