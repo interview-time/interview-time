@@ -32,19 +32,13 @@ namespace CafApi.Services
             return await _context.QueryAsync<QuestionBank>(userId, config).GetRemainingAsync();
         }
 
-        public async Task DeleteQuestionBank(string userId, string category)
+        public async Task DeleteQuestionBank(IEnumerable<QuestionBank> questions)
         {
-            var config = new DynamoDBOperationConfig();
+            var batch = _context.CreateBatchWrite<QuestionBank>();
             
-            if (!string.IsNullOrWhiteSpace(category))
-            {
-                config.QueryFilter = new List<ScanCondition>
-                {
-                    new ScanCondition("Category", ScanOperator.Equal, category)
-                };
-            }
-            
-            await _context.DeleteAsync<QuestionBank>(userId, config);
+            batch.AddDeleteItems(questions);
+
+            await batch.ExecuteAsync();
         }
 
         public async Task<QuestionBank> AddQuestion(QuestionBank questionBank)
