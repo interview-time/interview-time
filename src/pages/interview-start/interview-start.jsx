@@ -10,20 +10,21 @@ import InterviewDetailsCard from "../../components/interview/interview-details-c
 import Text from "antd/es/typography/Text";
 import { getDecisionColor, getDecisionText, Status } from "../common/constants";
 
-const emptyInterview = {
-    id: undefined,
-    candidate: '',
-    position: '',
-    guideId: '',
-    interviewDateTime: '',
-    structure: {
-        groups: []
-    }
-}
-
 const DATA_UPLOAD_INTERVAL = 10000 // 10 sec
 
 const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, deleteInterview }) => {
+
+    const emptyInterview = {
+        id: undefined,
+        candidate: '',
+        position: '',
+        guideId: '',
+        interviewDateTime: '',
+        structure: {
+            groups: []
+        }
+    }
+
     const [interview, setInterview] = useState(emptyInterview);
     const { id } = useParams();
     const history = useHistory();

@@ -35,18 +35,18 @@ const STEP_QUESTIONS = 4
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
-const emptyInterview = {
-    interviewId: undefined,
-    candidate: '',
-    position: '',
-    guideId: '',
-    interviewDateTime: '',
-    structure: {
-        groups: []
-    }
-}
-
 const InterviewDetails = () => {
+
+    const emptyInterview = {
+        interviewId: undefined,
+        candidate: '',
+        position: '',
+        guideId: '',
+        interviewDateTime: '',
+        structure: {
+            groups: []
+        }
+    }
 
     const {interviews, interviewsLoading} = useSelector(state => ({
         interviews: state.interviews.interviews,

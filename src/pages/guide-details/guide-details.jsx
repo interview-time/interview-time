@@ -38,14 +38,15 @@ const STEP_PREVIEW = 4
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
 
-const emptyGuide = {
-    guideId: undefined,
-    structure: {
-        groups: []
-    }
-}
-
 const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, updateGuide }) => {
+
+    const emptyGuide = {
+        guideId: undefined,
+        structure: {
+            groups: []
+        }
+    }
+
     const [step, setStep] = useState(STEP_DETAILS);
     const [guide, setGuide] = useState(emptyGuide);
     const [selectedGroup, setSelectedGroup] = useState({
@@ -59,6 +60,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
     const isNewGuideFlow = () => !id;
 
     React.useEffect(() => {
+        console.log(JSON.stringify(guide))
         if (!isNewGuideFlow() && !guide.guideId && !loading) {
             const guide = guides.find(guide => guide.guideId === id);
             if (guide) {
@@ -72,7 +74,8 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
         if (!isNewGuideFlow() && guides.length === 0 && !loading) {
             loadGuides();
         }
-    });
+        // eslint-disable-next-line
+    }, []);
 
     const isDetailsStep = () => step === STEP_DETAILS
 
