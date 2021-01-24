@@ -53,7 +53,7 @@ namespace CafApi.Controllers
             return await _questionBankService.GetQuestionBank(UserId, category);
         }
         
-        [HttpDelete("{category}")]
+        [HttpDelete("category/{category}")]
         public async Task DeleteQuestionBank(string category)
         {
             await _questionBankService.DeleteQuestionBank(UserId, category);
