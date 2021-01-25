@@ -218,6 +218,7 @@ const InterviewDetails = () => {
         )
         setInterview({
             ...interview,
+            guideId: guide.guideId,
             structure: structure
         })
     }
