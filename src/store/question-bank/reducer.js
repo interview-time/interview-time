@@ -4,6 +4,7 @@ import {
     DELETE_CATEGORY,
     DELETE_QUESTION,
     LOAD_QUESTION_BANK,
+    loadQuestionBank,
     SET_QUESTION_BANK,
     setQuestionBank,
     UPDATE_CATEGORY,
@@ -12,6 +13,7 @@ import {
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
+import { config } from "../common";
 
 const initialState = {
     questions: [],
@@ -22,30 +24,20 @@ const initialState = {
 const URL = `${process.env.REACT_APP_API_URL}/question-bank`;
 
 const questionBankReducer = (state = initialState, action) => {
-    console.log(action.type)
     switch (action.type) {
 
         case LOAD_QUESTION_BANK: {
+            console.log(action.type)
+            getAccessTokenSilently()
+                .then(token => axios.get(URL, config(token)))
+                .then(res => store.dispatch(setQuestionBank(res.data)))
+                .catch(reason => console.error(reason));
 
-            if (state.questions.length === 0) {
-                getAccessTokenSilently()
-                    .then((token) =>
-                        axios.get(URL, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        })
-                    )
-                    .then(res => store.dispatch(setQuestionBank(res.data)))
-                    .catch((reason) => console.error(reason));
-
-                return { ...state, loading: true };
-            }
-
-            return state;
+            return { ...state, loading: true };
         }
 
         case SET_QUESTION_BANK: {
+            console.log(action.type)
             const { questions, categories } = action.payload;
 
             return {
@@ -57,22 +49,16 @@ const questionBankReducer = (state = initialState, action) => {
         }
 
         case UPDATE_CATEGORY: {
+            console.log(action.type)
             const { category, newCategory } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.post(`${URL}/category/${category}/${newCategory}`, null,{
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        }
-                    )
-                )
+                .then(token => axios.post(`${URL}/category/${category}/${newCategory}`, null, config(token)))
                 .then(() => console.log(`Questions with category ${category} updated to ${newCategory}`))
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             const questions = state.questions.map(item => {
-                if(item.category === category) {
+                if (item.category === category) {
                     item.category = newCategory
                 }
                 return item
@@ -94,19 +80,13 @@ const questionBankReducer = (state = initialState, action) => {
         }
 
         case DELETE_CATEGORY: {
+            console.log(action.type)
             const { category } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.delete(`${URL}/category/${category}`, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        }
-                    )
-                )
+                .then(token => axios.delete(`${URL}/category/${category}`, config(token)))
                 .then(() => console.log(`Questions with category removed: ${category}`))
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             const questions = state.questions.filter(question => question.category !== category);
             const categories = state.categories.filter(item => item !== category);
@@ -119,29 +99,15 @@ const questionBankReducer = (state = initialState, action) => {
         }
 
         case ADD_QUESTION: {
+            console.log(action.type)
             const { question } = action.payload;
-            const localId = Date.now().toString()
-            question.questionId = localId
+            question.questionId = Date.now().toString();
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.post(URL, question, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                )
-                .then(res => {
-                    const question = state.questions.filter(item => item.questionId !== localId);
-                    store.dispatch(setQuestionBank(
-                        {
-                            ...state,
-                            questions: [...state.questions, res.data]
-                        }
-                    ))
-                    console.log(`Question added: ${JSON.stringify(question)}`)
-                })
-                .catch((reason) => console.error(reason));
+                .then((token) => axios.post(URL, question, config(token)))
+                .then(() => console.log(`Question added: ${JSON.stringify(question)}`))
+                .then(() => store.dispatch(loadQuestionBank()))
+                .catch(reason => console.error(reason));
 
             return {
                 ...state,
@@ -152,18 +118,14 @@ const questionBankReducer = (state = initialState, action) => {
         }
 
         case UPDATE_QUESTION: {
+            console.log(action.type)
             const { question } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.put(URL, question, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                )
+                .then(token => axios.put(URL, question, config(token)))
                 .then(() => console.log(`Question updated: ${JSON.stringify(question)}`))
-                .catch((reason) => console.error(reason));
+                .then(() => store.dispatch(loadQuestionBank()))
+                .catch(reason => console.error(reason));
 
             const questions = state.questions.map(q => {
                 if (q.questionId !== question.questionId) {
@@ -182,20 +144,13 @@ const questionBankReducer = (state = initialState, action) => {
         }
 
         case DELETE_QUESTION: {
+            console.log(action.type)
             const { questionId } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.delete(`${URL}/${questionId}`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        }
-                    )
-                )
+                .then(token => axios.delete(`${URL}/${questionId}`, config(token)))
                 .then(() => console.log(`Question removed: ${JSON.stringify(questionId)}`))
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             const reducedQuestions = state.questions.filter(question => question.questionId !== questionId);
 

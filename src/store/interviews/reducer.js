@@ -1,14 +1,15 @@
 import {
-    LOAD_INTERVIEWS,
-    SET_INTERVIEWS,
     ADD_INTERVIEW,
-    UPDATE_INTERVIEW,
     DELETE_INTERVIEW,
+    LOAD_INTERVIEWS, loadInterviews,
+    SET_INTERVIEWS,
+    setInterviews,
+    UPDATE_INTERVIEW,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
-import { setInterviews } from "./actions";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
+import { config } from "../common";
 
 const initialState = {
     interviews: [],
@@ -18,32 +19,21 @@ const initialState = {
 const URL = `${process.env.REACT_APP_API_URL}/interview`;
 
 const interviewsReducer = (state = initialState, action) => {
-    console.log(action.type)
+
     switch (action.type) {
+
         case LOAD_INTERVIEWS: {
-            if (state.interviews.length === 0) {
+            console.log(action.type)
+            getAccessTokenSilently()
+                .then(token => axios.get(URL, config(token)))
+                .then(res => store.dispatch(setInterviews(res.data || [])))
+                .catch(reason => console.error(reason));
 
-                getAccessTokenSilently()
-                    .then((token) =>
-                        axios.get(URL, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        })
-                    )
-                    .then(res => {
-                        store.dispatch(setInterviews(res.data || []));
-                        console.log("Interviews loaded.")
-                    })
-                    .catch((reason) => console.error(reason));
-
-                return { ...state, loading: true };
-            }
-
-            return state;
+            return { ...state, loading: true };
         }
 
         case SET_INTERVIEWS: {
+            console.log(action.type)
             const { interviews } = action.payload;
             return {
                 ...state,
@@ -53,24 +43,15 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case ADD_INTERVIEW: {
+            console.log(action.type)
             const { interview } = action.payload;
-            const localId = Date.now().toString()
-            interview.interviewId = localId
+            interview.interviewId = Date.now().toString()
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.post(URL, interview, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                )
-                .then(res => {
-                    const interviews = state.interviews.filter(item => item.interviewId !== localId);
-                    store.dispatch(setInterviews([...interviews, res.data]))
-                    console.log(`Interview added: ${JSON.stringify(interview)}`)
-                })
-                .catch((reason) => console.error(reason));
+                .then(token => axios.post(URL, interview, config(token)))
+                .then(() => console.log(`Interview added: ${JSON.stringify(interview)}`))
+                .then(() => store.dispatch(loadInterviews()))
+                .catch(reason => console.error(reason));
 
             return {
                 ...state,
@@ -79,18 +60,14 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case UPDATE_INTERVIEW: {
+            console.log(action.type)
             const { interview } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.put(URL, interview, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                )
+                .then(token => axios.put(URL, interview, config(token)))
                 .then(() => console.log(`Interview updated: ${JSON.stringify(interview)}`))
-                .catch((reason) => console.error(reason));
+                .then(() => store.dispatch(loadInterviews()))
+                .catch(reason => console.error(reason));
 
             const interviews = state.interviews.map(item => {
                 if (item.interviewId !== interview.interviewId) {
@@ -109,18 +86,13 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case DELETE_INTERVIEW: {
+            console.log(action.type)
             const { interviewId } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) =>
-                    axios.delete(`${URL}/${interviewId}`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    })
-                )
+                .then(token => axios.delete(`${URL}/${interviewId}`, config(token)))
                 .then(() => console.log("Interview removed."))
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             const interviews = state.interviews.filter(item => item.interviewId !== interviewId);
             return {
