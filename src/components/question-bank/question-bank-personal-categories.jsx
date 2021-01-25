@@ -3,7 +3,14 @@ import { connect } from "react-redux";
 import styles from "./question-bank-personal-categories.module.css";
 import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, Row, Space, Statistic, Table, Tag } from "antd";
 import { getAvatarColor, getAvatarText } from "../../pages/common/constants";
-import { addCategory, deleteCategory, addQuestion, deleteQuestion, updateQuestion, updateCategory } from "../../store/question-bank/actions";
+import {
+    addCategory,
+    addQuestion,
+    deleteCategory,
+    deleteQuestion,
+    updateCategory,
+    updateQuestion
+} from "../../store/question-bank/actions";
 import Text from "antd/lib/typography/Text";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import CategoryDetailsModal from "./modal-category-details";
@@ -194,6 +201,16 @@ const QuestionBankPersonalCategories = ({
         </Menu>
     );
 
+    const getTagsCount = category => {
+        let tags = 0
+        category.questions.forEach(item => {
+            if (item.tags) {
+                tags += item.tags.length
+            }
+        })
+        return tags
+    };
+
     return (
         <>
             <CategoryDetailsModal
@@ -241,12 +258,12 @@ const QuestionBankPersonalCategories = ({
                             <Row span={24}>
                                 <Col span={12}>
                                     <Statistic title="Questions"
-                                               value={category.questions ? category.questions.length : 0}
+                                               value={category.questions.length}
                                                valueStyle={{ fontSize: "large" }} />
                                 </Col>
                                 <Col span={12}>
                                     <Statistic title="Tags"
-                                               value={0}
+                                               value={getTagsCount(category)}
                                                valueStyle={{ fontSize: "large" }} />
                                 </Col>
                             </Row>
