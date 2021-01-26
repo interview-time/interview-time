@@ -45,7 +45,9 @@
 .logout {
     position: fixed;
     bottom: 40px;
-    left: 25px;
     z-index: 1;
-    width: 150px;
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+    color: #282c34;
   }

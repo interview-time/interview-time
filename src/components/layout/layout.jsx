@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Divider, Layout as AntLayout, Menu, Button } from "antd";
+import { Divider, Layout as AntLayout, Menu} from "antd";
 import styles from "./layout.module.css";
-import { GuideIcon, InterviewIcon, ProfileIcon, QuestionBankIcon } from "../utils/icons";
+import { GuideIcon, InterviewIcon, ProfileIcon, QuestionBankIcon, SignOutIcon } from "../utils/icons";
 import String from "lodash/string";
 import { useAuth0 } from "../../react-auth0-spa";
 
@@ -54,10 +54,8 @@ const Layout = ({ children, pageHeader }) => {
                         </Link>
                     </Menu.Item>
                 </Menu>
-                <Button className={styles.logout} type="outline" size="large" block
-                    onClick={() => logout({ returnTo: window.location.origin })}>
-                    Sign Out
-                </Button>
+                <Link className={styles.logout} onClick={() => logout({ returnTo: window.location.origin })}>
+                    <SignOutIcon style={{ fontSize: '20px', paddingRight: '8px' }} /> Sign Out</Link>
             </AntLayout.Sider>
             <AntLayout className="site-layout">
                 {pageHeader}
