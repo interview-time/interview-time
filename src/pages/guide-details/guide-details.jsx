@@ -4,7 +4,21 @@ import { connect } from "react-redux";
 import { addGuide, deleteGuide, loadGuides, updateGuide } from "../../store/guides/actions";
 import styles from "./guide-details.module.css";
 import Layout from "../../components/layout/layout";
-import { Button, Card, Col, Form, Input, message, Modal, PageHeader, Popconfirm, Row, Select, Tabs } from 'antd';
+import {
+    Button,
+    Card,
+    Col,
+    Drawer,
+    Form,
+    Input,
+    message,
+    Modal,
+    PageHeader,
+    Popconfirm,
+    Row,
+    Select,
+    Tabs
+} from 'antd';
 import Text from "antd/es/typography/Text";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import GuideQuestionGroup from "../../components/guide/guide-question-group";
@@ -33,7 +47,6 @@ const tailLayout = {
 const STEP_DETAILS = 1
 const STEP_STRUCTURE = 2
 const STEP_QUESTIONS = 3
-const STEP_PREVIEW = 4
 
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
@@ -53,14 +66,16 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
         group: {},
         questions: []
     });
-    const header = React.createRef();
+    const [preview, setPreview] = useState({
+        placement: 'right',
+        visible: false
+    });
     const history = useHistory();
     const { id } = useParams();
 
     const isNewGuideFlow = () => !id;
 
     React.useEffect(() => {
-        console.log(JSON.stringify(guide))
         if (!isNewGuideFlow() && !guide.guideId && !loading) {
             const guide = guides.find(guide => guide.guideId === id);
             if (guide) {
@@ -78,8 +93,6 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
     }, []);
 
     const isDetailsStep = () => step === STEP_DETAILS
-
-    const isPreviewStep = () => step === STEP_PREVIEW
 
     const isStructureStep = () => step === STEP_STRUCTURE
 
@@ -220,6 +233,20 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
         guide.structure.footer = event.target.value
     }
 
+    const onPreviewClosed = () => {
+        setPreview({
+            ...preview,
+            visible: false
+        })
+    };
+
+    const onPreviewClicked = () => {
+        setPreview({
+            ...preview,
+            visible: true
+        })
+    }
+
     const createDetailsCard = <Col className={styles.detailsCard}>
         <Card key={guide.guideId} title="Guide Details" bordered={false} headStyle={{ textAlign: 'center' }}>
             <Form
@@ -275,7 +302,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                 onBack={() => onBackClicked()}
                 title={isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide"}
                 extra={[
-                    <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
+                    <Button type="default" onClick={onPreviewClicked}>
                         <span className="nav-text">Preview</span>
                     </Button>,
                     <Button type="primary" onClick={onSaveClicked}>Save</Button>
@@ -310,20 +337,6 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                 ]}>
                 <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
             </PageHeader>}
-            {isPreviewStep() && <div ref={header}><PageHeader
-                className={styles.pageHeader}
-                onBack={() => onBackClicked()}
-                title="Interview Experience"
-                extra={[
-                    <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
-                        <span className="nav-text">Edit</span>
-                    </Button>,
-                    <Button type="primary" onClick={onSaveClicked}>Save</Button>
-                ]}>
-                <Text>
-                    This is a <Text strong>preview</Text> of the guide which will be used during the interview. To
-                    go back click on <Text strong>edit</Text> button.</Text>
-            </PageHeader></div>}
         </>
     }>
         <Row gutter={16} justify="center">
@@ -338,11 +351,18 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                     onRemoveGroupClicked={onRemoveGroupClicked}
                     onGroupNameChanges={onGroupNameChanges} />
             </Col>}
-            {isPreviewStep() && <Col span={24}>
-                <GuideInterviewDetailsCard
-                    guide={guide}
-                    header={header} />
-            </Col>}
+            <Drawer
+                title="Interview Experience"
+                width="90%"
+                closable={true}
+                destroyOnClose={true}
+                onClose={onPreviewClosed}
+                drawerStyle={{ backgroundColor: "#F0F2F5" }}
+                placement={preview.placement}
+                visible={preview.visible}
+                key={preview.placement}>
+                <GuideInterviewDetailsCard guide={guide} />
+            </Drawer>
             {isQuestionsStep() && <Col span={24}>
                 <GuideQuestionGroup
                     group={selectedGroup.group}

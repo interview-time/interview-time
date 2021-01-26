@@ -17,7 +17,9 @@ const InterviewDetailsCard = ({interview, header, disabled}) => {
     const [offset, setOffset] = useState(0);
 
     React.useEffect(() => {
-        setOffset(header.current.getBoundingClientRect().height + 26)
+        if (header) {
+            setOffset(header.current.getBoundingClientRect().height + 26)
+        }
     }, [header]);
 
     const onAssessmentChanged = e => {

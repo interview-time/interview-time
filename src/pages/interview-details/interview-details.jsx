@@ -7,7 +7,7 @@ import { addInterview, deleteInterview, loadInterviews, updateInterview } from "
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import { loadGuides } from "../../store/guides/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, DatePicker, Form, Input, message, Modal, PageHeader, Row, Tabs } from 'antd';
+import { Button, Card, Col, DatePicker, Drawer, Form, Input, message, Modal, PageHeader, Row, Tabs } from 'antd';
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
 import lang from "lodash/lang";
@@ -29,8 +29,7 @@ const tailLayout = {
 
 const STEP_DETAILS = 1
 const STEP_STRUCTURE = 2
-const STEP_PREVIEW = 3
-const STEP_QUESTIONS = 4
+const STEP_QUESTIONS = 3
 
 const TAB_DETAILS = "details"
 const TAB_STRUCTURE = "structure"
@@ -74,8 +73,12 @@ const InterviewDetails = () => {
         questions: []
     });
 
+    const [preview, setPreview] = useState({
+        placement: 'right',
+        visible: false
+    });
+
     const history = useHistory();
-    const header = React.createRef();
     const { id } = useParams();
 
     const isNewInterviewFlow = () => !id;
@@ -106,8 +109,6 @@ const InterviewDetails = () => {
     }, []);
 
     const isDetailsStep = () => step === STEP_DETAILS
-
-    const isPreviewStep = () => step === STEP_PREVIEW
 
     const isStructureStep = () => step === STEP_STRUCTURE
 
@@ -266,6 +267,20 @@ const InterviewDetails = () => {
         };
     };
 
+    const onPreviewClosed = () => {
+        setPreview({
+            ...preview,
+            visible: false
+        })
+    };
+
+    const onPreviewClicked = () => {
+        setPreview({
+            ...preview,
+            visible: true
+        })
+    }
+
     const createDetailsCard = <Col key={interview.interviewId} className={styles.detailsCard}>
         <Card title="Interview Details" bordered={false} headStyle={{ textAlign: 'center' }}>
             <Form {...layout} preserve={false}>
@@ -299,7 +314,7 @@ const InterviewDetails = () => {
             onBack={() => onBackClicked()}
             title={isNewInterviewFlow() ? "New Interview" : "Edit Interview"}
             extra={[
-                <Button type="default" onClick={() => setStep(STEP_PREVIEW)}>
+                <Button type="default" onClick={onPreviewClicked}>
                     <span className="nav-text">Preview</span>
                 </Button>,
                 <Button type="primary" onClick={onSaveClicked}>Save</Button>
@@ -336,32 +351,9 @@ const InterviewDetails = () => {
             <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
         </PageHeader>}
 
-        {isPreviewStep() && <div ref={header}><PageHeader
-            className={styles.pageHeader}
-            onBack={() => onBackClicked()}
-            title="Interview Experience"
-            extra={[
-                <Button type="default" onClick={() => setStep(STEP_STRUCTURE)}>
-                    <span className="nav-text">Edit</span>
-                </Button>,
-                <Button type="primary" onClick={onSaveClicked}>Save</Button>
-            ]}
-        >
-            <Text>This is a <Text strong>preview</Text> of the guide which will be used during the interview.
-                If you want to make changes to the guide (only for this interview) click on
-                <Text strong>edit</Text> button.
-            </Text>
-        </PageHeader></div>}
-
     </>}>
         <Row gutter={16} justify="center">
             {isDetailsStep() && createDetailsCard}
-            {isPreviewStep() && <Col span={24}>
-                <InterviewDetailsCard
-                    interview={interview}
-                    header={header}
-                    disabled={true} />
-            </Col>}
             {isStructureStep() && <Col>
                 <GuideStructureCard
                     guides={guides}
@@ -383,6 +375,18 @@ const InterviewDetails = () => {
                     onGroupQuestionsChange={onGroupQuestionsChange}
                 />
             </Col>}
+            <Drawer
+                title="Interview Experience"
+                width="90%"
+                closable={true}
+                destroyOnClose={true}
+                onClose={onPreviewClosed}
+                drawerStyle={{ backgroundColor: "#F0F2F5" }}
+                placement={preview.placement}
+                visible={preview.visible}
+                key={preview.placement}>
+                <InterviewDetailsCard interview={interview} disabled={true} />
+            </Drawer>
         </Row>
     </Layout>
 }
