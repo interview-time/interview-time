@@ -138,15 +138,15 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
 
         if (!guide.title || guide.title.length === 0) {
             Modal.warn({
-                title: "Guide 'title' must not be empty.",
+                title: "Please provide 'Title'.",
             })
         } else if (!guide.type || guide.type.length === 0) {
             Modal.warn({
-                title: "Guide 'category' must not be empty.",
+                title: "Please provide 'Category'.",
             })
         } else if (emptyGroupName) {
             Modal.warn({
-                title: "Guide 'question group name' must not be empty.",
+                title: "Please provide 'Question Group'.",
             })
         } else {
             if (isNewGuideFlow()) {
@@ -335,7 +335,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                         <span className="nav-text">Done</span>
                     </Button>
                 ]}>
-                <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
+                <Text>Click + button to add questions from your question bank to the question group.</Text>
             </PageHeader>}
         </>
     }>

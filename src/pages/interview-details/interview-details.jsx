@@ -152,15 +152,15 @@ const InterviewDetails = () => {
 
         if (lang.isEmpty(interview.candidate)) {
             Modal.warn({
-                title: "Interview 'candidate name' must not be empty.",
+                title: "Please provide 'Candidate Name'.",
             })
         } else if (lang.isEmpty(interview.position)) {
             Modal.warn({
-                title: "Interview 'position' must not be empty.",
+                title: "Please provide 'Position'.",
             })
         } else if (lang.isEmpty(interview.interviewDateTime)) {
             Modal.warn({
-                title: "Interview 'date' must not be empty.",
+                title: "Please provide 'Interview Date'.",
             })
         } else {
             if (isNewInterviewFlow()) {
@@ -348,7 +348,7 @@ const InterviewDetails = () => {
                 </Button>
             ]}
         >
-            <Text>Click on the '+' icon to add questions from your question bank to the question group.</Text>
+            <Text>Click + button to add questions from your question bank to the question group.</Text>
         </PageHeader>}
 
     </>}>
