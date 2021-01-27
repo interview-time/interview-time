@@ -10,6 +10,7 @@ import { useAuth0 } from "./react-auth0-spa";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import './App.css';
+import Quickstart from "./pages/quickstart/quickstart";
 
 function App() {
   const { loading } = useAuth0();
@@ -20,7 +21,8 @@ function App() {
 
   return (
     <Switch>
-      <PrivateRoute path="/" exact component={QuestionBank} />
+      <PrivateRoute path="/" exact component={Quickstart} />
+      <PrivateRoute path="/quickstart" exact component={Quickstart} />
       <PrivateRoute path="/question-bank" exact component={QuestionBank} />
       <PrivateRoute path="/interviews" exact component={Interviews} />
       <PrivateRoute path="/interviews/add" exact component={InterviewDetails} />

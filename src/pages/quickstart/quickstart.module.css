@@ -1,0 +1,27 @@
+.pageHeader {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.image {
+    height: 200px;
+}
+
+.card {
+    margin-bottom: 24px;
+}
+
+.content {
+    display: flex;
+}
+
+.growLeft {
+    flex-grow: 1;
+    margin-right: 24px;
+}
+
+.growRight {
+    flex-grow: 1;
+    margin-left: 24px;
+}
+

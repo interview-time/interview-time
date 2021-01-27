@@ -21,7 +21,9 @@ const Layout = ({ children, pageHeader }) => {
     return (
         <AntLayout className={styles.globalLayout}>
             <AntLayout.Sider theme='light' className={styles.globalSider}>
-                <img alt="Interviwer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
+                <a href={"/quickstart"}>
+                    <img alt="Interviwer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
+                </a>
                 <Menu theme="light"
                       mode="inline"
                       defaultSelectedKeys={[PATH_QUESTION_BANK]}
