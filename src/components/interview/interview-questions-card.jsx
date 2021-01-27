@@ -7,46 +7,46 @@ import { GroupAssessment } from "../../pages/common/constants";
 const { Search } = Input;
 const { TextArea } = Input;
 
-const columns = [
-    {
-        title: 'Question',
-        dataIndex: 'question',
-        key: 'question',
-        sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.question.localeCompare(b.question)
-    },
-    {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        width: 250,
-        render: tags => (
-            <>
-                {(tags ? tags : []).map(tag => {
-                    return (
-                        <Tag key={tag}>
-                            {tag.toLowerCase()}
-                        </Tag>
-                    );
-                })}
-            </>
-        ),
-    },
-    {
-        title: 'Assessment',
-        key: 'question',
-        render: (question) => <AssessmentCheckbox
-            assessment={question.assessment}
-            disabled={question.disabled}
-            onChange={value => {
-                question.assessment = value
-            }}
-        />
-    },
-];
-
 const InterviewQuestionsCard = (props) => {
     const group = props.group
+
+    const columns = [
+        {
+            title: 'Question',
+            dataIndex: 'question',
+            key: 'question',
+            sortDirections: ['descend', 'ascend'],
+            sorter: (a, b) => a.question.localeCompare(b.question)
+        },
+        {
+            title: 'Tags',
+            key: 'tags',
+            dataIndex: 'tags',
+            width: 250,
+            render: tags => (
+                <>
+                    {(tags ? tags : []).map(tag => {
+                        return (
+                            <Tag key={tag}>
+                                {tag.toLowerCase()}
+                            </Tag>
+                        );
+                    })}
+                </>
+            ),
+        },
+        {
+            title: 'Assessment',
+            key: 'question',
+            render: (question) => <AssessmentCheckbox
+                assessment={question.assessment}
+                disabled={props.disabled}
+                onChange={value => {
+                    question.assessment = value
+                }}
+            />
+        },
+    ];
 
     const onSearchClicked = text => {
         // TODO fix search
