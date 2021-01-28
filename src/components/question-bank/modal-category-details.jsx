@@ -44,9 +44,12 @@ const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryT
     }
 
     return (
-        <Modal destroyOnClose title={categoryToUpdate ? "Update category" : "Add category"}
+        <Modal destroyOnClose={true} title={categoryToUpdate ? "Update category" : "Add category"}
                visible={visible} closable={false}
                okText={categoryToUpdate ? "Update" : "Add"} canelText="Cancel"
+               afterClose={()=>{
+                   setCategory('')
+               }}
                onOk={onCreateClicked}
                onCancel={onCancelClicked}>
             <Form {...layout} preserve={false}>

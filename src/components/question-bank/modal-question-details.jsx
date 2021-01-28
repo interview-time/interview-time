@@ -18,6 +18,8 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
 
     React.useEffect(() => {
         setQuestion(questionToUpdate ? lang.cloneDeep(questionToUpdate) : {})
+        setError(noError)
+        // eslint-disable-next-line
     }, [questionToUpdate]);
 
     const onTagsChange = (tags) => {
@@ -57,8 +59,11 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
     }
 
     return (
-        <Modal destroyOnClose title={question.questionId ? "Update question" : "Add question"}
+        <Modal destroyOnClose={true} title={question.questionId ? "Update question" : "Add question"}
                visible={visible} closable={false}
+               afterClose={()=>{
+                   setQuestion({})
+               }}
                footer={[
                    <Button onClick={onCancelClicked}>
                        Cancel
