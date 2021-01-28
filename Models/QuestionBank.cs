@@ -14,6 +14,8 @@ namespace CafApi.Models
         public string Category { get; set; }
 
         public string Question { get; set; }
+        
+        public string Difficulty { get; set; }
 
         public List<string> Tags { get; set; }
 
