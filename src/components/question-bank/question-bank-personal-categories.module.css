@@ -15,3 +15,12 @@
 .space {
     flex-grow: 1;
 }
+
+.questionLink {
+    color: #282c34;
+    width: 500px;
+}
+
+.questionLink:hover  {
+    color: #40a9ff;
+}

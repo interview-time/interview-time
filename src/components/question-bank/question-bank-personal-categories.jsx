@@ -60,7 +60,7 @@ const QuestionBankPersonalCategories = ({
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => a.question.localeCompare(b.question),
             render: (question, record) => (
-                <Link onClick={() => onQuestionClicked(record)}>{question}</Link>
+                <Link className={styles.questionLink} onClick={() => onQuestionClicked(record)}>{question}</Link>
             ),
         },
         {
