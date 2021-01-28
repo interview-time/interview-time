@@ -58,6 +58,8 @@ namespace CafApi.Models
         public string QuestionId { get; set; }
         
         public string Question { get; set; }
+        
+        public string Difficulty { get; set; }
 
         public List<string> Tags { get; set; }
 
