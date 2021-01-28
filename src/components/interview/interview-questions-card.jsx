@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Form, Input, Radio, Table, Tag } from "antd";
 import AssessmentCheckbox from "../questions/assessment-checkbox"
 import styles from "./interview-questions-card.module.css";
-import { getDifficultyColor, GroupAssessment } from "../../pages/common/constants";
+import { getDifficultyColor, GroupAssessment } from "../utils/constants";
 
 const { Search } = Input;
 const { TextArea } = Input;

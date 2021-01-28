@@ -8,7 +8,7 @@ import { deleteInterview, loadInterviews, updateInterview } from "../../store/in
 import lang from "lodash/lang";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
-import { getDecisionColor, getDecisionText, Status } from "../common/constants";
+import { getDecisionColor, getDecisionText, Status } from "../../components/utils/constants";
 
 const DATA_UPLOAD_INTERVAL = 10000 // 10 sec
 

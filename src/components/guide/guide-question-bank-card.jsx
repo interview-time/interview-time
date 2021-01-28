@@ -3,7 +3,7 @@ import styles from "./guide-question-group.module.css";
 import { Card, Divider, Select, Space, Table, Tag } from 'antd';
 import Text from "antd/lib/typography/Text";
 import { PlusCircleTwoTone } from "@ant-design/icons";
-import { getDifficultyColor } from "../../pages/common/constants";
+import { getDifficultyColor } from "../utils/constants";
 
 const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQuestionClicked }) => {
 

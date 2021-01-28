@@ -2,7 +2,7 @@ import { Button, Form, Input, Modal, Radio } from "antd";
 import React, { useState } from "react";
 import EditableTagGroup from "./editable-tag-group";
 import lang from "lodash/lang";
-import { Difficulty } from "../../pages/common/constants";
+import { Difficulty } from "../utils/constants";
 
 const layout = {
     labelCol: { span: 4 },

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Affix, Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
 import Typography from "antd/es/typography";
-import { InterviewAssessment } from "../../pages/common/constants";
+import { InterviewAssessment } from "../utils/constants";
 
 const { TextArea } = Input;
 const { Text } = Typography;

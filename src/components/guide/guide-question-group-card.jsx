@@ -7,7 +7,7 @@ import Text from "antd/lib/typography/Text";
 import { ReorderIcon } from "../utils/icons";
 import arrayMove from 'array-move';
 import lang from "lodash/lang";
-import { getDifficultyColor } from "../../pages/common/constants";
+import { getDifficultyColor } from "../utils/constants";
 
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);

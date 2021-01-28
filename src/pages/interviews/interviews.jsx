@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import moment from "moment";
 import lang from "lodash/lang"
 import Arrays from "lodash";
-import { DATE_FORMAT_DISPLAY, getDecisionColor, getDecisionText, Status } from "../common/constants";
+import { DATE_FORMAT_DISPLAY, getDecisionColor, getDecisionText, Status } from "../../components/utils/constants";
 
 const { Search } = Input;
 

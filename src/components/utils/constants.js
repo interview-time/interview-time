@@ -83,4 +83,4 @@ export const getAvatarColor = (text) => {
     return colors[index]
 }
 
-export const getAvatarText = (text) => text.split(' ').map(item => item.charAt(0)).join('')
+export const getAvatarText = (text) => text.split(' ').slice(0, 3).map(item => item.charAt(0)).join('')

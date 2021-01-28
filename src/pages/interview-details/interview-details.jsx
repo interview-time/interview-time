@@ -11,7 +11,7 @@ import { Button, Card, Col, DatePicker, Drawer, Form, Input, message, Modal, Pag
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
 import Text from "antd/es/typography/Text";
 import lang from "lodash/lang";
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../common/constants";
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../components/utils/constants";
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import Collection from "lodash/collection";
 import InterviewQuestionGroup from "../../components/interview/interview-question-group";

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from "react-redux";
 import styles from "./question-bank-personal-categories.module.css";
 import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, Row, Space, Statistic, Table, Tag } from "antd";
-import { getAvatarColor, getAvatarText, getDifficultyColor } from "../../pages/common/constants";
+import { getAvatarColor, getAvatarText, getDifficultyColor } from "../utils/constants";
 import {
     addCategory,
     addQuestion,
@@ -321,7 +321,7 @@ const mapStateToProps = state => {
     const { categories, questions, loading } = state.questionBank || {};
 
     return {
-        categories,
+        categories: categories.sort(),
         questions,
         loading
     };
