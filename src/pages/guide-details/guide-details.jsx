@@ -325,7 +325,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
             }
             {isQuestionsStep() && <PageHeader
                 className={styles.pageHeader}
-                onBack={() => onBackClicked()}
+                onBack={onAddQuestionDiscard}
                 title="Add questions to question group"
                 extra={[
                     <Button type="default" onClick={onAddQuestionDiscard}>
