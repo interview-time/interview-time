@@ -24,3 +24,7 @@
 .questionLink:hover  {
     color: #40a9ff;
 }
+
+.tag {
+    cursor: pointer;
+}

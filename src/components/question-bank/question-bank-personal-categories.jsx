@@ -42,6 +42,7 @@ const QuestionBankPersonalCategories = ({
     const [categoriesData, setCategoriesData] = useState([]);
 
     const [selectedCategory, setSelectedCategory] = useState({});
+    const [selectedQuestions, setSelectedQuestions] = useState({});
 
     const [categoryDetailsModal, setCategoryDetailsModal] = useState({
         category: '',
@@ -51,6 +52,8 @@ const QuestionBankPersonalCategories = ({
         question: {},
         visible: false
     });
+
+    const questionSearchRef = React.useRef(null);
 
     const columns = [
         {
@@ -80,11 +83,14 @@ const QuestionBankPersonalCategories = ({
             key: 'tags',
             dataIndex: 'tags',
             width: 250,
+            sorter: (a, b) => a.tags.length > 0 && b.tags.length > 0 && a.tags[0].localeCompare(b.tags[0]),
             render: tags => (
                 <>
                     {(tags ? tags : []).map(tag => {
                         return (
-                            <Tag key={tag}>
+                            <Tag className={styles.tag} key={tag} onClick={() => {
+                                onTagClicked(tag)
+                            }}>
                                 {tag.toLowerCase()}
                             </Tag>
                         );
@@ -104,6 +110,10 @@ const QuestionBankPersonalCategories = ({
         })
         setCategoriesData(categoriesData)
     }, [categories, questions]);
+
+    React.useEffect(() => {
+        setSelectedQuestions(questions.filter(question => question.category === selectedCategory.categoryName))
+    }, [selectedCategory, questions]);
 
     const isCategoriesState = () => state === STATE_CATEGORIES
 
@@ -223,6 +233,33 @@ const QuestionBankPersonalCategories = ({
         return tags
     };
 
+    const onTagClicked = tag => {
+        let text = `[${tag}]`
+        questionSearchRef.current.setValue(text)
+        onQuestionSearchClicked(text)
+    }
+
+    const onQuestionSearchChanges = e => {
+        onQuestionSearchClicked(e.target.value)
+    };
+
+    const onQuestionSearchClicked = text => {
+        let lowerCaseText = text.toLocaleLowerCase();
+        if(lowerCaseText.includes('[') || lowerCaseText.includes(']')) { // tag search
+            lowerCaseText = lowerCaseText.replace('[', '')
+            lowerCaseText = lowerCaseText.replace(']', '')
+            setSelectedQuestions(
+                questions.filter(question => question.category === selectedCategory.categoryName
+                    && question.tags.find(tag => tag.toLocaleLowerCase().includes(lowerCaseText)))
+            )
+        } else {
+            setSelectedQuestions(
+                questions.filter(question => question.category === selectedCategory.categoryName
+                    && question.question.toLocaleLowerCase().includes(lowerCaseText))
+            )
+        }
+    };
+
     return (
         <>
             <CategoryDetailsModal
@@ -297,9 +334,10 @@ const QuestionBankPersonalCategories = ({
                                 onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>
                         <div className={styles.space} />
                         <Space>
-                            <Search placeholder="Search" allowClear enterButton className={styles.tabHeaderSearch}
-                                // onSearch={onSearchClicked}
-                                // onChange={onSearchTextChanged}
+                            <Search placeholder="Search" allowClear ref={questionSearchRef}
+                                    enterButton className={styles.tabHeaderSearch}
+                                    onSearch={onQuestionSearchClicked}
+                                    onChange={onQuestionSearchChanges}
                             />
                             <Button type="primary" onClick={() => onAddQuestionClicked()}>Add question</Button>
 
@@ -312,7 +350,7 @@ const QuestionBankPersonalCategories = ({
 
                 <Table columns={columns}
                        pagination={false} style={{ marginTop: 24 }}
-                       dataSource={questions.filter(question => question.category === selectedCategory.categoryName)} />
+                       dataSource={selectedQuestions} />
             </div>}
         </>
     );
