@@ -41,3 +41,13 @@
     display: flex;
     align-items: center
 }
+
+.logout {
+    position: fixed;
+    bottom: 40px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    margin-left: 24px;
+    color: #282c34;
+  }
