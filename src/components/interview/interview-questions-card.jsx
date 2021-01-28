@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Form, Input, Radio, Table, Tag } from "antd";
 import AssessmentCheckbox from "../questions/assessment-checkbox"
 import styles from "./interview-questions-card.module.css";
-import { GroupAssessment } from "../../pages/common/constants";
+import { getDifficultyColor, GroupAssessment } from "../../pages/common/constants";
 
 const { Search } = Input;
 const { TextArea } = Input;
@@ -17,6 +17,18 @@ const InterviewQuestionsCard = (props) => {
             key: 'question',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => a.question.localeCompare(b.question)
+        },
+        {
+            title: 'Difficulty',
+            key: 'difficulty',
+            dataIndex: 'difficulty',
+            width: 125,
+            sorter: (a, b) => a.difficulty.localeCompare(b.difficulty),
+            render: difficulty => (
+                <Tag key={difficulty} color={getDifficultyColor(difficulty)}>
+                    {difficulty}
+                </Tag>
+            )
         },
         {
             title: 'Tags',

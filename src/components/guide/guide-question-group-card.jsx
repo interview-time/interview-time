@@ -7,6 +7,7 @@ import Text from "antd/lib/typography/Text";
 import { ReorderIcon } from "../utils/icons";
 import arrayMove from 'array-move';
 import lang from "lodash/lang";
+import { getDifficultyColor } from "../../pages/common/constants";
 
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
@@ -72,6 +73,9 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
                     <Space direction="vertical">
                         <Text>{question.question}</Text>
                         <div>
+                            <Tag key={question.difficulty} color={getDifficultyColor(question.difficulty)}>
+                                {question.difficulty}
+                            </Tag>
                             {getTags(question).map(tag => <Tag key={tag}>{tag.toLowerCase()}</Tag>)}
                         </div>
                     </Space>

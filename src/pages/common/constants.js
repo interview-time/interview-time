@@ -7,6 +7,12 @@ export const Status = {
     COMPLETED: "COMPLETED",
 }
 
+export const Difficulty = {
+    EASY: "Easy",
+    MEDIUM: "Medium",
+    HARD: "Hard",
+}
+
 export const InterviewAssessment = {
     YES: 'YES',
     NO: 'NO',
@@ -37,9 +43,21 @@ export const getDecisionText = (decision) => {
 
 export const getDecisionColor = (decision) => {
     if (decision === InterviewAssessment.YES || decision === InterviewAssessment.STRONG_YES) {
-        return '#73d13d';
+        return '#52c41a';
     } else if (decision === InterviewAssessment.NO || decision === InterviewAssessment.STRONG_NO) {
         return '#ff4d4f';
+    }
+
+    return '#bfbfbf'
+}
+
+export const getDifficultyColor = (difficulty) => {
+    if (difficulty === Difficulty.EASY) {
+        return 'green';
+    } else if (difficulty === Difficulty.HARD) {
+        return 'red';
+    }  else if (difficulty === Difficulty.MEDIUM) {
+        return 'orange';
     }
 
     return '#bfbfbf'

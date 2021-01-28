@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from "react-redux";
 import styles from "./question-bank-personal-categories.module.css";
 import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, Row, Space, Statistic, Table, Tag } from "antd";
-import { getAvatarColor, getAvatarText } from "../../pages/common/constants";
+import { getAvatarColor, getAvatarText, getDifficultyColor } from "../../pages/common/constants";
 import {
     addCategory,
     addQuestion,
@@ -58,10 +58,22 @@ const QuestionBankPersonalCategories = ({
             key: 'question',
             dataIndex: 'question',
             sortDirections: ['descend', 'ascend'],
-            sorter: (a, b) => a.position.localeCompare(b.position),
+            sorter: (a, b) => a.question.localeCompare(b.question),
             render: (question, record) => (
                 <Link onClick={() => onQuestionClicked(record)}>{question}</Link>
             ),
+        },
+        {
+            title: 'Difficulty',
+            key: 'difficulty',
+            dataIndex: 'difficulty',
+            width: 125,
+            sorter: (a, b) => a.difficulty.localeCompare(b.difficulty),
+            render: difficulty => (
+                <Tag key={difficulty} color={getDifficultyColor(difficulty)}>
+                    {difficulty}
+                </Tag>
+            )
         },
         {
             title: 'Tags',

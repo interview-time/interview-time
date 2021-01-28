@@ -1,7 +1,8 @@
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Radio } from "antd";
 import React, { useState } from "react";
 import EditableTagGroup from "./editable-tag-group";
 import lang from "lodash/lang";
+import { Difficulty } from "../../pages/common/constants";
 
 const layout = {
     labelCol: { span: 4 },
@@ -9,15 +10,28 @@ const layout = {
 };
 
 const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate }) => {
+    const plainOptions = [
+        Difficulty.EASY,
+        Difficulty.MEDIUM,
+        Difficulty.HARD,
+    ];
+
     const noError = {
         status: '',
         help: '',
     }
-    const [question, setQuestion] = useState({});
+
+    const emptyQuestion = {
+        tags: [],
+        question: '',
+        difficulty: Difficulty.EASY,
+    }
+
+    const [question, setQuestion] = useState(emptyQuestion);
     const [error, setError] = useState(noError);
 
     React.useEffect(() => {
-        setQuestion(questionToUpdate ? lang.cloneDeep(questionToUpdate) : {})
+        setQuestion(questionToUpdate ? lang.cloneDeep(questionToUpdate) : emptyQuestion)
         setError(noError)
         // eslint-disable-next-line
     }, [questionToUpdate]);
@@ -34,6 +48,13 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
         setQuestion({
             ...question,
             question: e.target.value
+        })
+    }
+
+    const onDifficultyChange = (e) => {
+        setQuestion({
+            ...question,
+            difficulty: e.target.value
         })
     }
 
@@ -62,7 +83,7 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
         <Modal destroyOnClose={true} title={question.questionId ? "Update question" : "Add question"}
                visible={visible} closable={false}
                afterClose={()=>{
-                   setQuestion({})
+                   setQuestion(emptyQuestion)
                }}
                footer={[
                    <Button onClick={onCancelClicked}>
@@ -77,11 +98,20 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                ]}
         >
             <Form {...layout} preserve={false}>
-                <Form.Item label="Tags">
-                    <EditableTagGroup tags={question.tags ? question.tags : []} onChange={onTagsChange} />
-                </Form.Item>
                 <Form.Item label="Question" validateStatus={error.status} help={error.help}>
                     <Input.TextArea defaultValue={question.question} onChange = {onQuestionChange} />
+                </Form.Item>
+                <Form.Item label="Difficulty">
+                    <Radio.Group
+                        options={plainOptions}
+                        onChange={onDifficultyChange}
+                        defaultValue={question.difficulty ? question.difficulty : Difficulty.EASY}
+                        optionType="button"
+                        buttonStyle="solid"
+                    />
+                </Form.Item>
+                <Form.Item label="Tags">
+                    <EditableTagGroup tags={question.tags ? question.tags : []} onChange={onTagsChange} />
                 </Form.Item>
             </Form>
         </Modal>
