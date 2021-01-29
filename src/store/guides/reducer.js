@@ -52,13 +52,12 @@ const guidesReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then(token => axios.post(URL, guide, config(token)))
                 .then(() => console.log(`Guide added: ${JSON.stringify(guide)}`))
-                .then(() => store.dispatch(loadGuides()))
+                .then(() => {
+                    store.dispatch(loadGuides());
+                })
                 .catch(reason => console.error(reason));
 
-            return {
-                ...state,
-                guides: [...state.guides, guide]
-            };
+            return { ...state, loading: true };
         }
 
         case UPDATE_GUIDE: {
@@ -93,14 +92,13 @@ const guidesReducer = (state = initialState, action) => {
 
             getAccessTokenSilently()
                 .then(token => axios.delete(`${URL}/${guideId}`, config(token)))
-                .then(() => console.log("Guide removed."))
+                .then(() => {
+                    console.log("Guide removed.");
+                    store.dispatch(setGuides(state.guides.filter(item => item.guideId !== guideId)))
+                })
                 .catch(reason => console.error(reason));
 
-            const guides = state.guides.filter(item => item.guideId !== guideId);
-            return {
-                ...state,
-                guides: guides
-            };
+            return { ...state, loading: true };
         }
 
         default:
