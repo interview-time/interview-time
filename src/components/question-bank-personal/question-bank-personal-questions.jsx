@@ -3,9 +3,10 @@ import { Button, Card, Dropdown, Input, Menu, Space, Table, Tag } from "antd";
 import styles from "./question-bank.module.css";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { arrayComparator, stringComparator } from "../utils/comparators";
+import { localeCompareArray, localeCompare, includes } from "../utils/comparators";
 import { Link } from "react-router-dom";
 import { getDifficultyColor } from "../utils/constants";
+import { defaultTo } from "lodash/util";
 
 const { Search } = Input;
 
@@ -29,7 +30,7 @@ const QuestionBankPersonalQuestions = ({
             key: 'question',
             dataIndex: 'question',
             sortDirections: ['descend', 'ascend'],
-            sorter: (a, b) => stringComparator(a.question, b.question),
+            sorter: (a, b) => localeCompare(a.question, b.question),
             render: (question, record) => (
                 <Link className={styles.questionLink} onClick={() => onQuestionClicked(record)}>{question}</Link>
             ),
@@ -39,7 +40,7 @@ const QuestionBankPersonalQuestions = ({
             key: 'difficulty',
             dataIndex: 'difficulty',
             width: 125,
-            sorter: (a, b) => stringComparator(a.difficulty, b.difficulty),
+            sorter: (a, b) => localeCompare(a.difficulty, b.difficulty),
             render: difficulty => (
                 <Tag key={difficulty} color={getDifficultyColor(difficulty)}>
                     {difficulty}
@@ -51,7 +52,7 @@ const QuestionBankPersonalQuestions = ({
             key: 'tags',
             dataIndex: 'tags',
             width: 250,
-            sorter: (a, b) => arrayComparator(a.tags, b.tags),
+            sorter: (a, b) => localeCompareArray(a.tags, b.tags),
             render: tags => (
                 <>
                     {(tags ? tags : []).map(tag => {
@@ -151,18 +152,17 @@ const QuestionBankPersonalQuestions = ({
     };
 
     const onQuestionSearchClicked = text => {
-        let lowerCaseText = text.toLocaleLowerCase();
-        if(lowerCaseText.includes('[') || lowerCaseText.includes(']')) { // tag search
-            lowerCaseText = lowerCaseText.replace('[', '')
-            lowerCaseText = lowerCaseText.replace(']', '')
+        if(text.includes('[') || text.includes(']')) { // tag search
+            text = text.replace('[', '')
+            text = text.replace(']', '')
             setSelectedQuestions(
                 questions.filter(question => question.category === selectedCategory.categoryName
-                    && question.tags.find(tag => tag.toLocaleLowerCase().includes(lowerCaseText)))
+                    && defaultTo(question.tags, []).find(tag => includes(tag, text)))
             )
         } else {
             setSelectedQuestions(
                 questions.filter(question => question.category === selectedCategory.categoryName
-                    && question.question.toLocaleLowerCase().includes(lowerCaseText))
+                    && includes(question.question, text, true))
             )
         }
     };

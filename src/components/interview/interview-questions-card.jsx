@@ -3,7 +3,7 @@ import { Card, Form, Input, Radio, Table, Tag } from "antd";
 import AssessmentCheckbox from "../questions/assessment-checkbox"
 import styles from "./interview-questions-card.module.css";
 import { getDifficultyColor, GroupAssessment } from "../utils/constants";
-import { arrayComparator, stringComparator } from "../utils/comparators";
+import { localeCompareArray, localeCompare } from "../utils/comparators";
 
 const { Search } = Input;
 const { TextArea } = Input;
@@ -17,14 +17,14 @@ const InterviewQuestionsCard = (props) => {
             dataIndex: 'question',
             key: 'question',
             sortDirections: ['descend', 'ascend'],
-            sorter: (a, b) => stringComparator(a.question, b.question),
+            sorter: (a, b) => localeCompare(a.question, b.question),
         },
         {
             title: 'Difficulty',
             key: 'difficulty',
             dataIndex: 'difficulty',
             width: 125,
-            sorter: (a, b) => stringComparator(a.difficulty, b.difficulty),
+            sorter: (a, b) => localeCompare(a.difficulty, b.difficulty),
             render: difficulty => (
                 <Tag key={difficulty} color={getDifficultyColor(difficulty)}>
                     {difficulty}
@@ -36,7 +36,7 @@ const InterviewQuestionsCard = (props) => {
             key: 'tags',
             dataIndex: 'tags',
             width: 250,
-            sorter: (a, b) => arrayComparator(a.tags, b.tags),
+            sorter: (a, b) => localeCompareArray(a.tags, b.tags),
             render: tags => (
                 <>
                     {(tags ? tags : []).map(tag => {

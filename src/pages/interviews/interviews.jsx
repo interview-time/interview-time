@@ -16,7 +16,7 @@ import {
     getDecisionText, getStatusColor,
     getStatusText
 } from "../../components/utils/constants";
-import { stringComparator } from "../../components/utils/comparators";
+import { localeCompare } from "../../components/utils/comparators";
 
 const { Search } = Input;
 
@@ -26,28 +26,28 @@ const columns = [
         key: 'candidate',
         dataIndex: 'candidate',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => stringComparator(a.candidate, b.candidate),
+        sorter: (a, b) => localeCompare(a.candidate, b.candidate),
     },
     {
         title: 'Position',
         key: 'position',
         dataIndex: 'position',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => stringComparator(a.position, b.position),
+        sorter: (a, b) => localeCompare(a.position, b.position),
     },
     {
         title: 'Guide',
         key: 'guide',
         dataIndex: 'guide',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => stringComparator(a.guide, b.guide),
+        sorter: (a, b) => localeCompare(a.guide, b.guide),
     },
     {
         title: 'Date',
         key: 'interviewDateTime',
         dataIndex: 'interviewDateTime',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => stringComparator(a.interviewDateTime, b.interviewDateTime),
+        sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
         render: interviewDateTime => <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
     },
     {
@@ -55,7 +55,7 @@ const columns = [
         key: 'status',
         dataIndex: 'status',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => stringComparator(a.status, b.status),
+        sorter: (a, b) => localeCompare(a.status, b.status),
         render: status => <Badge status={getStatusColor(status)} text={getStatusText(status)} />,
     },
     {
@@ -63,7 +63,7 @@ const columns = [
         key: 'decision',
         dataIndex: 'decision',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => stringComparator(a.decision, b.decision),
+        sorter: (a, b) => localeCompare(a.decision, b.decision),
         render: decision => (
             <>
                 {decision && <Tag color={getDecisionColor(decision)} key={decision}>
