@@ -8,16 +8,15 @@ import { Badge, Button, Input, PageHeader, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import lang from "lodash/lang"
-import utils from "lodash/util"
 import array from "lodash/array";
 import collection from "lodash/collection";
 import {
     DATE_FORMAT_DISPLAY,
     getDecisionColor,
     getDecisionText, getStatusColor,
-    getStatusText,
-    Status
+    getStatusText
 } from "../../components/utils/constants";
+import { stringComparator } from "../../components/utils/comparators";
 
 const { Search } = Input;
 
@@ -27,7 +26,7 @@ const columns = [
         key: 'candidate',
         dataIndex: 'candidate',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.candidate.localeCompare(b.candidate),
+        sorter: (a, b) => stringComparator(a.candidate, b.candidate),
         render: (text, item) =>
             <Link to={`/interviews/start/${item.interviewId}`}>
                 <span className="nav-text">{text}</span>
@@ -38,21 +37,21 @@ const columns = [
         key: 'position',
         dataIndex: 'position',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.position.localeCompare(b.position),
+        sorter: (a, b) => stringComparator(a.position, b.position),
     },
     {
         title: 'Guide',
         key: 'guide',
         dataIndex: 'guide',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => utils.defaultTo(a.guide, '').localeCompare(utils.defaultTo(b.guide, '')),
+        sorter: (a, b) => stringComparator(a.guide, b.guide),
     },
     {
         title: 'Date',
         key: 'interviewDateTime',
         dataIndex: 'interviewDateTime',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.interviewDateTime.localeCompare(b.interviewDateTime),
+        sorter: (a, b) => stringComparator(a.interviewDateTime, b.interviewDateTime),
         render: interviewDateTime => <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
     },
     {
@@ -60,7 +59,7 @@ const columns = [
         key: 'status',
         dataIndex: 'status',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.status.localeCompare(b.status),
+        sorter: (a, b) => stringComparator(a.status, b.status),
         render: status => <Badge status={getStatusColor(status)} text={getStatusText(status)} />,
     },
     {
@@ -68,7 +67,7 @@ const columns = [
         key: 'decision',
         dataIndex: 'decision',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => utils.defaultTo(a.decision, '').localeCompare(utils.defaultTo(b.decision, '')),
+        sorter: (a, b) => stringComparator(a.decision, b.decision),
         render: decision => (
             <>
                 {decision && <Tag color={getDecisionColor(decision)} key={decision}>

@@ -17,6 +17,7 @@ import CategoryDetailsModal from "./modal-category-details";
 import QuestionDetailsModal from "./modal-question-details";
 import { Link } from "react-router-dom";
 import collection from "lodash/collection";
+import { arrayComparator, stringComparator } from "../utils/comparators";
 
 const { Meta } = Card;
 const { Search } = Input;
@@ -62,7 +63,7 @@ const QuestionBankPersonalCategories = ({
             key: 'question',
             dataIndex: 'question',
             sortDirections: ['descend', 'ascend'],
-            sorter: (a, b) => a.question.localeCompare(b.question),
+            sorter: (a, b) => stringComparator(a.question, b.question),
             render: (question, record) => (
                 <Link className={styles.questionLink} onClick={() => onQuestionClicked(record)}>{question}</Link>
             ),
@@ -72,7 +73,7 @@ const QuestionBankPersonalCategories = ({
             key: 'difficulty',
             dataIndex: 'difficulty',
             width: 125,
-            sorter: (a, b) => a.difficulty.localeCompare(b.difficulty),
+            sorter: (a, b) => stringComparator(a.difficulty, b.difficulty),
             render: difficulty => (
                 <Tag key={difficulty} color={getDifficultyColor(difficulty)}>
                     {difficulty}
@@ -84,7 +85,7 @@ const QuestionBankPersonalCategories = ({
             key: 'tags',
             dataIndex: 'tags',
             width: 250,
-            sorter: (a, b) => a.tags.length > 0 && b.tags.length > 0 && a.tags[0].localeCompare(b.tags[0]),
+            sorter: (a, b) => arrayComparator(a.tags, b.tags),
             render: tags => (
                 <>
                     {(tags ? tags : []).map(tag => {
