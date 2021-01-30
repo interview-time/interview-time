@@ -16,6 +16,7 @@ import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import CategoryDetailsModal from "./modal-category-details";
 import QuestionDetailsModal from "./modal-question-details";
 import { Link } from "react-router-dom";
+import collection from "lodash/collection";
 
 const { Meta } = Card;
 const { Search } = Input;
@@ -376,7 +377,7 @@ const mapStateToProps = state => {
 
     return {
         categories: categories.sort(),
-        questions,
+        questions: collection.sortBy(questions, ['question']),
         loading
     };
 };
