@@ -109,7 +109,9 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
     }
 
     const onBackClicked = () => {
-        updateInterview(interview)
+        if (isStartedStatus()) {
+            updateInterview(interview)
+        }
         history.push("/interviews");
     }
 

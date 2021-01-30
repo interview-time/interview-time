@@ -2,3 +2,7 @@
     background-color: white;
     text-align: center;
 }
+
+.row {
+    cursor: pointer;
+}

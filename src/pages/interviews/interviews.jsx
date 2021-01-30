@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadGuides } from "../../store/guides/actions";
@@ -27,10 +27,6 @@ const columns = [
         dataIndex: 'candidate',
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => stringComparator(a.candidate, b.candidate),
-        render: (text, item) =>
-            <Link to={`/interviews/start/${item.interviewId}`}>
-                <span className="nav-text">{text}</span>
-            </Link>,
     },
     {
         title: 'Position',
@@ -81,6 +77,8 @@ const columns = [
 const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGuides }) => {
     const [interviews, setInterviews] = useState(interviewsRemote)
 
+    const history = useHistory();
+
     React.useEffect(() => {
         if (interviewsRemote.length === 0 && !loading) {
             loadInterviews();
@@ -101,6 +99,10 @@ const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGui
         }
         setInterviews(interviews)
     }, [guides, interviewsRemote]);
+
+    const onRowClicked = (record) => {
+        history.push(`/interviews/start/${record.interviewId}`);
+    }
 
     const onSearchTextChanged = e => {
         onSearchClicked(e.target.value)
@@ -132,7 +134,15 @@ const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGui
             ]}
         >
         </PageHeader>}>
-            <Table columns={columns} dataSource={interviews} loading={loading} />
+            <Table
+                columns={columns}
+                dataSource={interviews}
+                loading={loading}
+                rowClassName={styles.row}
+                onRow={(record) => ({
+                    onClick: () => onRowClicked(record),
+                })}
+            />
         </Layout>
     )
 }
