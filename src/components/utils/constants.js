@@ -63,6 +63,26 @@ export const getDifficultyColor = (difficulty) => {
     return '#bfbfbf'
 }
 
+export const getStatusColor = (status) => {
+    if (status === Status.COMPLETED) {
+        return "default"
+    } else if (status === Status.STARTED) {
+        return "processing"
+    } else if (status === Status.NEW) {
+        return "success"
+    }
+}
+
+export const getStatusText = (status) => {
+    if (status === Status.COMPLETED) {
+        return "Completed"
+    } else if (status === Status.STARTED) {
+        return "In Progress"
+    } else if (status === Status.NEW) {
+        return "Scheduled"
+    }
+}
+
 export const colors = [
     '#2f54eb',
     '#722ed1',

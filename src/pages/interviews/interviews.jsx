@@ -11,7 +11,13 @@ import lang from "lodash/lang"
 import utils from "lodash/util"
 import array from "lodash/array";
 import collection from "lodash/collection";
-import { DATE_FORMAT_DISPLAY, getDecisionColor, getDecisionText, Status } from "../../components/utils/constants";
+import {
+    DATE_FORMAT_DISPLAY,
+    getDecisionColor,
+    getDecisionText, getStatusColor,
+    getStatusText,
+    Status
+} from "../../components/utils/constants";
 
 const { Search } = Input;
 
@@ -72,26 +78,6 @@ const columns = [
         ),
     }
 ];
-
-const getStatusColor = (status) => {
-    if (status === Status.COMPLETED) {
-        return "default"
-    } else if (status === Status.STARTED) {
-        return "processing"
-    } else if (status === Status.NEW) {
-        return "success"
-    }
-}
-
-const getStatusText = (status) => {
-    if (status === Status.COMPLETED) {
-        return "Completed"
-    } else if (status === Status.STARTED) {
-        return "Started"
-    } else if (status === Status.NEW) {
-        return "New"
-    }
-}
 
 const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGuides }) => {
     const [interviews, setInterviews] = useState(interviewsRemote)
