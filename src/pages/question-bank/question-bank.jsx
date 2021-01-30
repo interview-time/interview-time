@@ -4,7 +4,7 @@ import Layout from "../../components/layout/layout";
 import { deleteQuestion, loadQuestionBank } from "../../store/question-bank/actions";
 import { PageHeader, Result, Tabs } from 'antd';
 import styles from "./question-bank.module.css";
-import QuestionBankPersonalCategories from "../../components/question-bank/question-bank-personal-categories";
+import QuestionBankPersonal from "../../components/question-bank-personal/question-bank";
 
 const { TabPane } = Tabs;
 
@@ -44,7 +44,7 @@ const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
                 </Tabs>
             }
         />}>
-            {isPersonalTab() && <QuestionBankPersonalCategories />}
+            {isPersonalTab() && <QuestionBankPersonal />}
 
             {isCommunityTab() && <Result
                 status="403"

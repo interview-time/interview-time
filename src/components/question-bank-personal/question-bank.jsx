@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from "react-redux";
-import styles from "./question-bank-personal-categories.module.css";
-import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, Row, Space, Statistic, Table, Tag } from "antd";
-import { getAvatarColor, getAvatarText, getDifficultyColor } from "../utils/constants";
+import styles from "./question-bank.module.css";
+import { Button, Card, Dropdown, Input, Menu, Space, Table, Tag } from "antd";
+import { getDifficultyColor } from "../utils/constants";
 import {
     addCategory,
     addQuestion,
@@ -11,15 +11,13 @@ import {
     updateCategory,
     updateQuestion
 } from "../../store/question-bank/actions";
-import Text from "antd/lib/typography/Text";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
-import CategoryDetailsModal from "./modal-category-details";
-import QuestionDetailsModal from "./modal-question-details";
+import CategoryDetailsModal from "../question-bank/modal-category-details";
+import QuestionDetailsModal from "../question-bank/modal-question-details";
 import { Link } from "react-router-dom";
 import collection from "lodash/collection";
 import { arrayComparator, stringComparator } from "../utils/comparators";
-
-const { Meta } = Card;
+import QuestionBankPersonalCategories from "./question-bank-personal-categories";
 const { Search } = Input;
 
 const STATE_CATEGORIES = "categories"
@@ -28,7 +26,7 @@ const STATE_CATEGORY_DETAILS = "category-details"
 const KEY_DELETE = "delete"
 const KEY_EDIT = "edit"
 
-const QuestionBankPersonalCategories = ({
+const QuestionBankPersonal = ({
                                             categories,
                                             questions,
                                             loading,
@@ -41,7 +39,6 @@ const QuestionBankPersonalCategories = ({
                                         }) => {
 
     const [state, setState] = useState(STATE_CATEGORIES);
-    const [categoriesData, setCategoriesData] = useState([]);
 
     const [selectedCategory, setSelectedCategory] = useState({});
     const [selectedQuestions, setSelectedQuestions] = useState({});
@@ -101,17 +98,6 @@ const QuestionBankPersonalCategories = ({
             ),
         },
     ]
-
-    React.useEffect(() => {
-        let categoriesData = []
-        categories.forEach(category => {
-            categoriesData.push({
-                categoryName: category,
-                questions: questions.filter(question => question.category === category)
-            })
-        })
-        setCategoriesData(categoriesData)
-    }, [categories, questions]);
 
     React.useEffect(() => {
         setSelectedQuestions(questions.filter(question => question.category === selectedCategory.categoryName))
@@ -225,16 +211,6 @@ const QuestionBankPersonalCategories = ({
         </Menu>
     );
 
-    const getTagsCount = category => {
-        let tags = 0
-        category.questions.forEach(item => {
-            if (item.tags) {
-                tags += item.tags.length
-            }
-        })
-        return tags
-    };
-
     const onTagClicked = tag => {
         let text = `[${tag}]`
         questionSearchRef.current.setValue(text)
@@ -262,22 +238,6 @@ const QuestionBankPersonalCategories = ({
         }
     };
 
-    const onCategorySearchChanges = e => {
-        onCategorySearchClicked(e.target.value)
-    };
-
-    const onCategorySearchClicked = text => {
-        let lowerCaseText = text.toLocaleLowerCase();
-        let categoriesData = []
-        categories.filter((category) => category.toLocaleLowerCase().includes(lowerCaseText)).forEach(category => {
-            categoriesData.push({
-                categoryName: category,
-                questions: questions.filter(question => question.category === category)
-            })
-        })
-        setCategoriesData(categoriesData)
-    }
-
     return (
         <>
             <CategoryDetailsModal
@@ -287,57 +247,13 @@ const QuestionBankPersonalCategories = ({
                 onCreate={onCreateCategoryClicked}
                 onCancel={onCategoryDetailCancel}
             />
-            {isCategoriesState() && <div>
-                <Card>
-                    <div className={styles.tabHeader}>
-                        <Text>Select category</Text>
-                        <div className={styles.space} />
-                        <Space>
-                            <Search placeholder="Search" allowClear enterButton className={styles.tabHeaderSearch}
-                                onSearch={onCategorySearchClicked}
-                                onChange={onCategorySearchChanges}
-                            />
-                            <Button type="primary" onClick={onAddCategoryClicked}>Add category</Button>
-                        </Space>
-                    </div>
-                </Card>
-                <List
-                    className={styles.categories}
-                    grid={{
-                        gutter: 16,
-                        xs: 1,
-                        sm: 1,
-                        md: 2,
-                        lg: 3,
-                        xl: 4,
-                        xxl: 4,
-                    }}
-                    dataSource={categoriesData}
-                    loading={loading}
-                    renderItem={category => <List.Item>
-                        <Card hoverable onClick={() => onCategoryClicked(category)}>
-                            <Meta title={category.categoryName} avatar={
-                                <Avatar size="large" style={{
-                                    backgroundColor: getAvatarColor(category.categoryName),
-                                    verticalAlign: 'middle',
-                                }}>{getAvatarText(category.categoryName)}</Avatar>}
-                            />
-                            <Row span={24}>
-                                <Col span={12}>
-                                    <Statistic title="Questions"
-                                               value={category.questions.length}
-                                               valueStyle={{ fontSize: "large" }} />
-                                </Col>
-                                <Col span={12}>
-                                    <Statistic title="Tags"
-                                               value={getTagsCount(category)}
-                                               valueStyle={{ fontSize: "large" }} />
-                                </Col>
-                            </Row>
-                        </Card>
-                    </List.Item>}
-                />
-            </div>}
+            {isCategoriesState() && <QuestionBankPersonalCategories
+                categories={categories}
+                questions={questions}
+                loading={loading}
+                onCategoryClicked={onCategoryClicked}
+                onAddCategoryClicked={onAddCategoryClicked}
+            />}
             {isCategoryDetailsState() && <div>
                 <QuestionDetailsModal
                     visible={questionDetailModal.visible}
@@ -390,4 +306,4 @@ export default connect(mapStateToProps, {
     addCategory,
     deleteCategory,
     updateCategory
-})(QuestionBankPersonalCategories);
+})(QuestionBankPersonal);
