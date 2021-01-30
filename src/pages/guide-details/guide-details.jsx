@@ -146,7 +146,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
             })
         } else if (emptyGroupName) {
             Modal.warn({
-                title: "Please provide 'Question Group'.",
+                title: "Please provide 'Question Group' name.",
             })
         } else {
             if (isNewGuideFlow()) {

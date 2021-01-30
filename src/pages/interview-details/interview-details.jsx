@@ -15,6 +15,7 @@ import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../component
 import GuideStructureCard from "../../components/guide/guide-structure-card";
 import Collection from "lodash/collection";
 import InterviewQuestionGroup from "../../components/interview/interview-question-group";
+import Arrays from "lodash";
 
 const { TabPane } = Tabs;
 
@@ -149,6 +150,9 @@ const InterviewDetails = () => {
 
     const onSaveClicked = () => {
         let interview = createUpdatedInterview();
+        const emptyGroupName = Arrays.find(interview.structure.groups, (group) => {
+            return !group.name || group.name.length === 0
+        })
 
         if (lang.isEmpty(interview.candidate)) {
             Modal.warn({
@@ -161,6 +165,10 @@ const InterviewDetails = () => {
         } else if (lang.isEmpty(interview.interviewDateTime)) {
             Modal.warn({
                 title: "Please provide 'Interview Date'.",
+            })
+        } else if (emptyGroupName) {
+            Modal.warn({
+                title: "Please provide 'Question Group' name.",
             })
         } else {
             if (isNewInterviewFlow()) {
