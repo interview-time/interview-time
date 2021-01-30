@@ -260,6 +260,22 @@ const QuestionBankPersonalCategories = ({
         }
     };
 
+    const onCategorySearchChanges = e => {
+        onCategorySearchClicked(e.target.value)
+    };
+
+    const onCategorySearchClicked = text => {
+        let lowerCaseText = text.toLocaleLowerCase();
+        let categoriesData = []
+        categories.filter((category) => category.toLocaleLowerCase().includes(lowerCaseText)).forEach(category => {
+            categoriesData.push({
+                categoryName: category,
+                questions: questions.filter(question => question.category === category)
+            })
+        })
+        setCategoriesData(categoriesData)
+    }
+
     return (
         <>
             <CategoryDetailsModal
@@ -276,8 +292,8 @@ const QuestionBankPersonalCategories = ({
                         <div className={styles.space} />
                         <Space>
                             <Search placeholder="Search" allowClear enterButton className={styles.tabHeaderSearch}
-                                // onSearch={onSearchClicked}
-                                // onChange={onSearchTextChanged}
+                                onSearch={onCategorySearchClicked}
+                                onChange={onCategorySearchChanges}
                             />
                             <Button type="primary" onClick={onAddCategoryClicked}>Add category</Button>
                         </Space>

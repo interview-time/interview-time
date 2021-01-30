@@ -47,7 +47,7 @@ const GuideStructureCard = ({
                     </Link>
                 </Dropdown>
             </Form.Item>}
-            <Form.Item label="Intro" {...layout} key={structure.header}>
+            <Form.Item label="Intro" {...layout}>
                 <TextArea
                     className={styles.input}
                     defaultValue={structure.header}
