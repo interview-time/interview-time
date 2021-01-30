@@ -28,11 +28,11 @@ const QuestionBankPersonalCategories = ({
         setCategoriesData(categoriesData)
     }, [categories, questions]);
 
-    const onCategorySearchChanges = e => {
-        onCategorySearchClicked(e.target.value)
+    const onSearchChanges = e => {
+        onSearchClicked(e.target.value)
     };
 
-    const onCategorySearchClicked = text => {
+    const onSearchClicked = text => {
         let lowerCaseText = text.toLocaleLowerCase();
         let categoriesData = []
         categories.filter((category) => category.toLocaleLowerCase().includes(lowerCaseText)).forEach(category => {
@@ -63,8 +63,8 @@ const QuestionBankPersonalCategories = ({
                         <div className={styles.space} />
                         <Space>
                             <Search placeholder="Search" allowClear enterButton className={styles.tabHeaderSearch}
-                                    onSearch={onCategorySearchClicked}
-                                    onChange={onCategorySearchChanges}
+                                    onSearch={onSearchClicked}
+                                    onChange={onSearchChanges}
                             />
                             <Button type="primary" onClick={onAddCategoryClicked}>Add category</Button>
                         </Space>
