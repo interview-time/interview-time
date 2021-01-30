@@ -34,7 +34,7 @@ const Quickstart = () => {
                                 <Title level={5}>Question Bank</Title>
                                 <p>Start with a bank of questions from our template or add your own, to make sure you’re
                                     asking a consistent set of questions.</p>
-                                <Button onClick={onQuestionBankClicked}>Open Question Bank</Button>
+                                <Button type="primary" onClick={onQuestionBankClicked}>Open Question Bank</Button>
                             </div>
                             <img alt="Questions" src={process.env.PUBLIC_URL + '/quickstart/questions.png'}
                                  className={styles.image} />
@@ -49,7 +49,7 @@ const Quickstart = () => {
                                 <Title level={5}>Guides</Title>
                                 <p>To keep the interview process structured, create a guide for the desired role.</p>
                                 <p>Interview guide system helps you to focus on the interview, not preparation.</p>
-                                <Button onClick={onGuidesClicked}>Open Guides</Button>
+                                <Button type="primary" onClick={onGuidesClicked}>Open Guides</Button>
                             </div>
                         </div>
                     </Card>
@@ -61,7 +61,7 @@ const Quickstart = () => {
                                 <p>Select a guide which will be used during the interview.</p>
                                 <p>The interview scorecard mechanism helps to reduce unconscious biases and make a
                                     data-driven hiring decision.</p>
-                                <Button onClick={onInterviewsClicked}>Open Interviews</Button>
+                                <Button type="primary" onClick={onInterviewsClicked}>Open Interviews</Button>
                             </div>
                             <img alt="Interviews" src={process.env.PUBLIC_URL + '/quickstart/interviews.png'}
                                  className={styles.image} />
