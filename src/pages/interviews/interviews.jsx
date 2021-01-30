@@ -8,7 +8,9 @@ import { Badge, Button, Input, PageHeader, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import lang from "lodash/lang"
-import Arrays from "lodash";
+import utils from "lodash/util"
+import array from "lodash/array";
+import collection from "lodash/collection";
 import { DATE_FORMAT_DISPLAY, getDecisionColor, getDecisionText, Status } from "../../components/utils/constants";
 
 const { Search } = Input;
@@ -37,7 +39,7 @@ const columns = [
         key: 'guide',
         dataIndex: 'guide',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => a.guide.localeCompare(b.guide),
+        sorter: (a, b) => utils.defaultTo(a.guide, '').localeCompare(utils.defaultTo(b.guide, '')),
     },
     {
         title: 'Date',
@@ -60,7 +62,7 @@ const columns = [
         key: 'decision',
         dataIndex: 'decision',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => (a.decision ? a.decision : '').localeCompare((b.decision ? b.decision : '')),
+        sorter: (a, b) => utils.defaultTo(a.decision, '').localeCompare(utils.defaultTo(b.decision, '')),
         render: decision => (
             <>
                 {decision && <Tag color={getDecisionColor(decision)} key={decision}>
@@ -154,7 +156,7 @@ const mapStateToProps = state => {
     const { interviews, loading } = state.interviews || {};
     const { guides } = state.guides || {};
 
-    return { interviewsRemote: Arrays.reverse(Arrays.sortBy(interviews, ['interviewDateTime'])), guides, loading };
+    return { interviewsRemote: array.reverse(collection.sortBy(interviews, ['interviewDateTime'])), guides, loading };
 };
 
 export default connect(mapStateToProps, { loadInterviews, loadGuides })(Interviews);
