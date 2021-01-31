@@ -1,10 +1,9 @@
+import styles from "./question-bank.module.css";
 import QuestionDetailsModal from "../question-bank/modal-question-details";
 import { Button, Card, Dropdown, Input, Menu, Space, Table, Tag } from "antd";
-import styles from "./question-bank.module.css";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { localeCompareArray, localeCompare, includes } from "../utils/comparators";
-import { Link } from "react-router-dom";
+import { includes, localeCompare, localeCompareArray } from "../utils/comparators";
 import { getDifficultyColor } from "../utils/constants";
 import { defaultTo } from "lodash/util";
 
@@ -31,9 +30,6 @@ const QuestionBankPersonalQuestions = ({
             dataIndex: 'question',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => localeCompare(a.question, b.question),
-            render: (question, record) => (
-                <Link className={styles.questionLink} onClick={() => onQuestionClicked(record)}>{question}</Link>
-            ),
         },
         {
             title: 'Difficulty',
@@ -55,14 +51,8 @@ const QuestionBankPersonalQuestions = ({
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
             render: tags => (
                 <>
-                    {(tags ? tags : []).map(tag => {
-                        return (
-                            <Tag className={styles.tag} key={tag} onClick={() => {
-                                onTagClicked(tag)
-                            }}>
-                                {tag.toLowerCase()}
-                            </Tag>
-                        );
+                    {defaultTo(tags, []).map(tag => {
+                        return (<Tag className={styles.tag} key={tag}>{tag.toLowerCase()}</Tag>);
                     })}
                 </>
             ),
@@ -75,8 +65,6 @@ const QuestionBankPersonalQuestions = ({
         question: {},
         visible: false
     });
-
-    const questionSearchRef = React.useRef(null);
 
     React.useEffect(() => {
         setSelectedQuestions(questions.filter(question => question.category === selectedCategory.categoryName))
@@ -127,9 +115,9 @@ const QuestionBankPersonalQuestions = ({
     }
 
     const onMenuClicked = (e) => {
-        if(e.key === KEY_DELETE) {
+        if (e.key === KEY_DELETE) {
             onDeleteCategoryClicked()
-        }  else if(e.key === KEY_EDIT) {
+        } else if (e.key === KEY_EDIT) {
             onEditCategoryClicked()
         }
     };
@@ -141,30 +129,15 @@ const QuestionBankPersonalQuestions = ({
         </Menu>
     );
 
-    const onTagClicked = tag => {
-        let text = `[${tag}]`
-        questionSearchRef.current.setValue(text)
-        onQuestionSearchClicked(text)
-    }
-
     const onQuestionSearchChanges = e => {
         onQuestionSearchClicked(e.target.value)
     };
 
     const onQuestionSearchClicked = text => {
-        if(text.includes('[') || text.includes(']')) { // tag search
-            text = text.replace('[', '')
-            text = text.replace(']', '')
-            setSelectedQuestions(
-                questions.filter(question => question.category === selectedCategory.categoryName
-                    && defaultTo(question.tags, []).find(tag => includes(tag, text)))
-            )
-        } else {
-            setSelectedQuestions(
-                questions.filter(question => question.category === selectedCategory.categoryName
-                    && includes(question.question, text, true))
-            )
-        }
+        setSelectedQuestions(
+            questions.filter(question => question.category === selectedCategory.categoryName
+                && includes(question.question, text, true))
+        )
     };
 
     return (
@@ -182,7 +155,7 @@ const QuestionBankPersonalQuestions = ({
                             onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>
                     <div className={styles.space} />
                     <Space>
-                        <Search placeholder="Search" allowClear ref={questionSearchRef}
+                        <Search placeholder="Search" allowClear
                                 enterButton className={styles.tabHeaderSearch}
                                 onSearch={onQuestionSearchClicked}
                                 onChange={onQuestionSearchChanges}
@@ -199,7 +172,13 @@ const QuestionBankPersonalQuestions = ({
             <Table columns={columns}
                    pagination={false}
                    style={{ marginTop: 24 }}
-                   dataSource={selectedQuestions} />
+                   scroll={{ y: 600 }}
+                   dataSource={selectedQuestions}
+                   rowClassName={styles.row}
+                   onRow={(record) => ({
+                       onClick: () => onQuestionClicked(record),
+                   })}
+            />
         </div>
     )
 
