@@ -68,13 +68,16 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
 
     const getTags = (question) => question.tags ? question.tags : []
 
+    const onRowClicked = (question) => {
+        onAddQuestionClicked(question)
+    }
+
     const columns = [
         {
             title: 'Add',
             dataIndex: 'add',
             width: 30,
-            render: (text, question) =>
-                <PlusCircleTwoTone className={styles.addIcon} onClick={() => onAddQuestionClicked(question)} />,
+            render: () => <PlusCircleTwoTone className={styles.addIcon} />,
         },
         {
             title: 'Question',
@@ -140,12 +143,17 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
             </div>
             <Divider className={styles.divider} />
             <Table
+                rowKey="index"
                 pagination={false}
                 showHeader={false}
                 dataSource={selectedCategoryQuestions}
                 columns={columns}
                 scroll={{ y: 700 }}
-                rowKey="index" />
+                rowClassName={styles.row}
+                onRow={record => ({
+                    onClick: () => onRowClicked(record),
+                })}
+            />
         </Card>
     );
 }
