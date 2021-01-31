@@ -200,6 +200,7 @@ const QuestionBankPersonalQuestions = ({
             <QuestionDetailsModal
                 visible={questionDetailModal.visible}
                 questionToUpdate={questionDetailModal.question}
+                tags={selectedCategoryTags}
                 onCreate={(question) => onUpdateQuestionClicked(question)}
                 onCancel={onQuestionDetailCancel}
                 onRemove={(question) => onRemoveQuestionClicked(question)}

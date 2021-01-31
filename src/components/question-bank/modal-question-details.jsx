@@ -1,7 +1,6 @@
 import styles from "./modal-question-details.module.css"
-import { Button, Drawer, Form, Input, Radio, Space } from "antd";
+import { Button, Drawer, Form, Input, Radio, Select, Space } from "antd";
 import React, { useState } from "react";
-import EditableTagGroup from "./editable-tag-group";
 import lang from "lodash/lang";
 import { Difficulty } from "../utils/constants";
 import { defaultTo } from "lodash/util";
@@ -11,7 +10,7 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate }) => {
+const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate, tags }) => {
 
     const difficultOptions = [
         Difficulty.EASY,
@@ -20,8 +19,8 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
     ];
 
     const noError = {
-        status: '',
-        help: '',
+        status: null,
+        help: null,
     }
 
     const emptyQuestion = {
@@ -97,14 +96,10 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
             onClose={onCancel}
             footer={[
                 <div className={styles.footer}>
-                    <>{questionToUpdate && <Button key="remove" danger onClick={onRemoveClicked}>
-                        Remove
-                    </Button>}</>
+                    <>{questionToUpdate && <Button key="remove" danger onClick={onRemoveClicked}>Remove</Button>}</>
                     <div className={styles.space} />
                     <Space>
-                        <Button onClick={onCancelClicked}>
-                            Cancel
-                        </Button>
+                        <Button onClick={onCancelClicked}>Cancel</Button>
                         <Button type="primary" onClick={onCreateClicked}>Save</Button>
                     </Space>
                 </div>
@@ -114,6 +109,14 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                 <Form.Item label="Question" validateStatus={error.status} help={error.help}>
                     <Input.TextArea defaultValue={question.question} onChange={onQuestionChange} />
                 </Form.Item>
+                <Form.Item label="Tags">
+                    <Select mode="tags"
+                            style={{ width: '100%' }}
+                            onChange={onTagsChange}
+                            defaultValue={defaultTo(question.tags, [])}
+                            options={tags}
+                    />
+                </Form.Item>
                 <Form.Item label="Difficulty">
                     <Radio.Group
                         options={difficultOptions}
@@ -122,9 +125,6 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                         optionType="button"
                         buttonStyle="solid"
                     />
-                </Form.Item>
-                <Form.Item label="Tags">
-                    <EditableTagGroup tags={defaultTo(question.tags, [])} onChange={onTagsChange} />
                 </Form.Item>
             </Form>
         </Drawer>
