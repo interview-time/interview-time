@@ -80,7 +80,7 @@ const QuestionBankPersonalQuestions = ({
     const [scroll, setScroll] = useState(500)
 
     const [questionDetailModal, setQuestionDetailModal] = useState({
-        question: {},
+        question: null,
         visible: false
     });
 
@@ -131,7 +131,7 @@ const QuestionBankPersonalQuestions = ({
             })
         }
         setQuestionDetailModal({
-            question: null,
+            ...questionDetailModal,
             visible: false
         })
     };
@@ -139,14 +139,14 @@ const QuestionBankPersonalQuestions = ({
     const onRemoveQuestionClicked = (question) => {
         deleteQuestion(question.questionId)
         setQuestionDetailModal({
-            question: null,
+            ...questionDetailModal,
             visible: false
         })
     };
 
     const onQuestionDetailCancel = () => {
         setQuestionDetailModal({
-            question: null,
+            ...questionDetailModal,
             visible: false
         })
     };
