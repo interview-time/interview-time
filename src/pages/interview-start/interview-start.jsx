@@ -91,7 +91,7 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
     const onCompletedClicked = () => {
         if (!interview.decision) {
             Modal.warn({
-                title: "Interview 'assessment' must be selected.",
+                title: "Please select overall 'assessment'.",
             })
         } else {
             Modal.confirm({
