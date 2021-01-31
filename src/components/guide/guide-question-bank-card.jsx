@@ -66,8 +66,6 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
         setDifficultyFilter(difficulty)
     };
 
-    const getTags = (question) => question.tags ? question.tags : []
-
     const onRowClicked = (question) => {
         onAddQuestionClicked(question)
     }
@@ -90,7 +88,7 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                             <Tag key={question.difficulty} color={getDifficultyColor(question.difficulty)}>
                                 {question.difficulty}
                             </Tag>
-                            {getTags(question).map(tag => <Tag key={tag}>{tag.toLowerCase()}</Tag>)}
+                            {defaultTo(question.tags, []).map(tag => <Tag key={tag}>{tag.toLowerCase()}</Tag>)}
                         </div>
                     </Space>
                 </div>

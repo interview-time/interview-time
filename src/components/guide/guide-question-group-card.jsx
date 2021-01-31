@@ -8,6 +8,7 @@ import { ReorderIcon } from "../utils/icons";
 import arrayMove from 'array-move';
 import lang from "lodash/lang";
 import { getDifficultyColor } from "../utils/constants";
+import { defaultTo } from "lodash/util";
 
 const SortableItem = sortableElement(props => <tr {...props} />);
 const SortableContainer = sortableContainer(props => <tbody {...props} />);
@@ -27,8 +28,6 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
             setQuestions(questions)
         }
     }, [groupQuestions]);
-
-    const getTags = (question) => question.tags ? question.tags : []
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
         if (oldIndex !== newIndex) {
@@ -76,7 +75,7 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
                             <Tag key={question.difficulty} color={getDifficultyColor(question.difficulty)}>
                                 {question.difficulty}
                             </Tag>
-                            {getTags(question).map(tag => <Tag key={tag}>{tag.toLowerCase()}</Tag>)}
+                            {defaultTo(question.tags, []).map(tag => <Tag key={tag}>{tag.toLowerCase()}</Tag>)}
                         </div>
                     </Space>
                 </div>
@@ -89,8 +88,9 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onQuestionsSortChange, 
     return (
         <Card bordered={false} className={styles.questionGroupCard} bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}>
             <div className={styles.cardHeader}>
-                <Space>
-                    <Text strong>{group.name}</Text> <Text>{questions.length} questions</Text>
+                <Space direction="vertical" size={4}>
+                    <Text strong>{group.name}</Text>
+                    <Text>{questions.length} questions</Text>
                 </Space>
             </div>
             <Divider className={styles.divider} />
