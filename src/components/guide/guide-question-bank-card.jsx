@@ -3,12 +3,18 @@ import styles from "./guide-question-group.module.css";
 import { Card, Divider, Select, Space, Table, Tag } from 'antd';
 import Text from "antd/lib/typography/Text";
 import { PlusCircleTwoTone } from "@ant-design/icons";
-import { getDifficultyColor } from "../utils/constants";
+import { Difficulty, getDifficultyColor } from "../utils/constants";
+import { defaultTo } from "lodash/util";
+import { flatten, sortedUniq } from "lodash/array";
+import { filterQuestionCategory, filterQuestionDifficulty, filterQuestionTag } from "../utils/filters";
 
 const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQuestionClicked }) => {
 
     const [selectedCategory, setSelectedCategory] = useState()
     const [selectedCategoryQuestions, setSelectedCategoryQuestions] = useState([])
+    const [selectedCategoryTags, setSelectedCategoryTags] = useState([])
+    const [tagFilter, setTagFilter] = useState()
+    const [difficultyFilter, setDifficultyFilter] = useState()
 
     React.useEffect(() => {
         // select first category when categories are loaded
@@ -19,17 +25,45 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
     }, [categories]);
 
     React.useEffect(() => {
-        // show selected category questions without questions in the group
         if (questions.length !== 0 && selectedCategory && groupQuestions) {
-            setSelectedCategoryQuestions((questions ? questions : [])
-                .filter((question) => question.category === selectedCategory
-                    && !groupQuestions.find(element => element.questionId === question.questionId))
+            const categoryQuestions = filterQuestionCategory(questions, selectedCategory)
+
+            const categoryTags = sortedUniq(
+                flatten(categoryQuestions.map(question => defaultTo(question.tags, []))).sort()
             )
+            setSelectedCategoryTags(categoryTags.map(tag => ({ value: tag })))
+
+            // show selected category questions without questions in the group
+            let filteredQuestions = categoryQuestions
+                .filter(question => !groupQuestions.find(element => element.questionId === question.questionId));
+            if (tagFilter) {
+                filteredQuestions = filterQuestionTag(filteredQuestions, tagFilter)
+            }
+
+            if (difficultyFilter) {
+                filteredQuestions = filterQuestionDifficulty(filteredQuestions, difficultyFilter)
+            }
+
+            setSelectedCategoryQuestions(filteredQuestions)
         }
-    }, [selectedCategory, questions, groupQuestions]);
+    }, [selectedCategory, questions, groupQuestions, tagFilter, difficultyFilter]);
 
     const onCategoryChange = category => {
         setSelectedCategory(category)
+    };
+
+    const onTagClear = () => {
+        setTagFilter()
+    }
+    const onTagChange = tag => {
+        setTagFilter(tag)
+    };
+
+    const onDifficultyClear = () => {
+        setDifficultyFilter()
+    }
+    const onDifficultyChange = difficulty => {
+        setDifficultyFilter(difficulty)
     };
 
     const getTags = (question) => question.tags ? question.tags : []
@@ -64,22 +98,45 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
     return (
         <Card bordered={false} className={styles.questionBankCard} bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}>
             <div className={styles.cardHeader}>
-                <Space>
+                <Space direction="vertical" size={4}>
                     <Text strong>Question Bank</Text> <Text>{selectedCategoryQuestions.length} questions</Text>
                 </Space>
                 <div className={styles.space} />
-                <Select
-                    key={selectedCategory}
-                    placeholder="Select category"
-                    defaultValue={selectedCategory}
-                    onSelect={onCategoryChange}
-                    style={{ width: 200 }}
-                    options={categories.map(category => ({ value: category }))}
-                    showSearch
-                    filterOption={(inputValue, option) =>
-                        option.value.toLocaleLowerCase().includes(inputValue)
-                    }
-                />
+                <Space>
+                    <Select
+                        key={selectedCategory}
+                        placeholder="Select category"
+                        defaultValue={selectedCategory}
+                        onSelect={onCategoryChange}
+                        style={{ width: 200 }}
+                        options={categories.map(category => ({ value: category }))}
+                        showSearch
+                        filterOption={(inputValue, option) =>
+                            option.value.toLocaleLowerCase().includes(inputValue)
+                        }
+                    />
+                    <Select
+                        placeholder="Difficulty"
+                        allowClear
+                        onSelect={onDifficultyChange}
+                        onClear={onDifficultyClear}
+                        options={[
+                            { value: Difficulty.EASY },
+                            { value: Difficulty.MEDIUM },
+                            { value: Difficulty.HARD },
+                        ]}
+                        style={{ width: 125 }}
+                    />
+                    <Select
+                        key={selectedCategoryTags}
+                        placeholder="Tag"
+                        allowClear
+                        onSelect={onTagChange}
+                        onClear={onTagClear}
+                        options={selectedCategoryTags}
+                        style={{ width: 125 }}
+                    />
+                </Space>
             </div>
             <Divider className={styles.divider} />
             <Table
