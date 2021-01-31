@@ -1,11 +1,18 @@
 import styles from "./question-bank.module.css";
 import QuestionDetailsModal from "../question-bank/modal-question-details";
-import { Button, Card, Dropdown, Input, Menu, Space, Table, Tag } from "antd";
+import { Button, Card, Dropdown, Input, Menu, Select, Space, Table, Tag } from "antd";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { includes, localeCompare, localeCompareArray } from "../utils/comparators";
-import { getDifficultyColor } from "../utils/constants";
+import { localeCompare, localeCompareArray } from "../utils/comparators";
+import { Difficulty, getDifficultyColor } from "../utils/constants";
 import { defaultTo } from "lodash/util";
+import {
+    filterQuestionCategory,
+    filterQuestionDifficulty,
+    filterQuestionTag,
+    filterQuestionText
+} from "../utils/filters";
+import { flatten, sortedUniq } from "lodash/array";
 
 const { Search } = Input;
 
@@ -60,6 +67,11 @@ const QuestionBankPersonalQuestions = ({
     ]
 
     const [selectedQuestions, setSelectedQuestions] = useState([]);
+    const [selectedCategoryTags, setSelectedCategoryTags] = useState([])
+
+    const [textFilter, setTextFilter] = useState()
+    const [difficultyFilter, setDifficultyFilter] = useState()
+    const [tagFilter, setTagFilter] = useState()
 
     const [questionDetailModal, setQuestionDetailModal] = useState({
         question: {},
@@ -67,8 +79,28 @@ const QuestionBankPersonalQuestions = ({
     });
 
     React.useEffect(() => {
-        setSelectedQuestions(questions.filter(question => question.category === selectedCategory.categoryName))
-    }, [selectedCategory, questions]);
+        let categoryQuestions = filterQuestionCategory(questions, selectedCategory.categoryName)
+
+        const categoryTags = sortedUniq(
+            flatten(categoryQuestions.map(question => defaultTo(question.tags, []))).sort()
+        )
+        setSelectedCategoryTags(categoryTags.map(tag => ({ value: tag })))
+
+        let filteredQuestions = categoryQuestions
+        if(textFilter && textFilter.length !== '') {
+            filteredQuestions = filterQuestionText(filteredQuestions, textFilter)
+        }
+
+        if(difficultyFilter) {
+            filteredQuestions = filterQuestionDifficulty(filteredQuestions, difficultyFilter)
+        }
+
+        if(tagFilter) {
+            filteredQuestions = filterQuestionTag(filteredQuestions, tagFilter)
+        }
+
+        setSelectedQuestions(filteredQuestions)
+    }, [selectedCategory, questions, textFilter, difficultyFilter, tagFilter]);
 
     const onAddQuestionClicked = () => {
         setQuestionDetailModal({
@@ -134,10 +166,21 @@ const QuestionBankPersonalQuestions = ({
     };
 
     const onQuestionSearchClicked = text => {
-        setSelectedQuestions(
-            questions.filter(question => question.category === selectedCategory.categoryName
-                && includes(question.question, text, true))
-        )
+        setTextFilter(text)
+    };
+
+    const onDifficultyClear = () => {
+        setDifficultyFilter()
+    }
+    const onDifficultyChange = difficulty => {
+        setDifficultyFilter(difficulty)
+    };
+
+    const onTagClear = () => {
+        setTagFilter()
+    }
+    const onTagChange = tag => {
+        setTagFilter(tag)
     };
 
     return (
@@ -153,13 +196,36 @@ const QuestionBankPersonalQuestions = ({
                 <div className={styles.tabHeader}>
                     <Button type="link" icon={<ArrowLeftOutlined />}
                             onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>
-                    <div className={styles.space} />
+                    {/*<div className={styles.space} />*/}
                     <Space>
                         <Search placeholder="Search" allowClear
-                                enterButton className={styles.tabHeaderSearch}
+                                className={styles.tabHeaderSearch}
                                 onSearch={onQuestionSearchClicked}
                                 onChange={onQuestionSearchChanges}
                         />
+                        <Select
+                            placeholder="Difficulty"
+                            allowClear
+                            onSelect={onDifficultyChange}
+                            onClear={onDifficultyClear}
+                            options={[
+                                { value: Difficulty.EASY },
+                                { value: Difficulty.MEDIUM },
+                                { value: Difficulty.HARD },
+                            ]}
+                            style={{ width: 125 }}
+                        />
+                        <Select
+                            key={selectedCategoryTags}
+                            placeholder="Tag"
+                            allowClear
+                            onSelect={onTagChange}
+                            onClear={onTagClear}
+                            options={selectedCategoryTags}
+                            style={{ width: 125 }}
+                        />
+                    </Space>
+                    <Space>
                         <Button type="primary" onClick={() => onAddQuestionClicked()}>Add question</Button>
 
                         <Dropdown overlay={categoryMenu}>
