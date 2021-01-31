@@ -19,6 +19,9 @@ const { Search } = Input;
 const KEY_DELETE = "delete"
 const KEY_EDIT = "edit"
 
+const TABLE_PADDING = 24
+const TABLE_HEADER = 56
+
 const QuestionBankPersonalQuestions = ({
                                            selectedCategory,
                                            questions,
@@ -73,10 +76,19 @@ const QuestionBankPersonalQuestions = ({
     const [difficultyFilter, setDifficultyFilter] = useState()
     const [tagFilter, setTagFilter] = useState()
 
+    const questionsTable = React.useRef(null);
+    const [scroll, setScroll] = useState(500)
+
     const [questionDetailModal, setQuestionDetailModal] = useState({
         question: {},
         visible: false
     });
+
+    React.useEffect(() => {
+        if(questionsTable.current) {
+            setScroll(questionsTable.current.clientHeight - TABLE_PADDING - TABLE_HEADER)
+        }
+    }, [questionsTable])
 
     React.useEffect(() => {
         let categoryQuestions = filterQuestionCategory(questions, selectedCategory.categoryName)
@@ -87,15 +99,15 @@ const QuestionBankPersonalQuestions = ({
         setSelectedCategoryTags(categoryTags.map(tag => ({ value: tag })))
 
         let filteredQuestions = categoryQuestions
-        if(textFilter && textFilter.length !== '') {
+        if (textFilter && textFilter.length !== '') {
             filteredQuestions = filterQuestionText(filteredQuestions, textFilter)
         }
 
-        if(difficultyFilter) {
+        if (difficultyFilter) {
             filteredQuestions = filterQuestionDifficulty(filteredQuestions, difficultyFilter)
         }
 
-        if(tagFilter) {
+        if (tagFilter) {
             filteredQuestions = filterQuestionTag(filteredQuestions, tagFilter)
         }
 
@@ -184,7 +196,7 @@ const QuestionBankPersonalQuestions = ({
     };
 
     return (
-        <div>
+        <div className={styles.container}>
             <QuestionDetailsModal
                 visible={questionDetailModal.visible}
                 questionToUpdate={questionDetailModal.question}
@@ -196,7 +208,6 @@ const QuestionBankPersonalQuestions = ({
                 <div className={styles.tabHeader}>
                     <Button type="link" icon={<ArrowLeftOutlined />}
                             onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>
-                    {/*<div className={styles.space} />*/}
                     <Space>
                         <Search placeholder="Search" allowClear
                                 className={styles.tabHeaderSearch}
@@ -235,16 +246,18 @@ const QuestionBankPersonalQuestions = ({
                 </div>
             </Card>
 
-            <Table columns={columns}
-                   pagination={false}
-                   style={{ marginTop: 24 }}
-                   scroll={{ y: 600 }}
-                   dataSource={selectedQuestions}
-                   rowClassName={styles.row}
-                   onRow={(record) => ({
-                       onClick: () => onQuestionClicked(record),
-                   })}
-            />
+            <div ref={questionsTable} className={styles.table}>
+                <Table columns={columns}
+                       pagination={false}
+                       style={{ marginTop: TABLE_PADDING }}
+                       scroll={{ y: scroll }}
+                       dataSource={selectedQuestions}
+                       rowClassName={styles.row}
+                       onRow={(record) => ({
+                           onClick: () => onQuestionClicked(record),
+                       })}
+                />
+            </div>
         </div>
     )
 

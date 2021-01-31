@@ -33,3 +33,13 @@
 .row {
     cursor: pointer;
 }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.table {
+    flex-grow: 1;
+}
