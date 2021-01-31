@@ -298,9 +298,11 @@ const InterviewDetails = () => {
                 </Form.Item>
 
                 <Form.Item name="date" label="Interview Date">
-                    <DatePicker showTime format={DATE_FORMAT_DISPLAY} className={styles.input}
-                                defaultValue={interview.interviewDateTime
-                                    ? moment(interview.interviewDateTime) : moment()}
+                    <DatePicker showTime
+                                allowClear={false}
+                                format={DATE_FORMAT_DISPLAY}
+                                className={styles.input}
+                                defaultValue={interview.interviewDateTime ? moment(interview.interviewDateTime) : ''}
                                 onChange={onDateChange} />
                 </Form.Item>
 
