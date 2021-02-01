@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import InterviewDetailsCard from "../interview/interview-details-card";
 import lang from "lodash/lang";
+import { defaultTo } from "lodash/util";
 
 const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQuestionBank }) => {
 
@@ -17,16 +18,23 @@ const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQues
     }, []);
 
     React.useEffect(() => {
-        if (!interview.structure && questions.length !== 0 && guide.structure.groups.length !== 0) {
+        console.log(JSON.stringify(guide))
+        if (guide && guide.structure) {
             let interview = {
-                structure: lang.cloneDeep(guide.structure)
+                structure: {
+                    header: guide.structure.header,
+                    footer: guide.structure.footer,
+                    groups: lang.cloneDeep(guide.structure.groups)
+                }
             }
 
             interview.structure.groups.forEach(group => {
-                group.questions = group.questions
+                const interviewQuestions = group.questions
                     .map(questionId => questions.find(item => item.questionId === questionId))
+                group.questions = defaultTo(interviewQuestions, [])
             })
-            console.log(interview)
+
+            console.log(JSON.stringify(interview))
             setInterview(interview)
         }
         // eslint-disable-next-line
@@ -34,7 +42,6 @@ const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQues
 
     return <InterviewDetailsCard
         interview={interview}
-        guide={guide}
         header={header}
         disabled={true} />
 }
