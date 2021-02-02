@@ -102,14 +102,13 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                 <Space direction="vertical" size={4}>
                     <Text strong>Question Bank</Text> <Text>{selectedCategoryQuestions.length} questions</Text>
                 </Space>
-                <div className={styles.space} />
                 <Space>
                     <Select
                         key={selectedCategory}
                         placeholder="Select category"
                         defaultValue={selectedCategory}
                         onSelect={onCategoryChange}
-                        style={{ width: 200 }}
+                        style={{ width: 180 }}
                         options={categories.map(category => ({ value: category }))}
                         showSearch
                         filterOption={(inputValue, option) =>
@@ -126,7 +125,7 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                             { value: Difficulty.MEDIUM },
                             { value: Difficulty.HARD },
                         ]}
-                        style={{ width: 125 }}
+                        style={{ width: 100 }}
                     />
                     <Select
                         key={selectedCategoryTags}
@@ -135,7 +134,7 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                         onSelect={onTagChange}
                         onClear={onTagClear}
                         options={selectedCategoryTags}
-                        style={{ width: 125 }}
+                        style={{ width: 120 }}
                     />
                 </Space>
             </div>

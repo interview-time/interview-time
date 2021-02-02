@@ -18,7 +18,6 @@ const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQues
     }, []);
 
     React.useEffect(() => {
-        console.log(JSON.stringify(guide))
         if (guide && guide.structure) {
             let interview = {
                 structure: {
