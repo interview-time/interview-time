@@ -4,12 +4,12 @@
 
 .questionGroupCard {
     margin-right: 12px;
-    height: 700px;
+    height: 100%;
 }
 
 .questionBankCard {
     margin-left: 12px;
-    height: 700px;
+    height: 100%;
 }
 
 .divider {

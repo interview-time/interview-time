@@ -26,7 +26,6 @@ const STEP_SUMMARY = 3
 // TODO save on next
 // TODO better empty guide
 // TODO fix preview
-// TODO remove d&d
 
 const GuideWizard = () => {
 

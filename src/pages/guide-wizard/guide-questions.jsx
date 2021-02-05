@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Col, Row } from "antd";
-import GuideQuestionGroupCard from "../../components/guide/guide-question-group-card";
+import GuideQuestionGroupCard from "./guide-question-group-card";
 import GuideQuestionBankCard from "../../components/guide/guide-question-bank-card";
 
 const GuideQuestions = ({ group, questions, categories, onGroupQuestionsChange }) => {
@@ -17,44 +17,31 @@ const GuideQuestions = ({ group, questions, categories, onGroupQuestionsChange }
         // eslint-disable-next-line
     }, [questions]);
 
-    React.useEffect(() => {
-        // propagate group question changes to upper component
-        if (groupQuestions) {
-            onGroupQuestionsChange(groupQuestions)
-        }
-        // eslint-disable-next-line
-    }, [groupQuestions]);
-
-    const onQuestionsSortChange = (groupQuestions) => {
-        setGroupQuestions(groupQuestions)
-    }
-
     const onRemoveQuestionClicked = (question) => {
-        setGroupQuestions(groupQuestions.filter(element => element.questionId !== question.questionId))
+        const questions = groupQuestions.filter(element => element.questionId !== question.questionId);
+        setGroupQuestions(questions)
+        onGroupQuestionsChange(questions)
     }
 
     const onAddQuestionClicked = (question) => {
-        setGroupQuestions([...groupQuestions, question])
+        const questions = [...groupQuestions, question];
+        setGroupQuestions(questions)
+        onGroupQuestionsChange(questions)
     }
 
-    return <Row>
+    return <Row style={{height: '100%'}}>
         <Col span={12}>
-            <div>
-                <GuideQuestionGroupCard
-                    group={group}
-                    groupQuestions={groupQuestions}
-                    onQuestionsSortChange={onQuestionsSortChange}
-                    onRemoveQuestionClicked={onRemoveQuestionClicked} />
-            </div>
+            <GuideQuestionGroupCard
+                group={group}
+                groupQuestions={groupQuestions}
+                onRemoveQuestionClicked={onRemoveQuestionClicked} />
         </Col>
         <Col span={12}>
-            <div>
-                <GuideQuestionBankCard
-                    questions={questions}
-                    categories={categories}
-                    groupQuestions={groupQuestions}
-                    onAddQuestionClicked={onAddQuestionClicked} />
-            </div>
+            <GuideQuestionBankCard
+                questions={questions}
+                categories={categories}
+                groupQuestions={groupQuestions}
+                onAddQuestionClicked={onAddQuestionClicked} />
         </Col>
     </Row>
 }
