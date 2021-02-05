@@ -21,6 +21,7 @@
 
 .image {
     width: 500px;
+    min-height: 400px;
     max-width: 100%;
 }
 
@@ -31,4 +32,14 @@
 
 .button {
     min-width: 100px;
+}
+
+.questionGroup {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.addQuestionButton {
+    width: 142px;
 }

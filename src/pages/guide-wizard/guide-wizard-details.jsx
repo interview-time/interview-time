@@ -2,6 +2,7 @@ import styles from "./guide-wizard.module.css";
 import React, { useState } from "react";
 import { Alert, Button, Card, Col, Form, Input, Row, Select } from "antd";
 import { FileDoneOutlined } from "@ant-design/icons";
+import { isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
 
@@ -20,70 +21,44 @@ const categories = [
     { value: 'Management' },
 ];
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-intro.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-details.png'
 
-const GuideWizardDetails = ({ guide, onNext, onBack, validation}) => {
+const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
 
-    const [title, setTitle] = useState({
-        value: null,
+    const noError = {
         status: null,
         help: null,
-    });
+    }
 
-    const [category, setCategory] = useState({
-        value: null,
-        status: null,
-        help: null,
-    });
+    const [titleError, setTitleError] = useState(noError);
 
-    const [description, setDescription] = useState(null);
+    const [categoryError, setCategoryError] = useState(noError);
 
-    React.useEffect(() => {
-        if (guide) {
-            setTitle({
-                ...title,
-                value: guide.title
-            });
-            setCategory({
-                ...category,
-                value: guide.type
-            });
-            setDescription(guide.description);
-        }
-        // eslint-disable-next-line
-    }, [guide]);
+    const onTitleChange = e => {
+        guide.title = e.target.value;
+        setTitleError(noError)
+    }
 
-    validation.isDetailsDataValid = () => isDataValid();
+    const onCategoryChange = value => {
+        guide.type = value;
+        setCategoryError(noError)
+    }
 
-    const onTitleChange = e => setTitle({
-        value: e.target.value,
-        status: null,
-        help: null,
-    })
-
-    const onCategoryChange = value => setCategory({
-        value: value,
-        status: null,
-        help: null,
-    })
-
-    const onDescriptionChange = e => setDescription(e.target.value)
+    const onDescriptionChange = e => guide.description = e.target.value
 
     const isDataValid = () => {
         let valid = true;
-        if (!title.value || title.value.length === 0) {
+        if (isEmpty(guide.title)) {
             valid = false;
-            setTitle({
-                ...title,
+            setTitleError({
                 status: 'error',
                 help: "Please provide 'Title'.",
             })
         }
 
-        if (!category.value || category.value.length === 0) {
+        if (isEmpty(guide.type)) {
             valid = false;
-            setCategory({
-                ...category,
+            setCategoryError({
                 status: 'error',
                 help: "Please provide 'Category'.",
             })
@@ -93,20 +68,8 @@ const GuideWizardDetails = ({ guide, onNext, onBack, validation}) => {
     }
 
     const onNextClicked = () => {
-        if (!title.value || title.value.length === 0) {
-            setTitle({
-                ...title,
-                status: 'error',
-                help: "Please provide 'Title'.",
-            })
-        } else if (!category.value || category.value.length === 0) {
-            setCategory({
-                ...category,
-                status: 'error',
-                help: "Please provide 'Category'.",
-            })
-        } else {
-            onNext(title.value, category.value, description)
+        if (isDataValid()) {
+            onNext()
         }
     }
 
@@ -122,8 +85,8 @@ const GuideWizardDetails = ({ guide, onNext, onBack, validation}) => {
                 <Card className={styles.card}>
                     <Form>
                         <Form.Item label="Title" {...layout}
-                                   validateStatus={title.status}
-                                   help={title.help}>
+                                   validateStatus={titleError.status}
+                                   help={titleError.help}>
                             <Input
                                 placeholder="Software Developer"
                                 onChange={onTitleChange}
@@ -131,8 +94,8 @@ const GuideWizardDetails = ({ guide, onNext, onBack, validation}) => {
                             />
                         </Form.Item>
                         <Form.Item label="Category" {...layout}
-                                   validateStatus={category.status}
-                                   help={category.help}>
+                                   validateStatus={categoryError.status}
+                                   help={categoryError.help}>
                             <Select
                                 placeholder="Select category"
                                 defaultValue={guide.type}
@@ -152,9 +115,9 @@ const GuideWizardDetails = ({ guide, onNext, onBack, validation}) => {
                                 autoSize
                             />
                         </Form.Item>
-                        <Form.Item {...tailLayout}>
+                        <Form.Item {...tailLayout} style={{marginBottom: 0}}>
                             <div className={styles.buttonContainer}>
-                                <Button className={styles.button} onClick={onBack}>Discard</Button>
+                                <Button className={styles.button} onClick={onDiscard}>Discard</Button>
                                 <Button className={styles.button} type="primary" onClick={onNextClicked}>Next</Button>
                             </div>
                         </Form.Item>
@@ -170,7 +133,8 @@ const GuideWizardDetails = ({ guide, onNext, onBack, validation}) => {
                     size="large"
                     shape="round"
                     type="primary"
-                    icon={<FileDoneOutlined />}>Interview Preview</Button>
+                    icon={<FileDoneOutlined />}
+                    onClick={onPreview}>Interview Preview</Button>
             </div>
         </Col>
     </Row>

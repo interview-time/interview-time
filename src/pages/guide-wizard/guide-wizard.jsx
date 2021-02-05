@@ -1,7 +1,7 @@
 import styles from "./guide-wizard.module.css";
 import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
-import { message, PageHeader, Steps } from "antd";
+import { Drawer, message, PageHeader, Steps } from "antd";
 import GuideWizardIntro from "./guide-wizard-intro";
 import GuideWizardSummary from "./guide-wizard-summary";
 import GuideWizardDetails from "./guide-wizard-details";
@@ -9,7 +9,11 @@ import GuideWizardQuestions from "./guide-wizard-questions";
 import { useHistory, useParams } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { addGuide, loadGuides, updateGuide } from "../../store/guides/actions";
+import { loadQuestionBank } from "../../store/question-bank/actions";
 import lang from "lodash/lang";
+import GuideInterviewDetailsCard from "../../components/guide/guide-interview-details-card";
+import GuideQuestions from "./guide-questions";
+import Collection from "lodash/collection";
 
 const { Step } = Steps;
 
@@ -17,6 +21,12 @@ const STEP_DETAILS = 0
 const STEP_INTRO = 1
 const STEP_QUESTIONS = 2
 const STEP_SUMMARY = 3
+
+// TODO remove quide
+// TODO save on next
+// TODO better empty guide
+// TODO fix preview
+// TODO remove d&d
 
 const GuideWizard = () => {
 
@@ -32,14 +42,24 @@ const GuideWizard = () => {
         guidesLoading: state.guides.loading
     }), shallowEqual);
 
+    const { questions, categories, questionsLoading } = useSelector(state => ({
+        questions: Collection.sortBy(state.questionBank.questions, ['question']),
+        categories: state.questionBank.categories.sort(),
+        questionsLoading: state.questionBank.loading
+    }), shallowEqual);
+
     const [step, setStep] = useState(STEP_DETAILS);
     const [guide, setGuide] = useState(emptyGuide);
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const [questionsVisible, setQuestionsVisible] = useState(false);
+    const [selectedGroup, setSelectedGroup] = useState({
+        group: {},
+        questions: []
+    });
 
     const dispatch = useDispatch();
     const history = useHistory();
     const { id } = useParams();
-
-    // const detailsPage = React.createRef();
 
     React.useEffect(() => {
         if (!isNewGuideFlow() && !guide.guideId && !guidesLoading) {
@@ -55,13 +75,12 @@ const GuideWizard = () => {
         if (!isNewGuideFlow() && guides.length === 0 && !guidesLoading) {
             dispatch(loadGuides())
         }
+
+        if (questions.length === 0 && !questionsLoading) {
+            dispatch(loadQuestionBank())
+        }
         // eslint-disable-next-line
     }, []);
-
-    const validation = () => ({
-        isDetailsDataValid: null,
-        isIntroDataValid: null,
-    })
 
     const isNewGuideFlow = () => !id;
 
@@ -73,31 +92,16 @@ const GuideWizard = () => {
 
     const isSummaryStep=  () => step === STEP_SUMMARY;
 
-    const onStepClicked = (current) => {
-        if(isDetailsStep() && !validation.isDetailsDataValid()) {
-            console.log('Details data is not valid.')
-            return
-        }
-
-        setStep(current)
-        // console.log(detailsPage)
-        // console.log(detailsPage.current)
-    }
-
-    const onDetailsNext = (title, category, description) => {
-        console.log(`title: ${title} category: ${category} description: ${description}`)
-        guide.title = title;
-        guide.type = category;
-        guide.description = description;
-        setStep(STEP_INTRO)
-    }
-
     const onNext = () => {
         setStep(step + 1)
     }
 
     const onBack = () => {
         setStep(step - 1)
+    }
+
+    const onDiscard = () => {
+        history.push("/guides")
     }
 
     const onSave = () => {
@@ -111,12 +115,68 @@ const GuideWizard = () => {
         history.push("/guides")
     }
 
+    const onPreviewClosed = () => {
+        setPreviewVisible(false)
+    };
+
+    const onPreviewClicked = () => {
+        setPreviewVisible(true)
+    }
+
+    const onGroupNameChanges = (groupId, groupName) => {
+        guide.structure.groups.find(group => group.groupId === groupId).name = groupName
+    };
+
+    const onAddGroupClicked = () => {
+        const newGroup = {
+            groupId: Date.now().toString(),
+            questions: []
+        }
+
+        let newGuide = lang.cloneDeep(guide)
+        newGuide.structure.groups.push(newGroup)
+        setGuide(newGuide)
+    }
+
+    const onRemoveGroupClicked = id => {
+        let newGuide = lang.cloneDeep(guide)
+        newGuide.structure.groups = newGuide.structure.groups.filter(group => group.groupId !== id)
+        setGuide(newGuide)
+    }
+
+    const onAddQuestionClicked = (group) => {
+        //setStep(STEP_QUESTIONS)
+        setSelectedGroup({
+            ...selectedGroup,
+            group: group
+        })
+
+        setQuestionsVisible(true)
+    }
+
+    const onQuestionsClosed = () => {
+        const updatedGuide = lang.cloneDeep(guide)
+        updatedGuide.structure.groups
+            .find(group => group.groupId === selectedGroup.group.groupId)
+            .questions = lang.cloneDeep(selectedGroup.questions.map(question => question.questionId))
+
+        setQuestionsVisible(false)
+        setGuide(updatedGuide)
+    };
+
+    const onGroupQuestionsChange = (groupQuestions) => {
+        setSelectedGroup({
+            ...selectedGroup,
+            questions: groupQuestions
+        })
+    }
+
     return <Layout pageHeader={
         <PageHeader
             className={styles.pageHeader}
             title={isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide"}
         >
-            <Steps current={step} onChange={onStepClicked}>
+            <Steps current={step}>
                 <Step title="Interview Details" />
                 <Step title="Intro Section" />
                 <Step title="Questions Section" />
@@ -127,13 +187,58 @@ const GuideWizard = () => {
 
         {isDetailsStep() && <GuideWizardDetails
             guide={guide}
-            onNext={onDetailsNext}
-            onBack={onBack}
-            validation={validation}
+            onNext={onNext}
+            onDiscard={onDiscard}
+            onPreview={onPreviewClicked}
         />}
-        {isIntroStep() && <GuideWizardIntro onNext={onNext} onBack={onBack} />}
-        {isQuestionsStep() && <GuideWizardQuestions onNext={onNext} onBack={onBack} />}
-        {isSummaryStep() && <GuideWizardSummary onSave={onSave} onBack={onBack} />}
+        {isIntroStep() && <GuideWizardIntro
+            guide={guide}
+            onNext={onNext}
+            onBack={onBack}
+        />}
+        {isQuestionsStep() && <GuideWizardQuestions
+            guide={guide}
+            onNext={onNext}
+            onBack={onBack}
+            onAddGroupClicked={onAddGroupClicked}
+            onRemoveGroupClicked={onRemoveGroupClicked}
+            onGroupNameChanges={onGroupNameChanges}
+            onAddQuestionClicked={onAddQuestionClicked}
+        />}
+        {isSummaryStep() && <GuideWizardSummary
+            guide={guide}
+            onSave={onSave}
+            onBack={onBack}
+        />}
+
+        <Drawer
+            title="Interview Experience"
+            width="90%"
+            closable={true}
+            destroyOnClose={true}
+            onClose={onPreviewClosed}
+            drawerStyle={{ backgroundColor: "#F0F2F5" }}
+            placement='right'
+            visible={previewVisible}>
+            <GuideInterviewDetailsCard guide={guide} />
+        </Drawer>
+
+        <Drawer
+            title="Add Questions"
+            width="90%"
+            closable={true}
+            destroyOnClose={true}
+            onClose={onQuestionsClosed}
+            drawerStyle={{ backgroundColor: "#F0F2F5" }}
+            placement='right'
+            visible={questionsVisible}>
+            <GuideQuestions
+                group={selectedGroup.group}
+                questions={questions}
+                categories={categories}
+                onGroupQuestionsChange={onGroupQuestionsChange}
+            />
+        </Drawer>
 
     </Layout>
 }

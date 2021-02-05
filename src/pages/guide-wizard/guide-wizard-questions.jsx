@@ -1,24 +1,22 @@
 import styles from "./guide-wizard.module.css";
 import React from "react";
-import { Alert, Button, Card, Col, Form, Input, Row } from "antd";
-import { FileDoneOutlined} from "@ant-design/icons";
+import { Alert, Button, Card, Col, Form, Input, Popconfirm, Row } from "antd";
+import { DeleteTwoTone, FileDoneOutlined, PlusCircleTwoTone } from '@ant-design/icons';
+import Text from "antd/lib/typography/Text";
 
-const { TextArea } = Input;
+const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-questions.png'
 
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 18 },
-};
+const GuideWizardQuestions = ({
+                                  guide,
+                                  onNext,
+                                  onBack,
+                                  onGroupNameChanges,
+                                  onAddGroupClicked,
+                                  onRemoveGroupClicked,
+                                  onAddQuestionClicked
+                              }) => {
 
-const tailLayout = {
-    wrapperCol: { offset: 4, span: 18 }
-};
-
-const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-intro.png'
-
-const GuideWizardQuestions = ({onNext, onBack}) => {
-
-    return <Row align="middle" wrap={false}>
+    return <Row key={guide.guideId} align="middle" wrap={false}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert
@@ -28,22 +26,46 @@ const GuideWizardQuestions = ({onNext, onBack}) => {
                     showIcon
                 />
                 <Card className={styles.card}>
-                    <Form>
-                        <Form.Item label="Intro" {...layout}>
-                            <TextArea
-                                // className={styles.input}
-                                // defaultValue={structure.header}
-                                // onChange={onHeaderChanged}
-                                autoSize
-                                placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
-                        </Form.Item>
-                        <Form.Item {...tailLayout}>
-                            <div className={styles.buttonContainer}>
-                                <Button className={styles.button} onClick={onBack}>Back</Button>
-                                <Button className={styles.button} type="primary" onClick={onNext}>Next</Button>
-                            </div>
-                        </Form.Item>
-                    </Form>
+                    {guide.structure.groups.map((group, index) => {
+
+                        return <div style={{ marginTop: index === 0 ? 0 : 24 }}>
+                            <Form>
+                                <div className={styles.buttonContainer}>
+                                    <Text strong>Question Group</Text>
+                                    <Text>{group.questions.length} questions</Text>
+                                </div>
+                                <div className={styles.questionGroup}>
+                                    <Input placeholder='e.g. Software Design Patterns'
+                                           onChange={e => onGroupNameChanges(group.groupId, e.target.value)}
+                                           defaultValue={group.name}
+                                    />
+                                    <Button type="dashed" style={{ marginLeft: '12px' }}
+                                            block icon={<PlusCircleTwoTone />}
+                                            className={styles.addQuestionButton}
+                                            onClick={() => {
+                                                onAddQuestionClicked(group)
+                                            }}>Question</Button>
+                                    <Popconfirm
+                                        title="Are you sure you want to delete this group?"
+                                        onConfirm={() => onRemoveGroupClicked(group.groupId)}
+                                        okText="Yes"
+                                        cancelText="No">
+                                        <DeleteTwoTone twoToneColor="red" style={{ marginLeft: '12px' }} />
+                                    </Popconfirm>
+                                </div>
+                            </Form>
+                        </div>
+                    })}
+                    <Button
+                        style={{ marginTop: '24px' }}
+                        type="dashed" block
+                        icon={<PlusCircleTwoTone />}
+                        onClick={onAddGroupClicked}
+                    >Group</Button>
+                    <div className={styles.buttonContainer} style={{ marginTop: '24px' }}>
+                        <Button className={styles.button} onClick={onBack}>Back</Button>
+                        <Button className={styles.button} type="primary" onClick={onNext}>Next</Button>
+                    </div>
                 </Card>
             </div>
         </Col>
