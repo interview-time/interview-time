@@ -10,6 +10,7 @@ const GuideWizardQuestions = ({
                                   guide,
                                   onNext,
                                   onBack,
+                                  onPreview,
                                   onGroupNameChanges,
                                   onAddGroupClicked,
                                   onRemoveGroupClicked,
@@ -77,6 +78,7 @@ const GuideWizardQuestions = ({
                     size="large"
                     shape="round"
                     type="primary"
+                    onClick={onPreview}
                     icon={<FileDoneOutlined />}>Interview Preview</Button>
             </div>
         </Col>

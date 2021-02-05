@@ -17,7 +17,7 @@ const tailLayout = {
 
 const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-intro.png'
 
-const GuideWizardIntro = ({guide, onNext, onBack}) => {
+const GuideWizardIntro = ({guide, onNext, onBack, onPreview}) => {
 
     const noError = {
         status: null,
@@ -88,6 +88,7 @@ const GuideWizardIntro = ({guide, onNext, onBack}) => {
                     size="large"
                     shape="round"
                     type="primary"
+                    onClick={onPreview}
                     icon={<FileDoneOutlined />}>Interview Preview</Button>
             </div>
         </Col>

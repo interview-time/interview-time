@@ -1,7 +1,7 @@
 import styles from "./guide-wizard.module.css";
 import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
-import { Drawer, message, PageHeader, Steps } from "antd";
+import { Drawer, message, PageHeader, Spin, Steps } from "antd";
 import GuideWizardIntro from "./guide-wizard-intro";
 import GuideWizardSummary from "./guide-wizard-summary";
 import GuideWizardDetails from "./guide-wizard-details";
@@ -25,7 +25,6 @@ const STEP_SUMMARY = 3
 // TODO remove quide
 // TODO save on next
 // TODO better empty guide
-// TODO fix preview
 
 const GuideWizard = () => {
 
@@ -89,7 +88,7 @@ const GuideWizard = () => {
 
     const isQuestionsStep = () => step === STEP_QUESTIONS;
 
-    const isSummaryStep=  () => step === STEP_SUMMARY;
+    const isSummaryStep = () => step === STEP_SUMMARY;
 
     const onNext = () => {
         setStep(step + 1)
@@ -183,61 +182,66 @@ const GuideWizard = () => {
             </Steps>
         </PageHeader>
     }>
+        <Spin spinning={guidesLoading && questionsLoading}>
 
-        {isDetailsStep() && <GuideWizardDetails
-            guide={guide}
-            onNext={onNext}
-            onDiscard={onDiscard}
-            onPreview={onPreviewClicked}
-        />}
-        {isIntroStep() && <GuideWizardIntro
-            guide={guide}
-            onNext={onNext}
-            onBack={onBack}
-        />}
-        {isQuestionsStep() && <GuideWizardQuestions
-            guide={guide}
-            onNext={onNext}
-            onBack={onBack}
-            onAddGroupClicked={onAddGroupClicked}
-            onRemoveGroupClicked={onRemoveGroupClicked}
-            onGroupNameChanges={onGroupNameChanges}
-            onAddQuestionClicked={onAddQuestionClicked}
-        />}
-        {isSummaryStep() && <GuideWizardSummary
-            guide={guide}
-            onSave={onSave}
-            onBack={onBack}
-        />}
+            {isDetailsStep() && <GuideWizardDetails
+                guide={guide}
+                onNext={onNext}
+                onDiscard={onDiscard}
+                onPreview={onPreviewClicked}
+            />}
+            {isIntroStep() && <GuideWizardIntro
+                guide={guide}
+                onNext={onNext}
+                onBack={onBack}
+                onPreview={onPreviewClicked}
+            />}
+            {isQuestionsStep() && <GuideWizardQuestions
+                guide={guide}
+                onNext={onNext}
+                onBack={onBack}
+                onPreview={onPreviewClicked}
+                onAddGroupClicked={onAddGroupClicked}
+                onRemoveGroupClicked={onRemoveGroupClicked}
+                onGroupNameChanges={onGroupNameChanges}
+                onAddQuestionClicked={onAddQuestionClicked}
+            />}
+            {isSummaryStep() && <GuideWizardSummary
+                guide={guide}
+                onSave={onSave}
+                onBack={onBack}
+                onPreview={onPreviewClicked}
+            />}
 
-        <Drawer
-            title="Interview Experience"
-            width="90%"
-            closable={true}
-            destroyOnClose={true}
-            onClose={onPreviewClosed}
-            drawerStyle={{ backgroundColor: "#F0F2F5" }}
-            placement='right'
-            visible={previewVisible}>
-            <GuideInterviewDetailsCard guide={guide} />
-        </Drawer>
+            <Drawer
+                title="Interview Experience"
+                width="90%"
+                closable={true}
+                destroyOnClose={true}
+                onClose={onPreviewClosed}
+                drawerStyle={{ backgroundColor: "#F0F2F5" }}
+                placement='right'
+                visible={previewVisible}>
+                <GuideInterviewDetailsCard guide={guide} />
+            </Drawer>
 
-        <Drawer
-            title="Add Questions"
-            width="90%"
-            closable={true}
-            destroyOnClose={true}
-            onClose={onQuestionsClosed}
-            drawerStyle={{ backgroundColor: "#F0F2F5" }}
-            placement='right'
-            visible={questionsVisible}>
-            <GuideQuestions
-                group={selectedGroup.group}
-                questions={questions}
-                categories={categories}
-                onGroupQuestionsChange={onGroupQuestionsChange}
-            />
-        </Drawer>
+            <Drawer
+                title="Add Questions"
+                width="90%"
+                closable={true}
+                destroyOnClose={true}
+                onClose={onQuestionsClosed}
+                drawerStyle={{ backgroundColor: "#F0F2F5" }}
+                placement='right'
+                visible={questionsVisible}>
+                <GuideQuestions
+                    group={selectedGroup.group}
+                    questions={questions}
+                    categories={categories}
+                    onGroupQuestionsChange={onGroupQuestionsChange}
+                />
+            </Drawer>
+        </Spin>
 
     </Layout>
 }
