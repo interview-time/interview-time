@@ -1,7 +1,7 @@
 import styles from "./guide-wizard.module.css";
 import React, { useState } from "react";
 import { Alert, Button, Card, Col, Form, Input, Row } from "antd";
-import { FileDoneOutlined} from "@ant-design/icons";
+import { FileDoneOutlined } from "@ant-design/icons";
 import { isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
@@ -17,7 +17,7 @@ const tailLayout = {
 
 const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-intro.png'
 
-const GuideWizardIntro = ({guide, onNext, onBack, onPreview}) => {
+const GuideWizardIntro = ({ guide, onNext, onBack, onPreview }) => {
 
     const noError = {
         status: null,
@@ -70,7 +70,7 @@ const GuideWizardIntro = ({guide, onNext, onBack, onPreview}) => {
                                 autoSize
                                 placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
                         </Form.Item>
-                        <Form.Item {...tailLayout} style={{marginBottom: 0}}>
+                        <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
                             <div className={styles.buttonContainer}>
                                 <Button className={styles.button} onClick={onBack}>Back</Button>
                                 <Button className={styles.button} type="primary" onClick={onNextClicked}>Next</Button>

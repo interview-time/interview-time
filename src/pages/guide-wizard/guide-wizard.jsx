@@ -24,14 +24,26 @@ const STEP_SUMMARY = 3
 
 // TODO remove quide
 // TODO save on next
-// TODO better empty guide
 
 const GuideWizard = () => {
 
     const emptyGuide = {
         guideId: undefined,
         structure: {
-            groups: []
+            header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
+            footer: "Allow 10 minutes at the end for the candidate to ask questions.",
+            groups: [
+                {
+                    groupId: Date.now().toString(),
+                    name: "Software Design",
+                    questions: []
+                },
+                {
+                    groupId: Date.now().toString(),
+                    name: "Problem Solving",
+                    questions: []
+                }
+            ],
         }
     }
 
@@ -143,7 +155,6 @@ const GuideWizard = () => {
     }
 
     const onAddQuestionClicked = (group) => {
-        //setStep(STEP_QUESTIONS)
         setSelectedGroup({
             ...selectedGroup,
             group: group
