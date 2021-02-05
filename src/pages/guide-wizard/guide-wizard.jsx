@@ -22,9 +22,6 @@ const STEP_INTRO = 1
 const STEP_QUESTIONS = 2
 const STEP_SUMMARY = 3
 
-// TODO remove quide
-// TODO save on next
-
 const GuideWizard = () => {
 
     const emptyGuide = {

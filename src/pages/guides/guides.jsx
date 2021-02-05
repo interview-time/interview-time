@@ -1,27 +1,45 @@
-import React from "react";
-import { connect } from "react-redux";
-import Arrays from "lodash";
-import Layout from "../../components/layout/layout";
-import { loadGuides } from "../../store/guides/actions";
-import { Avatar, Button, Card, Col, List, PageHeader, Row, Statistic } from "antd";
 import styles from "../guides/guides.module.css";
-import { Link } from "react-router-dom";
+import React from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import Layout from "../../components/layout/layout";
+import { addGuide, deleteGuide, loadGuides } from "../../store/guides/actions";
+import { Avatar, Button, Card, Col, List, message, PageHeader, Popconfirm, Row, Statistic } from "antd";
+import { Link, useHistory } from "react-router-dom";
+import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { sortBy } from "lodash/collection";
+import { sumBy } from "lodash/math";
+import { cloneDeep } from "lodash/lang";
 
 const { Meta } = Card;
 
-const Guides = ({ guides, loading, loadGuides }) => {
+const colors = [
+    '#2f54eb',
+    '#722ed1',
+    '#eb2f96',
+    '#52c41a',
+    '#13c2c2',
+    '#1890ff',
+    '#faad14',
+    '#a0d911',
+    '#f5222d',
+]
 
-    const colors = [
-        '#2f54eb',
-        '#722ed1',
-        '#eb2f96',
-        '#52c41a',
-        '#13c2c2',
-        '#1890ff',
-        '#faad14',
-        '#a0d911',
-        '#f5222d',
-    ]
+const Guides = () => {
+
+    const history = useHistory();
+    const dispatch = useDispatch();
+
+    const { guides, guidesLoading } = useSelector(state => ({
+        guides: sortBy(state.guides.guides, ['title']),
+        guidesLoading: state.guides.loading
+    }), shallowEqual);
+
+    React.useEffect(() => {
+        if (guides.length === 0 && !guidesLoading) {
+            dispatch(loadGuides())
+        }
+        // eslint-disable-next-line
+    }, []);
 
     const getAvatarColor = (text) => {
         let index = text.charCodeAt(0);
@@ -32,16 +50,25 @@ const Guides = ({ guides, loading, loadGuides }) => {
     }
 
     const getTotalQuestions = (groups) =>
-        Arrays.sumBy(groups, (group) => group.questions ? group.questions.length : 0)
+        sumBy(groups, (group) => group.questions ? group.questions.length : 0)
 
     const getAvatarText = (text) => text.split(' ').map(item => item.charAt(0)).join('')
 
-    React.useEffect(() => {
-        if (guides.length === 0 && !loading) {
-            loadGuides();
-        }
-        // eslint-disable-next-line 
-    }, []);
+    const onEdit = (guideId) => {
+        history.push(`/guides/details/${guideId}`)
+    }
+
+    const onDelete = (guide) => {
+        dispatch(deleteGuide(guide.guideId))
+        message.success(`Guide '${guide.title}' removed.`);
+    }
+
+    const onCopy = (guide) => {
+        const copy = cloneDeep(guide)
+        copy.title = `Copy of ${guide.title}`
+        dispatch(addGuide(copy))
+        message.success(`Guide '${copy.title}' created.`);
+    }
 
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
@@ -66,16 +93,43 @@ const Guides = ({ guides, loading, loadGuides }) => {
                 xxl: 4,
             }}
             dataSource={guides}
-            loading={loading}
+            loading={guidesLoading}
             renderItem={guide => <List.Item>
-                <Link to={`/guides/details/${guide.guideId}`}>
-                    <Card hoverable>
-                        <Meta avatar={
-                            <Avatar size="large"
-                                    style={{ backgroundColor: getAvatarColor(guide.title), verticalAlign: 'middle', }}>
-                                {getAvatarText(guide.title)}
-                            </Avatar>}
-                              title={guide.title}
+                <Card hoverable
+                      bodyStyle={{ padding: 0 }}
+                      actions={[
+                          <EditOutlined key="edit" onClick={() => onEdit(guide.guideId)} />,
+                          <Popconfirm
+                              title="Are you sure you want to duplicate this guide?"
+                              onConfirm={() => {
+                                  onCopy(guide)
+                              }}
+                              okText="Yes"
+                              cancelText="No">
+                              <CopyOutlined key="copy" />
+                          </Popconfirm>,
+                          <Popconfirm
+                              title="Are you sure you want to delete this guide?"
+                              onConfirm={() => {
+                                  onDelete(guide)
+                              }}
+                              okText="Yes"
+                              cancelText="No">
+                              <DeleteOutlined />
+                          </Popconfirm>
+                      ]}>
+                    <div className={styles.card} onClick={() => onEdit(guide.guideId)}>
+                        <Meta
+                            title={guide.title}
+                            avatar={
+                                <Avatar size="large"
+                                        style={{
+                                            backgroundColor: getAvatarColor(guide.title),
+                                            verticalAlign: 'middle',
+                                        }}>
+                                    {getAvatarText(guide.title)}
+                                </Avatar>
+                            }
                         />
                         <Row span={24}>
                             <Col span={12}>
@@ -89,17 +143,11 @@ const Guides = ({ guides, loading, loadGuides }) => {
                                            valueStyle={{ fontSize: "large" }} />
                             </Col>
                         </Row>
-                    </Card>
-                </Link>
+                    </div>
+                </Card>
             </List.Item>}
         />
     </Layout>
 }
 
-const mapStateToProps = state => {
-    const { guides, loading } = state.guides || {};
-
-    return { guides: Arrays.sortBy(guides, ['title']), loading: loading };
-};
-
-export default connect(mapStateToProps, { loadGuides })(Guides);
+export default Guides;
