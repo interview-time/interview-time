@@ -39,7 +39,7 @@ const GuideWizardQuestions = ({
                     {getGroups().map((group, index) => {
 
                         return <div style={{ marginTop: index === 0 ? 0 : 24 }}>
-                            <Form>
+                            <Form key={group.groupId}>
                                 <div className={styles.buttonContainer}>
                                     <Text strong>Question Group</Text>
                                     <Text>{group.questions.length} questions</Text>
