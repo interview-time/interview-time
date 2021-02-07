@@ -17,7 +17,11 @@ const tailLayout = {
 
 const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-intro.png'
 
-const GuideWizardIntro = ({ guide, onNext, onBack, onPreview }) => {
+/**
+ *
+ * Works with `guide` or `interview`.
+ */
+const GuideWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) => {
 
     const noError = {
         status: null,
@@ -27,13 +31,13 @@ const GuideWizardIntro = ({ guide, onNext, onBack, onPreview }) => {
     const [headerError, setHeaderError] = useState(noError);
 
     const onHeaderChanged = e => {
-        guide.structure.header = e.target.value;
+        setHeader(e.target.value)
         setHeaderError(noError)
     }
 
     const isDataValid = () => {
         let valid = true;
-        if (isEmpty(guide.structure.header)) {
+        if (isEmpty(getHeader())) {
             valid = false;
             setHeaderError({
                 status: 'error',
@@ -50,7 +54,19 @@ const GuideWizardIntro = ({ guide, onNext, onBack, onPreview }) => {
         }
     }
 
-    return <Row key={guide.guideId} align="middle" wrap={false}>
+    const getDataId = () => guide ? guide.guideId : interview.interviewId;
+
+    const getHeader = () => guide ? guide.structure.header : interview.structure.header;
+
+    const setHeader = (header) => {
+        if (guide) {
+            guide.structure.header = header;
+        } else if (interview) {
+            interview.structure.header = header;
+        }
+    }
+
+    return <Row key={getDataId()} align="middle" wrap={false}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert
@@ -61,11 +77,11 @@ const GuideWizardIntro = ({ guide, onNext, onBack, onPreview }) => {
                 />
                 <Card className={styles.card}>
                     <Form>
-                        <Form.Item label="Intro" {...layout}>
+                        <Form.Item label="Intro" {...layout}
+                                   validateStatus={headerError.status}
+                                   help={headerError.help}>
                             <TextArea
-                                defaultValue={guide.structure.header}
-                                validateStatus={headerError.status}
-                                help={headerError.help}
+                                defaultValue={getHeader()}
                                 onChange={onHeaderChanged}
                                 autoSize
                                 placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />

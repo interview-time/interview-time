@@ -6,7 +6,7 @@ import Text from "antd/lib/typography/Text";
 import { defaultTo } from "lodash/util";
 import { getDifficultyColor } from "../../components/utils/constants";
 
-const GuideQuestionGroupCard = ({ group, groupQuestions, onRemoveQuestionClicked }) => {
+const GuideQuestionsGroupCard = ({ groupName, groupQuestions, onRemoveQuestionClicked }) => {
 
     const table = React.useRef(null);
     const [scroll, setScroll] = useState(500)
@@ -45,7 +45,7 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onRemoveQuestionClicked
               bodyStyle={{ paddingLeft: 0, paddingRight: 0, height: '95%'}}>
             <div className={styles.cardHeader}>
                 <Space direction="vertical" size={4}>
-                    <Text strong>{group.name}</Text>
+                    <Text strong>{groupName}</Text>
                     <Text>{defaultTo(groupQuestions, []).length} questions</Text>
                 </Space>
             </div>
@@ -64,4 +64,4 @@ const GuideQuestionGroupCard = ({ group, groupQuestions, onRemoveQuestionClicked
     );
 }
 
-export default GuideQuestionGroupCard
+export default GuideQuestionsGroupCard

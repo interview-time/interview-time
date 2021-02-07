@@ -53,7 +53,7 @@ const TAB_STRUCTURE = "structure"
 
 const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, updateGuide }) => {
 
-    const emptyGuide = {
+    const c = {
         guideId: undefined,
         structure: {
             groups: []

@@ -134,14 +134,13 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
                 }
                 onBack={onBackClicked}
                 extra={[
+                    <Button danger onClick={onDeleteClicked}>Delete</Button>,
                     <>{isNewStatus() && <Button type="default">
                         <Link to={`/interviews/details/${id}`}>
                             <span className="nav-text">Edit</span>
                         </Link>
                     </Button>}</>,
                     <>{isNewStatus() && <Button type="primary" onClick={onStartClicked}>Start</Button>}</>,
-                    <>{(isStartedStatus() || isCompletedStatus()) &&
-                    <Button danger onClick={onDeleteClicked}>Delete</Button>}</>,
                     <>{isStartedStatus() &&
                     <Button type="primary" onClick={onCompletedClicked}>Complete</Button>}</>,
                 ]}>

@@ -24,6 +24,8 @@ const colors = [
     '#f5222d',
 ]
 
+// TODO change edit action to preview
+
 const Guides = () => {
 
     const history = useHistory();
@@ -65,6 +67,7 @@ const Guides = () => {
 
     const onCopy = (guide) => {
         const copy = cloneDeep(guide)
+        copy.guideId = null
         copy.title = `Copy of ${guide.title}`
         dispatch(addGuide(copy))
         message.success(`Guide '${copy.title}' created.`);

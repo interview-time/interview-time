@@ -17,7 +17,11 @@ const tailLayout = {
 
 const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-summary.png'
 
-const GuideWizardSummary = ({guide, onSave, onBack, onPreview}) => {
+/**
+ *
+ * Works with `guide` or `interview`.
+ */
+const GuideWizardSummary = ({guide, interview, onSave, onBack, onPreview}) => {
 
     const noError = {
         status: null,
@@ -27,13 +31,13 @@ const GuideWizardSummary = ({guide, onSave, onBack, onPreview}) => {
     const [footerError, setFooterError] = useState(noError);
 
     const onFooterChanged = e => {
-        guide.structure.footer = e.target.value;
+        setFooter(e.target.value)
         setFooterError(noError)
     }
 
     const isDataValid = () => {
         let valid = true;
-        if (isEmpty(guide.structure.footer)) {
+        if (isEmpty(getFooter())) {
             valid = false;
             setFooterError({
                 status: 'error',
@@ -50,7 +54,19 @@ const GuideWizardSummary = ({guide, onSave, onBack, onPreview}) => {
         }
     }
 
-    return <Row key={guide.guideId} align="middle" wrap={false}>
+    const getDataId = () => guide ? guide.guideId : interview.interviewId;
+
+    const getFooter = () => guide ? guide.structure.footer : interview.structure.footer;
+
+    const setFooter = (footer) => {
+        if (guide) {
+            guide.structure.footer = footer;
+        } else if (interview) {
+            interview.structure.footer = footer;
+        }
+    }
+
+    return <Row key={getDataId()} align="middle" wrap={false}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert
@@ -61,11 +77,11 @@ const GuideWizardSummary = ({guide, onSave, onBack, onPreview}) => {
                 />
                 <Card className={styles.card}>
                     <Form>
-                        <Form.Item label="Summary" {...layout}>
+                        <Form.Item label="Summary" {...layout}
+                                   validateStatus={footerError.status}
+                                   help={footerError.help}>
                             <TextArea
-                                defaultValue={guide.structure.footer}
-                                validateStatus={footerError.status}
-                                help={footerError.help}
+                                defaultValue={getFooter()}
                                 onChange={onFooterChanged}
                                 autoSize
                                 placeholder="Allow 10 minutes at the end for the candidate to ask questions." />

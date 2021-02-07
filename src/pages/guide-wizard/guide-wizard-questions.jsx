@@ -6,8 +6,13 @@ import Text from "antd/lib/typography/Text";
 
 const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-questions.png'
 
+/**
+ *
+ * Works with `guide` or `interview`.
+ */
 const GuideWizardQuestions = ({
                                   guide,
+                                  interview,
                                   onNext,
                                   onBack,
                                   onPreview,
@@ -17,7 +22,11 @@ const GuideWizardQuestions = ({
                                   onAddQuestionClicked
                               }) => {
 
-    return <Row key={guide.guideId} align="middle" wrap={false}>
+    const getDataId = () => guide ? guide.guideId : interview.interviewId;
+
+    const getGroups = () => guide ? guide.structure.groups : interview.structure.groups;
+
+    return <Row key={getDataId()} align="middle" wrap={false}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert
@@ -27,7 +36,7 @@ const GuideWizardQuestions = ({
                     showIcon
                 />
                 <Card className={styles.card}>
-                    {guide.structure.groups.map((group, index) => {
+                    {getGroups().map((group, index) => {
 
                         return <div style={{ marginTop: index === 0 ? 0 : 24 }}>
                             <Form>
