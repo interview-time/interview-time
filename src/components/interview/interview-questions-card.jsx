@@ -4,6 +4,7 @@ import AssessmentCheckbox from "../questions/assessment-checkbox"
 import styles from "./interview-questions-card.module.css";
 import { getDifficultyColor, GroupAssessment } from "../utils/constants";
 import { localeCompareArray, localeCompare } from "../utils/comparators";
+import { defaultTo } from "lodash/util";
 
 const { Search } = Input;
 const { TextArea } = Input;
@@ -39,7 +40,7 @@ const InterviewQuestionsCard = (props) => {
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
             render: tags => (
                 <>
-                    {(tags ? tags : []).map(tag => {
+                    {defaultTo(tags, []).map(tag => {
                         return (
                             <Tag key={tag}>
                                 {tag.toLowerCase()}
@@ -52,8 +53,9 @@ const InterviewQuestionsCard = (props) => {
         {
             title: 'Assessment',
             key: 'question',
-            render: (question) => <AssessmentCheckbox
-                assessment={question.assessment}
+            dataIndex: 'question',
+            render: (text, question) => <AssessmentCheckbox
+                assessment={defaultTo(question.assessment, '')}
                 disabled={props.disabled}
                 onChange={value => {
                     question.assessment = value

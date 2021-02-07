@@ -15,6 +15,14 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
     const [selectedCategoryTags, setSelectedCategoryTags] = useState([])
     const [tagFilter, setTagFilter] = useState()
     const [difficultyFilter, setDifficultyFilter] = useState()
+    const table = React.useRef(null);
+    const [scroll, setScroll] = useState(500)
+
+    React.useEffect(() => {
+        if(table.current) {
+            setScroll(table.current.clientHeight)
+        }
+    }, [table])
 
     React.useEffect(() => {
         // select first category when categories are loaded
@@ -72,12 +80,6 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
 
     const columns = [
         {
-            title: 'Add',
-            dataIndex: 'add',
-            width: 30,
-            render: () => <PlusCircleTwoTone className={styles.addIcon} />,
-        },
-        {
             title: 'Question',
             dataIndex: 'question',
             render: (text, question) => <div className={styles.questionWrapper}>
@@ -92,12 +94,14 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                         </div>
                     </Space>
                 </div>
+                <PlusCircleTwoTone className={styles.addIcon} />
             </div>
         }
     ];
 
     return (
-        <Card bordered={false} className={styles.questionBankCard} bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}>
+        <Card bordered={false} className={styles.questionBankCard}
+              bodyStyle={{ paddingLeft: 0, paddingRight: 0, height: '95%' }}>
             <div className={styles.cardHeader}>
                 <Space direction="vertical" size={4}>
                     <Text strong>Question Bank</Text> <Text>{selectedCategoryQuestions.length} questions</Text>
@@ -139,18 +143,20 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
                 </Space>
             </div>
             <Divider className={styles.divider} />
-            <Table
-                rowKey="index"
-                pagination={false}
-                showHeader={false}
-                dataSource={selectedCategoryQuestions}
-                columns={columns}
-                scroll={{ y: 700 }}
-                rowClassName={styles.row}
-                onRow={record => ({
-                    onClick: () => onRowClicked(record),
-                })}
-            />
+            <div ref={table} style={{ height: '95%' }}>
+                <Table
+                    rowKey="index"
+                    pagination={false}
+                    showHeader={false}
+                    dataSource={selectedCategoryQuestions}
+                    columns={columns}
+                    scroll={{ y: scroll }}
+                    rowClassName={styles.row}
+                    onRow={record => ({
+                        onClick: () => onRowClicked(record),
+                    })}
+                />
+            </div>
         </Card>
     );
 }
