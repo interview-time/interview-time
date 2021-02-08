@@ -53,7 +53,7 @@ const TAB_STRUCTURE = "structure"
 
 const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, updateGuide }) => {
 
-    const c = {
+    const emptyGuide = {
         guideId: undefined,
         structure: {
             groups: []
@@ -104,7 +104,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
             okText: "Yes",
             cancelText: "No",
             onOk() {
-                history.push("/guides");
+                history.push("/templates");
             }
         })
     }
@@ -127,7 +127,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
 
     const onDeleteClicked = () => {
         deleteGuide(guide.guideId);
-        history.push("/guides");
+        history.push("/templates");
         message.success(`Guide '${guide.title}' removed.`);
     }
 
@@ -156,7 +156,7 @@ const GuideDetails = ({ guides, loading, loadGuides, addGuide, deleteGuide, upda
                 updateGuide(guide);
                 message.success(`Guide '${guide.title}' updated.`);
             }
-            history.push("/guides");
+            history.push("/templates");
         }
     }
 

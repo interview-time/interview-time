@@ -146,10 +146,10 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                 onChange={onPositionChange}
                             />
                         </Form.Item>
-                        {guides.length > 0 && <Form.Item label="Guide" {...layout}>
+                        {guides.length > 0 && <Form.Item label="Template" {...layout}>
                             <Select
                                 key={interviewGuide.guideId}
-                                placeholder="Select guide"
+                                placeholder="Select template"
                                 defaultValue={interviewGuide.title}
                                 onSelect={onGuideChange}
                                 onClear={onGuideClear}

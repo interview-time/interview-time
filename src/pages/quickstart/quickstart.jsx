@@ -14,7 +14,7 @@ const Quickstart = () => {
     }
 
     const onGuidesClicked = () => {
-        history.push("/guides")
+        history.push("/templates")
     }
 
     const onInterviewsClicked = () => {
@@ -43,13 +43,13 @@ const Quickstart = () => {
 
                     <Card className={styles.card}>
                         <div className={styles.content}>
-                            <img alt="Guides" src={process.env.PUBLIC_URL + '/quickstart/guides.png'}
+                            <img alt="Templates" src={process.env.PUBLIC_URL + '/quickstart/templates.png'}
                                  className={styles.image} />
                             <div className={styles.growRight}>
-                                <Title level={5}>Guides</Title>
-                                <p>To keep the interview process structured, create a guide for the desired role.</p>
-                                <p>Interview guide system helps you to focus on the interview, not preparation.</p>
-                                <Button type="primary" onClick={onGuidesClicked}>Open Guides</Button>
+                                <Title level={5}>Templates</Title>
+                                <p>To keep the interview process structured, create a template for the desired role.</p>
+                                <p>Interview template system helps you to focus on the interview, not preparation.</p>
+                                <Button type="primary" onClick={onGuidesClicked}>Open Templates</Button>
                             </div>
                         </div>
                     </Card>
@@ -58,7 +58,7 @@ const Quickstart = () => {
                         <div className={styles.content}>
                             <div className={styles.growLeft}>
                                 <Title level={5}>Interviews</Title>
-                                <p>Select a guide which will be used during the interview.</p>
+                                <p>Select a template which will be used during the interview.</p>
                                 <p>The interview scorecard mechanism helps to reduce unconscious biases and make a
                                     data-driven hiring decision.</p>
                                 <Button type="primary" onClick={onInterviewsClicked}>Open Interviews</Button>

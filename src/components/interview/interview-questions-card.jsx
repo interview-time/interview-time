@@ -89,7 +89,6 @@ const InterviewQuestionsCard = (props) => {
         <Card
             id={group.name}
             title={group.name}
-            bordered={false}
             extra={<Search placeholder="Search" className={styles.search} allowClear
                            onSearch={onSearchClicked} onChange={onSearchTextChanged} />}
             bodyStyle={{ padding: 12 }}

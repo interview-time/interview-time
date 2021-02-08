@@ -41,7 +41,7 @@ const GuideQuestionsGroupCard = ({ groupName, groupQuestions, onRemoveQuestionCl
     ];
 
     return (
-        <Card bordered={false} className={styles.questionGroupCard}
+        <Card className={styles.questionGroupCard}
               bodyStyle={{ paddingLeft: 0, paddingRight: 0, height: '95%'}}>
             <div className={styles.cardHeader}>
                 <Space direction="vertical" size={4}>

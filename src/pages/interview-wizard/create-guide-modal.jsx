@@ -95,7 +95,7 @@ const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }
     }
 
     return (
-        <Modal title={"Do you want to save this interview as a guide?"}
+        <Modal title={"Do you want to save this interview as a template?"}
                destroyOnClose={true}
                closable={false}
                confirmLoading={guidesLoading}
@@ -106,7 +106,7 @@ const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }
                onCancel={() => onClose()}
         >
             <Alert
-                message="If you save this interview as a guide, you can use it next time you create an interview. Navigate to guides menu if you want to edit interview guides."
+                message="If you save this interview as a template, you can use it next time you create an interview. Navigate to 'Templates' menu if you want to edit interview templates."
                 type="info"
                 style={{ marginBottom: 24 }}
                 showIcon

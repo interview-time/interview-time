@@ -78,7 +78,7 @@ const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
             <div className={styles.container}>
                 <Alert
                     className={styles.alert}
-                    message="Enter interview guide detail information so you can easily discover it among other guides."
+                    message="Enter template detail information so you can easily discover it among other templates."
                     type="info"
                     showIcon
                 />
@@ -109,7 +109,7 @@ const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                         </Form.Item>
                         <Form.Item label="Description" {...layout}>
                             <TextArea
-                                placeholder="Guide description"
+                                placeholder="Template description"
                                 defaultValue={guide.description}
                                 onChange={onDescriptionChange}
                                 autoSize

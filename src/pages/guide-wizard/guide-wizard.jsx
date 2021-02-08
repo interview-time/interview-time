@@ -106,18 +106,18 @@ const GuideWizard = () => {
     }
 
     const onDiscard = () => {
-        history.push("/guides")
+        history.push("/templates")
     }
 
     const onSave = () => {
         if (isNewGuideFlow()) {
             dispatch(addGuide(guide));
-            message.success(`Guide '${guide.title}' created.`);
+            message.success(`Template '${guide.title}' created.`);
         } else {
             dispatch(updateGuide(guide));
-            message.success(`Guide '${guide.title}' updated.`);
+            message.success(`Template '${guide.title}' updated.`);
         }
-        history.push("/guides")
+        history.push("/templates")
     }
 
     const onPreviewClosed = () => {
@@ -170,10 +170,10 @@ const GuideWizard = () => {
     return <Layout pageHeader={
         <PageHeader
             className={styles.pageHeader}
-            title={isNewGuideFlow() ? "New Interview Guide" : "Edit Interview Guide"}
+            title={isNewGuideFlow() ? "New Interview Template" : "Edit Interview Template"}
         >
             <Steps current={step}>
-                <Step title="Guide Details" />
+                <Step title="Template Details" />
                 <Step title="Intro Section" />
                 <Step title="Questions Section" />
                 <Step title="Summary Section" />

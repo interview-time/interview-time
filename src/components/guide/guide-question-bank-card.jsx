@@ -100,7 +100,7 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
     ];
 
     return (
-        <Card bordered={false} className={styles.questionBankCard}
+        <Card className={styles.questionBankCard}
               bodyStyle={{ paddingLeft: 0, paddingRight: 0, height: '95%' }}>
             <div className={styles.cardHeader}>
                 <Space direction="vertical" size={4}>

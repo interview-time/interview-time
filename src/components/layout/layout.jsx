@@ -9,7 +9,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 const menuIconStyle = { fontSize: '24px' }
 
 const PATH_QUESTION_BANK = `question-bank`;
-const PATH_GUIDES = `guides`;
+const PATH_GUIDES = `templates`;
 const PATH_INTERVIEWS = `interviews`;
 const PATH_ACCOUNT = `account`;
 
@@ -39,7 +39,7 @@ const Layout = ({ children, pageHeader }) => {
                     </Menu.Item>
                     <Menu.Item key={PATH_GUIDES} className={styles.menuItem} icon={<GuideIcon style={menuIconStyle} />}>
                         <Link to={`/${PATH_GUIDES}`}>
-                            <span className="nav-text">Guides</span>
+                            <span className="nav-text">Templates</span>
                         </Link>
                     </Menu.Item>
                     <Menu.Item key={PATH_INTERVIEWS} className={styles.menuItem}

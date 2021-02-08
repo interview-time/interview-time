@@ -57,7 +57,7 @@ const Guides = () => {
     const getAvatarText = (text) => text.split(' ').map(item => item.charAt(0)).join('')
 
     const onEdit = (guideId) => {
-        history.push(`/guides/details/${guideId}`)
+        history.push(`/templates/details/${guideId}`)
     }
 
     const onDelete = (guide) => {
@@ -75,11 +75,11 @@ const Guides = () => {
 
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
-        title="Interview Guides"
+        title="Interview Templates"
         extra={[
             <Button type="primary">
-                <Link to={`/guides/add`}>
-                    <span className="nav-text">Add guide</span>
+                <Link to={`/templates/add`}>
+                    <span className="nav-text">Add template</span>
                 </Link>
             </Button>,
         ]}

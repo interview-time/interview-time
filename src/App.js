@@ -28,9 +28,9 @@ function App() {
       <PrivateRoute path="/interviews/add" exact component={InterviewWizard} />
       <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
       <PrivateRoute path="/interviews/start/:id" exact component={InterviewStart} />
-      <PrivateRoute path="/guides" exact component={Guides} />
-      <PrivateRoute path="/guides/add/" exact component={GuideWizard} />
-      <PrivateRoute path="/guides/details/:id" exact component={GuideWizard} />
+      <PrivateRoute path="/templates" exact component={Guides} />
+      <PrivateRoute path="/templates/add/" exact component={GuideWizard} />
+      <PrivateRoute path="/templates/details/:id" exact component={GuideWizard} />
       <PrivateRoute path="/account" exact component={Account} />
     </Switch>
   );

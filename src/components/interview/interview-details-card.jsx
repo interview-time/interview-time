@@ -58,8 +58,7 @@ const InterviewDetailsCard = ({interview, header, disabled}) => {
         <Col span={20}>
             <Card
                 id="intro"
-                title="Intro"
-                bordered={false}>
+                title="Intro">
                 <Form.Item>
                     <Text>{getHeader()}</Text>
                 </Form.Item>
@@ -72,7 +71,6 @@ const InterviewDetailsCard = ({interview, header, disabled}) => {
             <Card
                 id="overall"
                 title="Overall"
-                bordered={false}
                 style={{ marginTop: 24 }}>
                 <Form
                     {...layout}
@@ -108,7 +106,7 @@ const InterviewDetailsCard = ({interview, header, disabled}) => {
 
             <Affix offsetTop={offset}>
                 <div>
-                    <Card title="Structure" bordered={false}>
+                    <Card title="Structure">
                         <Anchor affix={false}>
                             <Anchor.Link href="#intro" title="Intro" />
                             {getGroups().map(group => {
