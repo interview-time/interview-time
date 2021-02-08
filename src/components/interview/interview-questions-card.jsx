@@ -3,13 +3,12 @@ import { Card, Form, Input, Radio, Table, Tag } from "antd";
 import AssessmentCheckbox from "../questions/assessment-checkbox"
 import styles from "./interview-questions-card.module.css";
 import { getDifficultyColor, GroupAssessment } from "../utils/constants";
-import { localeCompareArray, localeCompare } from "../utils/comparators";
+import { localeCompare, localeCompareArray } from "../utils/comparators";
 import { defaultTo } from "lodash/util";
 
 const { TextArea } = Input;
 
-const InterviewQuestionsCard = (props) => {
-    const group = props.group
+const InterviewQuestionsCard = ({ group, disabled }) => {
 
     const columns = [
         {
@@ -55,7 +54,7 @@ const InterviewQuestionsCard = (props) => {
             dataIndex: 'question',
             render: (text, question) => <AssessmentCheckbox
                 assessment={defaultTo(question.assessment, '')}
-                disabled={props.disabled}
+                disabled={disabled}
                 onChange={value => {
                     question.assessment = value
                 }}
@@ -75,7 +74,7 @@ const InterviewQuestionsCard = (props) => {
         <Card
             id={group.name}
             title={group.name}
-            bodyStyle={{ paddingLeft: 0, paddingRight: 0,  paddingTop: 0 }}
+            bodyStyle={{ paddingLeft: 0, paddingRight: 0, paddingTop: 0 }}
             className={styles.card}>
 
             <Table columns={columns} dataSource={group.questions} pagination={false} />
@@ -87,15 +86,19 @@ const InterviewQuestionsCard = (props) => {
                 className={styles.form}>
                 <Form.Item label="Notes">
                     <TextArea
+                        {...(disabled ? { readonly: "true" } : {})}
                         placeholder="Capture any key moments that happened during the interview."
-                        disabled={props.disabled}
+                        autoSize={{ minRows: 3, maxRows: 5 }}
                         onChange={onNoteChanges}
                         defaultValue={group.notes} />
                 </Form.Item>
 
                 <Form.Item label="Assessment">
-                    <Radio.Group key={group.assessment} defaultValue={group.assessment}
-                                 disabled={props.disabled} onChange={onAssessmentChanged}>
+                    <Radio.Group
+                        key={group.assessment}
+                        {...(disabled ? { value: group.assessment } : { defaultValue: group.assessment })}
+                        buttonStyle="solid"
+                        onChange={onAssessmentChanged}>
                         <Radio.Button value={GroupAssessment.NO_PROFICIENCY}>no proficiency</Radio.Button>
                         <Radio.Button value={GroupAssessment.LOW_SKILLED}>low skills</Radio.Button>
                         <Radio.Button value={GroupAssessment.SKILLED}>skilled</Radio.Button>

@@ -248,16 +248,17 @@ const QuestionBankPersonalQuestions = ({
             </Card>
 
             <div ref={questionsTable} className={styles.table}>
-                <Table columns={columns}
-                       pagination={false}
-                       style={{ marginTop: TABLE_PADDING }}
-                       scroll={{ y: scroll }}
-                       dataSource={selectedQuestions}
-                       rowClassName={styles.row}
-                       onRow={(record) => ({
-                           onClick: () => onQuestionClicked(record),
-                       })}
-                />
+                <Card bodyStyle={{ padding: 0}} style={{marginTop: TABLE_PADDING}}>
+                    <Table columns={columns}
+                           pagination={false}
+                           scroll={{ y: scroll }}
+                           dataSource={selectedQuestions}
+                           rowClassName={styles.row}
+                           onRow={(record) => ({
+                               onClick: () => onQuestionClicked(record),
+                           })}
+                    />
+                </Card>
             </div>
         </div>
     )

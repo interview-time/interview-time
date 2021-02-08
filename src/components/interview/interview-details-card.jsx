@@ -12,7 +12,7 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const InterviewDetailsCard = ({interview, header, disabled}) => {
+const InterviewDetailsCard = ({ interview, header, disabled }) => {
 
     const [offset, setOffset] = useState(0);
 
@@ -83,19 +83,22 @@ const InterviewDetailsCard = ({interview, header, disabled}) => {
 
                     <Form.Item label="Notes">
                         <TextArea
+                            {...(disabled ? { readonly: "true" } : {})}
                             placeholder="Capture any key moments that happened during the interview."
-                            disabled={disabled}
+                            autoSize={{ minRows: 3, maxRows: 5 }}
                             onChange={onNoteChanges}
                             defaultValue={interview.notes} />
                     </Form.Item>
 
                     <Form.Item label="Assessment">
-                        <Radio.Group defaultValue={interview.decision} disabled={disabled}
-                                     onChange={onAssessmentChanged}>
+                        <Radio.Group
+                            {...(disabled ? { value: interview.decision } : { defaultValue: interview.decision })}
+                            buttonStyle="solid"
+                            onChange={onAssessmentChanged}>
                             <Radio.Button value={InterviewAssessment.STRONG_NO}>strong no</Radio.Button>
                             <Radio.Button value={InterviewAssessment.NO}>no</Radio.Button>
                             <Radio.Button value={InterviewAssessment.YES}>yes</Radio.Button>
-                            <Radio.Button value={InterviewAssessment.STRONG_YES}>strong  yes</Radio.Button>
+                            <Radio.Button value={InterviewAssessment.STRONG_YES}>strong yes</Radio.Button>
                         </Radio.Group>
                     </Form.Item>
                 </Form>

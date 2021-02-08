@@ -4,7 +4,7 @@ import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadGuides } from "../../store/guides/actions";
 import styles from "../interviews/interviews.module.css";
-import { Badge, Button, Input, PageHeader, Table, Tag } from 'antd';
+import { Badge, Button, Card, Input, PageHeader, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import lang from "lodash/lang"
@@ -134,15 +134,18 @@ const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGui
             ]}
         >
         </PageHeader>}>
-            <Table
-                columns={columns}
-                dataSource={interviews}
-                loading={loading}
-                rowClassName={styles.row}
-                onRow={(record) => ({
-                    onClick: () => onRowClicked(record),
-                })}
-            />
+            <Card bodyStyle={{ padding: 0}}>
+                <Table
+                    pagination={false}
+                    columns={columns}
+                    dataSource={interviews}
+                    loading={loading}
+                    rowClassName={styles.row}
+                    onRow={(record) => ({
+                        onClick: () => onRowClicked(record),
+                    })}
+                />
+            </Card>
         </Layout>
     )
 }
