@@ -217,7 +217,6 @@ const GuideWizard = () => {
                 closable={true}
                 destroyOnClose={true}
                 onClose={onPreviewClosed}
-                drawerStyle={{ backgroundColor: "#F0F2F5" }}
                 placement='right'
                 visible={previewVisible}>
                 <GuideInterviewDetailsCard guide={guide} />
@@ -229,7 +228,6 @@ const GuideWizard = () => {
                 closable={true}
                 destroyOnClose={true}
                 onClose={onQuestionsClosed}
-                drawerStyle={{ backgroundColor: "#F0F2F5" }}
                 placement='right'
                 visible={questionsVisible}>
                 <GuideQuestions

@@ -4,7 +4,8 @@
 }
 
 .pageContent {
-    padding: 24px
+    padding: 24px;
+    background: #fff;
 }
 
 .globalHeader {

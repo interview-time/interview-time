@@ -241,7 +241,6 @@ const InterviewWizard = () => {
                 closable={true}
                 destroyOnClose={true}
                 onClose={onPreviewClosed}
-                drawerStyle={{ backgroundColor: "#F0F2F5" }}
                 placement='right'
                 visible={previewVisible}>
                 <InterviewDetailsCard interview={interview} />
@@ -253,7 +252,6 @@ const InterviewWizard = () => {
                 closable={true}
                 destroyOnClose={true}
                 onClose={onQuestionsClosed}
-                drawerStyle={{ backgroundColor: "#F0F2F5" }}
                 placement='right'
                 visible={questionsVisible}>
                 <GuideQuestions
