@@ -6,7 +6,6 @@ import { getDifficultyColor, GroupAssessment } from "../utils/constants";
 import { localeCompareArray, localeCompare } from "../utils/comparators";
 import { defaultTo } from "lodash/util";
 
-const { Search } = Input;
 const { TextArea } = Input;
 
 const InterviewQuestionsCard = (props) => {
@@ -64,19 +63,6 @@ const InterviewQuestionsCard = (props) => {
         },
     ];
 
-    const onSearchClicked = text => {
-        // TODO fix search
-        // let lowerCaseText = text.toLocaleLowerCase()
-        // setQuestions(data.filter(item =>
-        //     item.question.toLocaleLowerCase().includes(lowerCaseText)
-        //     || item.tags.includes(lowerCaseText)
-        // ))
-    };
-
-    const onSearchTextChanged = e => {
-        onSearchClicked(e.target.value)
-    };
-
     const onAssessmentChanged = e => {
         group.assessment = e.target.value
     };
@@ -89,9 +75,7 @@ const InterviewQuestionsCard = (props) => {
         <Card
             id={group.name}
             title={group.name}
-            extra={<Search placeholder="Search" className={styles.search} allowClear
-                           onSearch={onSearchClicked} onChange={onSearchTextChanged} />}
-            bodyStyle={{ padding: 12 }}
+            bodyStyle={{ paddingLeft: 0, paddingRight: 0,  paddingTop: 0 }}
             className={styles.card}>
 
             <Table columns={columns} dataSource={group.questions} pagination={false} />

@@ -5,18 +5,15 @@
 
 .pageContent {
     padding: 24px;
-    background: #fff;
 }
 
 .globalHeader {
     padding: 0;
-    background: #fff;
     border-bottom: 1px solid rgb(235, 237, 240);
 }
 
 .globalSider {
     border-right: 1px solid rgb(235, 237, 240);
-    background: #fff;
 }
 
 .globalLayout {
