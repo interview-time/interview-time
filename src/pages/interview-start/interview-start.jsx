@@ -45,7 +45,6 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
         if (!interview.interviewId) {
             const interview = interviews.find(interview => interview.interviewId === id);
             if (interview) {
-                console.log(JSON.stringify(interview))
                 const updatedInterview = lang.cloneDeep(interview);
                 if (!updatedInterview.status) {
                     updatedInterview.status = Status.NEW

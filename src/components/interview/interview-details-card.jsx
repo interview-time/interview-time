@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Affix, Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
 import Typography from "antd/es/typography";
-import { InterviewAssessment } from "../utils/constants";
+import { InterviewAssessment, Status } from "../utils/constants";
+import { defaultTo } from "lodash/util";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -48,7 +49,20 @@ const InterviewDetailsCard = ({ interview, header, disabled }) => {
 
     const getGroups = () => {
         if (interview && interview.structure && interview.structure.groups) {
-            return interview.structure.groups
+            if (interview.status === Status.COMPLETED) {
+                let groups = []
+                interview.structure.groups.forEach(group => {
+                    group.questions = group.questions.filter(question => {
+                        return defaultTo(question.assessment, '').length > 0
+                    })
+                    if (group.questions.length > 0) {
+                        groups.push(group)
+                    }
+                })
+                return groups
+            } else {
+                return interview.structure.groups
+            }
         } else {
             return []
         }
