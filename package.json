@@ -5,6 +5,8 @@
   "dependencies": {
     "@ant-design/icons": "^4.3.0",
     "@auth0/auth0-spa-js": "^1.13.5",
+    "@sentry/react": "^6.1.0",
+    "@sentry/tracing": "^6.1.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.1.2",
     "@testing-library/user-event": "^12.2.2",

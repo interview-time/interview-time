@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 import { BrowserRouter } from "react-router-dom";
 import './index.css';
 import App from './App';
@@ -8,6 +10,13 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { Auth0Provider } from "./react-auth0-spa";
 import config from "./auth_config.json";
+
+Sentry.init({
+    dsn: "https://8a5b19779cd84d55b20bcf766df59495@o519027.ingest.sentry.io/5628792",
+    integrations: [new Integrations.BrowserTracing()],
+    denyUrls: ["http://localhost:3000/"],
+    tracesSampleRate: 1.0,
+});
 
 const onRedirectCallback = appState => {
   window.history.replaceState(
