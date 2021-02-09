@@ -66,7 +66,7 @@ const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }
             valid = false;
             setTitleError({
                 status: 'error',
-                help: "Please provide 'Title'.",
+                help: "This field is required",
             })
         }
 
@@ -74,7 +74,7 @@ const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }
             valid = false;
             setCategoryError({
                 status: 'error',
-                help: "Please provide 'Category'.",
+                help: "This field is required",
             })
         }
 

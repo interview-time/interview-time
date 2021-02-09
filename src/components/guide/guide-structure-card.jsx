@@ -86,7 +86,7 @@ const GuideStructureCard = ({
                         onClick={onAddGroupClicked}>Group</Button>
             </Form.Item>
 
-            <Form.Item label="Overall" key={structure.footer}>
+            <Form.Item label="Summary" key={structure.footer}>
                 <TextArea
                     className={styles.input}
                     defaultValue={structure.footer}

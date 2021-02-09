@@ -78,7 +78,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
             valid = false;
             setCandidateError({
                 status: 'error',
-                help: "Please provide 'Candidate'",
+                help: "This field is required",
             })
         }
 
@@ -86,7 +86,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
             valid = false;
             setDateError({
                 status: 'error',
-                help: "Please provide 'Interview Date'",
+                help: "This field is required",
             })
         }
 
@@ -94,7 +94,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
             valid = false;
             setPositionError({
                 status: 'error',
-                help: "Please provide 'Position'",
+                help: "This field is required",
             })
         }
 

@@ -41,7 +41,7 @@ const GuideWizardSummary = ({guide, interview, onSave, onBack, onPreview}) => {
             valid = false;
             setFooterError({
                 status: 'error',
-                help: "Please provide 'Summary'.",
+                help: "This field is required",
             })
         }
 

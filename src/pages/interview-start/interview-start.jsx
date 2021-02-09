@@ -90,7 +90,7 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
     const onCompletedClicked = () => {
         if (!interview.decision) {
             Modal.warn({
-                title: "Please select overall 'assessment'.",
+                title: "Please select summary 'assessment'.",
             })
         } else {
             Modal.confirm({

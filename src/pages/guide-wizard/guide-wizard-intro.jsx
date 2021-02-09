@@ -41,7 +41,7 @@ const GuideWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) => {
             valid = false;
             setHeaderError({
                 status: 'error',
-                help: "Please provide 'Intro'.",
+                help: "This field is required",
             })
         }
 

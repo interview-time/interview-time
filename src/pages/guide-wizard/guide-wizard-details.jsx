@@ -52,7 +52,7 @@ const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
             valid = false;
             setTitleError({
                 status: 'error',
-                help: "Please provide 'Title'.",
+                help: "This field is required",
             })
         }
 
@@ -60,7 +60,7 @@ const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
             valid = false;
             setCategoryError({
                 status: 'error',
-                help: "Please provide 'Category'.",
+                help: "This field is required",
             })
         }
 

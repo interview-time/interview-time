@@ -43,7 +43,7 @@ const InterviewDetailsCard = ({ interview, header, disabled }) => {
         if (interview && interview.structure && interview.structure.footer) {
             return interview.structure.footer
         } else {
-            return "Overall text is empty."
+            return "Summary text is empty."
         }
     }
 
@@ -83,8 +83,8 @@ const InterviewDetailsCard = ({ interview, header, disabled }) => {
             })}
 
             <Card
-                id="overall"
-                title="Overall"
+                id="summary"
+                title="Summary"
                 style={{ marginTop: 24 }}>
                 <Form
                     {...layout}
@@ -129,7 +129,7 @@ const InterviewDetailsCard = ({ interview, header, disabled }) => {
                             {getGroups().map(group => {
                                 return <Anchor.Link href={`#${group.name}`} title={group.name} />
                             })}
-                            <Anchor.Link href="#overall" title="Overall" />
+                            <Anchor.Link href="#summary" title="Summary" />
                         </Anchor>
                     </Card>
                 </div>
