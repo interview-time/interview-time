@@ -31,7 +31,7 @@ const GuideWizardQuestions = ({
             <div className={styles.container}>
                 <Alert
                     className={styles.alert}
-                    message="Grouping questions helps to evaluate skills in a particular area and make a more granular assessment. "
+                    message="Grouping questions helps to evaluate skills in a particular competence area and make a more granular assessment. "
                     type="info"
                     showIcon
                 />
@@ -41,7 +41,7 @@ const GuideWizardQuestions = ({
                         return <div style={{ marginTop: index === 0 ? 0 : 24 }}>
                             <Form key={group.groupId}>
                                 <div className={styles.buttonContainer}>
-                                    <Text strong>Question Group</Text>
+                                    <Text strong>Competence Area</Text>
                                     <Text>{group.questions.length} questions</Text>
                                 </div>
                                 <div className={styles.questionGroup}>
@@ -56,7 +56,7 @@ const GuideWizardQuestions = ({
                                                 onAddQuestionClicked(group)
                                             }}>Question</Button>
                                     <Popconfirm
-                                        title="Are you sure you want to delete this group?"
+                                        title="Are you sure you want to delete this competence area?"
                                         onConfirm={() => onRemoveGroupClicked(group.groupId)}
                                         okText="Yes"
                                         cancelText="No">
@@ -70,8 +70,7 @@ const GuideWizardQuestions = ({
                         style={{ marginTop: '24px' }}
                         type="dashed" block
                         icon={<PlusCircleTwoTone />}
-                        onClick={onAddGroupClicked}
-                    >Group</Button>
+                        onClick={onAddGroupClicked}>Competence Area</Button>
                     <div className={styles.buttonContainer} style={{ marginTop: '24px' }}>
                         <Button className={styles.button} onClick={onBack}>Back</Button>
                         <Button className={styles.button} type="primary" onClick={onNext}>Next</Button>
