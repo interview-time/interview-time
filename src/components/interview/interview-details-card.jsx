@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Affix, Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
+import styles from "./interview-details-card.module.css";
+import React from 'react';
+import { Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
 import Typography from "antd/es/typography";
 import { InterviewAssessment, Status } from "../utils/constants";
@@ -13,15 +14,7 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const InterviewDetailsCard = ({ interview, header, disabled }) => {
-
-    const [offset, setOffset] = useState(0);
-
-    React.useEffect(() => {
-        if (header) {
-            setOffset(header.current.getBoundingClientRect().height + 26)
-        }
-    }, [header]);
+const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
 
     const onAssessmentChanged = e => {
         interview.decision = e.target.value
@@ -68,8 +61,8 @@ const InterviewDetailsCard = ({ interview, header, disabled }) => {
         }
     }
 
-    return <Row gutter={16} key={interview.interviewId}>
-        <Col span={20}>
+    return <Row key={interview.interviewId} gutter={16}>
+        <Col span={20} style={{ paddingTop: paddingTop ? paddingTop : 0 }}>
             <Card
                 id="intro"
                 title="Intro">
@@ -85,13 +78,14 @@ const InterviewDetailsCard = ({ interview, header, disabled }) => {
             <Card
                 id="summary"
                 title="Summary"
+                bodyStyle={{ paddingLeft: 0, paddingRight: 0, paddingTop: 0 }}
                 style={{ marginTop: 24 }}>
                 <Form
                     {...layout}
                     initialValues={{ remember: true }}
                     style={{ marginTop: 24 }}>
 
-                    <Form.Item>
+                    <Form.Item style={{ paddingLeft: 24, paddingRight: 24 }}>
                         <Text>{getFooter()}</Text>
                     </Form.Item>
 
@@ -118,23 +112,18 @@ const InterviewDetailsCard = ({ interview, header, disabled }) => {
                 </Form>
             </Card>
         </Col>
-
         <Col span={4}>
-
-            <Affix offsetTop={offset}>
-                <div>
-                    <Card title="Structure">
-                        <Anchor affix={false}>
-                            <Anchor.Link href="#intro" title="Intro" />
-                            {getGroups().map(group => {
-                                return <Anchor.Link href={`#${group.name}`} title={group.name} />
-                            })}
-                            <Anchor.Link href="#summary" title="Summary" />
-                        </Anchor>
-                    </Card>
-                </div>
-            </Affix>
-
+            <div className={styles.sticky} style={{ paddingTop: paddingTop ? paddingTop : 0 }}>
+                <Card title="Structure">
+                    <Anchor affix={false}>
+                        <Anchor.Link href="#intro" title="Intro" />
+                        {getGroups().map(group => {
+                            return <Anchor.Link href={`#${group.name}`} title={group.name} />
+                        })}
+                        <Anchor.Link href="#summary" title="Summary" />
+                    </Anchor>
+                </Card>
+            </div>
         </Col>
     </Row>
 }

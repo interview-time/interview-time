@@ -1,7 +1,7 @@
+import styles from "./interview-questions-card.module.css";
 import React from 'react';
 import { Card, Form, Input, Radio, Table, Tag } from "antd";
 import AssessmentCheckbox from "../questions/assessment-checkbox"
-import styles from "./interview-questions-card.module.css";
 import { getDifficultyColor, GroupAssessment } from "../utils/constants";
 import { localeCompare, localeCompareArray } from "../utils/comparators";
 import { defaultTo } from "lodash/util";
@@ -52,6 +52,7 @@ const InterviewQuestionsCard = ({ group, disabled }) => {
             title: 'Assessment',
             key: 'question',
             dataIndex: 'question',
+            width: 140,
             render: (text, question) => <AssessmentCheckbox
                 assessment={defaultTo(question.assessment, '')}
                 disabled={disabled}

@@ -1,3 +1,10 @@
 .pageHeader {
     background-color: white;
 }
+
+.sticky {
+    z-index: 1;
+    width: calc(100% - 200px); /* side menu width is 200px */
+    position: fixed;
+    top: 0;
+}

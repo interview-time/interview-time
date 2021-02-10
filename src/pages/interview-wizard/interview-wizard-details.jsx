@@ -122,7 +122,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                    validateStatus={candidateError.status}
                                    help={candidateError.help}>
                             <Input
-                                placeholder="Jon Doe"
+                                placeholder="Kristin Watson"
                                 onChange={onCandidateChange}
                                 defaultValue={interview.candidate}
                             />

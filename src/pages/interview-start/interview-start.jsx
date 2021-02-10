@@ -28,7 +28,6 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
     const [interview, setInterview] = useState(emptyInterview);
     const { id } = useParams();
     const history = useHistory();
-    const header = React.createRef();
 
     React.useEffect(() => {
         if (isStartedStatus()) {
@@ -119,39 +118,44 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
     const isStartedStatus = () => interview.status === Status.STARTED
 
     const isCompletedStatus = () => interview.status === Status.COMPLETED
-
     return (
-        <Layout pageHeader={<div ref={header}>
-            <PageHeader
-                className={styles.pageHeader}
-                title={`Interview - ${interview.candidate}`}
-                tags={
-                    <>
-                        {interview.decision &&
-                        <Tag color={getDecisionColor(interview.decision)}>{getDecisionText(interview.decision)}</Tag>}
-                    </>
-                }
-                onBack={onBackClicked}
-                extra={[
-                    <Button danger onClick={onDeleteClicked}>Delete</Button>,
-                    <>{isNewStatus() && <Button type="default">
-                        <Link to={`/interviews/details/${id}`}>
-                            <span className="nav-text">Edit</span>
-                        </Link>
-                    </Button>}</>,
-                    <>{isNewStatus() && <Button type="primary" onClick={onStartClicked}>Start</Button>}</>,
-                    <>{isStartedStatus() &&
-                    <Button type="primary" onClick={onCompletedClicked}>Complete</Button>}</>,
-                ]}>
-                {isNewStatus() && <Text>Click on the <Text strong>start</Text> button to initiate the interview
-                    which unlocks assessment and notes. If you want to make changes to the guide
-                    (only for this interview) click on <Text strong>edit</Text> button.</Text>}
-                {isStartedStatus() && <Text>Click on the <Text strong>complete</Text> button to submit your interview
-                    assessment and notes. Your data is saved automatically.</Text>}
-                {isCompletedStatus() && <Text>This interview has been completed.</Text>}
-            </PageHeader></div>}>
-            <InterviewDetailsCard interview={interview} header={header}
-                                  disabled={isNewStatus() || isCompletedStatus()} />
+        <Layout pageHeader={
+            <div className={styles.sticky}>
+                <PageHeader
+                    className={styles.pageHeader}
+                    title={`Interview - ${interview.candidate}`}
+                    tags={
+                        <>
+                            {interview.decision &&
+                            <Tag
+                                color={getDecisionColor(interview.decision)}>{getDecisionText(interview.decision)}</Tag>}
+                        </>
+                    }
+                    onBack={onBackClicked}
+                    extra={[
+                        <Button danger onClick={onDeleteClicked}>Delete</Button>,
+                        <>{isNewStatus() && <Button type="default">
+                            <Link to={`/interviews/details/${id}`}>
+                                <span className="nav-text">Edit</span>
+                            </Link>
+                        </Button>}</>,
+                        <>{isNewStatus() && <Button type="primary" onClick={onStartClicked}>Start</Button>}</>,
+                        <>{isStartedStatus() &&
+                        <Button type="primary" onClick={onCompletedClicked}>Complete</Button>}</>,
+                    ]}>
+                    {isNewStatus() && <Text>Click on the <Text strong>start</Text> button to initiate the interview
+                        which unlocks assessment and notes.</Text>}
+                    {isStartedStatus() &&
+                    <Text>Click on the <Text strong>complete</Text> button to submit your interview
+                        assessment and notes. Your data is saved automatically.</Text>}
+                    {isCompletedStatus() && <Text>This interview has been completed.</Text>}
+                </PageHeader>
+            </div>
+        }>
+            <InterviewDetailsCard
+                paddingTop={106} /* header height */
+                interview={interview}
+                disabled={isNewStatus() || isCompletedStatus()} />
 
         </Layout>
     )
