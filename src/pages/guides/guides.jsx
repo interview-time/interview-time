@@ -9,20 +9,9 @@ import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
+import { getAvatarColor} from "../../components/utils/constants";
 
 const { Meta } = Card;
-
-const colors = [
-    '#2f54eb',
-    '#722ed1',
-    '#eb2f96',
-    '#52c41a',
-    '#13c2c2',
-    '#1890ff',
-    '#faad14',
-    '#a0d911',
-    '#f5222d',
-]
 
 // TODO change edit action to preview
 
@@ -42,14 +31,6 @@ const Guides = () => {
         }
         // eslint-disable-next-line
     }, []);
-
-    const getAvatarColor = (text) => {
-        let index = text.charCodeAt(0);
-        while (index > colors.length - 1) {
-            index = index % 10
-        }
-        return colors[index]
-    }
 
     const getTotalQuestions = (groups) =>
         sumBy(groups, (group) => group.questions ? group.questions.length : 0)
