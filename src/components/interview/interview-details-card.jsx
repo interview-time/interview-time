@@ -67,7 +67,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
                 id="intro"
                 title="Intro">
                 <Form.Item>
-                    <Text>{getHeader()}</Text>
+                    <div className={styles.multiLineText}>{getHeader()}</div>
                 </Form.Item>
             </Card>
 
@@ -86,7 +86,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
                     style={{ marginTop: 24 }}>
 
                     <Form.Item style={{ paddingLeft: 24, paddingRight: 24 }}>
-                        <Text>{getFooter()}</Text>
+                        <div className={styles.multiLineText}>{getFooter()}</div>
                     </Form.Item>
 
                     <Form.Item label="Notes">
