@@ -34,6 +34,7 @@ const GuideWizardQuestions = ({
                     message="Grouping questions helps to evaluate skills in a particular competence area and make a more granular assessment. "
                     type="info"
                     showIcon
+                    banner
                 />
                 <Card className={styles.card}>
                     {getGroups().map((group, index) => {

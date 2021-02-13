@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from "react-redux";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import InterviewDetailsCard from "../interview/interview-details-card";
-import lang from "lodash/lang";
+import { cloneDeep } from "lodash/lang";
 import { defaultTo } from "lodash/util";
 
 const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQuestionBank }) => {
@@ -23,7 +23,7 @@ const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQues
                 structure: {
                     header: guide.structure.header,
                     footer: guide.structure.footer,
-                    groups: lang.cloneDeep(guide.structure.groups)
+                    groups: cloneDeep(guide.structure.groups)
                 }
             }
 
@@ -33,7 +33,6 @@ const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQues
                 group.questions = defaultTo(interviewQuestions, [])
             })
 
-            console.log(JSON.stringify(interview))
             setInterview(interview)
         }
         // eslint-disable-next-line
@@ -41,15 +40,14 @@ const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQues
 
     return <InterviewDetailsCard
         interview={interview}
-        header={header}
-        disabled={true} />
+        header={header} />
 }
 
 const mapStateToProps = state => {
     const { loading, questions } = state.questionBank || {};
 
     return {
-        questions: questions,
+        questions: cloneDeep(questions),
         loading
     };
 };

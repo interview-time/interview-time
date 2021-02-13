@@ -1,21 +1,24 @@
 import React, { useState } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { Button, message, Modal, PageHeader, Tag } from 'antd';
+import { useHistory, useParams } from "react-router-dom";
+import { Button, Dropdown, Menu, message, Modal, PageHeader, Space, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-start.module.css";
-import { connect } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import lang from "lodash/lang";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
-import Text from "antd/es/typography/Text";
-import { getDecisionColor, getDecisionText, Status } from "../../components/utils/constants";
+import { Status } from "../../components/utils/constants";
+import { SyncOutlined } from "@ant-design/icons";
+import { cloneDeep } from "lodash/lang";
+import { debounce } from "lodash/function";
 
-const DATA_UPLOAD_INTERVAL = 10000 // 10 sec
+const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000 // 60 sec
+const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
+const KEY_EDIT = 'edit'
+const KEY_DELETE = 'delete'
 
-const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, deleteInterview }) => {
+const InterviewStart = () => {
 
     const emptyInterview = {
-        id: undefined,
         candidate: '',
         position: '',
         guideId: '',
@@ -25,53 +28,51 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
         }
     }
 
+    const { interviews, interviewsLoading, interviewsUploading } = useSelector(state => ({
+        interviews: state.interviews.interviews,
+        interviewsLoading: state.interviews.loading,
+        interviewsUploading: state.interviews.uploading
+    }), shallowEqual);
+
     const [interview, setInterview] = useState(emptyInterview);
+    const [unsavedChanges, setUnsavedChanges] = useState(false);
+
     const { id } = useParams();
+
     const history = useHistory();
+    const dispatch = useDispatch();
 
     React.useEffect(() => {
-        if (isStartedStatus()) {
-            const id = setInterval(() => {
-                // TODO only upload data if it has changed
-                updateInterview(interview)
-            }, DATA_UPLOAD_INTERVAL);
-            return () => clearInterval(id);
-        }
-        // eslint-disable-next-line
-    }, [interview]);
-
-    React.useEffect(() => {
+        // initial data loading
         if (!interview.interviewId) {
             const interview = interviews.find(interview => interview.interviewId === id);
             if (interview) {
-                const updatedInterview = lang.cloneDeep(interview);
-                if (!updatedInterview.status) {
-                    updatedInterview.status = Status.NEW
-                }
-                setInterview(updatedInterview)
+                setInterview(cloneDeep(interview))
             }
         }
         // eslint-disable-next-line
     }, [interviews, id]);
 
     React.useEffect(() => {
-        if (interviews.length === 0 && !loading) {
-            loadInterviews();
+        if (interviews.length === 0 && !interviewsLoading) {
+            dispatch(loadInterviews());
         }
-    });
+        // eslint-disable-next-line
+    }, []);
 
-    const onStartClicked = () => {
-        Modal.confirm({
-            title: "When you start the interview you will not be able to edit this interview anymore. Are you sure that you want to start?",
-            okText: "Yes",
-            cancelText: "No",
-            onOk() {
-                const updatedInterview = { ...interview, status: Status.STARTED }
-                updateInterview(updatedInterview)
-                setInterview(updatedInterview)
-            }
-        })
+    const isNewStatus = () => interview.status === Status.NEW || interview.status === Status.STARTED
+
+    const isCompletedStatus = () => interview.status === Status.COMPLETED
+
+    const onInterviewChange = () => {
+        setUnsavedChanges(true)
+        onInterviewChangeDebounce()
     }
+
+    let onInterviewChangeDebounce = debounce(function () {
+        dispatch(updateInterview(interview))
+        setUnsavedChanges(false)
+    }, DATA_CHANGE_DEBOUNCE, { 'maxWait': DATA_CHANGE_DEBOUNCE_MAX })
 
     const onDeleteClicked = () => {
         Modal.confirm({
@@ -79,7 +80,7 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
             okText: "Yes",
             cancelText: "No",
             onOk() {
-                deleteInterview(interview.interviewId);
+                dispatch(deleteInterview(interview.interviewId));
                 history.push("/interviews");
                 message.success(`Interview '${interview.candidate}' removed.`);
             }
@@ -98,77 +99,81 @@ const InterviewStart = ({ interviews, loading, loadInterviews, updateInterview, 
                 cancelText: "No",
                 onOk() {
                     const updatedInterview = { ...interview, status: Status.COMPLETED }
-                    updateInterview(updatedInterview);
+                    dispatch(updateInterview(updatedInterview));
                     history.push("/interviews");
-                    message.success(`Interview '${interview.candidate}' marked as completed.`);
+                    message.success(`Interview '${interview.candidate}' marked as complete.`);
                 }
             })
         }
     }
 
     const onBackClicked = () => {
-        if (isStartedStatus()) {
-            updateInterview(interview)
-        }
         history.push("/interviews");
     }
 
-    const isNewStatus = () => interview.status === Status.NEW
+    const onSaveClicked = () => {
+        dispatch(updateInterview(interview))
+        setUnsavedChanges(false)
+        message.success(`Interview '${interview.candidate}' updated.`);
+    }
 
-    const isStartedStatus = () => interview.status === Status.STARTED
+    const onEditClicked = () => {
+        history.push(`/interviews/details/${id}`)
+    }
 
-    const isCompletedStatus = () => interview.status === Status.COMPLETED
+    const handleMenuClick = (e) => {
+        if (e.key === KEY_EDIT) {
+            onEditClicked()
+        } else if (e.key === KEY_DELETE) {
+            onDeleteClicked()
+        }
+    }
+
+    const menu = (
+        <Menu onClick={handleMenuClick}>
+            <Menu.Item key={KEY_EDIT}>Edit</Menu.Item>
+            <Menu.Item key={KEY_DELETE} danger>Delete</Menu.Item>
+        </Menu>
+    );
+
     return (
         <Layout pageHeader={
             <div className={styles.sticky}>
                 <PageHeader
                     className={styles.pageHeader}
-                    title={`Interview - ${interview.candidate}`}
+                    title={`Interview • ${interview.candidate}`}
                     tags={
                         <>
-                            {interview.decision &&
-                            <Tag
-                                color={getDecisionColor(interview.decision)}>{getDecisionText(interview.decision)}</Tag>}
+                            {interviewsUploading && <Tag
+                                icon={<SyncOutlined spin />}
+                                color="processing">saving data</Tag>}
+                            {unsavedChanges && <Tag color="processing">unsaved changes</Tag>}
                         </>
                     }
                     onBack={onBackClicked}
                     extra={[
-                        <Button danger onClick={onDeleteClicked}>Delete</Button>,
-                        <>{isNewStatus() && <Button type="default">
-                            <Link to={`/interviews/details/${id}`}>
-                                <span className="nav-text">Edit</span>
-                            </Link>
-                        </Button>}</>,
-                        <>{isNewStatus() && <Button type="primary" onClick={onStartClicked}>Start</Button>}</>,
-                        <>{isStartedStatus() &&
-                        <Button type="primary" onClick={onCompletedClicked}>Complete</Button>}</>,
+                        <>{isNewStatus() && <Space>
+                            <Dropdown.Button
+                                loading
+                                overlay={menu}
+                                onClick={onSaveClicked}>Save
+                            </Dropdown.Button>
+                            <Button type="primary" onClick={onCompletedClicked}>Complete</Button>
+                        </Space>}
+                            {isCompletedStatus() && <Button danger onClick={onDeleteClicked}>Delete</Button>}
+                        </>
                     ]}>
-                    {isNewStatus() && <Text>Click on the <Text strong>start</Text> button to initiate the interview
-                        which unlocks assessment and notes.</Text>}
-                    {isStartedStatus() &&
-                    <Text>Click on the <Text strong>complete</Text> button to submit your interview
-                        assessment and notes. Your data is saved automatically.</Text>}
-                    {isCompletedStatus() && <Text>This interview has been completed.</Text>}
                 </PageHeader>
             </div>
         }>
             <InterviewDetailsCard
-                paddingTop={106} /* header height */
+                paddingTop={72} /* header height */
                 interview={interview}
-                disabled={isNewStatus() || isCompletedStatus()} />
+                onInterviewChange={onInterviewChange}
+                disabled={isCompletedStatus()} />
 
         </Layout>
     )
 }
 
-const mapStateToProps = state => {
-    const { interviews, loading } = state.interviews || {};
-
-    return { interviews, loading };
-};
-
-export default connect(mapStateToProps, {
-    loadInterviews,
-    updateInterview,
-    deleteInterview
-})(InterviewStart);
+export default InterviewStart;

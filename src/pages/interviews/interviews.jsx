@@ -5,18 +5,19 @@ import { loadInterviews } from "../../store/interviews/actions";
 import { loadGuides } from "../../store/guides/actions";
 import styles from "../interviews/interviews.module.css";
 import { Badge, Button, Card, Input, PageHeader, Table, Tag } from 'antd';
-import { connect } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import lang from "lodash/lang"
-import array from "lodash/array";
-import collection from "lodash/collection";
+import { sortBy } from "lodash/collection";
 import {
     DATE_FORMAT_DISPLAY,
     getDecisionColor,
-    getDecisionText, getStatusColor,
+    getDecisionText,
+    getStatusColor,
     getStatusText
 } from "../../components/utils/constants";
 import { localeCompare } from "../../components/utils/comparators";
+import { reverse } from "lodash/array";
+import { cloneDeep } from "lodash/lang";
 
 const { Search } = Input;
 
@@ -36,7 +37,7 @@ const columns = [
         sorter: (a, b) => localeCompare(a.position, b.position),
     },
     {
-        title: 'Guide',
+        title: 'Template',
         key: 'guide',
         dataIndex: 'guide',
         sortDirections: ['descend', 'ascend'],
@@ -48,7 +49,8 @@ const columns = [
         dataIndex: 'interviewDateTime',
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-        render: interviewDateTime => <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
+        render: interviewDateTime => <span
+            className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
     },
     {
         title: 'Status',
@@ -59,7 +61,7 @@ const columns = [
         render: status => <Badge status={getStatusColor(status)} text={getStatusText(status)} />,
     },
     {
-        title: 'Assessment',
+        title: 'Decision',
         key: 'decision',
         dataIndex: 'decision',
         sortDirections: ['descend', 'ascend'],
@@ -74,21 +76,35 @@ const columns = [
     }
 ];
 
-const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGuides }) => {
-    const [interviews, setInterviews] = useState(interviewsRemote)
+const Interviews = () => {
 
     const history = useHistory();
+    const dispatch = useDispatch();
+
+    const { guides, guidesLoading } = useSelector(state => ({
+        guides: state.guides.guides,
+        guidesLoading: state.guides.loading
+    }), shallowEqual);
+
+    const { interviewsRemote, interviewsLoading } = useSelector(state => ({
+        interviewsRemote: state.interviews.interviews,
+        interviewsLoading: state.interviews.loading
+    }), shallowEqual);
+
+    const [interviews, setInterviews] = useState(interviewsRemote)
 
     React.useEffect(() => {
-        if (interviewsRemote.length === 0 && !loading) {
-            loadInterviews();
-            loadGuides();
+        if (interviewsRemote.length === 0 && !interviewsLoading) {
+            dispatch(loadInterviews());
         }
-        // eslint-disable-next-line 
+        if (guides.length === 0 && !guidesLoading) {
+            dispatch(loadGuides());
+        }
+        // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
-        const interviews = lang.cloneDeep(interviewsRemote)
+        const interviews = reverse(sortBy(cloneDeep(interviewsRemote), ['interviewDateTime']))
         if (guides.length > 0) {
             interviews.forEach((interview) => {
                 const guide = guides.find((guide) => guide.guideId === interview.guideId)
@@ -134,12 +150,12 @@ const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGui
             ]}
         >
         </PageHeader>}>
-            <Card bodyStyle={{ padding: 0}}>
+            <Card bodyStyle={{ padding: 0 }}>
                 <Table
                     pagination={false}
                     columns={columns}
                     dataSource={interviews}
-                    loading={loading}
+                    loading={interviewsLoading || guidesLoading}
                     rowClassName={styles.row}
                     onRow={(record) => ({
                         onClick: () => onRowClicked(record),
@@ -150,11 +166,4 @@ const Interviews = ({ interviewsRemote, guides, loading, loadInterviews, loadGui
     )
 }
 
-const mapStateToProps = state => {
-    const { interviews, loading } = state.interviews || {};
-    const { guides } = state.guides || {};
-
-    return { interviewsRemote: array.reverse(collection.sortBy(interviews, ['interviewDateTime'])), guides, loading };
-};
-
-export default connect(mapStateToProps, { loadInterviews, loadGuides })(Interviews);
+export default Interviews;

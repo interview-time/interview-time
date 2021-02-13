@@ -74,6 +74,7 @@ const GuideWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) => {
                     message="Intro section serves as a reminder for what interviewer must do at the beginning of the interview."
                     type="info"
                     showIcon
+                    banner
                 />
                 <Card className={styles.card}>
                     <Form>

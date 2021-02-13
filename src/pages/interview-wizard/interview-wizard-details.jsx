@@ -115,6 +115,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                     message="Enter interview details information so you can easily discover it among other interviews."
                     type="info"
                     showIcon
+                    banner
                 />
                 <Card className={styles.card}>
                     <Form>
