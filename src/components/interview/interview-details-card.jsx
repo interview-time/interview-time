@@ -2,12 +2,10 @@ import styles from "./interview-details-card.module.css";
 import React from 'react';
 import { Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
-import Typography from "antd/es/typography";
 import { InterviewAssessment, Status } from "../utils/constants";
 import { defaultTo } from "lodash/util";
 
 const { TextArea } = Input;
-const { Text } = Typography;
 
 const layout = {
     labelCol: { span: 3 },
@@ -67,7 +65,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
                 id="intro"
                 title="Intro">
                 <Form.Item>
-                    <Text>{getHeader()}</Text>
+                    <div className={styles.multiLineText}>{getHeader()}</div>
                 </Form.Item>
             </Card>
 
@@ -86,7 +84,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
                     style={{ marginTop: 24 }}>
 
                     <Form.Item style={{ paddingLeft: 24, paddingRight: 24 }}>
-                        <Text>{getFooter()}</Text>
+                        <div className={styles.multiLineText}>{getFooter()}</div>
                     </Form.Item>
 
                     <Form.Item label="Notes">

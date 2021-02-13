@@ -3,3 +3,7 @@
     position: sticky;
     top: 0;
 }
+
+.multiLineText {
+    white-space: pre-wrap;
+}
