@@ -2,12 +2,10 @@ import styles from "./interview-details-card.module.css";
 import React from 'react';
 import { Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
-import Typography from "antd/es/typography";
 import { InterviewAssessment, Status } from "../utils/constants";
 import { defaultTo } from "lodash/util";
 
 const { TextArea } = Input;
-const { Text } = Typography;
 
 const layout = {
     labelCol: { span: 3 },
