@@ -19,17 +19,14 @@ const AssessmentCheckbox = (props) => {
 
     const [assessment, setAssessment] = useState(props.assessment)
 
-    React.useEffect(() => {
-        props.onChange(assessment)
-        // eslint-disable-next-line
-    }, [assessment]);
-
     const onDislikeClicked = () => {
         if (!props.disabled) {
             if (assessment === NO) {
                 setAssessment(NONE)
+                props.onChange(NONE)
             } else {
                 setAssessment(NO)
+                props.onChange(NO)
             }
         }
     };
@@ -38,8 +35,10 @@ const AssessmentCheckbox = (props) => {
         if (!props.disabled) {
             if (assessment === YES) {
                 setAssessment(NONE)
+                props.onChange(NONE)
             } else {
                 setAssessment(YES)
+                props.onChange(YES)
             }
         }
     };
@@ -48,8 +47,10 @@ const AssessmentCheckbox = (props) => {
         if (!props.disabled) {
             if (assessment === MAYBE) {
                 setAssessment(NONE)
+                props.onChange(NONE)
             } else {
                 setAssessment(MAYBE)
+                props.onChange(MAYBE)
             }
         }
     };

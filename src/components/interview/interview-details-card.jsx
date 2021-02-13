@@ -1,9 +1,18 @@
 import styles from "./interview-details-card.module.css";
 import React from 'react';
-import { Anchor, Card, Col, Form, Input, Radio, Row } from "antd";
+import { Alert, Anchor, Card, Col, Form, Input, Radio, Row, Space, Tag } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
-import { InterviewAssessment, Status } from "../utils/constants";
+import {
+    DATE_FORMAT_DISPLAY,
+    getDecisionColor,
+    getDecisionText,
+    getStatusText,
+    InterviewAssessment,
+    Status
+} from "../utils/constants";
 import { defaultTo } from "lodash/util";
+import moment from "moment";
+import Text from "antd/lib/typography/Text";
 
 const { TextArea } = Input;
 
@@ -12,15 +21,23 @@ const layout = {
     wrapperCol: { span: 20 },
 };
 
-const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
+const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChange }) => {
 
     const onAssessmentChanged = e => {
         interview.decision = e.target.value
+        onTriggerChangeEvent()
     };
 
     const onNoteChanges = e => {
         interview.notes = e.target.value
+        onTriggerChangeEvent()
     };
+
+    const onTriggerChangeEvent = () => {
+        if (onInterviewChange !== undefined) {
+            onInterviewChange()
+        }
+    }
 
     const getHeader = () => {
         if (interview && interview.structure && interview.structure.header) {
@@ -61,6 +78,52 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
 
     return <Row key={interview.interviewId} gutter={16}>
         <Col span={20} style={{ paddingTop: paddingTop ? paddingTop : 0 }}>
+
+            {interview.interviewId && <div>
+                {interview.status !== Status.COMPLETED && <Alert
+                    style={{ marginBottom: 24 }}
+                    message="Make yourself familiar with the interview experience to be comfortable during the interview. When you are ready, click on the 'Complete' button to finish the interview."
+                    type="info"
+                    showIcon
+                    banner
+                    closable
+                />}
+
+                <Row style={{ marginBottom: 24 }}>
+                    <Col span={8}>
+                        <Space direction='vertical'>
+                            <div><Text strong>Status:</Text> {getStatusText(interview.status)}</div>
+                            <div><Text strong>Position:</Text> {interview.position}</div>
+                        </Space>
+                    </Col>
+                    <Col span={8}>
+                        <Space direction='vertical'>
+                            <div>
+                                <Text
+                                    strong>Date:</Text> {moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}
+                            </div>
+                        </Space>
+                    </Col>
+                    <Col span={8}>
+                        <Space direction='vertical'>
+                            {interview.decision &&
+                            <div><Text strong>Decision:</Text> <Tag color={getDecisionColor(interview.decision)}
+                                                                    key={interview.decision}>
+                                {getDecisionText(interview.decision)}
+                            </Tag></div>}
+                        </Space>
+                    </Col>
+                </Row>
+            </div>}
+
+            {!interview.interviewId && <Alert
+                style={{ marginBottom: 24 }}
+                message="This is how your interview will look like. Make yourself familiar with the interview experience to be comfortable during the interview."
+                type="info"
+                showIcon
+                banner
+            />}
+
             <Card
                 id="intro"
                 title="Intro">
@@ -70,7 +133,8 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
             </Card>
 
             {getGroups().map(group => {
-                return <InterviewQuestionsCard group={group} disabled={disabled} />
+                return <InterviewQuestionsCard group={group} disabled={disabled}
+                                               onInterviewChange={onInterviewChange} />
             })}
 
             <Card
@@ -96,7 +160,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop }) => {
                             defaultValue={interview.notes} />
                     </Form.Item>
 
-                    <Form.Item label="Assessment">
+                    <Form.Item label="Decision">
                         <Radio.Group
                             {...(disabled ? { value: interview.decision } : { defaultValue: interview.decision })}
                             buttonStyle="solid"

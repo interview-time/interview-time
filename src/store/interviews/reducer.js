@@ -1,9 +1,12 @@
 import {
     ADD_INTERVIEW,
     DELETE_INTERVIEW,
-    LOAD_INTERVIEWS, loadInterviews,
+    LOAD_INTERVIEWS,
+    loadInterviews,
     SET_INTERVIEWS,
+    SET_UPLOADING,
     setInterviews,
+    setUploading,
     UPDATE_INTERVIEW,
 } from "./actions";
 import axios from "axios";
@@ -13,7 +16,8 @@ import { config } from "../common";
 
 const initialState = {
     interviews: [],
-    loading: false
+    loading: false,
+    uploading: false
 };
 
 const URL = `${process.env.REACT_APP_API_URL}/interview`;
@@ -42,6 +46,15 @@ const interviewsReducer = (state = initialState, action) => {
             };
         }
 
+        case SET_UPLOADING: {
+            console.log(action.type)
+            const { uploading } = action.payload;
+            return {
+                ...state,
+                uploading: uploading
+            };
+        }
+
         case ADD_INTERVIEW: {
             console.log(action.type)
             const { interview } = action.payload;
@@ -66,8 +79,14 @@ const interviewsReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))
                 .then(() => console.log(`Interview updated: ${JSON.stringify(interview)}`))
-                .then(() => store.dispatch(loadInterviews()))
-                .catch(reason => console.error(reason));
+                .then(() => {
+                    store.dispatch(setUploading(false))
+                    store.dispatch(loadInterviews())
+                })
+                .catch(reason => {
+                    store.dispatch(setUploading(false))
+                    console.error(reason)
+                });
 
             const interviews = state.interviews.map(item => {
                 if (item.interviewId !== interview.interviewId) {
@@ -81,7 +100,8 @@ const interviewsReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                interviews: interviews
+                interviews: interviews,
+                uploading: true
             };
         }
 

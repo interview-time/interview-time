@@ -110,6 +110,7 @@ const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }
                 type="info"
                 style={{ marginBottom: 24 }}
                 showIcon
+                banner
             />
             <Form {...layout} preserve={false}>
                 <Form.Item label="Title" {...layout}

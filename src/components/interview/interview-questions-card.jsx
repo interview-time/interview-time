@@ -8,7 +8,7 @@ import { defaultTo } from "lodash/util";
 
 const { TextArea } = Input;
 
-const InterviewQuestionsCard = ({ group, disabled }) => {
+const InterviewQuestionsCard = ({ group, disabled, onInterviewChange }) => {
 
     const columns = [
         {
@@ -58,6 +58,7 @@ const InterviewQuestionsCard = ({ group, disabled }) => {
                 disabled={disabled}
                 onChange={value => {
                     question.assessment = value
+                    onTriggerChangeEvent()
                 }}
             />
         },
@@ -65,11 +66,19 @@ const InterviewQuestionsCard = ({ group, disabled }) => {
 
     const onAssessmentChanged = e => {
         group.assessment = e.target.value
+        onTriggerChangeEvent()
     };
 
     const onNoteChanges = e => {
         group.notes = e.target.value
+        onTriggerChangeEvent()
     };
+
+    const onTriggerChangeEvent = () => {
+        if (onInterviewChange !== undefined) {
+            onInterviewChange()
+        }
+    }
 
     return (
         <Card

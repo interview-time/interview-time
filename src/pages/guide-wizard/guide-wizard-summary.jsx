@@ -74,6 +74,7 @@ const GuideWizardSummary = ({guide, interview, onSave, onBack, onPreview}) => {
                     message="The summary section serves as a reminder for what interviewer must do at the end of the interview. It also contains fields to take notes and make a final assessment."
                     type="info"
                     showIcon
+                    banner
                 />
                 <Card className={styles.card}>
                     <Form>

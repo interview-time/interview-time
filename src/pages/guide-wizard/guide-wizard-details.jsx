@@ -81,6 +81,7 @@ const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                     message="Enter template detail information so you can easily discover it among other templates."
                     type="info"
                     showIcon
+                    banner
                 />
                 <Card className={styles.card}>
                     <Form>
