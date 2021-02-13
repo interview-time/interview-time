@@ -92,10 +92,8 @@ export const colors = [
 ]
 
 export const getAvatarColor = (text) => {
-    let index = Math.abs(text.charCodeAt(0));
-    while (index > colors.length - 1) {
-        index = index % colors.length
-    }
+    let stringIndex = Math.abs(text.charCodeAt(0)).toString();
+    let index = parseInt(stringIndex.charAt(0))
     return colors[index]
 }
 
