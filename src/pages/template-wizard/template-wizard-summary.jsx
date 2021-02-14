@@ -15,7 +15,7 @@ const tailLayout = {
     wrapperCol: { offset: 4, span: 18 }
 };
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/template-wizard-summary.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/summary.png'
 
 /**
  *

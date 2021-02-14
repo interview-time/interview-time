@@ -1,33 +1,63 @@
 import styles from "./templates.module.css";
-import React from "react";
+import React, { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
-import { Avatar, Button, Card, Col, List, message, PageHeader, Popconfirm, Row, Statistic } from "antd";
+import {
+    Avatar,
+    Button,
+    Card,
+    Col,
+    Drawer,
+    List,
+    message,
+    PageHeader,
+    Popconfirm,
+    Row,
+    Statistic
+} from "antd";
 import { Link, useHistory } from "react-router-dom";
-import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { sortBy } from "lodash/collection";
+import { CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import Collection, { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 import { getAvatarColor} from "../../components/utils/constants";
+import TemplateInterviewDetailsCard from "../../components/template/template-interview-details-card";
+import { loadQuestionBank } from "../../store/question-bank/actions";
 
 const { Meta } = Card;
 
-// TODO change edit action to preview
-
 const Templates = () => {
+
+    const emptyGuide = {
+        structure: {
+            groups: [],
+        }
+    }
 
     const history = useHistory();
     const dispatch = useDispatch();
+
+    const [guide, setGuide] = useState(emptyGuide);
+    const [previewVisible, setPreviewVisible] = useState(false);
 
     const { guides, guidesLoading } = useSelector(state => ({
         guides: sortBy(state.guides.guides, ['title']),
         guidesLoading: state.guides.loading
     }), shallowEqual);
 
+    const { questions, questionsLoading } = useSelector(state => ({
+        questions: Collection.sortBy(state.questionBank.questions, ['question']),
+        questionsLoading: state.questionBank.loading
+    }), shallowEqual);
+
     React.useEffect(() => {
         if (guides.length === 0 && !guidesLoading) {
             dispatch(loadTemplates())
+        }
+
+        if (questions.length === 0 && !questionsLoading) {
+            dispatch(loadQuestionBank())
         }
         // eslint-disable-next-line
     }, []);
@@ -44,6 +74,15 @@ const Templates = () => {
     const onDelete = (guide) => {
         dispatch(deleteTemplate(guide.guideId))
         message.success(`Template '${guide.title}' removed.`);
+    }
+
+    const onPreviewClosed = () => {
+        setPreviewVisible(false)
+    };
+
+    const onPreview = (guideId) => {
+        setGuide(guides.find(guide => guide.guideId === guideId))
+        setPreviewVisible(true)
     }
 
     const onCopy = (guide) => {
@@ -77,7 +116,7 @@ const Templates = () => {
                 xxl: 4,
             }}
             dataSource={guides}
-            loading={guidesLoading}
+            loading={guidesLoading || questionsLoading}
             renderItem={guide => <List.Item>
                 <Card hoverable
                       bodyStyle={{ padding: 0 }}
@@ -90,7 +129,7 @@ const Templates = () => {
                               }}
                               okText="Yes"
                               cancelText="No">
-                              <CopyOutlined key="copy" />
+                              <CopyOutlined />
                           </Popconfirm>,
                           <Popconfirm
                               title="Are you sure you want to delete this template?"
@@ -102,7 +141,7 @@ const Templates = () => {
                               <DeleteOutlined />
                           </Popconfirm>
                       ]}>
-                    <div className={styles.card} onClick={() => onEdit(guide.guideId)}>
+                    <div className={styles.card} onClick={() => onPreview(guide.guideId)}>
                         <Meta
                             title={guide.title}
                             avatar={
@@ -131,6 +170,16 @@ const Templates = () => {
                 </Card>
             </List.Item>}
         />
+        <Drawer
+            title="Interview Experience"
+            width="90%"
+            closable={true}
+            destroyOnClose={true}
+            onClose={onPreviewClosed}
+            placement='right'
+            visible={previewVisible}>
+            <TemplateInterviewDetailsCard guide={guide} questions={questions} />
+        </Drawer>
     </Layout>
 }
 

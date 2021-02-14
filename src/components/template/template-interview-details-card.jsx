@@ -5,7 +5,7 @@ import InterviewDetailsCard from "../interview/interview-details-card";
 import { cloneDeep } from "lodash/lang";
 import { defaultTo } from "lodash/util";
 
-const TemplateInterviewDetailsCard = ({ guide, header, questions, loading, loadQuestionBank }) => {
+const TemplateInterviewDetailsCard = ({ guide, questions, loading, loadQuestionBank }) => {
 
     const [interview, setInterview] = useState({})
 
@@ -38,9 +38,7 @@ const TemplateInterviewDetailsCard = ({ guide, header, questions, loading, loadQ
         // eslint-disable-next-line
     }, [questions, guide]);
 
-    return <InterviewDetailsCard
-        interview={interview}
-        header={header} />
+    return <InterviewDetailsCard interview={interview} />
 }
 
 const mapStateToProps = state => {

@@ -4,7 +4,7 @@ import { Alert, Button, Card, Col, Form, Input, Popconfirm, Row } from "antd";
 import { DeleteTwoTone, FileDoneOutlined, PlusCircleTwoTone } from '@ant-design/icons';
 import Text from "antd/lib/typography/Text";
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/template-wizard-questions.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/questions.png'
 
 /**
  *

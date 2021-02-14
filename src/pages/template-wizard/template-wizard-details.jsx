@@ -21,7 +21,7 @@ const categories = [
     { value: 'Management' },
 ];
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/template-wizard-details.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/details.png'
 
 const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
 
