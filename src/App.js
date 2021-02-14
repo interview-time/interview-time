@@ -1,4 +1,4 @@
-import { Switch} from "react-router-dom";
+import { Switch } from "react-router-dom";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
 import Interview from "./pages/interview/interview";
@@ -11,29 +11,38 @@ import PrivateRoute from "./components/private-route/private-route";
 import './App.css';
 import Quickstart from "./pages/quickstart/quickstart";
 import InterviewWizard from "./pages/interview-wizard/interview-wizard";
+import {
+    routeAccount,
+    routeInterviewAdd,
+    routeInterviews,
+    routeQuestionBank,
+    routeQuickstart,
+    routeTemplateAdd,
+    routeTemplates
+} from "./components/utils/route";
 
 function App() {
-  const { loading } = useAuth0();
+    const { loading } = useAuth0();
 
-  if (loading) {
-    return <Spinner />;
-  }
+    if (loading) {
+        return <Spinner />;
+    }
 
-  return (
-    <Switch>
-      <PrivateRoute path="/" exact component={Quickstart} />
-      <PrivateRoute path="/quickstart" exact component={Quickstart} />
-      <PrivateRoute path="/question-bank" exact component={QuestionBank} />
-      <PrivateRoute path="/interviews" exact component={Interviews} />
-      <PrivateRoute path="/interviews/add" exact component={InterviewWizard} />
-      <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
-      <PrivateRoute path="/interviews/start/:id" exact component={Interview} />
-      <PrivateRoute path="/templates" exact component={Templates} />
-      <PrivateRoute path="/templates/add/" exact component={TemplateWizard} />
-      <PrivateRoute path="/templates/details/:id" exact component={TemplateWizard} />
-      <PrivateRoute path="/account" exact component={Account} />
-    </Switch>
-  );
+    return (
+        <Switch>
+            <PrivateRoute path="/" exact component={Quickstart} />
+            <PrivateRoute path={routeQuickstart()} exact component={Quickstart} />
+            <PrivateRoute path={routeQuestionBank()} exact component={QuestionBank} />
+            <PrivateRoute path={routeInterviews()} exact component={Interviews} />
+            <PrivateRoute path={routeInterviewAdd()} exact component={InterviewWizard} />
+            <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
+            <PrivateRoute path="/interviews/start/:id" exact component={Interview} />
+            <PrivateRoute path={routeTemplates()} exact component={Templates} />
+            <PrivateRoute path={routeTemplateAdd()} exact component={TemplateWizard} />
+            <PrivateRoute path="/templates/details/:id" exact component={TemplateWizard} />
+            <PrivateRoute path={routeAccount()} exact component={Account} />
+        </Switch>
+    );
 }
 
 export default App;

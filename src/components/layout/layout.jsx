@@ -3,55 +3,61 @@ import { Link, useLocation } from "react-router-dom";
 import { Divider, Layout as AntLayout, Menu} from "antd";
 import styles from "./layout.module.css";
 import { GuideIcon, InterviewIcon, ProfileIcon, QuestionBankIcon, SignOutIcon } from "../utils/icons";
-import String from "lodash/string";
+import { routeAccount, routeInterviews, routeQuestionBank, routeQuickstart, routeTemplates } from "../utils/route";
 import { useAuth0 } from "../../react-auth0-spa";
 
 const menuIconStyle = { fontSize: '24px' }
-
-const PATH_QUESTION_BANK = `question-bank`;
-const PATH_TEMPLATES = `templates`;
-const PATH_INTERVIEWS = `interviews`;
-const PATH_ACCOUNT = `account`;
 
 const Layout = ({ children, pageHeader }) => {
 
     const location = useLocation();
     const { logout } = useAuth0();
-    const getSelectedKey = () => String.split(location.pathname, '/')[1]
+
+    const getSelectedKey = () => {
+        if(location.pathname.includes(routeQuestionBank())) {
+            return routeQuestionBank()
+        } else if(location.pathname.includes(routeTemplates())) {
+            return routeTemplates()
+        } else if(location.pathname.includes(routeInterviews())) {
+            return routeInterviews()
+        } else if(location.pathname.includes(routeAccount())) {
+            return routeAccount()
+        }
+    }
 
     return (
         <AntLayout className={styles.globalLayout}>
             <AntLayout.Sider theme='light' className={styles.globalSider}>
-                <a href={"/quickstart"}>
+                <a href={routeQuickstart()}>
                     <img alt="Interviwer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 </a>
                 <Menu theme="light"
                     mode="inline"
-                    defaultSelectedKeys={[PATH_QUESTION_BANK]}
+                    defaultSelectedKeys={[routeQuestionBank()]}
                     selectedKeys={[getSelectedKey()]}
                     className={styles.menu}
                 >
-                    <Menu.Item key={PATH_QUESTION_BANK} className={styles.menuItem}
+                    <Menu.Item key={routeQuestionBank()} className={styles.menuItem}
                         icon={<QuestionBankIcon style={menuIconStyle} />}>
-                        <Link to={`/${PATH_QUESTION_BANK}`}>
+                        <Link to={routeQuestionBank()}>
                             <span className="nav-text">Question Bank</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={PATH_TEMPLATES} className={styles.menuItem} icon={<GuideIcon style={menuIconStyle} />}>
-                        <Link to={`/${PATH_TEMPLATES}`}>
+                    <Menu.Item key={routeTemplates()} className={styles.menuItem} icon={<GuideIcon style={menuIconStyle} />}>
+                        <Link to={routeTemplates()}>
                             <span className="nav-text">Templates</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={PATH_INTERVIEWS} className={styles.menuItem}
+                    <Menu.Item key={routeInterviews()} className={styles.menuItem}
                         icon={<InterviewIcon style={menuIconStyle} />}>
-                        <Link to={`/${PATH_INTERVIEWS}`}>
+                        <Link to={routeInterviews()}>
                             <span className="nav-text">Interviews</span>
                         </Link>
                     </Menu.Item>
                     <Divider />
-                    <Menu.Item key={PATH_ACCOUNT} className={styles.menuItem}
+                    <Menu.Item key={routeAccount()} className={styles.menuItem}
                         icon={<ProfileIcon style={{ fontSize: '20px' }} />}>
-                        <Link to={`/${PATH_ACCOUNT}`}>
+                        <Link to={routeAccount()}>
                             <span className="nav-text">Profile</span>
                         </Link>
                     </Menu.Item>

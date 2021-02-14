@@ -18,6 +18,7 @@ import {
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
+import { routeInterviewAdd, routeStartInterview } from "../../components/utils/route";
 
 const { Search } = Input;
 
@@ -117,7 +118,7 @@ const Interviews = () => {
     }, [guides, interviewsRemote]);
 
     const onRowClicked = (record) => {
-        history.push(`/interviews/start/${record.interviewId}`);
+        history.push(routeStartInterview(record.interviewId));
     }
 
     const onSearchTextChanged = e => {
@@ -143,7 +144,7 @@ const Interviews = () => {
                 <Search placeholder="Search" key="search" style={{ width: 400 }} allowClear enterButton
                         onSearch={onSearchClicked} onChange={onSearchTextChanged} />,
                 <Button type="primary" key="add-interview-button">
-                    <Link to={`/interviews/add`}>
+                    <Link to={routeInterviewAdd()}>
                         <span className="nav-text">Add interview</span>
                     </Link>
                 </Button>,

@@ -17,6 +17,7 @@ import TemplateWizardQuestions from "../template-wizard/template-wizard-question
 import TemplateQuestions from "../template-wizard/template-questions";
 import InterviewDetailsCard from "../interview/interview-details-card";
 import CreateTemplateModal from "./create-template-modal";
+import { routeInterviews } from "../../components/utils/route";
 
 const { Step } = Steps;
 
@@ -119,7 +120,7 @@ const InterviewWizard = () => {
     }
 
     const onDiscard = () => {
-        history.push("/interviews")
+        history.push(routeInterviews())
     }
 
     const onPreviewClosed = () => {
@@ -182,7 +183,7 @@ const InterviewWizard = () => {
             dispatch(updateInterview(interview));
             message.success(`Interview '${interview.candidate}' updated.`);
         }
-        history.push("/interviews");
+        history.push(routeInterviews());
     }
 
     const onCloseCreateGuideModal = () => {

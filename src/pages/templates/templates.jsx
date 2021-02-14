@@ -24,6 +24,7 @@ import { cloneDeep } from "lodash/lang";
 import { getAvatarColor} from "../../components/utils/constants";
 import TemplateInterviewDetailsCard from "./template-interview-details-card";
 import { loadQuestionBank } from "../../store/question-bank/actions";
+import { routeTemplateAdd, routeTemplateDetails } from "../../components/utils/route";
 
 const { Meta } = Card;
 
@@ -68,7 +69,7 @@ const Templates = () => {
     const getAvatarText = (text) => text.split(' ').map(item => item.charAt(0)).join('')
 
     const onEdit = (guideId) => {
-        history.push(`/templates/details/${guideId}`)
+        history.push(routeTemplateDetails(guideId))
     }
 
     const onDelete = (guide) => {
@@ -98,7 +99,7 @@ const Templates = () => {
         title="Interview Templates"
         extra={[
             <Button type="primary">
-                <Link to={`/templates/add`}>
+                <Link to={routeTemplateAdd()}>
                     <span className="nav-text">Add template</span>
                 </Link>
             </Button>,

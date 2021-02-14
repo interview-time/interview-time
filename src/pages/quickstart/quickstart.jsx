@@ -4,21 +4,22 @@ import { Button, Card, Col, Row } from "antd";
 import React from "react";
 import Title from "antd/lib/typography/Title";
 import { useHistory } from "react-router-dom";
+import { routeInterviews, routeQuestionBank, routeTemplates } from "../../components/utils/route";
 
 const Quickstart = () => {
 
     const history = useHistory();
 
     const onQuestionBankClicked = () => {
-        history.push("/question-bank")
+        history.push(routeQuestionBank())
     }
 
     const onGuidesClicked = () => {
-        history.push("/templates")
+        history.push(routeTemplates())
     }
 
     const onInterviewsClicked = () => {
-        history.push("/interviews")
+        history.push(routeInterviews())
     }
 
     return (

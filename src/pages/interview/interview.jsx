@@ -10,6 +10,7 @@ import { Status } from "../../components/utils/constants";
 import { SyncOutlined } from "@ant-design/icons";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
+import { routeInterviewDetails, routeInterviews } from "../../components/utils/route";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000 // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
@@ -81,7 +82,7 @@ const Interview = () => {
             cancelText: "No",
             onOk() {
                 dispatch(deleteInterview(interview.interviewId));
-                history.push("/interviews");
+                history.push(routeInterviews());
                 message.success(`Interview '${interview.candidate}' removed.`);
             }
         })
@@ -100,7 +101,7 @@ const Interview = () => {
                 onOk() {
                     const updatedInterview = { ...interview, status: Status.COMPLETED }
                     dispatch(updateInterview(updatedInterview));
-                    history.push("/interviews");
+                    history.push(routeInterviews());
                     message.success(`Interview '${interview.candidate}' marked as complete.`);
                 }
             })
@@ -108,7 +109,7 @@ const Interview = () => {
     }
 
     const onBackClicked = () => {
-        history.push("/interviews");
+        history.push(routeInterviews());
     }
 
     const onSaveClicked = () => {
@@ -118,7 +119,7 @@ const Interview = () => {
     }
 
     const onEditClicked = () => {
-        history.push(`/interviews/details/${id}`)
+        history.push(routeInterviewDetails(id))
     }
 
     const handleMenuClick = (e) => {

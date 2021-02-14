@@ -15,6 +15,7 @@ import TemplateInterviewDetailsCard from "../templates/template-interview-detail
 import TemplateQuestions from "./template-questions";
 import Collection from "lodash/collection";
 import { questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
+import { routeTemplates } from "../../components/utils/route";
 
 const { Step } = Steps;
 
@@ -106,7 +107,7 @@ const TemplateWizard = () => {
     }
 
     const onDiscard = () => {
-        history.push("/templates")
+        history.push(routeTemplates())
     }
 
     const onSave = () => {
@@ -117,7 +118,7 @@ const TemplateWizard = () => {
             dispatch(updateTemplate(guide));
             message.success(`Template '${guide.title}' updated.`);
         }
-        history.push("/templates")
+        history.push(routeTemplates())
     }
 
     const onPreviewClosed = () => {
