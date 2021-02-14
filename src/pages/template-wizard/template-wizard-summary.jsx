@@ -1,4 +1,4 @@
-import styles from "./guide-wizard.module.css";
+import styles from "./template-wizard.module.css";
 import React, { useState } from "react";
 import { Alert, Button, Card, Col, Form, Input, Row } from "antd";
 import { FileDoneOutlined} from "@ant-design/icons";
@@ -15,13 +15,13 @@ const tailLayout = {
     wrapperCol: { offset: 4, span: 18 }
 };
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-summary.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/template-wizard-summary.png'
 
 /**
  *
- * Works with `guide` or `interview`.
+ * Works with `template` or `interview`.
  */
-const GuideWizardSummary = ({guide, interview, onSave, onBack, onPreview}) => {
+const TemplateWizardSummary = ({guide, interview, onSave, onBack, onPreview}) => {
 
     const noError = {
         status: null,
@@ -112,4 +112,4 @@ const GuideWizardSummary = ({guide, interview, onSave, onBack, onPreview}) => {
     </Row>
 }
 
-export default GuideWizardSummary
+export default TemplateWizardSummary

@@ -16,7 +16,7 @@ const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
 const KEY_EDIT = 'edit'
 const KEY_DELETE = 'delete'
 
-const InterviewStart = () => {
+const Interview = () => {
 
     const emptyInterview = {
         candidate: '',
@@ -176,4 +176,4 @@ const InterviewStart = () => {
     )
 }
 
-export default InterviewStart;
+export default Interview;

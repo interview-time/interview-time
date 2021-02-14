@@ -17,7 +17,7 @@ const tailLayout = {
     wrapperCol: { offset: 6, span: 16 }
 };
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/interview-wizard/interview-wizard-details.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/interview-wizard/details.png'
 
 const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscard, onPreview }) => {
 

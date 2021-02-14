@@ -1,18 +1,18 @@
-import styles from "./guide-wizard.module.css";
+import styles from "./template-wizard.module.css";
 import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
 import { Drawer, message, PageHeader, Spin, Steps } from "antd";
-import GuideWizardIntro from "./guide-wizard-intro";
-import GuideWizardSummary from "./guide-wizard-summary";
-import GuideWizardDetails from "./guide-wizard-details";
-import GuideWizardQuestions from "./guide-wizard-questions";
+import TemplateWizardIntro from "./template-wizard-intro";
+import TemplateWizardSummary from "./template-wizard-summary";
+import TemplateWizardDetails from "./template-wizard-details";
+import TemplateWizardQuestions from "./template-wizard-questions";
 import { useHistory, useParams } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { addGuide, loadGuides, updateGuide } from "../../store/guides/actions";
+import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import lang, { cloneDeep } from "lodash/lang";
-import GuideInterviewDetailsCard from "../../components/guide/guide-interview-details-card";
-import GuideQuestions from "./guide-questions";
+import TemplateInterviewDetailsCard from "../../components/template/template-interview-details-card";
+import TemplateQuestions from "./template-questions";
 import Collection from "lodash/collection";
 import { questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
 
@@ -23,7 +23,7 @@ const STEP_INTRO = 1
 const STEP_QUESTIONS = 2
 const STEP_SUMMARY = 3
 
-const GuideWizard = () => {
+const TemplateWizard = () => {
 
     const emptyGuide = {
         guideId: undefined,
@@ -78,7 +78,7 @@ const GuideWizard = () => {
 
     React.useEffect(() => {
         if (!isNewGuideFlow() && guides.length === 0 && !guidesLoading) {
-            dispatch(loadGuides())
+            dispatch(loadTemplates())
         }
 
         if (questions.length === 0 && !questionsLoading) {
@@ -111,10 +111,10 @@ const GuideWizard = () => {
 
     const onSave = () => {
         if (isNewGuideFlow()) {
-            dispatch(addGuide(guide));
+            dispatch(addTemplate(guide));
             message.success(`Template '${guide.title}' created.`);
         } else {
-            dispatch(updateGuide(guide));
+            dispatch(updateTemplate(guide));
             message.success(`Template '${guide.title}' updated.`);
         }
         history.push("/templates")
@@ -182,19 +182,19 @@ const GuideWizard = () => {
     }>
         <Spin spinning={guidesLoading || questionsLoading}>
 
-            {isDetailsStep() && <GuideWizardDetails
+            {isDetailsStep() && <TemplateWizardDetails
                 guide={guide}
                 onNext={onNext}
                 onDiscard={onDiscard}
                 onPreview={onPreviewClicked}
             />}
-            {isIntroStep() && <GuideWizardIntro
+            {isIntroStep() && <TemplateWizardIntro
                 guide={guide}
                 onNext={onNext}
                 onBack={onBack}
                 onPreview={onPreviewClicked}
             />}
-            {isQuestionsStep() && <GuideWizardQuestions
+            {isQuestionsStep() && <TemplateWizardQuestions
                 guide={guide}
                 onNext={onNext}
                 onBack={onBack}
@@ -204,7 +204,7 @@ const GuideWizard = () => {
                 onGroupNameChanges={onGroupNameChanges}
                 onAddQuestionClicked={onAddQuestionClicked}
             />}
-            {isSummaryStep() && <GuideWizardSummary
+            {isSummaryStep() && <TemplateWizardSummary
                 guide={guide}
                 onSave={onSave}
                 onBack={onBack}
@@ -219,7 +219,7 @@ const GuideWizard = () => {
                 onClose={onPreviewClosed}
                 placement='right'
                 visible={previewVisible}>
-                <GuideInterviewDetailsCard guide={guide} />
+                <TemplateInterviewDetailsCard guide={guide} />
             </Drawer>
 
             <Drawer
@@ -230,7 +230,7 @@ const GuideWizard = () => {
                 onClose={onQuestionsClosed}
                 placement='right'
                 visible={questionsVisible}>
-                <GuideQuestions
+                <TemplateQuestions
                     guide={guide}
                     selectedGroup={selectedGroup}
                     questions={questions}
@@ -242,4 +242,4 @@ const GuideWizard = () => {
     </Layout>
 }
 
-export default GuideWizard
+export default TemplateWizard

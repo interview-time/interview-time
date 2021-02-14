@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
-import { loadGuides } from "../../store/guides/actions";
+import { loadTemplates } from "../../store/templates/actions";
 import styles from "../interviews/interviews.module.css";
 import { Badge, Button, Card, Input, PageHeader, Table, Tag } from 'antd';
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -98,7 +98,7 @@ const Interviews = () => {
             dispatch(loadInterviews());
         }
         if (guides.length === 0 && !guidesLoading) {
-            dispatch(loadGuides());
+            dispatch(loadTemplates());
         }
         // eslint-disable-next-line
     }, []);

@@ -8,15 +8,15 @@ import Collection from "lodash/collection";
 import lang, { cloneDeep } from "lodash/lang";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
-import { loadGuides } from "../../store/guides/actions";
+import { loadTemplates } from "../../store/templates/actions";
 import InterviewWizardDetails from "./interview-wizard-details";
-import GuideWizardIntro from "../guide-wizard/guide-wizard-intro";
-import GuideWizardSummary from "../guide-wizard/guide-wizard-summary";
+import TemplateWizardIntro from "../template-wizard/template-wizard-intro";
+import TemplateWizardSummary from "../template-wizard/template-wizard-summary";
 import { Status } from "../../components/utils/constants";
-import GuideWizardQuestions from "../guide-wizard/guide-wizard-questions";
-import GuideQuestions from "../guide-wizard/guide-questions";
+import TemplateWizardQuestions from "../template-wizard/template-wizard-questions";
+import TemplateQuestions from "../template-wizard/template-questions";
 import InterviewDetailsCard from "../../components/interview/interview-details-card";
-import CreateGuideModal from "./create-guide-modal";
+import CreateTemplateModal from "./create-template-modal";
 
 const { Step } = Steps;
 
@@ -95,7 +95,7 @@ const InterviewWizard = () => {
         }
 
         if (guides.length === 0 && !guidesLoading) {
-            dispatch(loadGuides())
+            dispatch(loadTemplates())
         }
         // eslint-disable-next-line
     }, []);
@@ -212,13 +212,13 @@ const InterviewWizard = () => {
                 onDiscard={onDiscard}
                 onPreview={onPreviewClicked}
             />}
-            {isIntroStep() && <GuideWizardIntro
+            {isIntroStep() && <TemplateWizardIntro
                 interview={interview}
                 onNext={onNext}
                 onBack={onBack}
                 onPreview={onPreviewClicked}
             />}
-            {isQuestionsStep() && <GuideWizardQuestions
+            {isQuestionsStep() && <TemplateWizardQuestions
                 interview={interview}
                 onNext={onNext}
                 onBack={onBack}
@@ -228,7 +228,7 @@ const InterviewWizard = () => {
                 onGroupNameChanges={onGroupNameChanges}
                 onAddQuestionClicked={onAddQuestionClicked}
             />}
-            {isSummaryStep() && <GuideWizardSummary
+            {isSummaryStep() && <TemplateWizardSummary
                 interview={interview}
                 onSave={onSave}
                 onBack={onBack}
@@ -254,7 +254,7 @@ const InterviewWizard = () => {
                 onClose={onQuestionsClosed}
                 placement='right'
                 visible={questionsVisible}>
-                <GuideQuestions
+                <TemplateQuestions
                     interview={interview}
                     selectedGroup={selectedGroup}
                     questions={questions}
@@ -262,7 +262,7 @@ const InterviewWizard = () => {
                 />
             </Drawer>
 
-            <CreateGuideModal
+            <CreateTemplateModal
                 visible={createGuideVisible}
                 guides={guides}
                 guidesLoading={guidesLoading}

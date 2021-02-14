@@ -1,9 +1,9 @@
 import { Switch} from "react-router-dom";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
-import InterviewStart from "./pages/interview-start/interview-start";
-import Guides from "./pages/guides/guides";
-import GuideWizard from "./pages/guide-wizard/guide-wizard";
+import Interview from "./pages/interview/interview";
+import Templates from "./pages/templates/templates";
+import TemplateWizard from "./pages/template-wizard/template-wizard";
 import Account from "./pages/account/account";
 import { useAuth0 } from "./react-auth0-spa";
 import Spinner from "./components/spinner/spinner";
@@ -27,10 +27,10 @@ function App() {
       <PrivateRoute path="/interviews" exact component={Interviews} />
       <PrivateRoute path="/interviews/add" exact component={InterviewWizard} />
       <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
-      <PrivateRoute path="/interviews/start/:id" exact component={InterviewStart} />
-      <PrivateRoute path="/templates" exact component={Guides} />
-      <PrivateRoute path="/templates/add/" exact component={GuideWizard} />
-      <PrivateRoute path="/templates/details/:id" exact component={GuideWizard} />
+      <PrivateRoute path="/interviews/start/:id" exact component={Interview} />
+      <PrivateRoute path="/templates" exact component={Templates} />
+      <PrivateRoute path="/templates/add/" exact component={TemplateWizard} />
+      <PrivateRoute path="/templates/details/:id" exact component={TemplateWizard} />
       <PrivateRoute path="/account" exact component={Account} />
     </Switch>
   );

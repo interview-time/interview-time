@@ -1,4 +1,4 @@
-import styles from "./guide-wizard.module.css";
+import styles from "./template-wizard.module.css";
 import React, { useState } from "react";
 import { Alert, Button, Card, Col, Form, Input, Row, Select } from "antd";
 import { FileDoneOutlined } from "@ant-design/icons";
@@ -21,9 +21,9 @@ const categories = [
     { value: 'Management' },
 ];
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-details.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/template-wizard-details.png'
 
-const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
+const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
 
     const noError = {
         status: null,
@@ -141,4 +141,4 @@ const GuideWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
     </Row>
 }
 
-export default GuideWizardDetails
+export default TemplateWizardDetails

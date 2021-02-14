@@ -1,8 +1,8 @@
-import styles from "../guides/guides.module.css";
+import styles from "./templates.module.css";
 import React from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Layout from "../../components/layout/layout";
-import { addGuide, deleteGuide, loadGuides } from "../../store/guides/actions";
+import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
 import { Avatar, Button, Card, Col, List, message, PageHeader, Popconfirm, Row, Statistic } from "antd";
 import { Link, useHistory } from "react-router-dom";
 import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
@@ -15,7 +15,7 @@ const { Meta } = Card;
 
 // TODO change edit action to preview
 
-const Guides = () => {
+const Templates = () => {
 
     const history = useHistory();
     const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const Guides = () => {
 
     React.useEffect(() => {
         if (guides.length === 0 && !guidesLoading) {
-            dispatch(loadGuides())
+            dispatch(loadTemplates())
         }
         // eslint-disable-next-line
     }, []);
@@ -42,16 +42,16 @@ const Guides = () => {
     }
 
     const onDelete = (guide) => {
-        dispatch(deleteGuide(guide.guideId))
-        message.success(`Guide '${guide.title}' removed.`);
+        dispatch(deleteTemplate(guide.guideId))
+        message.success(`Template '${guide.title}' removed.`);
     }
 
     const onCopy = (guide) => {
         const copy = cloneDeep(guide)
         copy.guideId = null
         copy.title = `Copy of ${guide.title}`
-        dispatch(addGuide(copy))
-        message.success(`Guide '${copy.title}' created.`);
+        dispatch(addTemplate(copy))
+        message.success(`Template '${copy.title}' created.`);
     }
 
     return <Layout pageHeader={<PageHeader
@@ -84,7 +84,7 @@ const Guides = () => {
                       actions={[
                           <EditOutlined key="edit" onClick={() => onEdit(guide.guideId)} />,
                           <Popconfirm
-                              title="Are you sure you want to duplicate this guide?"
+                              title="Are you sure you want to duplicate this template?"
                               onConfirm={() => {
                                   onCopy(guide)
                               }}
@@ -93,7 +93,7 @@ const Guides = () => {
                               <CopyOutlined key="copy" />
                           </Popconfirm>,
                           <Popconfirm
-                              title="Are you sure you want to delete this guide?"
+                              title="Are you sure you want to delete this template?"
                               onConfirm={() => {
                                   onDelete(guide)
                               }}
@@ -134,4 +134,4 @@ const Guides = () => {
     </Layout>
 }
 
-export default Guides;
+export default Templates;

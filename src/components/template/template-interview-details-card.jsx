@@ -5,7 +5,7 @@ import InterviewDetailsCard from "../interview/interview-details-card";
 import { cloneDeep } from "lodash/lang";
 import { defaultTo } from "lodash/util";
 
-const GuideInterviewDetailsCard = ({ guide, header, questions, loading, loadQuestionBank }) => {
+const TemplateInterviewDetailsCard = ({ guide, header, questions, loading, loadQuestionBank }) => {
 
     const [interview, setInterview] = useState({})
 
@@ -52,4 +52,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, { loadQuestionBank })(GuideInterviewDetailsCard);
+export default connect(mapStateToProps, { loadQuestionBank })(TemplateInterviewDetailsCard);

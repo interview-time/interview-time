@@ -1,16 +1,16 @@
-import styles from "./guide-wizard.module.css";
+import styles from "./template-wizard.module.css";
 import React from "react";
 import { Alert, Button, Card, Col, Form, Input, Popconfirm, Row } from "antd";
 import { DeleteTwoTone, FileDoneOutlined, PlusCircleTwoTone } from '@ant-design/icons';
 import Text from "antd/lib/typography/Text";
 
-const IMAGE_URL = process.env.PUBLIC_URL + '/guide-wizard/guide-wizard-questions.png'
+const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/template-wizard-questions.png'
 
 /**
  *
- * Works with `guide` or `interview`.
+ * Works with `template` or `interview`.
  */
-const GuideWizardQuestions = ({
+const TemplateWizardQuestions = ({
                                   guide,
                                   interview,
                                   onNext,
@@ -94,4 +94,4 @@ const GuideWizardQuestions = ({
     </Row>
 }
 
-export default GuideWizardQuestions
+export default TemplateWizardQuestions

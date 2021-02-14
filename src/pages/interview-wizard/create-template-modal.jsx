@@ -4,7 +4,7 @@ import { isEmpty } from "../../components/utils/utils";
 import { useDispatch } from "react-redux";
 import lang from "lodash/lang";
 import { questionsToQuestionIds } from "../../components/utils/converters";
-import { addGuide } from "../../store/guides/actions";
+import { addTemplate } from "../../store/templates/actions";
 import { difference, head } from "lodash/array";
 
 const layout = {
@@ -18,7 +18,7 @@ const categories = [
     { value: 'Management' },
 ];
 
-const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }) => {
+const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClose }) => {
 
     const noError = {
         status: null,
@@ -90,7 +90,7 @@ const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }
                 group.questions = questionsToQuestionIds(group.questions)
             })
             guide.structure = structure
-            dispatch(addGuide(guide))
+            dispatch(addTemplate(guide))
         }
     }
 
@@ -139,4 +139,4 @@ const CreateGuideModal = ({ visible, interview, guides, guidesLoading, onClose }
     );
 }
 
-export default CreateGuideModal
+export default CreateTemplateModal

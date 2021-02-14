@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import styles from "../../components/guide/guide-question-group.module.css";
+import styles from "../../components/template/template-question-group.module.css";
 import { Card, Divider, Space, Table, Tag } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import Text from "antd/lib/typography/Text";
 import { defaultTo } from "lodash/util";
 import { getDifficultyColor } from "../../components/utils/constants";
 
-const GuideQuestionsGroupCard = ({ groupName, groupQuestions, onRemoveQuestionClicked }) => {
+const TemplateQuestionsGroupCard = ({ groupName, groupQuestions, onRemoveQuestionClicked }) => {
 
     const table = React.useRef(null);
     const [scroll, setScroll] = useState(500)
@@ -64,4 +64,4 @@ const GuideQuestionsGroupCard = ({ groupName, groupQuestions, onRemoveQuestionCl
     );
 }
 
-export default GuideQuestionsGroupCard
+export default TemplateQuestionsGroupCard

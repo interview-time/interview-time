@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Col, Row } from "antd";
-import GuideQuestionsGroupCard from "./guide-questions-group-card";
-import GuideQuestionBankCard from "../../components/guide/guide-question-bank-card";
+import TemplateQuestionsGroupCard from "./template-questions-group-card";
+import TemplateQuestionBankCard from "../../components/template/template-question-bank-card";
 
 /**
  *
  * Updates `selectedGroup.questions`.
  */
-const GuideQuestions = ({selectedGroup, questions, categories }) => {
+const TemplateQuestions = ({selectedGroup, questions, categories }) => {
     const emptyGroup = {
         questions: []
     }
@@ -37,13 +37,13 @@ const GuideQuestions = ({selectedGroup, questions, categories }) => {
 
     return <Row style={{height: '100%'}}>
         <Col span={12}>
-            <GuideQuestionsGroupCard
+            <TemplateQuestionsGroupCard
                 groupName={group.name}
                 groupQuestions={group.questions}
                 onRemoveQuestionClicked={onRemoveQuestionClicked} />
         </Col>
         <Col span={12}>
-            <GuideQuestionBankCard
+            <TemplateQuestionBankCard
                 questions={questions}
                 categories={categories}
                 groupQuestions={group.questions}
@@ -52,4 +52,4 @@ const GuideQuestions = ({selectedGroup, questions, categories }) => {
     </Row>
 }
 
-export default GuideQuestions;
+export default TemplateQuestions;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./guide-question-group.module.css";
+import styles from "./template-question-group.module.css";
 import { Card, Divider, Select, Space, Table, Tag } from 'antd';
 import Text from "antd/lib/typography/Text";
 import { PlusCircleTwoTone } from "@ant-design/icons";
@@ -8,7 +8,7 @@ import { defaultTo } from "lodash/util";
 import { flatten, sortedUniq } from "lodash/array";
 import { filterQuestionCategory, filterQuestionDifficulty, filterQuestionTag } from "../utils/filters";
 
-const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQuestionClicked }) => {
+const TemplateQuestionBankCard = ({ questions, categories, groupQuestions, onAddQuestionClicked }) => {
 
     const [selectedCategory, setSelectedCategory] = useState()
     const [selectedCategoryQuestions, setSelectedCategoryQuestions] = useState([])
@@ -161,4 +161,4 @@ const GuideQuestionBankCard = ({ questions, categories, groupQuestions, onAddQue
     );
 }
 
-export default GuideQuestionBankCard;
+export default TemplateQuestionBankCard;

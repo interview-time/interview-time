@@ -1,6 +1,6 @@
 import { combineReducers, createStore } from "redux";
 import questionBank from "./question-bank/reducer";
-import guides from "./guides/reducer";
+import guides from "./templates/reducer";
 import interviews from "./interviews/reducer";
 
 export const rootReducer = combineReducers({ questionBank, guides, interviews });

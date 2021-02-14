@@ -1,4 +1,4 @@
-import { ADD_GUIDE, DELETE_GUIDE, LOAD_GUIDES, loadGuides, SET_GUIDES, setGuides, UPDATE_GUIDE } from "./actions";
+import { ADD_TEMPLATE, DELETE_TEMPLATE, LOAD_TEMPLATES, loadTemplates, SET_TEMPLATES, setTemplates, UPDATE_TEMPLATE } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
@@ -11,21 +11,21 @@ const initialState = {
 
 const URL = `${process.env.REACT_APP_API_URL}/guide`;
 
-const guidesReducer = (state = initialState, action) => {
+const templatesReducer = (state = initialState, action) => {
 
     switch (action.type) {
 
-        case LOAD_GUIDES: {
+        case LOAD_TEMPLATES: {
             console.log(action.type)
             getAccessTokenSilently()
                 .then(token => axios.get(URL, config(token)))
-                .then(res => store.dispatch(setGuides(res.data || [])))
+                .then(res => store.dispatch(setTemplates(res.data || [])))
                 .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }
 
-        case SET_GUIDES: {
+        case SET_TEMPLATES: {
             console.log(action.type)
             const { guides } = action.payload;
 
@@ -44,30 +44,30 @@ const guidesReducer = (state = initialState, action) => {
             };
         }
 
-        case ADD_GUIDE: {
+        case ADD_TEMPLATE: {
             console.log(action.type)
             const { guide } = action.payload;
             guide.guideId = Date.now().toString()
 
             getAccessTokenSilently()
                 .then(token => axios.post(URL, guide, config(token)))
-                .then(() => console.log(`Guide added: ${JSON.stringify(guide)}`))
+                .then(() => console.log(`Template added: ${JSON.stringify(guide)}`))
                 .then(() => {
-                    store.dispatch(loadGuides());
+                    store.dispatch(loadTemplates());
                 })
                 .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }
 
-        case UPDATE_GUIDE: {
+        case UPDATE_TEMPLATE: {
             console.log(action.type)
             const { guide } = action.payload;
 
             getAccessTokenSilently()
                 .then(token => axios.put(URL, guide, config(token)))
-                .then(() => console.log(`Guide updated: ${JSON.stringify(guide)}`))
-                .then(() => store.dispatch(loadGuides()))
+                .then(() => console.log(`Template updated: ${JSON.stringify(guide)}`))
+                .then(() => store.dispatch(loadTemplates()))
                 .catch(reason => console.error(reason));
 
             const guides = state.guides.map(item => {
@@ -86,7 +86,7 @@ const guidesReducer = (state = initialState, action) => {
             };
         }
 
-        case DELETE_GUIDE: {
+        case DELETE_TEMPLATE: {
             console.log(action.type)
             const { guideId } = action.payload;
 
@@ -94,7 +94,7 @@ const guidesReducer = (state = initialState, action) => {
                 .then(token => axios.delete(`${URL}/${guideId}`, config(token)))
                 .then(() => {
                     console.log("Guide removed.");
-                    store.dispatch(setGuides(state.guides.filter(item => item.guideId !== guideId)))
+                    store.dispatch(setTemplates(state.guides.filter(item => item.guideId !== guideId)))
                 })
                 .catch(reason => console.error(reason));
 
@@ -106,4 +106,4 @@ const guidesReducer = (state = initialState, action) => {
     }
 }
 
-export default guidesReducer;
+export default templatesReducer;
