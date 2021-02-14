@@ -1,8 +1,9 @@
-import { Avatar, Button, Card, Col, Input, List, Row, Space, Statistic } from "antd";
+import { Avatar, Button, Card, Col, Input, List, Popconfirm, Row, Space, Statistic } from "antd";
 import styles from "./question-bank.module.css";
 import Text from "antd/lib/typography/Text";
 import { getAvatarColor, getAvatarText } from "../utils/constants";
 import React, { useState } from "react";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const { Meta } = Card;
 const { Search } = Input;
@@ -13,6 +14,8 @@ const QuestionBankPersonalCategories = ({
                                             loading,
                                             onCategoryClicked,
                                             onAddCategoryClicked,
+                                            onEditCategoryClicked,
+                                            onDeleteCategoryClicked
                                         }) => {
 
     const [categoriesData, setCategoriesData] = useState([]);
@@ -84,25 +87,38 @@ const QuestionBankPersonalCategories = ({
                     dataSource={categoriesData}
                     loading={loading}
                     renderItem={category => <List.Item>
-                        <Card hoverable onClick={() => onCategoryClicked(category)}>
-                            <Meta title={category.categoryName} avatar={
-                                <Avatar size="large" style={{
-                                    backgroundColor: getAvatarColor(category.categoryName),
-                                    verticalAlign: 'middle',
-                                }}>{getAvatarText(category.categoryName)}</Avatar>}
-                            />
-                            <Row span={24}>
-                                <Col span={12}>
-                                    <Statistic title="Questions"
-                                               value={category.questions.length}
-                                               valueStyle={{ fontSize: "large" }} />
-                                </Col>
-                                <Col span={12}>
-                                    <Statistic title="Tags"
-                                               value={getTagsCount(category)}
-                                               valueStyle={{ fontSize: "large" }} />
-                                </Col>
-                            </Row>
+                        <Card hoverable
+                              bodyStyle={{ padding: 0 }}
+                              actions={[
+                                  <EditOutlined key="edit" onClick={() => onEditCategoryClicked(category)} />,
+                                  <Popconfirm
+                                      title="Are you sure you want to delete this category?"
+                                      onConfirm={() => onDeleteCategoryClicked(category)}
+                                      okText="Yes"
+                                      cancelText="No">
+                                      <DeleteOutlined />
+                                  </Popconfirm>
+                              ]}>
+                            <div className={styles.card} onClick={() => onCategoryClicked(category)}>
+                                <Meta title={category.categoryName} avatar={
+                                    <Avatar size="large" style={{
+                                        backgroundColor: getAvatarColor(category.categoryName),
+                                        verticalAlign: 'middle',
+                                    }}>{getAvatarText(category.categoryName)}</Avatar>}
+                                />
+                                <Row span={24}>
+                                    <Col span={12}>
+                                        <Statistic title="Questions"
+                                                   value={category.questions.length}
+                                                   valueStyle={{ fontSize: "large" }} />
+                                    </Col>
+                                    <Col span={12}>
+                                        <Statistic title="Tags"
+                                                   value={getTagsCount(category)}
+                                                   valueStyle={{ fontSize: "large" }} />
+                                    </Col>
+                                </Row>
+                            </div>
                         </Card>
                     </List.Item>}
                 />

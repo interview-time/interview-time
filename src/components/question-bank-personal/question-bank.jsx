@@ -12,6 +12,7 @@ import CategoryDetailsModal from "../question-bank/modal-category-details";
 import collection from "lodash/collection";
 import QuestionBankPersonalCategories from "./question-bank-personal-categories";
 import QuestionBankPersonalQuestions from "./question-bank-personal-questions";
+import { message } from "antd";
 
 const STATE_CATEGORIES = "categories"
 const STATE_CATEGORY_DETAILS = "category-details"
@@ -63,7 +64,7 @@ const QuestionBankPersonal = ({
             category: ''
         });
         updateCategory(oldCategory, newCategory)
-        setState(STATE_CATEGORIES)
+        message.success(`Category '${oldCategory}' renamed to '${newCategory}'.`)
     };
 
     const onCreateCategoryClicked = (category) => {
@@ -72,7 +73,7 @@ const QuestionBankPersonal = ({
             category: ''
         });
         addCategory(category)
-        setState(STATE_CATEGORIES)
+        message.success(`Category '${category}' created.`)
     };
 
     const onCategoryDetailCancel = () => {
@@ -82,16 +83,16 @@ const QuestionBankPersonal = ({
         });
     }
 
-    const onEditCategoryClicked = () => {
+    const onEditCategoryClicked = (category) => {
         setCategoryDetailsModal({
             visible: true,
-            category: selectedCategory.categoryName
+            category: category.categoryName
         });
     };
 
-    const onDeleteCategoryClicked = () => {
-        deleteCategory(selectedCategory.categoryName)
-        setState(STATE_CATEGORIES)
+    const onDeleteCategoryClicked = (category) => {
+        deleteCategory(category.categoryName)
+        message.success(`Category '${category.categoryName}' removed.`)
     };
 
     return (
@@ -109,6 +110,8 @@ const QuestionBankPersonal = ({
                 loading={loading}
                 onCategoryClicked={onCategoryClicked}
                 onAddCategoryClicked={onAddCategoryClicked}
+                onEditCategoryClicked={onEditCategoryClicked}
+                onDeleteCategoryClicked={onDeleteCategoryClicked}
             />}
             {isCategoryDetailsState() && <QuestionBankPersonalQuestions
                 selectedCategory={selectedCategory}
@@ -117,8 +120,6 @@ const QuestionBankPersonal = ({
                 updateQuestion={updateQuestion}
                 deleteQuestion={deleteQuestion}
                 onBackToCategoriesClicked={onBackToCategoriesClicked}
-                onEditCategoryClicked={onEditCategoryClicked}
-                onDeleteCategoryClicked={onDeleteCategoryClicked}
             />}
         </>
     );

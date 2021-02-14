@@ -43,3 +43,7 @@
 .table {
     flex-grow: 1;
 }
+
+.card {
+    padding: 24px
+}

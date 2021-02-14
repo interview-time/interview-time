@@ -1,7 +1,7 @@
 import styles from "./question-bank.module.css";
 import QuestionDetailsModal from "../question-bank/modal-question-details";
-import { Button, Card, Dropdown, Input, Menu, Select, Space, Table, Tag } from "antd";
-import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
+import { Button, Card, Input, Select, Space, Table, Tag } from "antd";
+import { ArrowLeftOutlined} from "@ant-design/icons";
 import React, { useState } from "react";
 import { localeCompare, localeCompareArray } from "../utils/comparators";
 import { Difficulty, getDifficultyColor } from "../utils/constants";
@@ -16,9 +16,6 @@ import { flatten, sortedUniq } from "lodash/array";
 
 const { Search } = Input;
 
-const KEY_DELETE = "delete"
-const KEY_EDIT = "edit"
-
 const TABLE_PADDING = 24
 const TABLE_HEADER = 56
 
@@ -28,9 +25,7 @@ const QuestionBankPersonalQuestions = ({
                                            addQuestion,
                                            updateQuestion,
                                            deleteQuestion,
-                                           onBackToCategoriesClicked,
-                                           onDeleteCategoryClicked,
-                                           onEditCategoryClicked
+                                           onBackToCategoriesClicked
                                        }) => {
 
     const columns = [
@@ -158,21 +153,6 @@ const QuestionBankPersonalQuestions = ({
         })
     }
 
-    const onMenuClicked = (e) => {
-        if (e.key === KEY_DELETE) {
-            onDeleteCategoryClicked()
-        } else if (e.key === KEY_EDIT) {
-            onEditCategoryClicked()
-        }
-    };
-
-    const categoryMenu = (
-        <Menu onClick={onMenuClicked}>
-            <Menu.Item key={KEY_EDIT}>Edit Category</Menu.Item>
-            <Menu.Item key={KEY_DELETE}>Delete Category</Menu.Item>
-        </Menu>
-    );
-
     const onQuestionSearchChanges = e => {
         onQuestionSearchClicked(e.target.value)
     };
@@ -239,10 +219,6 @@ const QuestionBankPersonalQuestions = ({
                     </Space>
                     <Space>
                         <Button type="primary" onClick={() => onAddQuestionClicked()}>Add question</Button>
-
-                        <Dropdown overlay={categoryMenu}>
-                            <Button icon={<MoreOutlined />} />
-                        </Dropdown>
                     </Space>
                 </div>
             </Card>
