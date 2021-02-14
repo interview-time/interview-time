@@ -1,9 +1,10 @@
 import styles from "./modal-question-details.module.css"
-import { Button, Drawer, Form, Input, Radio, Select, Space } from "antd";
+import { Button, Drawer, Form, Input, Select, Space } from "antd";
 import React, { useState } from "react";
 import lang from "lodash/lang";
-import { Difficulty } from "../../components/utils/constants";
+import { Difficulty, getDifficultyColor } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
+import TagsRadioGroup from "../../components/questions/tags-radio-group";
 
 const layout = {
     labelCol: { span: 4 },
@@ -13,9 +14,18 @@ const layout = {
 const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate, tags }) => {
 
     const difficultOptions = [
-        Difficulty.EASY,
-        Difficulty.MEDIUM,
-        Difficulty.HARD,
+        {
+            name: Difficulty.EASY,
+            color: getDifficultyColor(Difficulty.EASY)
+        },
+        {
+            name: Difficulty.MEDIUM,
+            color: getDifficultyColor(Difficulty.MEDIUM)
+        },
+        {
+            name: Difficulty.HARD,
+            color: getDifficultyColor(Difficulty.HARD)
+        }
     ];
 
     const noError = {
@@ -57,10 +67,10 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
         })
     }
 
-    const onDifficultyChange = (e) => {
+    const onDifficultyChange = (difficulty) => {
         setQuestion({
             ...question,
-            difficulty: e.target.value
+            difficulty: difficulty
         })
     }
 
@@ -118,12 +128,10 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                     />
                 </Form.Item>
                 <Form.Item label="Difficulty">
-                    <Radio.Group
-                        options={difficultOptions}
+                    <TagsRadioGroup
+                        tags={difficultOptions}
                         onChange={onDifficultyChange}
                         defaultValue={defaultTo(question.difficulty, Difficulty.EASY)}
-                        optionType="button"
-                        buttonStyle="solid"
                     />
                 </Form.Item>
             </Form>
