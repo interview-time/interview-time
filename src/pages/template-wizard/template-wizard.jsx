@@ -11,7 +11,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import lang, { cloneDeep } from "lodash/lang";
-import TemplateInterviewDetailsCard from "../../components/template/template-interview-details-card";
+import TemplateInterviewDetailsCard from "../templates/template-interview-details-card";
 import TemplateQuestions from "./template-questions";
 import Collection from "lodash/collection";
 import { questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";

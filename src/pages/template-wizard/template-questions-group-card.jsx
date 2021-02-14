@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../../components/template/template-question-group.module.css";
+import styles from "./template-questions.module.css";
 import { Card, Divider, Space, Table, Tag } from 'antd';
 import { DeleteTwoTone } from '@ant-design/icons';
 import Text from "antd/lib/typography/Text";

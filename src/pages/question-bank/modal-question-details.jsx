@@ -2,7 +2,7 @@ import styles from "./modal-question-details.module.css"
 import { Button, Drawer, Form, Input, Radio, Select, Space } from "antd";
 import React, { useState } from "react";
 import lang from "lodash/lang";
-import { Difficulty } from "../utils/constants";
+import { Difficulty } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 
 const layout = {

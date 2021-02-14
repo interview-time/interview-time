@@ -2,10 +2,48 @@
     background-color: white;
 }
 
-.tagsCard {
-    margin-top: 16px;
+.categories {
+    margin-top: 24px
 }
 
-.tag {
-    margin: 5px;
+.tabHeaderSearch {
+    width: 260px;
+}
+
+.tabHeader {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.space {
+    flex-grow: 1;
+}
+
+.questionLink {
+    color: #282c34;
+    width: 500px;
+}
+
+.questionLink:hover  {
+    color: #40a9ff;
+}
+
+.row {
+    cursor: pointer;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.table {
+    flex-grow: 1;
+}
+
+.card {
+    padding: 24px
 }

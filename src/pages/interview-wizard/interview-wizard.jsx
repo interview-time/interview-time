@@ -15,7 +15,7 @@ import TemplateWizardSummary from "../template-wizard/template-wizard-summary";
 import { Status } from "../../components/utils/constants";
 import TemplateWizardQuestions from "../template-wizard/template-wizard-questions";
 import TemplateQuestions from "../template-wizard/template-questions";
-import InterviewDetailsCard from "../../components/interview/interview-details-card";
+import InterviewDetailsCard from "../interview/interview-details-card";
 import CreateTemplateModal from "./create-template-modal";
 
 const { Step } = Steps;

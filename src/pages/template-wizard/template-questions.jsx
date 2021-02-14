@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Col, Row } from "antd";
 import TemplateQuestionsGroupCard from "./template-questions-group-card";
-import TemplateQuestionBankCard from "../../components/template/template-question-bank-card";
+import TemplateQuestionsBankCard from "./template-questions-bank-card";
 
 /**
  *
@@ -43,7 +43,7 @@ const TemplateQuestions = ({selectedGroup, questions, categories }) => {
                 onRemoveQuestionClicked={onRemoveQuestionClicked} />
         </Col>
         <Col span={12}>
-            <TemplateQuestionBankCard
+            <TemplateQuestionsBankCard
                 questions={questions}
                 categories={categories}
                 groupQuestions={group.questions}

@@ -1,9 +1,9 @@
 import styles from "./interview-questions-card.module.css";
 import React from 'react';
 import { Card, Form, Input, Radio, Table, Tag } from "antd";
-import AssessmentCheckbox from "../questions/assessment-checkbox"
-import { getDifficultyColor, GroupAssessment } from "../utils/constants";
-import { localeCompare, localeCompareArray } from "../utils/comparators";
+import AssessmentCheckbox from "../../components/questions/assessment-checkbox"
+import { getDifficultyColor, GroupAssessment } from "../../components/utils/constants";
+import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import { defaultTo } from "lodash/util";
 
 const { TextArea } = Input;

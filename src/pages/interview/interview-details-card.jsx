@@ -9,7 +9,7 @@ import {
     getStatusText,
     InterviewAssessment,
     Status
-} from "../utils/constants";
+} from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import moment from "moment";
 import Text from "antd/lib/typography/Text";

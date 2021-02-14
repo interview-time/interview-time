@@ -4,7 +4,7 @@ import Layout from "../../components/layout/layout";
 import { deleteQuestion, loadQuestionBank } from "../../store/question-bank/actions";
 import { PageHeader, Result, Tabs } from 'antd';
 import styles from "./question-bank.module.css";
-import QuestionBankPersonal from "../../components/question-bank-personal/question-bank";
+import QuestionBankPersonal from "./question-bank-personal";
 
 const { TabPane } = Tabs;
 

@@ -8,7 +8,7 @@ import {
     updateCategory,
     updateQuestion
 } from "../../store/question-bank/actions";
-import CategoryDetailsModal from "../question-bank/modal-category-details";
+import CategoryDetailsModal from "./modal-category-details";
 import collection from "lodash/collection";
 import QuestionBankPersonalCategories from "./question-bank-personal-categories";
 import QuestionBankPersonalQuestions from "./question-bank-personal-questions";

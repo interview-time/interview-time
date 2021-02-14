@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import styles from "./template-question-group.module.css";
+import styles from "./template-questions.module.css";
 import { Card, Divider, Select, Space, Table, Tag } from 'antd';
 import Text from "antd/lib/typography/Text";
 import { PlusCircleTwoTone } from "@ant-design/icons";
-import { Difficulty, getDifficultyColor } from "../utils/constants";
+import { Difficulty, getDifficultyColor } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import { flatten, sortedUniq } from "lodash/array";
-import { filterQuestionCategory, filterQuestionDifficulty, filterQuestionTag } from "../utils/filters";
+import { filterQuestionCategory, filterQuestionDifficulty, filterQuestionTag } from "../../components/utils/filters";
 
-const TemplateQuestionBankCard = ({ questions, categories, groupQuestions, onAddQuestionClicked }) => {
+const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAddQuestionClicked }) => {
 
     const [selectedCategory, setSelectedCategory] = useState()
     const [selectedCategoryQuestions, setSelectedCategoryQuestions] = useState([])
@@ -161,4 +161,4 @@ const TemplateQuestionBankCard = ({ questions, categories, groupQuestions, onAdd
     );
 }
 
-export default TemplateQuestionBankCard;
+export default TemplateQuestionsBankCard;

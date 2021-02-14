@@ -22,7 +22,7 @@ import Collection, { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 import { getAvatarColor} from "../../components/utils/constants";
-import TemplateInterviewDetailsCard from "../../components/template/template-interview-details-card";
+import TemplateInterviewDetailsCard from "./template-interview-details-card";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 
 const { Meta } = Card;

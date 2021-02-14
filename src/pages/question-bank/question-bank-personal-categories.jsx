@@ -1,7 +1,7 @@
 import { Avatar, Button, Card, Col, Input, List, Popconfirm, Row, Space, Statistic } from "antd";
 import styles from "./question-bank.module.css";
 import Text from "antd/lib/typography/Text";
-import { getAvatarColor, getAvatarText } from "../utils/constants";
+import { getAvatarColor, getAvatarText } from "../../components/utils/constants";
 import React, { useState } from "react";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 

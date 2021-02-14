@@ -1,17 +1,17 @@
 import styles from "./question-bank.module.css";
-import QuestionDetailsModal from "../question-bank/modal-question-details";
+import QuestionDetailsModal from "./modal-question-details";
 import { Button, Card, Input, Select, Space, Table, Tag } from "antd";
 import { ArrowLeftOutlined} from "@ant-design/icons";
 import React, { useState } from "react";
-import { localeCompare, localeCompareArray } from "../utils/comparators";
-import { Difficulty, getDifficultyColor } from "../utils/constants";
+import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
+import { Difficulty, getDifficultyColor } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import {
     filterQuestionCategory,
     filterQuestionDifficulty,
     filterQuestionTag,
     filterQuestionText
-} from "../utils/filters";
+} from "../../components/utils/filters";
 import { flatten, sortedUniq } from "lodash/array";
 
 const { Search } = Input;
@@ -57,7 +57,7 @@ const QuestionBankPersonalQuestions = ({
             render: tags => (
                 <>
                     {defaultTo(tags, []).map(tag => {
-                        return (<Tag className={styles.tag} key={tag}>{tag.toLowerCase()}</Tag>);
+                        return (<Tag key={tag}>{tag.toLowerCase()}</Tag>);
                     })}
                 </>
             ),

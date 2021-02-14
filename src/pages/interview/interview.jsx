@@ -5,7 +5,7 @@ import Layout from "../../components/layout/layout";
 import styles from "./interview-start.module.css";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import InterviewDetailsCard from "../../components/interview/interview-details-card";
+import InterviewDetailsCard from "./interview-details-card";
 import { Status } from "../../components/utils/constants";
 import { SyncOutlined } from "@ant-design/icons";
 import { cloneDeep } from "lodash/lang";
