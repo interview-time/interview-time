@@ -150,6 +150,22 @@ const TemplateWizard = () => {
         setGuide(newGuide)
     }
 
+    const onMoveGroupUpClicked = id => {
+        let newGuide = cloneDeep(guide)
+        let index = newGuide.structure.groups.findIndex(group => group.groupId === id);
+        let groups = newGuide.structure.groups;
+        [groups[index], groups[index - 1]] = [groups[index - 1], groups[index]];
+        setGuide(newGuide)
+    }
+
+    const onMoveGroupDownClicked = id => {
+        let newGuide = cloneDeep(guide)
+        let index = newGuide.structure.groups.findIndex(group => group.groupId === id);
+        let groups = newGuide.structure.groups;
+        [groups[index], groups[index + 1]] = [groups[index + 1], groups[index]];
+        setGuide(newGuide)
+    }
+
     const onAddQuestionClicked = (group) => {
         const selectedGroup = cloneDeep(group)
         selectedGroup.questions = questionIdsToQuestions(selectedGroup.questions, questions)
@@ -202,6 +218,8 @@ const TemplateWizard = () => {
                 onPreview={onPreviewClicked}
                 onAddGroupClicked={onAddGroupClicked}
                 onRemoveGroupClicked={onRemoveGroupClicked}
+                onMoveGroupUpClicked={onMoveGroupUpClicked}
+                onMoveGroupDownClicked={onMoveGroupDownClicked}
                 onGroupNameChanges={onGroupNameChanges}
                 onAddQuestionClicked={onAddQuestionClicked}
             />}

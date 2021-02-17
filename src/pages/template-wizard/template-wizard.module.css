@@ -30,6 +30,13 @@
     justify-content: space-between;
 }
 
+.introContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 24px;
+    margin-top: 24px;
+}
+
 .button {
     min-width: 100px;
 }
@@ -42,4 +49,21 @@
 
 .addQuestionButton {
     width: 142px;
+}
+
+.moreIcon {
+    font-size: 20px;
+}
+.plusButton {
+    margin-top: 24px;
+    margin-right: 24px;
+}
+
+.moreIconDropdown {
+    cursor: pointer;
+    width: 36px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

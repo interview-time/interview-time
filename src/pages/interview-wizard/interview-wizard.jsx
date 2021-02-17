@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Collection from "lodash/collection";
-import lang, { cloneDeep } from "lodash/lang";
+import { cloneDeep } from "lodash/lang";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import { loadTemplates } from "../../store/templates/actions";
@@ -79,7 +79,7 @@ const InterviewWizard = () => {
 
     React.useEffect(() => {
         if (!isNewInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            setInterview(lang.cloneDeep(
+            setInterview(cloneDeep(
                 interviews.find(interview => interview.interviewId === id)
             ))
         }
@@ -141,14 +141,30 @@ const InterviewWizard = () => {
             questions: []
         }
 
-        let newInterview = lang.cloneDeep(interview)
+        let newInterview = cloneDeep(interview)
         newInterview.structure.groups.push(newGroup)
         setInterview(newInterview)
     }
 
     const onRemoveGroupClicked = id => {
-        let newInterview = lang.cloneDeep(interview)
+        let newInterview = cloneDeep(interview)
         newInterview.structure.groups = newInterview.structure.groups.filter(group => group.groupId !== id)
+        setInterview(newInterview)
+    }
+
+    const onMoveGroupUpClicked = id => {
+        let newInterview = cloneDeep(interview)
+        let index = newInterview.structure.groups.findIndex(group => group.groupId === id);
+        let groups = newInterview.structure.groups;
+        [groups[index], groups[index - 1]] = [groups[index - 1], groups[index]];
+        setInterview(newInterview)
+    }
+
+    const onMoveGroupDownClicked = id => {
+        let newInterview = cloneDeep(interview)
+        let index = newInterview.structure.groups.findIndex(group => group.groupId === id);
+        let groups = newInterview.structure.groups;
+        [groups[index], groups[index + 1]] = [groups[index + 1], groups[index]];
         setInterview(newInterview)
     }
 
@@ -158,10 +174,10 @@ const InterviewWizard = () => {
     }
 
     const onQuestionsClosed = () => {
-        const updatedInterview = lang.cloneDeep(interview)
+        const updatedInterview = cloneDeep(interview)
         updatedInterview.structure.groups
             .find(group => group.groupId === selectedGroup.groupId)
-            .questions = lang.cloneDeep(selectedGroup.questions)
+            .questions = cloneDeep(selectedGroup.questions)
 
         setQuestionsVisible(false)
         setInterview(updatedInterview)
@@ -226,6 +242,8 @@ const InterviewWizard = () => {
                 onPreview={onPreviewClicked}
                 onAddGroupClicked={onAddGroupClicked}
                 onRemoveGroupClicked={onRemoveGroupClicked}
+                onMoveGroupUpClicked={onMoveGroupUpClicked}
+                onMoveGroupDownClicked={onMoveGroupDownClicked}
                 onGroupNameChanges={onGroupNameChanges}
                 onAddQuestionClicked={onAddQuestionClicked}
             />}
