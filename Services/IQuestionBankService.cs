@@ -14,6 +14,8 @@ namespace CafApi.Services
 
         Task<QuestionBank> AddQuestion(QuestionBank questionBank);
 
+        Task AddQuestions(IEnumerable<QuestionBank> questions);
+
         Task UpdateQuestion(QuestionBank questionBank);
 
         Task DeleteQuestion(string userId, string questionId);

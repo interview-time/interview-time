@@ -82,13 +82,13 @@ namespace CafApi.Controllers
         }
 
         [HttpPost("questions")]
-        public async Task AddQuestion([FromBody] List<QuestionBank> questionBank)
+        public async Task AddQuestion([FromBody] List<QuestionBank> questions)
         {
-            foreach (var question in questionBank)
+            foreach (var question in questions)
             {
                 question.UserId = UserId;
             }
-            await _questionBankService.UpdateQuestionBank(questionBank);
+            await _questionBankService.AddQuestions(questions);
         }
 
         [HttpDelete("{questionId}")]
