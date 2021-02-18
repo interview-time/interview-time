@@ -58,6 +58,19 @@ namespace CafApi.Services
 
             return questionBank;
         }
+        public async Task AddQuestions(IEnumerable<QuestionBank> questions)
+        {
+            foreach (var question in questions)
+            {
+                question.QuestionId = Guid.NewGuid().ToString();
+            }
+
+            var batch = _context.CreateBatchWrite<QuestionBank>();
+            
+            batch.AddPutItems(questions);
+
+            await batch.ExecuteAsync();
+        }
 
         public async Task UpdateQuestion(QuestionBank questionBank)
         {
