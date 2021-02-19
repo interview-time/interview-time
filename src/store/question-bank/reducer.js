@@ -1,6 +1,6 @@
 import {
     ADD_CATEGORY,
-    ADD_QUESTION,
+    ADD_QUESTION, ADD_QUESTIONS,
     DELETE_CATEGORY,
     DELETE_QUESTION,
     LOAD_QUESTION_BANK,
@@ -113,6 +113,26 @@ const questionBankReducer = (state = initialState, action) => {
                 ...state,
                 questions: [
                     ...state.questions, question
+                ]
+            };
+        }
+
+        case ADD_QUESTIONS: {
+            console.log(action.type)
+            const questionId = Date.now().toString()
+            const { questions } = action.payload;
+            questions.forEach((question, index) => question.questionId = questionId + index)
+
+            getAccessTokenSilently()
+                .then((token) => axios.post(`${URL}/questions`, questions, config(token)))
+                .then(() => console.log(`Question added: ${JSON.stringify(questions)}`))
+                .then(() => store.dispatch(loadQuestionBank()))
+                .catch(reason => console.error(reason));
+
+            return {
+                ...state,
+                questions: [
+                    ...state.questions, questions
                 ]
             };
         }

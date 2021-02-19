@@ -1,7 +1,7 @@
 import styles from "./question-bank.module.css";
 import QuestionDetailsModal from "./modal-question-details";
-import { Button, Card, Input, Select, Space, Table, Tag } from "antd";
-import { ArrowLeftOutlined} from "@ant-design/icons";
+import { Button, Card, Dropdown, Input, Menu, message, Select, Space, Table, Tag } from "antd";
+import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import { Difficulty, getDifficultyColor } from "../../components/utils/constants";
@@ -13,16 +13,20 @@ import {
     filterQuestionText
 } from "../../components/utils/filters";
 import { flatten, sortedUniq } from "lodash/array";
+import ImportQuestionsModal from "./modal-import-questions";
 
 const { Search } = Input;
 
 const TABLE_PADDING = 24
 const TABLE_HEADER = 56
 
+const MENU_KEY_IMPORT_CSV = 'csv'
+
 const QuestionBankPersonalQuestions = ({
                                            selectedCategory,
                                            questions,
                                            addQuestion,
+                                           addQuestions,
                                            updateQuestion,
                                            deleteQuestion,
                                            onBackToCategoriesClicked
@@ -79,6 +83,8 @@ const QuestionBankPersonalQuestions = ({
         visible: false
     });
 
+    const [importModalVisible, setImportModalVisible] = useState(false);
+
     React.useEffect(() => {
         if(questionsTable.current) {
             setScroll(questionsTable.current.clientHeight - TABLE_PADDING - TABLE_HEADER)
@@ -114,6 +120,12 @@ const QuestionBankPersonalQuestions = ({
             question: null,
             visible: true
         })
+    }
+
+    const onMenuClicked = (info) => {
+        if(info.key === MENU_KEY_IMPORT_CSV) {
+            setImportModalVisible(true)
+        }
     }
 
     const onUpdateQuestionClicked = (question) => {
@@ -175,6 +187,23 @@ const QuestionBankPersonalQuestions = ({
         setTagFilter(tag)
     };
 
+    const onImportQuestionCancel = () => {
+        setImportModalVisible(false)
+    }
+
+    const onImportQuestionsClicked = (questions) => {
+        setImportModalVisible(false)
+        addQuestions(
+            questions.map(question => ({
+                question: question[0],
+                difficulty: Difficulty.EASY,
+                category: selectedCategory.categoryName,
+                tags: []
+            }))
+        )
+        message.success(`${questions.length} questions imported.`)
+    }
+
     return (
         <div className={styles.container}>
             <QuestionDetailsModal
@@ -184,6 +213,11 @@ const QuestionBankPersonalQuestions = ({
                 onCreate={(question) => onUpdateQuestionClicked(question)}
                 onCancel={onQuestionDetailCancel}
                 onRemove={(question) => onRemoveQuestionClicked(question)}
+            />
+            <ImportQuestionsModal
+                visible={importModalVisible}
+                onImport={(questions) => onImportQuestionsClicked(questions)}
+                onCancel={onImportQuestionCancel}
             />
             <Card>
                 <div className={styles.tabHeader}>
@@ -219,6 +253,12 @@ const QuestionBankPersonalQuestions = ({
                     </Space>
                     <Space>
                         <Button type="primary" onClick={() => onAddQuestionClicked()}>Add question</Button>
+                        <Dropdown overlay={
+                            <Menu onClick={(info) => onMenuClicked(info)}>
+                                <Menu.Item key={MENU_KEY_IMPORT_CSV}>Import from CSV</Menu.Item>
+                            </Menu>}>
+                            <Button icon={<MoreOutlined />} />
+                        </Dropdown>
                     </Space>
                 </div>
             </Card>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from "react-redux";
 import {
     addCategory,
-    addQuestion,
+    addQuestion, addQuestions,
     deleteCategory,
     deleteQuestion,
     updateCategory,
@@ -22,6 +22,7 @@ const QuestionBankPersonal = ({
                                             questions,
                                             loading,
                                             addQuestion,
+                                            addQuestions,
                                             updateQuestion,
                                             deleteQuestion,
                                             addCategory,
@@ -117,6 +118,7 @@ const QuestionBankPersonal = ({
                 selectedCategory={selectedCategory}
                 questions={questions}
                 addQuestion={addQuestion}
+                addQuestions={addQuestions}
                 updateQuestion={updateQuestion}
                 deleteQuestion={deleteQuestion}
                 onBackToCategoriesClicked={onBackToCategoriesClicked}
@@ -136,6 +138,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
     addQuestion,
+    addQuestions,
     updateQuestion,
     deleteQuestion,
     addCategory,

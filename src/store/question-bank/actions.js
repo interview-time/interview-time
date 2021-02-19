@@ -3,6 +3,7 @@ export const SET_QUESTION_BANK = "SET_QUESTION_BANK";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
 export const UPDATE_CATEGORY = "UPDATE_CATEGORY";
 export const ADD_QUESTION = "ADD_QUESTION";
+export const ADD_QUESTIONS = "ADD_QUESTIONS";
 export const UPDATE_QUESTION = "UPDATE_QUESTION";
 export const DELETE_QUESTION = "DELETE_QUESTION";
 export const ADD_CATEGORY = "ADD_CATEGORY";
@@ -20,6 +21,13 @@ export const addQuestion = (question) => ({
     type: ADD_QUESTION,
     payload: {
         question
+    }
+});
+
+export const addQuestions = (questions) => ({
+    type: ADD_QUESTIONS,
+    payload: {
+        questions
     }
 });
 

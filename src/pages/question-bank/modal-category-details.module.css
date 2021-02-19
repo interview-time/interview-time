@@ -1,0 +1,11 @@
+.footer {
+    display: flex;
+}
+
+.space {
+    flex-grow: 1;
+}
+
+.image {
+    width: 100%;
+}
