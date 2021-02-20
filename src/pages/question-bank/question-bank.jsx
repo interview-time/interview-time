@@ -11,7 +11,7 @@ const { TabPane } = Tabs;
 const TAB_PERSONAL = "personal"
 const TAB_COMMUNITY = "community"
 
-const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
+const QuestionBank = ({ questions, loading, loadQuestionBank }) => {
     const [tab, setTab] = useState(TAB_PERSONAL)
 
     React.useEffect(() => {
@@ -34,7 +34,7 @@ const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
     const isCommunityTab = () => tab === TAB_COMMUNITY
 
     return (
-        <Layout pageHeader={<PageHeader
+        <Layout pageHeader={<div className={styles.sticky}><PageHeader
             className={styles.pageHeader}
             title="Question Bank"
             footer={
@@ -43,7 +43,8 @@ const QuestionBank = ({ questions, loading, loadQuestionBank}) => {
                     <TabPane key={TAB_COMMUNITY} tab="Community" />
                 </Tabs>
             }
-        />}>
+        />
+        </div>}>
             {isPersonalTab() && <QuestionBankPersonal />}
 
             {isCommunityTab() && <Result

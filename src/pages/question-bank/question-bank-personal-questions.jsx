@@ -23,14 +23,14 @@ const TABLE_HEADER = 56
 const MENU_KEY_IMPORT_CSV = 'csv'
 
 const QuestionBankPersonalQuestions = ({
-                                           selectedCategory,
-                                           questions,
-                                           addQuestion,
-                                           addQuestions,
-                                           updateQuestion,
-                                           deleteQuestion,
-                                           onBackToCategoriesClicked
-                                       }) => {
+    selectedCategory,
+    questions,
+    addQuestion,
+    addQuestions,
+    updateQuestion,
+    deleteQuestion,
+    onBackToCategoriesClicked
+}) => {
 
     const columns = [
         {
@@ -76,7 +76,6 @@ const QuestionBankPersonalQuestions = ({
     const [tagFilter, setTagFilter] = useState()
 
     const questionsTable = React.useRef(null);
-    const [scroll, setScroll] = useState(500)
 
     const [questionDetailModal, setQuestionDetailModal] = useState({
         question: null,
@@ -84,12 +83,6 @@ const QuestionBankPersonalQuestions = ({
     });
 
     const [importModalVisible, setImportModalVisible] = useState(false);
-
-    React.useEffect(() => {
-        if(questionsTable.current) {
-            setScroll(questionsTable.current.clientHeight - TABLE_PADDING - TABLE_HEADER)
-        }
-    }, [questionsTable])
 
     React.useEffect(() => {
         let categoryQuestions = filterQuestionCategory(questions, selectedCategory.categoryName)
@@ -123,7 +116,7 @@ const QuestionBankPersonalQuestions = ({
     }
 
     const onMenuClicked = (info) => {
-        if(info.key === MENU_KEY_IMPORT_CSV) {
+        if (info.key === MENU_KEY_IMPORT_CSV) {
             setImportModalVisible(true)
         }
     }
@@ -222,12 +215,12 @@ const QuestionBankPersonalQuestions = ({
             <Card>
                 <div className={styles.tabHeader}>
                     <Button type="link" icon={<ArrowLeftOutlined />}
-                            onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>
+                        onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>
                     <Space>
                         <Search placeholder="Search" allowClear
-                                className={styles.tabHeaderSearch}
-                                onSearch={onQuestionSearchClicked}
-                                onChange={onQuestionSearchChanges}
+                            className={styles.tabHeaderSearch}
+                            onSearch={onQuestionSearchClicked}
+                            onChange={onQuestionSearchChanges}
                         />
                         <Select
                             placeholder="Difficulty"
@@ -264,15 +257,14 @@ const QuestionBankPersonalQuestions = ({
             </Card>
 
             <div ref={questionsTable} className={styles.table}>
-                <Card bodyStyle={{ padding: 0}} style={{marginTop: TABLE_PADDING}}>
+                <Card bodyStyle={{ padding: 0 }} style={{ marginTop: TABLE_PADDING }}>
                     <Table columns={columns}
-                           pagination={false}
-                           scroll={{ y: scroll }}
-                           dataSource={selectedQuestions}
-                           rowClassName={styles.row}
-                           onRow={(record) => ({
-                               onClick: () => onQuestionClicked(record),
-                           })}
+                        pagination={false}
+                        dataSource={selectedQuestions}
+                        rowClassName={styles.row}
+                        onRow={(record) => ({
+                            onClick: () => onQuestionClicked(record),
+                        })}
                     />
                 </Card>
             </div>
