@@ -21,7 +21,7 @@ const TABLE_PADDING = 24
 
 const MENU_KEY_IMPORT_CSV = 'csv'
 
-const QuestionBankPersonalQuestions = ({
+const QuestionBankQuestions = ({
     selectedCategory,
     questions,
     addQuestion,
@@ -211,7 +211,7 @@ const QuestionBankPersonalQuestions = ({
                 onImport={(questions) => onImportQuestionsClicked(questions)}
                 onCancel={onImportQuestionCancel}
             />
-            <Card>
+            <Card className={styles.sticky}>
                 <div className={styles.tabHeader}>
                     <Button type="link" icon={<ArrowLeftOutlined />}
                         onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>
@@ -272,4 +272,4 @@ const QuestionBankPersonalQuestions = ({
 
 }
 
-export default QuestionBankPersonalQuestions
+export default QuestionBankQuestions
