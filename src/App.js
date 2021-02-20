@@ -1,3 +1,4 @@
+import './App.css';
 import { Switch } from "react-router-dom";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
@@ -8,11 +9,12 @@ import Account from "./pages/account/account";
 import { useAuth0 } from "./react-auth0-spa";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
-import './App.css';
 import Quickstart from "./pages/quickstart/quickstart";
 import InterviewWizard from "./pages/interview-wizard/interview-wizard";
+import Community from "./pages/community/community";
 import {
     routeAccount,
+    routeCommunity,
     routeInterviewAdd,
     routeInterviews,
     routeQuestionBank,
@@ -40,6 +42,7 @@ function App() {
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
             <PrivateRoute path={routeTemplateAdd()} exact component={TemplateWizard} />
             <PrivateRoute path="/templates/details/:id" exact component={TemplateWizard} />
+            <PrivateRoute path={routeCommunity()} exact component={Community} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
         </Switch>
     );

@@ -8,7 +8,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 const { Meta } = Card;
 const { Search } = Input;
 
-const QuestionBankPersonalCategories = ({
+const QuestionBankCategories = ({
                                             categories,
                                             questions,
                                             loading,
@@ -127,4 +127,4 @@ const QuestionBankPersonalCategories = ({
     );
 }
 
-export default QuestionBankPersonalCategories
+export default QuestionBankCategories

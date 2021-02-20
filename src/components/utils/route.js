@@ -1,5 +1,7 @@
 export const routeInterviews = () => "/interviews"
 
+export const routeCommunity = () => "/community"
+
 export const routeInterviewDetails = (id) => `/interviews/details/${id}`
 
 export const routeInterviewAdd = () => `/interviews/add`
