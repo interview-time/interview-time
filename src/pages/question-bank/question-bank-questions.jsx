@@ -211,7 +211,7 @@ const QuestionBankQuestions = ({
                 onImport={(questions) => onImportQuestionsClicked(questions)}
                 onCancel={onImportQuestionCancel}
             />
-            <Card>
+            <Card className={styles.sticky}>
                 <div className={styles.tabHeader}>
                     <Button type="link" icon={<ArrowLeftOutlined />}
                         onClick={onBackToCategoriesClicked}>{selectedCategory.categoryName}</Button>

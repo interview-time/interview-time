@@ -60,7 +60,7 @@ const QuestionBankCategories = ({
     return (
         <>
             <div>
-                <Card>
+                <Card className={styles.sticky}>
                     <div className={styles.tabHeader}>
                         <Text>Select category</Text>
                         <div className={styles.space} />

@@ -109,11 +109,10 @@ const QuestionBank = ({
     };
 
     return (
-        <Layout pageHeader={<div className={styles.sticky}><PageHeader
+        <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
             title="Question Bank"
-        />
-        </div>}>
+        />}>
             <CategoryDetailsModal
                 visible={categoryDetailsModal.visible}
                 categoryToUpdate={categoryDetailsModal.category}
