@@ -1,43 +1,17 @@
+:root {
+    --drawer-header-height: 60px;
+    --table-header-height: 80px;
+    --table-padding-vertical: 24px;
+    --table-scroll-height: calc(100vh - var(--drawer-header-height) - var(--table-header-height) - 2 * var(--table-padding-vertical))
+}
+
 .pageHeader {
     background-color: white;
 }
 
-.questionGroupCard {
-    margin-right: 12px;
-    height: 100%;
-}
-
-.questionBankCard {
-    margin-left: 12px;
-    height: 100%;
-}
-
 .divider {
     margin-bottom: 0;
-}
-
-.questionDragging {
-    background: #fafafa;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding-left: 16px;
-}
-
-.questionDragging td {
-    visibility: visible;
-}
-
-.questionDragging .dragVisible {
-    visibility: visible;
-}
-
-.questionDragging .questionVisible {
-    visibility: visible;
-    padding-left: 12px;
-    padding-right: 12px;
-    flex-grow: 1;
+    margin-top: 0;
 }
 
 .questionWrapper {
@@ -55,27 +29,12 @@
     flex-grow: 1;
 }
 
-.cardHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding-right: 24px;
-    padding-left: 24px;
-    height: 32px;
-}
-
-.reorderIcon {
-    cursor: pointer;
-    font-size: 20px;
-}
-
-.addIcon  {
+.addIcon {
     padding-top: 16px;
     padding-bottom: 16px;
 }
 
-.removeIcon  {
+.removeIcon {
     cursor: pointer;
     padding-left: 16px;
     padding-top: 16px;
@@ -84,4 +43,31 @@
 
 .row {
     cursor: pointer;
+}
+
+.cardHeaderSticky {
+    height: var(--table-header-height);
+    width: 100%;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 24px;
+    padding-left: 24px;
+}
+
+.cardContainerCompetenceArea {
+    padding: var(--table-padding-vertical) 12px var(--table-padding-vertical) 24px;
+}
+
+.cardContainerQuestionBank {
+    padding: var(--table-padding-vertical) 24px var(--table-padding-vertical) 12px;
+}
+
+.table {
+    height: var(--table-scroll-height);
+    overflow-y: scroll;
 }
