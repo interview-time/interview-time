@@ -18,7 +18,6 @@ import ImportQuestionsModal from "./modal-import-questions";
 const { Search } = Input;
 
 const TABLE_PADDING = 24
-const TABLE_HEADER = 56
 
 const MENU_KEY_IMPORT_CSV = 'csv'
 
