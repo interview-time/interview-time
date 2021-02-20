@@ -15,14 +15,6 @@ const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAd
     const [selectedCategoryTags, setSelectedCategoryTags] = useState([])
     const [tagFilter, setTagFilter] = useState()
     const [difficultyFilter, setDifficultyFilter] = useState()
-    const table = React.useRef(null);
-    const [scroll, setScroll] = useState(500)
-
-    React.useEffect(() => {
-        if(table.current) {
-            setScroll(table.current.clientHeight)
-        }
-    }, [table])
 
     React.useEffect(() => {
         // select first category when categories are loaded
@@ -100,64 +92,64 @@ const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAd
     ];
 
     return (
-        <Card className={styles.questionBankCard}
-              bodyStyle={{ paddingLeft: 0, paddingRight: 0, height: '95%' }}>
-            <div className={styles.cardHeader}>
-                <Space direction="vertical" size={4}>
-                    <Text strong>Question Bank</Text> <Text>{selectedCategoryQuestions.length} questions</Text>
-                </Space>
-                <Space>
-                    <Select
-                        key={selectedCategory}
-                        placeholder="Select category"
-                        defaultValue={selectedCategory}
-                        onSelect={onCategoryChange}
-                        style={{ width: 180 }}
-                        options={categories.map(category => ({ value: category }))}
-                        showSearch
-                        filterOption={(inputValue, option) =>
-                            option.value.toLocaleLowerCase().includes(inputValue)
-                        }
+        <div className={styles.cardContainerQuestionBank}>
+            <Card bodyStyle={{ padding: 0 }}>
+                <div className={styles.cardHeaderSticky}>
+                    <Space direction="vertical" size={4}>
+                        <Text strong>Question Bank</Text> <Text>{selectedCategoryQuestions.length} questions</Text>
+                    </Space>
+                    <Space>
+                        <Select
+                            key={selectedCategory}
+                            placeholder="Select category"
+                            defaultValue={selectedCategory}
+                            onSelect={onCategoryChange}
+                            style={{ width: 180 }}
+                            options={categories.map(category => ({ value: category }))}
+                            showSearch
+                            filterOption={(inputValue, option) =>
+                                option.value.toLocaleLowerCase().includes(inputValue)
+                            }
+                        />
+                        <Select
+                            placeholder="Difficulty"
+                            allowClear
+                            onSelect={onDifficultyChange}
+                            onClear={onDifficultyClear}
+                            options={[
+                                { value: Difficulty.EASY },
+                                { value: Difficulty.MEDIUM },
+                                { value: Difficulty.HARD },
+                            ]}
+                            style={{ width: 100 }}
+                        />
+                        <Select
+                            key={selectedCategoryTags}
+                            placeholder="Tag"
+                            allowClear
+                            onSelect={onTagChange}
+                            onClear={onTagClear}
+                            options={selectedCategoryTags}
+                            style={{ width: 120 }}
+                        />
+                    </Space>
+                </div>
+                <Divider className={styles.divider} />
+                <div className={styles.table}>
+                    <Table
+                        rowKey="index"
+                        pagination={false}
+                        showHeader={false}
+                        dataSource={selectedCategoryQuestions}
+                        columns={columns}
+                        rowClassName={styles.row}
+                        onRow={record => ({
+                            onClick: () => onRowClicked(record),
+                        })}
                     />
-                    <Select
-                        placeholder="Difficulty"
-                        allowClear
-                        onSelect={onDifficultyChange}
-                        onClear={onDifficultyClear}
-                        options={[
-                            { value: Difficulty.EASY },
-                            { value: Difficulty.MEDIUM },
-                            { value: Difficulty.HARD },
-                        ]}
-                        style={{ width: 100 }}
-                    />
-                    <Select
-                        key={selectedCategoryTags}
-                        placeholder="Tag"
-                        allowClear
-                        onSelect={onTagChange}
-                        onClear={onTagClear}
-                        options={selectedCategoryTags}
-                        style={{ width: 120 }}
-                    />
-                </Space>
-            </div>
-            <Divider className={styles.divider} />
-            <div ref={table} style={{ height: '95%' }}>
-                <Table
-                    rowKey="index"
-                    pagination={false}
-                    showHeader={false}
-                    dataSource={selectedCategoryQuestions}
-                    columns={columns}
-                    scroll={{ y: scroll }}
-                    rowClassName={styles.row}
-                    onRow={record => ({
-                        onClick: () => onRowClicked(record),
-                    })}
-                />
-            </div>
-        </Card>
+                </div>
+            </Card>
+        </div>
     );
 }
 

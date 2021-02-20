@@ -248,6 +248,7 @@ const TemplateWizard = () => {
                 destroyOnClose={true}
                 onClose={onQuestionsClosed}
                 placement='right'
+                bodyStyle={{padding: 0}}
                 visible={questionsVisible}>
                 <TemplateQuestions
                     guide={guide}

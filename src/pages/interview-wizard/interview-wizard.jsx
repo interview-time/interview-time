@@ -272,6 +272,7 @@ const InterviewWizard = () => {
                 destroyOnClose={true}
                 onClose={onQuestionsClosed}
                 placement='right'
+                bodyStyle={{padding: 0}}
                 visible={questionsVisible}>
                 <TemplateQuestions
                     interview={interview}
