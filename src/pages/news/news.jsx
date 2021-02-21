@@ -9,7 +9,7 @@ import moment from "moment";
 export const updatesData = [
     {
         version: "v0.3.2",
-        date: moment("2021/02/23", "YYYY/MM/DD").valueOf(),
+        date: moment("2021/02/21", "YYYY/MM/DD").valueOf(),
         description: "What's new section 📢",
     },
     {
