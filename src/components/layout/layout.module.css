@@ -58,3 +58,9 @@
     display: flex;
     align-items: center
 }
+
+.avatar {
+    background-color: #1890ff;
+    margin-left: -4px;
+    margin-right: 8px;
+}

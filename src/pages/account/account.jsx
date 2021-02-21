@@ -1,9 +1,34 @@
 import styles from "./account.module.css";
 import Layout from "../../components/layout/layout";
-import { PageHeader, Result } from "antd";
+import { Button, Card, PageHeader } from "antd";
 import React from "react";
+import { ProfileIcon } from "../../components/utils/icons";
+import Avatar from "antd/es/avatar/avatar";
+import { useAuth0 } from "../../react-auth0-spa";
+import Meta from "antd/lib/card/Meta";
 
 const Account = () => {
+
+    const { logout, user } = useAuth0();
+
+    const getUserName = () => {
+        if (user && user.name) {
+            return user.name;
+        }
+        return 'Profile'
+    }
+
+    const getUserEmail = () => {
+        if (user && user.email) {
+            return user.email;
+        }
+        return ''
+    }
+
+    const onSignOutClicked = () => {
+        logout({ returnTo: window.location.origin })
+    }
+
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
@@ -11,11 +36,20 @@ const Account = () => {
         >
         </PageHeader>}>
 
-            <Result
-                status="404"
-                title="Coming soon"
-                subTitle="Sorry, this page is under construction."
-            />
+            <Card>
+                <Meta
+                    avatar={
+                        <Avatar
+                            src={user ? user.picture : null}
+                            size={48}
+                            icon={<ProfileIcon />} />
+                    }
+                    title={getUserName()}
+                    description={getUserEmail()}
+                />
+                <Button className={styles.button} onClick={onSignOutClicked}>Sign out</Button>
+            </Card>
+
         </Layout>
     )
 }

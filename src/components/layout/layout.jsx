@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Badge, Divider, Layout as AntLayout, Menu } from "antd";
+import { Badge, Layout as AntLayout, Menu } from "antd";
 import styles from "./layout.module.css";
 import {
     CommunityIcon,
@@ -10,7 +10,6 @@ import {
     NewsIcon,
     ProfileIcon,
     QuestionBankIcon,
-    SignOutIcon
 } from "../utils/icons";
 import {
     routeAccount,
@@ -24,6 +23,8 @@ import {
 
 import { useAuth0 } from "../../react-auth0-spa";
 import { isUpdateAvailable } from "../utils/storage";
+import Avatar from "antd/es/avatar/avatar";
+import { truncate } from "lodash/string";
 
 const menuIconStyle = { fontSize: '24px' }
 const menuIconWithBadgeStyle = { fontSize: '24px', position: "absolute" }
@@ -32,7 +33,7 @@ const menuIconBadgeStyle = { position: "absolute" }
 const Layout = ({ children, pageHeader }) => {
 
     const location = useLocation();
-    const { logout } = useAuth0();
+    const { user } = useAuth0();
 
     const getSelectedKey = () => {
         if (location.pathname.includes(routeQuestionBank())) {
@@ -50,8 +51,13 @@ const Layout = ({ children, pageHeader }) => {
         }
     }
 
-    const onLogOutClicked = () => {
-        logout({ returnTo: window.location.origin })
+    const getUserName = () => {
+        if(user && user.name) {
+            return truncate(user.name, {
+                'length': 14
+            });
+        }
+        return 'Profile'
     }
 
     return (
@@ -90,35 +96,32 @@ const Layout = ({ children, pageHeader }) => {
                             <span className="nav-text">Community</span>
                         </Link>
                     </Menu.Item>
-                    <Divider />
-                    <Menu.Item key={routeAccount()} className={styles.menuItem}
-                               icon={<ProfileIcon style={menuIconStyle} />}>
-                        <Link to={routeAccount()}>
-                            <span className="nav-text">Profile</span>
-                        </Link>
-                    </Menu.Item>
-
                     <div className={styles.space} />
-
                     <Menu.Item key={routeNews()} className={styles.menuItem}
                                icon={
                                    <div className={styles.menuIconContainer}>
+                                       {/*Badge with icon cause icon to be black, that's why we use fake icon*/}
                                        <NewsIcon style={menuIconWithBadgeStyle} />
                                        <Badge style={menuIconBadgeStyle} offset={[-8, 0]} dot={isUpdateAvailable()}>
                                            <FakeIcon style={menuIconStyle} />
                                        </Badge>
                                    </div>
-                                   // </Badge>
                                }>
                         <Link to={routeNews()}>
                             <span className="nav-text">What's new</span>
                         </Link>
                     </Menu.Item>
-
-                    <Menu.Item className={styles.menuItem}
-                               icon={<SignOutIcon style={menuIconStyle} />}
-                               onClick={onLogOutClicked}>
-                        <span className="nav-text">Sign out</span>
+                    <Menu.Item key={routeAccount()} className={styles.menuItem}
+                               icon={
+                                   <Avatar
+                                       src={user ? user.picture : null}
+                                       className={styles.avatar}
+                                       size={32}
+                                       icon={<ProfileIcon />} />
+                               }>
+                        <Link to={routeAccount()}>
+                            <span className="nav-text">{getUserName()}</span>
+                        </Link>
                     </Menu.Item>
                 </Menu>
             </AntLayout.Sider>
