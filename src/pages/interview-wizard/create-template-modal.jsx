@@ -98,6 +98,7 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
         <Modal title={"Do you want to save this interview as a template?"}
                destroyOnClose={true}
                closable={false}
+               maskClosable={false}
                confirmLoading={guidesLoading}
                visible={visible}
                okText="Yes"
