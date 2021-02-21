@@ -20,6 +20,7 @@
 
 .globalSider {
     border-right: 1px solid rgb(235, 237, 240);
+    z-index: 999;
 }
 
 .globalLayout {
@@ -30,10 +31,6 @@
     height: var(--logo-height);
     margin-left: 4px;
     margin-right: 4px;
-}
-
-.avatar {
-    margin-left: 16px;
 }
 
 .menu {
@@ -57,6 +54,30 @@
 .menuIconContainer {
     display: flex;
     align-items: center
+}
+
+.progressContainer {
+    margin-bottom: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.progress {
+    margin-left: 18px;
+    margin-right: 8px;
+}
+
+.progressTextContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.progressTextSecondary {
+    font-size: 12px;
+    margin-top: 4px;
+    color: #666666;
 }
 
 .avatar {

@@ -8,18 +8,23 @@ import moment from "moment";
 
 export const updatesData = [
     {
-        version: "v0.3.2",
+        version: "v0.3.3",
         date: moment("2021/02/21", "YYYY/MM/DD").valueOf(),
+        description: "Quick start section 🚀",
+    },
+    {
+        version: "v0.3.2",
+        date: moment("2021/02/19", "YYYY/MM/DD").valueOf(),
         description: "What's new section 📢 and Profile section 👤",
     },
     {
         version: "v0.3.1",
-        date: moment("2021/02/20", "YYYY/MM/DD").valueOf(),
+        date: moment("2021/02/17", "YYYY/MM/DD").valueOf(),
         description: "New menu icons.",
     },
     {
         version: "v0.3.0",
-        date: moment("2021/02/19", "YYYY/MM/DD").valueOf(),
+        date: moment("2021/02/16", "YYYY/MM/DD").valueOf(),
         description: "You can now import questions from the CSV file.",
     },
     {
