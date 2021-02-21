@@ -86,6 +86,7 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                 <Card className={styles.card}>
                     <Form>
                         <Form.Item label="Title" {...layout}
+                                   required
                                    validateStatus={titleError.status}
                                    help={titleError.help}>
                             <Input
@@ -95,6 +96,7 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                             />
                         </Form.Item>
                         <Form.Item label="Category" {...layout}
+                                   required
                                    validateStatus={categoryError.status}
                                    help={categoryError.help}>
                             <Select

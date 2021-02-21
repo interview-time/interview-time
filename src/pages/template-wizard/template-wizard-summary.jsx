@@ -79,6 +79,7 @@ const TemplateWizardSummary = ({guide, interview, onSave, onBack, onPreview}) =>
                 <Card className={styles.card}>
                     <Form>
                         <Form.Item label="Summary" {...layout}
+                                   required
                                    validateStatus={footerError.status}
                                    help={footerError.help}>
                             <TextArea

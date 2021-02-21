@@ -116,7 +116,7 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
             ]}
         >
             <Form {...layout}>
-                <Form.Item label="Question" validateStatus={error.status} help={error.help}>
+                <Form.Item label="Question" required validateStatus={error.status} help={error.help}>
                     <Input.TextArea defaultValue={question.question} onChange={onQuestionChange} />
                 </Form.Item>
                 <Form.Item label="Tags">

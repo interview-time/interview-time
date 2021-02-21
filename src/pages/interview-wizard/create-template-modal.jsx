@@ -114,6 +114,7 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
             />
             <Form {...layout} preserve={false}>
                 <Form.Item label="Title" {...layout}
+                           required
                            validateStatus={titleError.status}
                            help={titleError.help}>
                     <Input
@@ -122,6 +123,7 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
                     />
                 </Form.Item>
                 <Form.Item label="Category" {...layout}
+                           required
                            validateStatus={categoryError.status}
                            help={categoryError.help}>
                     <Select

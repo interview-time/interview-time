@@ -160,7 +160,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChan
                             defaultValue={interview.notes} />
                     </Form.Item>
 
-                    <Form.Item label="Decision">
+                    <Form.Item label="Decision" required>
                         <Radio.Group
                             {...(disabled ? { value: interview.decision } : { defaultValue: interview.decision })}
                             buttonStyle="solid"
