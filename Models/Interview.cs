@@ -14,6 +14,8 @@ namespace CafApi.Models
         public string InterviewId { get; set; }
 
         public string Candidate { get; set; }
+        
+        public string CandidateNotes { get; set; }
 
         public string Position { get; set; }
 
