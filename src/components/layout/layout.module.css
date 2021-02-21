@@ -1,3 +1,8 @@
+:root {
+    --logo-height: 70px;
+    --menu-height: calc(100% - var(--logo-height))
+}
+
 .pageHeader {
     background-color: white;
     text-align: center;
@@ -22,7 +27,7 @@
 }
 
 .logo {
-    height: 70px;
+    height: var(--logo-height);
     margin-left: 4px;
     margin-right: 4px;
 }
@@ -33,7 +38,15 @@
 
 .menu {
     border: 0;
-    margin-top: 16px;
+    display: flex;
+    height: var(--menu-height);
+    flex-direction: column;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.space {
+    flex-grow: 1;
 }
 
 .menuItem {
@@ -41,12 +54,7 @@
     align-items: center
 }
 
-.logout {
-    position: fixed;
-    bottom: 40px;
-    z-index: 1;
+.menuIconContainer {
     display: flex;
-    align-items: center;
-    margin-left: 24px;
-    color: #282c34;
-  }
+    align-items: center
+}

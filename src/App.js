@@ -17,11 +17,13 @@ import {
     routeCommunity,
     routeInterviewAdd,
     routeInterviews,
+    routeNews,
     routeQuestionBank,
     routeQuickstart,
     routeTemplateAdd,
     routeTemplates
 } from "./components/utils/route";
+import News from "./pages/news/news";
 
 function App() {
     const { loading } = useAuth0();
@@ -43,6 +45,7 @@ function App() {
             <PrivateRoute path={routeTemplateAdd()} exact component={TemplateWizard} />
             <PrivateRoute path="/templates/details/:id" exact component={TemplateWizard} />
             <PrivateRoute path={routeCommunity()} exact component={Community} />
+            <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
         </Switch>
     );

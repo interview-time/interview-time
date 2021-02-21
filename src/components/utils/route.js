@@ -1,3 +1,5 @@
+export const routeNews = () => "/news"
+
 export const routeInterviews = () => "/interviews"
 
 export const routeCommunity = () => "/community"
