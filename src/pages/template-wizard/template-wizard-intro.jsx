@@ -79,6 +79,7 @@ const TemplateWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) =>
                 <Card className={styles.card}>
                     <Form>
                         <Form.Item label="Intro" {...layout}
+                                   required
                                    validateStatus={headerError.status}
                                    help={headerError.help}>
                             <TextArea

@@ -98,10 +98,11 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
         <Modal title={"Do you want to save this interview as a template?"}
                destroyOnClose={true}
                closable={false}
+               maskClosable={false}
                confirmLoading={guidesLoading}
                visible={visible}
                okText="Yes"
-               canelText="No"
+               cancelText="No"
                onOk={onCreateClicked}
                onCancel={() => onClose()}
         >
@@ -114,6 +115,7 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
             />
             <Form {...layout} preserve={false}>
                 <Form.Item label="Title" {...layout}
+                           required
                            validateStatus={titleError.status}
                            help={titleError.help}>
                     <Input
@@ -122,6 +124,7 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
                     />
                 </Form.Item>
                 <Form.Item label="Category" {...layout}
+                           required
                            validateStatus={categoryError.status}
                            help={categoryError.help}>
                     <Select

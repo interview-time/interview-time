@@ -120,6 +120,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                 <Card className={styles.card}>
                     <Form>
                         <Form.Item label="Candidate" {...layout}
+                                   required
                                    validateStatus={candidateError.status}
                                    help={candidateError.help}>
                             <Input
@@ -129,6 +130,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                             />
                         </Form.Item>
                         <Form.Item label="Interview Date" {...layout}
+                                   required
                                    validateStatus={dateError.status}
                                    help={dateError.help}>
                             <DatePicker showTime
@@ -139,6 +141,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                         onChange={onDateChange} />
                         </Form.Item>
                         <Form.Item label="Position" {...layout}
+                                   required
                                    validateStatus={positionError.status}
                                    help={positionError.help}>
                             <Input
