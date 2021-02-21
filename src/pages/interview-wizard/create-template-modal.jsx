@@ -101,7 +101,7 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
                confirmLoading={guidesLoading}
                visible={visible}
                okText="Yes"
-               canelText="No"
+               cancelText="No"
                onOk={onCreateClicked}
                onCancel={() => onClose()}
         >
