@@ -91,7 +91,7 @@ const Interview = () => {
     const onCompletedClicked = () => {
         if (!interview.decision) {
             Modal.warn({
-                title: "Please select summary 'assessment'.",
+                title: "Please select summary 'decision'.",
             })
         } else {
             Modal.confirm({
