@@ -85,7 +85,7 @@ const TemplateWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) =>
                             <TextArea
                                 defaultValue={getHeader()}
                                 onChange={onHeaderChanged}
-                                autoSize
+                                autoSize={{ minRows: 3, maxRows: 5 }}
                                 placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
                         </Form.Item>
                         <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>

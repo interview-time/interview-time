@@ -8,6 +8,8 @@ import { isEmpty } from "../../components/utils/utils";
 import lang from "lodash/lang";
 import { questionIdsToQuestions } from "../../components/utils/converters";
 
+const { TextArea } = Input;
+
 const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 16 },
@@ -71,6 +73,8 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
             interview.structure = structure
         }
     }
+
+    const onNotesChange = e => interview.candidateNotes = e.target.value
 
     const isDataValid = () => {
         let valid = true;
@@ -170,6 +174,14 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                 }
                             />
                         </Form.Item>}
+                        <Form.Item label="Notes" {...layout}>
+                            <TextArea
+                                placeholder="Anything you wish to mention about the candidate"
+                                defaultValue={interview.candidateNotes}
+                                onChange={onNotesChange}
+                                autoSize={{ minRows: 3, maxRows: 5 }}
+                            />
+                        </Form.Item>
                         <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
                             <div className={styles.buttonContainer}>
                                 <Button className={styles.button} onClick={onDiscard}>Discard</Button>
