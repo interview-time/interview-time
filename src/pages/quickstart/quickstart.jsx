@@ -4,25 +4,20 @@ import React from "react";
 import Title from "antd/lib/typography/Title";
 import { useHistory } from "react-router-dom";
 import { routeInterviewAdd, routeQuestionBank, routeTemplateAdd, } from "../../components/utils/route";
-import { shallowEqual, useSelector } from "react-redux";
 import Text from "antd/lib/typography/Text";
-import { updateQuickstartDisplayed } from "../../components/utils/storage";
+import {
+    isAddInterviewClicked,
+    isAddTemplateClicked,
+    isQuestionBankClicked,
+    updateAddInterviewClicked,
+    updateAddTemplateClicked,
+    updateQuestionBankClicked,
+    updateQuickstartDisplayed
+} from "../../components/utils/storage";
 
 const Quickstart = ({ onButtonClicked }) => {
 
     const history = useHistory();
-
-    const { guides } = useSelector(state => ({
-        guides: state.guides.guides
-    }), shallowEqual);
-
-    const { questions } = useSelector(state => ({
-        questions: state.questionBank.questions
-    }), shallowEqual);
-
-    const { interviews } = useSelector(state => ({
-        interviews: state.interviews.interviews,
-    }), shallowEqual);
 
     const tasksCount = 3
 
@@ -32,16 +27,19 @@ const Quickstart = ({ onButtonClicked }) => {
     }, [])
 
     const onQuestionBankClicked = () => {
+        updateQuestionBankClicked()
         onButtonClicked()
         history.push(routeQuestionBank())
     }
 
-    const onGuidesClicked = () => {
+    const onTemplateClicked = () => {
+        updateAddTemplateClicked()
         onButtonClicked()
         history.push(routeTemplateAdd())
     }
 
     const onInterviewsClicked = () => {
+        updateAddInterviewClicked()
         onButtonClicked()
         history.push(routeInterviewAdd())
     }
@@ -50,13 +48,13 @@ const Quickstart = ({ onButtonClicked }) => {
 
     const getRemainingTasksCount = () => {
         let remainingTasks = 0;
-        if (guides.length === 0) {
+        if (!isQuestionBankClicked()) {
             remainingTasks++;
         }
-        if (questions.length === 0) {
+        if (!isAddInterviewClicked()) {
             remainingTasks++;
         }
-        if (interviews.length === 0) {
+        if (!isAddTemplateClicked()) {
             remainingTasks++;
         }
         return remainingTasks
@@ -64,7 +62,7 @@ const Quickstart = ({ onButtonClicked }) => {
 
     return (
         <div>
-            <div style={{display: "flex", marginBottom: 24}}>
+            <div style={{ display: "flex", marginBottom: 24 }}>
                 <Progress
                     type="circle"
                     width={64}
@@ -76,12 +74,12 @@ const Quickstart = ({ onButtonClicked }) => {
                     strokeWidth={12}
                     percent={getTaskProgress()}
                 />
-                <Space direction="vertical" size={0} style={{marginLeft: 12}}>
-                    <Title level={3} style={{marginBottom: 0}}>Quick Start</Title>
+                <Space direction="vertical" size={0} style={{ marginLeft: 12 }}>
+                    <Title level={3} style={{ marginBottom: 0 }}>Quick Start</Title>
                     <Text>Take full advantage of Interviewer's powerful features.</Text>
                 </Space>
             </div>
-            {questions.length === 0 && <Card className={styles.card}>
+            {!isQuestionBankClicked() && <Card className={styles.card}>
                 <div className={styles.content}>
                     <div className={styles.growLeft}>
                         <Title level={5}>Question Bank</Title>
@@ -94,7 +92,7 @@ const Quickstart = ({ onButtonClicked }) => {
                 </div>
             </Card>}
 
-            {guides.length === 0 && <Card className={styles.card}>
+            {!isAddTemplateClicked() && <Card className={styles.card}>
                 <div className={styles.content}>
                     <img alt="Templates" src={process.env.PUBLIC_URL + '/quickstart/templates.png'}
                          className={styles.image} />
@@ -102,12 +100,12 @@ const Quickstart = ({ onButtonClicked }) => {
                         <Title level={5}>Templates</Title>
                         <p>To keep the interview process structured, create a template for the desired role.</p>
                         <p>Interview template system helps you to focus on the interview, not preparation.</p>
-                        <Button type="primary" onClick={onGuidesClicked}>Add Template</Button>
+                        <Button type="primary" onClick={onTemplateClicked}>Add Template</Button>
                     </div>
                 </div>
             </Card>}
 
-            {interviews.length === 0 && <Card className={styles.card}>
+            {!isAddInterviewClicked() && <Card className={styles.card}>
                 <div className={styles.content}>
                     <div className={styles.growLeft}>
                         <Title level={5}>Interviews</Title>

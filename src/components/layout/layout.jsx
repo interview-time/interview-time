@@ -21,12 +21,16 @@ import {
 } from "../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
-import { isQuickstartDisplayed, isUpdateAvailable } from "../utils/storage";
+import {
+    isAddInterviewClicked, isAddTemplateClicked,
+    isQuestionBankClicked,
+    isQuickstartDisplayed,
+    isUpdateAvailable
+} from "../utils/storage";
 import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
 import Text from "antd/lib/typography/Text";
 import Quickstart from "../../pages/quickstart/quickstart";
-import { shallowEqual, useSelector } from "react-redux";
 
 const menuIconStyle = { fontSize: '24px' }
 const menuIconWithBadgeStyle = { fontSize: '24px', position: "absolute" }
@@ -40,18 +44,6 @@ const Layout = ({ children, pageHeader }) => {
     const [quickStartVisible, setQuickStartVisible] = React.useState(
         location.pathname.includes(routeQuestionBank()) && !isQuickstartDisplayed()
     );
-
-    const { guides } = useSelector(state => ({
-        guides: state.guides.guides
-    }), shallowEqual);
-
-    const { questions } = useSelector(state => ({
-        questions: state.questionBank.questions
-    }), shallowEqual);
-
-    const { interviews } = useSelector(state => ({
-        interviews: state.interviews.interviews,
-    }), shallowEqual);
 
     const tasksCount = 3
 
@@ -94,13 +86,13 @@ const Layout = ({ children, pageHeader }) => {
 
     const getRemainingTasksCount = () => {
         let remainingTasks = 0;
-        if (guides.length === 0) {
+        if (!isQuestionBankClicked()) {
             remainingTasks++;
         }
-        if (questions.length === 0) {
+        if (!isAddInterviewClicked()) {
             remainingTasks++;
         }
-        if (interviews.length === 0) {
+        if (!isAddTemplateClicked()) {
             remainingTasks++;
         }
         return remainingTasks
