@@ -115,7 +115,7 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                                 placeholder="Template description"
                                 defaultValue={guide.description}
                                 onChange={onDescriptionChange}
-                                autoSize
+                                autoSize={{ minRows: 3, maxRows: 5 }}
                             />
                         </Form.Item>
                         <Form.Item {...tailLayout} style={{marginBottom: 0}}>

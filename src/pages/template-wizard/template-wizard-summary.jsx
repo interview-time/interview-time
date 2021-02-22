@@ -85,7 +85,7 @@ const TemplateWizardSummary = ({guide, interview, onSave, onBack, onPreview}) =>
                             <TextArea
                                 defaultValue={getFooter()}
                                 onChange={onFooterChanged}
-                                autoSize
+                                autoSize={{ minRows: 3, maxRows: 5 }}
                                 placeholder="Allow 10 minutes at the end for the candidate to ask questions." />
                         </Form.Item>
                         <Form.Item {...tailLayout} style={{marginBottom: 0}}>

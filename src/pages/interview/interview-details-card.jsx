@@ -92,6 +92,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChan
                 <Row style={{ marginBottom: 24 }}>
                     <Col span={8}>
                         <Space direction='vertical'>
+                            {console.log(interview)}
                             <div><Text strong>Status:</Text> {getStatusText(interview.status)}</div>
                             <div><Text strong>Position:</Text> {interview.position}</div>
                         </Space>
@@ -113,6 +114,9 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChan
                             </Tag></div>}
                         </Space>
                     </Col>
+                    {interview.candidateNotes && <div style={{marginTop: 8}}>
+                        <Text strong>Notes:</Text> {interview.candidateNotes}
+                    </div>}
                 </Row>
             </div>}
 
