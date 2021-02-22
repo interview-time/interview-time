@@ -3,8 +3,8 @@ import QuestionDetailsModal from "./modal-question-details";
 import { Button, Card, Dropdown, Input, Menu, message, Select, Space, Table, Tag } from "antd";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
-import { Difficulty, getDifficultyColor } from "../../components/utils/constants";
+import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
+import { Difficulty} from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import {
     filterQuestionCategory,
@@ -44,12 +44,7 @@ const QuestionBankQuestions = ({
             key: 'difficulty',
             dataIndex: 'difficulty',
             width: 125,
-            sorter: (a, b) => localeCompare(a.difficulty, b.difficulty),
-            render: difficulty => (
-                <Tag key={difficulty} color={getDifficultyColor(difficulty)}>
-                    {difficulty}
-                </Tag>
-            )
+            sorter: (a, b) => localeCompareDifficult(a.difficulty, b.difficulty),
         },
         {
             title: 'Tags',

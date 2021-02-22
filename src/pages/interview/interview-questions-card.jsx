@@ -1,14 +1,19 @@
-import styles from "./interview-questions-card.module.css";
+import styles from "./interview-details-card.module.css";
 import React from 'react';
-import { Card, Form, Input, Radio, Table, Tag } from "antd";
+import { Button, Card, Input, Radio, Space, Table, Tag } from "antd";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox"
-import { getDifficultyColor, GroupAssessment } from "../../components/utils/constants";
-import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
+import { GroupAssessment } from "../../components/utils/constants";
+import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
 import { defaultTo } from "lodash/util";
+import Title from "antd/lib/typography/Title";
+import Text from "antd/lib/typography/Text";
+import { DownOutlined, RightOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
 const InterviewQuestionsCard = ({ group, disabled, onInterviewChange }) => {
+
+    const [collapsed, setCollapsed] = React.useState(false)
 
     const columns = [
         {
@@ -23,12 +28,7 @@ const InterviewQuestionsCard = ({ group, disabled, onInterviewChange }) => {
             key: 'difficulty',
             dataIndex: 'difficulty',
             width: 125,
-            sorter: (a, b) => localeCompare(a.difficulty, b.difficulty),
-            render: difficulty => (
-                <Tag key={difficulty} color={getDifficultyColor(difficulty)}>
-                    {difficulty}
-                </Tag>
-            )
+            sorter: (a, b) => localeCompareDifficult(a.difficulty, b.difficulty),
         },
         {
             title: 'Tags',
@@ -80,43 +80,50 @@ const InterviewQuestionsCard = ({ group, disabled, onInterviewChange }) => {
         }
     }
 
+    const onCollapseClicked = () => {
+        setCollapsed(!collapsed)
+    }
+
     return (
-        <Card
-            id={group.name}
-            title={group.name}
-            bodyStyle={{ paddingLeft: 0, paddingRight: 0, paddingTop: 0 }}
-            className={styles.card}>
+        <div id={group.name} className={styles.questionArea}>
+            <div className={styles.titleContainer}>
+                <Title level={3}>{group.name}</Title>
+                {collapsed && <Button type="text" onClick={onCollapseClicked}>Expand <RightOutlined /></Button>}
+                {!collapsed && <Button type="text" onClick={onCollapseClicked}>Collapse <DownOutlined /></Button>}
+            </div>
+            {!collapsed && <div>
+                <Card bodyStyle={{ padding: 0 }}>
+                    <Table columns={columns} dataSource={group.questions} pagination={false} />
+                </Card>
 
-            <Table columns={columns} dataSource={group.questions} pagination={false} />
+                <Space className={styles.space} direction="vertical">
 
-            <Form
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 20 }}
-                initialValues={{ remember: true }}
-                className={styles.form}>
-                <Form.Item label="Notes">
+                    <Text strong>Notes</Text>
+
                     <TextArea
                         {...(disabled ? { readonly: "true" } : {})}
                         placeholder="Capture any key moments that happened during the interview."
                         autoSize={{ minRows: 3, maxRows: 5 }}
                         onChange={onNoteChanges}
                         defaultValue={group.notes} />
-                </Form.Item>
+                </Space>
 
-                <Form.Item label="Assessment">
+                <Space className={styles.space} direction="vertical">
+                    <Text strong>Assessment</Text>
+
                     <Radio.Group
                         key={group.assessment}
                         {...(disabled ? { value: group.assessment } : { defaultValue: group.assessment })}
                         buttonStyle="solid"
                         onChange={onAssessmentChanged}>
-                        <Radio.Button value={GroupAssessment.NO_PROFICIENCY}>no proficiency</Radio.Button>
                         <Radio.Button value={GroupAssessment.LOW_SKILLED}>low skills</Radio.Button>
+                        <Radio.Button value={GroupAssessment.NO_PROFICIENCY}>no proficiency</Radio.Button>
                         <Radio.Button value={GroupAssessment.SKILLED}>skilled</Radio.Button>
                         <Radio.Button value={GroupAssessment.HIGHLY_SKILLED}>highly skilled</Radio.Button>
                     </Radio.Group>
-                </Form.Item>
-            </Form>
-        </Card>
+                </Space>
+            </div>}
+        </div>
     )
 }
 

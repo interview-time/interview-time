@@ -1,6 +1,6 @@
 import styles from "./interview-details-card.module.css";
 import React from 'react';
-import { Alert, Anchor, Card, Col, Form, Input, Radio, Row, Space, Tag } from "antd";
+import { Alert, Anchor, Col, Divider, Input, Radio, Row, Space, Tag } from "antd";
 import InterviewQuestionsCard from "./interview-questions-card";
 import {
     DATE_FORMAT_DISPLAY,
@@ -13,13 +13,9 @@ import {
 import { defaultTo } from "lodash/util";
 import moment from "moment";
 import Text from "antd/lib/typography/Text";
+import Title from "antd/lib/typography/Title";
 
 const { TextArea } = Input;
-
-const layout = {
-    labelCol: { span: 3 },
-    wrapperCol: { span: 20 },
-};
 
 const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChange }) => {
 
@@ -76,8 +72,19 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChan
         }
     }
 
-    return <Row key={interview.interviewId} gutter={16}>
-        <Col span={20} style={{ paddingTop: paddingTop ? paddingTop : 0 }}>
+    return <div key={interview.interviewId} className={styles.rootContainer}>
+
+        <div className={styles.sticky} style={{ paddingTop: paddingTop ? paddingTop : 0 }}>
+            <Anchor affix={false}>
+                <Anchor.Link href="#intro" title="Intro" />
+                {getGroups().map(group => {
+                    return <Anchor.Link href={`#${group.name}`} title={group.name} />
+                })}
+                <Anchor.Link href="#summary" title="Summary" />
+            </Anchor>
+        </div>
+
+        <div style={{ paddingTop: paddingTop ? paddingTop : 0, paddingRight: 148 }}>
 
             {interview.interviewId && <div>
                 {interview.status !== Status.COMPLETED && <Alert
@@ -92,7 +99,6 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChan
                 <Row style={{ marginBottom: 24 }}>
                     <Col span={8}>
                         <Space direction='vertical'>
-                            {console.log(interview)}
                             <div><Text strong>Status:</Text> {getStatusText(interview.status)}</div>
                             <div><Text strong>Position:</Text> {interview.position}</div>
                         </Space>
@@ -114,10 +120,11 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChan
                             </Tag></div>}
                         </Space>
                     </Col>
-                    {interview.candidateNotes && <div style={{marginTop: 8}}>
+                    {interview.candidateNotes && <div style={{ marginTop: 8 }}>
                         <Text strong>Notes:</Text> {interview.candidateNotes}
                     </div>}
                 </Row>
+                <Divider />
             </div>}
 
             {!interview.interviewId && <Alert
@@ -128,70 +135,44 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTop, onInterviewChan
                 banner
             />}
 
-            <Card
-                id="intro"
-                title="Intro">
-                <Form.Item>
-                    <div className={styles.multiLineText}>{getHeader()}</div>
-                </Form.Item>
-            </Card>
+            <Title id="intro" level={3} className={styles.header}>Intro</Title>
+            <div className={styles.multiLineText}>{getHeader()}</div>
 
-            {getGroups().map(group => {
-                return <InterviewQuestionsCard group={group} disabled={disabled}
-                                               onInterviewChange={onInterviewChange} />
-            })}
+            {getGroups().map(group =>
+                <InterviewQuestionsCard group={group} disabled={disabled} onInterviewChange={onInterviewChange} />)
+            }
 
-            <Card
-                id="summary"
-                title="Summary"
-                bodyStyle={{ paddingLeft: 0, paddingRight: 0, paddingTop: 0 }}
-                style={{ marginTop: 24 }}>
-                <Form
-                    {...layout}
-                    initialValues={{ remember: true }}
-                    style={{ marginTop: 24 }}>
+            <Title id="summary" level={3} className={styles.header}>Summary</Title>
 
-                    <Form.Item style={{ paddingLeft: 24, paddingRight: 24 }}>
-                        <div className={styles.multiLineText}>{getFooter()}</div>
-                    </Form.Item>
+            <div className={styles.multiLineText}>{getFooter()}</div>
 
-                    <Form.Item label="Notes">
-                        <TextArea
-                            {...(disabled ? { readonly: "true" } : {})}
-                            placeholder="Capture any key moments that happened during the interview."
-                            autoSize={{ minRows: 3, maxRows: 5 }}
-                            onChange={onNoteChanges}
-                            defaultValue={interview.notes} />
-                    </Form.Item>
+            <Space className={styles.space} direction="vertical">
 
-                    <Form.Item label="Decision" required>
-                        <Radio.Group
-                            {...(disabled ? { value: interview.decision } : { defaultValue: interview.decision })}
-                            buttonStyle="solid"
-                            onChange={onAssessmentChanged}>
-                            <Radio.Button value={InterviewAssessment.STRONG_NO}>strong no</Radio.Button>
-                            <Radio.Button value={InterviewAssessment.NO}>no</Radio.Button>
-                            <Radio.Button value={InterviewAssessment.YES}>yes</Radio.Button>
-                            <Radio.Button value={InterviewAssessment.STRONG_YES}>strong yes</Radio.Button>
-                        </Radio.Group>
-                    </Form.Item>
-                </Form>
-            </Card>
-        </Col>
-        <Col span={4}>
-            <div className={styles.sticky} style={{ paddingTop: paddingTop ? paddingTop : 0 }}>
-                <Card title="Structure">
-                    <Anchor affix={false}>
-                        <Anchor.Link href="#intro" title="Intro" />
-                        {getGroups().map(group => {
-                            return <Anchor.Link href={`#${group.name}`} title={group.name} />
-                        })}
-                        <Anchor.Link href="#summary" title="Summary" />
-                    </Anchor>
-                </Card>
-            </div>
-        </Col>
-    </Row>
+                <Text strong>Notes</Text>
+
+                <TextArea
+                    {...(disabled ? { readonly: "true" } : {})}
+                    placeholder="Capture any key moments that happened during the interview."
+                    autoSize={{ minRows: 3, maxRows: 5 }}
+                    onChange={onNoteChanges}
+                    defaultValue={interview.notes} />
+            </Space>
+
+            <Space className={styles.space} style={{ paddingBottom: 64 }} direction="vertical">
+                <Text strong>Decision</Text>
+
+                <Radio.Group
+                    {...(disabled ? { value: interview.decision } : { defaultValue: interview.decision })}
+                    buttonStyle="solid"
+                    onChange={onAssessmentChanged}>
+                    <Radio.Button value={InterviewAssessment.STRONG_NO}>strong no</Radio.Button>
+                    <Radio.Button value={InterviewAssessment.NO}>no</Radio.Button>
+                    <Radio.Button value={InterviewAssessment.YES}>yes</Radio.Button>
+                    <Radio.Button value={InterviewAssessment.STRONG_YES}>strong yes</Radio.Button>
+                </Radio.Group>
+            </Space>
+        </div>
+    </div>
 }
 
 export default InterviewDetailsCard;

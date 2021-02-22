@@ -1,9 +1,34 @@
 .sticky {
     position: -webkit-sticky;
-    position: sticky;
+    position: absolute;
     top: 0;
+    right: 32px;
 }
 
 .multiLineText {
     white-space: pre-wrap;
+}
+
+.rootContainer {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.header {
+    margin-top: 64px;
+}
+
+.questionArea {
+    margin-top: 64px;
+}
+
+.space {
+    width: 100%;
+    padding-top: 24px;
+}
+
+.titleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

@@ -4,6 +4,8 @@
  * @param b {[string]}
  * @returns {boolean|number}
  */
+import { Difficulty } from "./constants";
+
 export const localeCompareArray = (a, b) => {
     const arr1 = a ? a : [];
     const arr2 = b ? b : [];
@@ -25,6 +27,31 @@ export const localeCompare = (a, b, ignoreCase= false) => {
     } else {
         return str1.localeCompare(str2)
     }
+}
+
+/**
+ *
+ * @param a {string}
+ * @param b {string}
+ * @returns {number}
+ */
+export const localeCompareDifficult = (a, b) => {
+    const str1 = a ? a : '';
+    const str2 = b ? b : '';
+
+    if(str1 === str2) return 0;
+
+    if(str1 === Difficulty.EASY) return -1
+
+    if(str2 === Difficulty.EASY) return 1;
+
+    if(str1 === Difficulty.MEDIUM) return -1
+
+    if(str2 === Difficulty.MEDIUM) return 1;
+
+    if(str1 === Difficulty.HARD) return -1
+
+    if(str2 === Difficulty.HARD) return 1
 }
 
 /**

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Dropdown, Menu, message, Modal, PageHeader, Space, Tag } from 'antd';
+import { Button, Divider, Dropdown, Menu, message, Modal, PageHeader, Space, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
-import styles from "./interview-start.module.css";
+import styles from "./interview.module.css";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import InterviewDetailsCard from "./interview-details-card";
@@ -157,7 +157,8 @@ const Interview = () => {
                             <Dropdown.Button
                                 loading
                                 overlay={menu}
-                                onClick={onSaveClicked}>Save
+                                onClick={onSaveClicked}>
+                                Save
                             </Dropdown.Button>
                             <Button type="primary" onClick={onCompletedClicked}>Complete</Button>
                         </Space>}
@@ -165,10 +166,11 @@ const Interview = () => {
                         </>
                     ]}>
                 </PageHeader>
+                <Divider style={{ padding: 0, margin: 0 }} />
             </div>
         }>
             <InterviewDetailsCard
-                paddingTop={72} /* header height */
+                paddingTop={72 + 24} /* header height + padding */
                 interview={interview}
                 onInterviewChange={onInterviewChange}
                 disabled={isCompletedStatus()} />

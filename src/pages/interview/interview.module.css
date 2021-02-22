@@ -3,7 +3,7 @@
 }
 
 .sticky {
-    z-index: 1;
+    z-index: 10;
     width: calc(100% - 200px); /* side menu width is 200px */
     position: fixed;
     top: 0;
