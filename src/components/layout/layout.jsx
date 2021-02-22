@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Badge, Layout as AntLayout, Menu } from "antd";
+import { Badge, Drawer, Layout as AntLayout, Menu, Progress } from "antd";
 import styles from "./layout.module.css";
 import {
     CommunityIcon,
@@ -17,14 +17,16 @@ import {
     routeInterviews,
     routeNews,
     routeQuestionBank,
-    routeQuickstart,
     routeTemplates
 } from "../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
-import { isUpdateAvailable } from "../utils/storage";
+import { isQuickstartDisplayed, isUpdateAvailable } from "../utils/storage";
 import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
+import Text from "antd/lib/typography/Text";
+import Quickstart from "../../pages/quickstart/quickstart";
+import { shallowEqual, useSelector } from "react-redux";
 
 const menuIconStyle = { fontSize: '24px' }
 const menuIconWithBadgeStyle = { fontSize: '24px', position: "absolute" }
@@ -34,6 +36,24 @@ const Layout = ({ children, pageHeader }) => {
 
     const location = useLocation();
     const { user } = useAuth0();
+
+    const [quickStartVisible, setQuickStartVisible] = React.useState(
+        location.pathname.includes(routeQuestionBank()) && !isQuickstartDisplayed()
+    );
+
+    const { guides } = useSelector(state => ({
+        guides: state.guides.guides
+    }), shallowEqual);
+
+    const { questions } = useSelector(state => ({
+        questions: state.questionBank.questions
+    }), shallowEqual);
+
+    const { interviews } = useSelector(state => ({
+        interviews: state.interviews.interviews,
+    }), shallowEqual);
+
+    const tasksCount = 3
 
     const getSelectedKey = () => {
         if (location.pathname.includes(routeQuestionBank())) {
@@ -52,7 +72,7 @@ const Layout = ({ children, pageHeader }) => {
     }
 
     const getUserName = () => {
-        if(user && user.name) {
+        if (user && user.name) {
             return truncate(user.name, {
                 'length': 14
             });
@@ -60,12 +80,36 @@ const Layout = ({ children, pageHeader }) => {
         return 'Profile'
     }
 
+    const onQuickStartClosed = () => {
+        setQuickStartVisible(false)
+    }
+
+    const onProgressClicked = () => {
+        setQuickStartVisible(true)
+    }
+
+    const getTaskProgress = () => {
+        return (tasksCount - getRemainingTasksCount()) * (100 / tasksCount)
+    }
+
+    const getRemainingTasksCount = () => {
+        let remainingTasks = 0;
+        if (guides.length === 0) {
+            remainingTasks++;
+        }
+        if (questions.length === 0) {
+            remainingTasks++;
+        }
+        if (interviews.length === 0) {
+            remainingTasks++;
+        }
+        return remainingTasks
+    }
+
     return (
         <AntLayout className={styles.globalLayout}>
             <AntLayout.Sider theme='light' className={styles.globalSider}>
-                <a href={routeQuickstart()}>
-                    <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
-                </a>
+                <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 <Menu theme="light"
                       mode="inline"
                       defaultSelectedKeys={[routeQuestionBank()]}
@@ -97,6 +141,27 @@ const Layout = ({ children, pageHeader }) => {
                         </Link>
                     </Menu.Item>
                     <div className={styles.space} />
+                    {getRemainingTasksCount() > 0 && <div
+                        className={styles.progressContainer}
+                        onClick={onProgressClicked}>
+                        <Progress
+                            className={styles.progress}
+                            type="circle"
+                            width={32}
+                            strokeColor={{
+                                '0%': '#108ee9',
+                                '100%': '#87d068',
+                            }}
+                            format={() => getRemainingTasksCount()}
+                            strokeWidth={16}
+                            percent={getTaskProgress()}
+                        />
+                        <div className={styles.progressTextContainer}>
+                            <Text>Quick start</Text>
+                            <Text className={styles.progressTextSecondary}>{getRemainingTasksCount()} Remaining
+                                tasks</Text>
+                        </div>
+                    </div>}
                     <Menu.Item key={routeNews()} className={styles.menuItem}
                                icon={
                                    <div className={styles.menuIconContainer}>
@@ -128,6 +193,18 @@ const Layout = ({ children, pageHeader }) => {
             <AntLayout className="site-layout">
                 {pageHeader}
                 <AntLayout.Content className={styles.pageContent}>
+                    <Drawer
+                        title="Quick Start"
+                        width={700}
+                        style={{ marginLeft: 200 }}
+                        zIndex={100}
+                        closable={true}
+                        destroyOnClose={true}
+                        onClose={onQuickStartClosed}
+                        placement='left'
+                        visible={quickStartVisible}>
+                        <Quickstart onButtonClicked={onQuickStartClosed} />
+                    </Drawer>
                     {children}
                 </AntLayout.Content>
             </AntLayout>

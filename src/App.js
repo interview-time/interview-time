@@ -1,5 +1,5 @@
 import './App.css';
-import { Switch } from "react-router-dom";
+import { Redirect, Switch } from "react-router-dom";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
 import Interview from "./pages/interview/interview";
@@ -9,7 +9,6 @@ import Account from "./pages/account/account";
 import { useAuth0 } from "./react-auth0-spa";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
-import Quickstart from "./pages/quickstart/quickstart";
 import InterviewWizard from "./pages/interview-wizard/interview-wizard";
 import Community from "./pages/community/community";
 import {
@@ -19,7 +18,6 @@ import {
     routeInterviews,
     routeNews,
     routeQuestionBank,
-    routeQuickstart,
     routeTemplateAdd,
     routeTemplates
 } from "./components/utils/route";
@@ -34,8 +32,7 @@ function App() {
 
     return (
         <Switch>
-            <PrivateRoute path="/" exact component={Quickstart} />
-            <PrivateRoute path={routeQuickstart()} exact component={Quickstart} />
+            <PrivateRoute path="/" exact render={() => <Redirect to={routeQuestionBank()} />} />
             <PrivateRoute path={routeQuestionBank()} exact component={QuestionBank} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewWizard} />
