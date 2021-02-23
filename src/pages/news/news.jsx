@@ -8,6 +8,11 @@ import moment from "moment";
 
 export const updatesData = [
     {
+        version: "v0.3.4",
+        date: moment("2021/02/23", "YYYY/MM/DD").valueOf(),
+        description: "Feedback section 📝",
+    },
+    {
         version: "v0.3.3",
         date: moment("2021/02/21", "YYYY/MM/DD").valueOf(),
         description: "Quick start section 🚀",

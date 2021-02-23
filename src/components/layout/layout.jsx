@@ -4,7 +4,7 @@ import { Badge, Drawer, Layout as AntLayout, Menu, Progress } from "antd";
 import styles from "./layout.module.css";
 import {
     CommunityIcon,
-    FakeIcon,
+    FakeIcon, FeedbackIcon,
     GuideIcon,
     InterviewIcon,
     NewsIcon,
@@ -31,6 +31,7 @@ import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
 import Text from "antd/lib/typography/Text";
 import Quickstart from "../../pages/quickstart/quickstart";
+import FeedbackModal from "../../pages/feedback/modal-feedback";
 
 const menuIconStyle = { fontSize: '24px' }
 const menuIconWithBadgeStyle = { fontSize: '24px', position: "absolute" }
@@ -44,6 +45,8 @@ const Layout = ({ children, pageHeader }) => {
     const [quickStartVisible, setQuickStartVisible] = React.useState(
         location.pathname.includes(routeQuestionBank()) && !isQuickstartDisplayed()
     );
+
+    const [feedbackVisible, setFeedbackVisible] = React.useState(false)
 
     const tasksCount = 3
 
@@ -96,6 +99,14 @@ const Layout = ({ children, pageHeader }) => {
             remainingTasks++;
         }
         return remainingTasks
+    }
+
+    const onFeedbackClicked = () => {
+        setFeedbackVisible(true)
+    }
+
+    const onFeedbackClose = () => {
+        setFeedbackVisible(false)
     }
 
     return (
@@ -154,6 +165,11 @@ const Layout = ({ children, pageHeader }) => {
                                 tasks</Text>
                         </div>
                     </div>}
+                    <Menu.Item key="feedback" className={styles.menuItem}
+                               icon={<FeedbackIcon style={menuIconStyle} />}
+                               onClick={onFeedbackClicked}>
+                        <span className="nav-text">Feedback</span>
+                    </Menu.Item>
                     <Menu.Item key={routeNews()} className={styles.menuItem}
                                icon={
                                    <div className={styles.menuIconContainer}>
@@ -197,6 +213,10 @@ const Layout = ({ children, pageHeader }) => {
                         visible={quickStartVisible}>
                         <Quickstart onButtonClicked={onQuickStartClosed} />
                     </Drawer>
+                    <FeedbackModal
+                        visible={feedbackVisible}
+                        onClose={onFeedbackClose}
+                    />
                     {children}
                 </AntLayout.Content>
             </AntLayout>
