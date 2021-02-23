@@ -32,7 +32,7 @@ const FeedbackModal = ({ visible, onClose }) => {
     const onSendClicked = () => {
         if (feedback.length !== 0) {
             setConfirmLoading(true)
-            sendFeedback(getUserEmail(), getUserName(), feedback, () => {
+            sendFeedback(getUserName(), getUserEmail(), feedback, () => {
                 setConfirmLoading(false)
                 onClose()
                 message.success("Thank you for your feedback");
