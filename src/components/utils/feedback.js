@@ -1,14 +1,15 @@
 import axios from "axios";
 
 export function sendFeedback(name, email, message, callback) {
-    const formData = new FormData();
-    formData.append("name", name)
-    formData.append("email", email)
-    formData.append("message", message)
-    axios.post(
-        "https://usebasin.com/f/0b23e9a682fe.json",
-        formData,
-        { headers: { Accept: "application/json" } })
+    axios.request({
+        url: 'https://hooks.slack.com/services/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',
+        method: 'POST',
+        data: { text: 'Name: ' + name + ' Email: ' + email + ' Message: ' + message },
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': "application/json"
+        }
+    })
         .then(res => {
             console.log(res.data)
             callback()
