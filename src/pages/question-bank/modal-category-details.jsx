@@ -1,11 +1,6 @@
 import { Form, Input, Modal } from "antd";
 import React, { useState } from "react";
 
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 20 },
-};
-
 const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryToUpdate }) => {
     const noError = {
         status: '',
@@ -52,7 +47,7 @@ const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryT
                }}
                onOk={onCreateClicked}
                onCancel={onCancelClicked}>
-            <Form {...layout} preserve={false}>
+            <Form layout="vertical" preserve={false}>
                 <Form.Item label="Name" required validateStatus={error.status} help={error.help}>
                     <Input defaultValue={category} onChange={onCategoryChange} />
                 </Form.Item>

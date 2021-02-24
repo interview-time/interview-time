@@ -6,15 +6,6 @@ import { isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
 
-const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 16 },
-};
-
-const tailLayout = {
-    wrapperCol: { offset: 6, span: 16 }
-};
-
 const categories = [
     { value: 'Behavioral' },
     { value: 'Technical' },
@@ -73,7 +64,7 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
         }
     }
 
-    return <Row key={guide.guideId} align="middle" wrap={false}>
+    return <Row key={guide.guideId} align="middle" wrap={false} className={styles.row}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert
@@ -84,8 +75,8 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                     banner
                 />
                 <Card className={styles.card}>
-                    <Form>
-                        <Form.Item label="Title" {...layout}
+                    <Form layout="vertical">
+                        <Form.Item label="Title"
                                    required
                                    validateStatus={titleError.status}
                                    help={titleError.help}>
@@ -95,7 +86,7 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                                 defaultValue={guide.title}
                             />
                         </Form.Item>
-                        <Form.Item label="Category" {...layout}
+                        <Form.Item label="Category"
                                    required
                                    validateStatus={categoryError.status}
                                    help={categoryError.help}>
@@ -110,7 +101,7 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                                 }
                             />
                         </Form.Item>
-                        <Form.Item label="Description" {...layout}>
+                        <Form.Item label="Description">
                             <TextArea
                                 placeholder="Template description"
                                 defaultValue={guide.description}
@@ -118,7 +109,7 @@ const TemplateWizardDetails = ({ guide, onNext, onDiscard, onPreview }) => {
                                 autoSize={{ minRows: 3, maxRows: 5 }}
                             />
                         </Form.Item>
-                        <Form.Item {...tailLayout} style={{marginBottom: 0}}>
+                        <Form.Item style={{ marginBottom: 0 }}>
                             <div className={styles.buttonContainer}>
                                 <Button className={styles.button} onClick={onDiscard}>Discard</Button>
                                 <Button className={styles.button} type="primary" onClick={onNextClicked}>Next</Button>

@@ -10,15 +10,6 @@ import { questionIdsToQuestions } from "../../components/utils/converters";
 
 const { TextArea } = Input;
 
-const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 16 },
-};
-
-const tailLayout = {
-    wrapperCol: { offset: 6, span: 16 }
-};
-
 const IMAGE_URL = process.env.PUBLIC_URL + '/interview-wizard/details.png'
 
 const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscard, onPreview }) => {
@@ -111,7 +102,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
         }
     }
 
-    return <Row key={interview.interviewId} align="middle" wrap={false}>
+    return <Row key={interview.interviewId} align="middle" wrap={false} className={styles.row}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert
@@ -122,8 +113,8 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                     banner
                 />
                 <Card className={styles.card}>
-                    <Form>
-                        <Form.Item label="Candidate" {...layout}
+                    <Form layout="vertical">
+                        <Form.Item label="Candidate"
                                    required
                                    validateStatus={candidateError.status}
                                    help={candidateError.help}>
@@ -133,7 +124,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                 defaultValue={interview.candidate}
                             />
                         </Form.Item>
-                        <Form.Item label="Interview Date" {...layout}
+                        <Form.Item label="Interview Date"
                                    required
                                    validateStatus={dateError.status}
                                    help={dateError.help}>
@@ -144,7 +135,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                         defaultValue={interview.interviewDateTime ? moment(interview.interviewDateTime) : ''}
                                         onChange={onDateChange} />
                         </Form.Item>
-                        <Form.Item label="Position" {...layout}
+                        <Form.Item label="Position"
                                    required
                                    validateStatus={positionError.status}
                                    help={positionError.help}>
@@ -154,7 +145,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                 onChange={onPositionChange}
                             />
                         </Form.Item>
-                        {guides.length > 0 && <Form.Item label="Template" {...layout}>
+                        {guides.length > 0 && <Form.Item label="Template">
                             <Select
                                 key={interviewGuide.guideId}
                                 placeholder="Select template"
@@ -174,7 +165,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                 }
                             />
                         </Form.Item>}
-                        <Form.Item label="Notes" {...layout}>
+                        <Form.Item label="Notes">
                             <TextArea
                                 placeholder="Anything you wish to mention about the candidate"
                                 defaultValue={interview.candidateNotes}
@@ -182,7 +173,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
                                 autoSize={{ minRows: 3, maxRows: 5 }}
                             />
                         </Form.Item>
-                        <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
+                        <Form.Item style={{ marginBottom: 0 }}>
                             <div className={styles.buttonContainer}>
                                 <Button className={styles.button} onClick={onDiscard}>Discard</Button>
                                 <Button className={styles.button} type="primary" onClick={onNextClicked}>Next</Button>

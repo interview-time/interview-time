@@ -6,11 +6,6 @@ import { Difficulty, getDifficultyColor } from "../../components/utils/constants
 import { defaultTo } from "lodash/util";
 import TagsRadioGroup from "../../components/questions/tags-radio-group";
 
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 20 },
-};
-
 const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate, tags }) => {
 
     const difficultOptions = [
@@ -115,7 +110,7 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                 </div>
             ]}
         >
-            <Form {...layout}>
+            <Form layout="vertical">
                 <Form.Item label="Question" required validateStatus={error.status} help={error.help}>
                     <Input.TextArea defaultValue={question.question} onChange={onQuestionChange} />
                 </Form.Item>

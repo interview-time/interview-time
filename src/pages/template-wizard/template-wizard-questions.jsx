@@ -41,7 +41,7 @@ const TemplateWizardQuestions = ({
         }
     }
 
-    return <Row key={getDataId()} align="middle" wrap={false}>
+    return <Row key={getDataId()} align="middle" wrap={false} className={styles.row}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert

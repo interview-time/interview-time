@@ -7,11 +7,6 @@ import { questionsToQuestionIds } from "../../components/utils/converters";
 import { addTemplate } from "../../store/templates/actions";
 import { difference, head } from "lodash/array";
 
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 20 },
-};
-
 const categories = [
     { value: 'Behavioral' },
     { value: 'Technical' },
@@ -113,8 +108,8 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
                 showIcon
                 banner
             />
-            <Form {...layout} preserve={false}>
-                <Form.Item label="Title" {...layout}
+            <Form layout="vertical" preserve={false}>
+                <Form.Item label="Title"
                            required
                            validateStatus={titleError.status}
                            help={titleError.help}>
@@ -123,7 +118,7 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
                         onChange={onTitleChange}
                     />
                 </Form.Item>
-                <Form.Item label="Category" {...layout}
+                <Form.Item label="Category"
                            required
                            validateStatus={categoryError.status}
                            help={categoryError.help}>

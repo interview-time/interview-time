@@ -6,15 +6,6 @@ import { isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
 
-const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 18 },
-};
-
-const tailLayout = {
-    wrapperCol: { offset: 4, span: 18 }
-};
-
 const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/intro.png'
 
 /**
@@ -66,7 +57,7 @@ const TemplateWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) =>
         }
     }
 
-    return <Row key={getDataId()} align="middle" wrap={false}>
+    return <Row key={getDataId()} align="middle" wrap={false} className={styles.row}>
         <Col span={12}>
             <div className={styles.container}>
                 <Alert
@@ -77,8 +68,8 @@ const TemplateWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) =>
                     banner
                 />
                 <Card className={styles.card}>
-                    <Form>
-                        <Form.Item label="Intro" {...layout}
+                    <Form layout="vertical">
+                        <Form.Item label="Intro"
                                    required
                                    validateStatus={headerError.status}
                                    help={headerError.help}>
@@ -88,7 +79,7 @@ const TemplateWizardIntro = ({ guide, interview, onNext, onBack, onPreview }) =>
                                 autoSize={{ minRows: 3, maxRows: 5 }}
                                 placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
                         </Form.Item>
-                        <Form.Item {...tailLayout} style={{ marginBottom: 0 }}>
+                        <Form.Item style={{ marginBottom: 0 }}>
                             <div className={styles.buttonContainer}>
                                 <Button className={styles.button} onClick={onBack}>Back</Button>
                                 <Button className={styles.button} type="primary" onClick={onNextClicked}>Next</Button>

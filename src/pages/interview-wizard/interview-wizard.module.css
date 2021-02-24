@@ -2,6 +2,10 @@
     background-color: white;
 }
 
+.row {
+    margin-top: 48px;
+}
+
 .container {
     display: flex;
     flex-direction: column;

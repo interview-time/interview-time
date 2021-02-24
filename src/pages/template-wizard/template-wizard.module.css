@@ -2,6 +2,10 @@
     background-color: white;
 }
 
+.row {
+    margin-top: 48px;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -15,7 +19,7 @@
 }
 
 .card {
-    width: 550px;
+    width: 500px;
     max-width: 100%;
 }
 
