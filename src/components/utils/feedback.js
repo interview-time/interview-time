@@ -2,12 +2,12 @@ import axios from "axios";
 
 export function sendFeedback(name, email, message, callback) {
     axios.request({
-        url: 'https://hooks.slack.com/services/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',
+        url: process.env.REACT_APP_SLACK_FEEDBACK_URL,
         method: 'POST',
-        data: { text: 'Name: ' + name + ' Email: ' + email + ' Message: ' + message },
+        data: { text: 'Name: ' + name + '\nEmail: ' + email + '\nMessage: ' + message },
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': "application/json"
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Accept': 'application/json',
         }
     })
         .then(res => {
