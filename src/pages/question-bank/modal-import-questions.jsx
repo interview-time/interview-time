@@ -1,9 +1,10 @@
-import { Alert, Button, Collapse, Drawer, Space } from "antd";
+import { Alert, Button, Collapse, Space } from "antd";
 import React, { useRef, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import styles from "./modal-category-details.module.css";
 import Text from "antd/lib/typography/Text";
 import { parse as parseCSV } from "csv-string"
+import Modal from "antd/lib/modal/Modal";
 
 const { Panel } = Collapse;
 
@@ -47,11 +48,10 @@ const ImportQuestionsModal = ({ visible, onImport, onCancel }) => {
     }
 
     return (
-        <Drawer
+        <Modal
             title={"Import Questions"}
-            width={500}
             visible={visible}
-            closable={true}
+            closable={false}
             destroyOnClose={true}
             onClose={onCancelClicked}
             footer={[
@@ -99,7 +99,7 @@ const ImportQuestionsModal = ({ visible, onImport, onCancel }) => {
                         onClick={() => fileInput.current && fileInput.current.click()}>Select File</Button>
                 </Space>
             </div>
-        </Drawer>
+        </Modal>
     );
 }
 

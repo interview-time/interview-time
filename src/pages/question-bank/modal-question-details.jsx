@@ -1,10 +1,11 @@
 import styles from "./modal-question-details.module.css"
-import { Button, Drawer, Form, Input, Select, Space } from "antd";
+import { Button, Form, Input, Select, Space } from "antd";
 import React, { useState } from "react";
 import lang from "lodash/lang";
 import { Difficulty, getDifficultyColor } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import TagsRadioGroup from "../../components/questions/tags-radio-group";
+import Modal from "antd/lib/modal/Modal";
 
 const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate, tags }) => {
 
@@ -91,11 +92,10 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
     }
 
     return (
-        <Drawer
+        <Modal
             key={questionId}
             title={questionToUpdate ? "Update question" : "Add question"}
-            width={500}
-            closable={true}
+            closable={false}
             destroyOnClose={true}
             visible={visible}
             onClose={onCancel}
@@ -130,7 +130,7 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                     />
                 </Form.Item>
             </Form>
-        </Drawer>
+        </Modal>
     );
 }
 
