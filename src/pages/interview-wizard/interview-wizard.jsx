@@ -262,7 +262,11 @@ const InterviewWizard = () => {
                 onClose={onPreviewClosed}
                 placement='right'
                 visible={previewVisible}>
-                <InterviewDetailsCard interview={interview} />
+                <InterviewDetailsCard
+                    interview={interview}
+                    paddingTopContent={0}
+                    paddingTopAnchor={86}
+                />
             </Drawer>
 
             <Drawer

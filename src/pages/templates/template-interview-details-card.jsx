@@ -38,7 +38,11 @@ const TemplateInterviewDetailsCard = ({ guide, questions, loading, loadQuestionB
         // eslint-disable-next-line
     }, [questions, guide]);
 
-    return <InterviewDetailsCard interview={interview} />
+    return <InterviewDetailsCard
+        interview={interview}
+        paddingTopContent={0}
+        paddingTopAnchor={86}
+    />
 }
 
 const mapStateToProps = state => {

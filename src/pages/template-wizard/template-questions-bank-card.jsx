@@ -77,7 +77,7 @@ const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAd
             render: (text, question) => <div className={styles.questionWrapper}>
                 <div className={styles.questionBody}>
                     <Space direction="vertical">
-                        <Text>{question.question}</Text>
+                        <Text className={styles.multiLineText}>{question.question}</Text>
                         <div>
                             <Tag key={question.difficulty} color={getDifficultyColor(question.difficulty)}>
                                 {question.difficulty}

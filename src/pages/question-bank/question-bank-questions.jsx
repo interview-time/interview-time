@@ -37,6 +37,7 @@ const QuestionBankQuestions = ({
             key: 'question',
             dataIndex: 'question',
             sortDirections: ['descend', 'ascend'],
+            className: styles.multiLineText,
             sorter: (a, b) => localeCompare(a.question, b.question),
         },
         {

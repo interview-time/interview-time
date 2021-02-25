@@ -170,7 +170,8 @@ const Interview = () => {
             </div>
         }>
             <InterviewDetailsCard
-                paddingTop={72 + 24} /* header height + padding */
+                paddingTopContent={72 + 24} /* header height + padding */
+                paddingTopAnchor={72 + 24} /* header height + padding */
                 interview={interview}
                 onInterviewChange={onInterviewChange}
                 disabled={isCompletedStatus()} />

@@ -21,6 +21,7 @@ const InterviewQuestionsCard = ({ group, disabled, onInterviewChange }) => {
             dataIndex: 'question',
             key: 'question',
             sortDirections: ['descend', 'ascend'],
+            className: styles.multiLineText,
             sorter: (a, b) => localeCompare(a.question, b.question),
         },
         {

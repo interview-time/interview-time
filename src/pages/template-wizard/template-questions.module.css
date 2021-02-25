@@ -71,3 +71,7 @@
     height: var(--table-scroll-height);
     overflow-y: scroll;
 }
+
+.multiLineText {
+    white-space: pre-wrap;
+}
