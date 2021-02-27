@@ -26,9 +26,3 @@
     width: 100%;
     padding-top: 24px;
 }
-
-.titleContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}

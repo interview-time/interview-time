@@ -135,14 +135,14 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTopContent, paddingT
                 banner
             />}
 
-            <Title id="intro" level={3} className={styles.header}>Intro</Title>
+            <Title id="intro" level={4} className={styles.header}>Intro</Title>
             <div className={styles.multiLineText}>{getHeader()}</div>
 
             {getGroups().map(group =>
                 <InterviewQuestionsCard group={group} disabled={disabled} onInterviewChange={onInterviewChange} />)
             }
 
-            <Title id="summary" level={3} className={styles.header}>Summary</Title>
+            <Title id="summary" level={4} className={styles.header}>Summary</Title>
 
             <div className={styles.multiLineText}>{getFooter()}</div>
 

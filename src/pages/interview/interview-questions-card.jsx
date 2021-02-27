@@ -1,13 +1,13 @@
 import styles from "./interview-details-card.module.css";
 import React from 'react';
-import { Button, Card, Input, Radio, Space, Table, Tag } from "antd";
+import { Card, Input, Radio, Space, Table, Tag } from "antd";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox"
 import { GroupAssessment } from "../../components/utils/constants";
 import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
 import { defaultTo } from "lodash/util";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { DownOutlined, RightOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, CaretRightOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -87,11 +87,11 @@ const InterviewQuestionsCard = ({ group, disabled, onInterviewChange }) => {
 
     return (
         <div id={group.name} className={styles.questionArea}>
-            <div className={styles.titleContainer}>
-                <Title level={3}>{group.name}</Title>
-                {collapsed && <Button type="text" onClick={onCollapseClicked}>Expand <RightOutlined /></Button>}
-                {!collapsed && <Button type="text" onClick={onCollapseClicked}>Collapse <DownOutlined /></Button>}
-            </div>
+            <Title level={4}>
+                {collapsed && <CaretRightOutlined onClick={onCollapseClicked} style={{ paddingRight: 8 }} />}
+                {!collapsed && <CaretDownOutlined onClick={onCollapseClicked} style={{ paddingRight: 8 }} />}
+                {group.name} ({group.questions.length})
+            </Title>
             {!collapsed && <div>
                 <Card bodyStyle={{ padding: 0 }}>
                     <Table columns={columns} dataSource={group.questions} pagination={false} />
