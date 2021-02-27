@@ -5,8 +5,11 @@ export const ADD_INTERVIEW = "ADD_INTERVIEW";
 export const UPDATE_INTERVIEW = "UPDATE_INTERVIEW";
 export const DELETE_INTERVIEW = "DELETE_INTERVIEW";
 
-export const loadInterviews = () => ({
-    type: LOAD_INTERVIEWS
+export const loadInterviews = (forceFetch = false) => ({
+    type: LOAD_INTERVIEWS,
+    payload: {
+        forceFetch,
+    }
 });
 
 export const setInterviews = (interviews) => ({

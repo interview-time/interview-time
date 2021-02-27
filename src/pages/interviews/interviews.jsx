@@ -5,7 +5,7 @@ import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import styles from "../interviews/interviews.module.css";
 import { Badge, Button, Card, Input, PageHeader, Table, Tag } from 'antd';
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
 import {
@@ -77,45 +77,21 @@ const columns = [
     }
 ];
 
-const Interviews = () => {
+const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
 
     const history = useHistory();
-    const dispatch = useDispatch();
-
-    const { guides, guidesLoading } = useSelector(state => ({
-        guides: state.guides.guides,
-        guidesLoading: state.guides.loading
-    }), shallowEqual);
-
-    const { interviewsRemote, interviewsLoading } = useSelector(state => ({
-        interviewsRemote: state.interviews.interviews,
-        interviewsLoading: state.interviews.loading
-    }), shallowEqual);
-
-    const [interviews, setInterviews] = useState(interviewsRemote)
+    const [interviewsData, setInterviews] = useState([])
 
     React.useEffect(() => {
-        if (interviewsRemote.length === 0 && !interviewsLoading) {
-            dispatch(loadInterviews());
-        }
-        if (guides.length === 0 && !guidesLoading) {
-            dispatch(loadTemplates());
-        }
+        loadInterviews();
+        loadTemplates();
         // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
-        const interviews = reverse(sortBy(cloneDeep(interviewsRemote), ['interviewDateTime']))
-        if (guides.length > 0) {
-            interviews.forEach((interview) => {
-                const guide = guides.find((guide) => guide.guideId === interview.guideId)
-                if (guide) {
-                    interview.guide = guide.title
-                }
-            })
-        }
         setInterviews(interviews)
-    }, [guides, interviewsRemote]);
+        // eslint-disable-next-line
+    }, [interviews]);
 
     const onRowClicked = (record) => {
         history.push(routeStartInterview(record.interviewId));
@@ -127,7 +103,7 @@ const Interviews = () => {
 
     const onSearchClicked = text => {
         let lowerCaseText = text.toLocaleLowerCase()
-        setInterviews(interviewsRemote.filter(item =>
+        setInterviews(interviewsData.filter(item =>
             item.candidate.toLocaleLowerCase().includes(lowerCaseText)
             || item.position.toLocaleLowerCase().includes(lowerCaseText)
             || moment(item.interviewDateTime).format('lll').toLocaleLowerCase().includes(lowerCaseText)
@@ -155,8 +131,8 @@ const Interviews = () => {
                 <Table
                     pagination={false}
                     columns={columns}
-                    dataSource={interviews}
-                    loading={interviewsLoading || guidesLoading}
+                    dataSource={interviewsData}
+                    loading={loading}
                     rowClassName={styles.row}
                     onRow={(record) => ({
                         onClick: () => onRowClicked(record),
@@ -167,4 +143,25 @@ const Interviews = () => {
     )
 }
 
-export default Interviews;
+const mapDispatch = { loadInterviews, loadTemplates };
+const mapState = (state) => {
+    const interviewsState = state.interviews || {};
+    const guidesState = state.guides || {};
+
+    const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ['interviewDateTime']))
+    if (guidesState.guides.length > 0) {
+        interviews.forEach(interview => {
+            const guide = guidesState.guides.find(guide => guide.guideId === interview.guideId)
+            if (guide) {
+                interview.guide = guide.title
+            }
+        })
+    }
+
+    return {
+        interviews: interviews,
+        loading: interviewsState.loading || guidesState.loading
+    }
+}
+
+export default connect(mapState, mapDispatch)(Interviews)

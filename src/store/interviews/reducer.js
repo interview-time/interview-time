@@ -28,12 +28,18 @@ const interviewsReducer = (state = initialState, action) => {
 
         case LOAD_INTERVIEWS: {
             console.log(action.type)
-            getAccessTokenSilently()
-                .then(token => axios.get(URL, config(token)))
-                .then(res => store.dispatch(setInterviews(res.data || [])))
-                .catch(reason => console.error(reason));
+            const { forceFetch } = action.payload
 
-            return { ...state, loading: true };
+            if (forceFetch || (state.interviews.length === 0 && !state.loading)) {
+                getAccessTokenSilently()
+                    .then(token => axios.get(URL, config(token)))
+                    .then(res => store.dispatch(setInterviews(res.data || [])))
+                    .catch(reason => console.error(reason));
+
+                return { ...state, loading: true };
+            }
+
+            return { ...state };
         }
 
         case SET_INTERVIEWS: {
@@ -63,7 +69,7 @@ const interviewsReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then(token => axios.post(URL, interview, config(token)))
                 .then(() => console.log(`Interview added: ${JSON.stringify(interview)}`))
-                .then(() => store.dispatch(loadInterviews()))
+                .then(() => store.dispatch(loadInterviews(true)))
                 .catch(reason => console.error(reason));
 
             return {
@@ -81,7 +87,7 @@ const interviewsReducer = (state = initialState, action) => {
                 .then(() => console.log(`Interview updated: ${JSON.stringify(interview)}`))
                 .then(() => {
                     store.dispatch(setUploading(false))
-                    store.dispatch(loadInterviews())
+                    store.dispatch(loadInterviews(true))
                 })
                 .catch(reason => {
                     store.dispatch(setUploading(false))

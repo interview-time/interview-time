@@ -8,8 +8,11 @@ export const UPDATE_QUESTION = "UPDATE_QUESTION";
 export const DELETE_QUESTION = "DELETE_QUESTION";
 export const ADD_CATEGORY = "ADD_CATEGORY";
 
-export const loadQuestionBank = () => ({
-    type: LOAD_QUESTION_BANK
+export const loadQuestionBank = (forceFetch = false) => ({
+    type: LOAD_QUESTION_BANK,
+    payload: {
+        forceFetch
+    }
 });
 
 export const setQuestionBank = (questionBank) => ({

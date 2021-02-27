@@ -1,34 +1,22 @@
 import styles from "./templates.module.css";
 import React, { useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
-import {
-    Avatar,
-    Button,
-    Card,
-    Col,
-    Drawer,
-    List,
-    message,
-    PageHeader,
-    Popconfirm,
-    Row,
-    Statistic
-} from "antd";
+import { Avatar, Button, Card, Col, Drawer, List, message, PageHeader, Popconfirm, Row, Statistic } from "antd";
 import { Link, useHistory } from "react-router-dom";
-import { CopyOutlined, DeleteOutlined, EditOutlined} from "@ant-design/icons";
+import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import Collection, { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
-import { getAvatarColor} from "../../components/utils/constants";
+import { getAvatarColor } from "../../components/utils/constants";
 import TemplateInterviewDetailsCard from "./template-interview-details-card";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import { routeTemplateAdd, routeTemplateDetails } from "../../components/utils/route";
 
 const { Meta } = Card;
 
-const Templates = () => {
+const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank, deleteTemplate, addTemplate }) => {
 
     const emptyGuide = {
         structure: {
@@ -37,29 +25,13 @@ const Templates = () => {
     }
 
     const history = useHistory();
-    const dispatch = useDispatch();
 
     const [guide, setGuide] = useState(emptyGuide);
     const [previewVisible, setPreviewVisible] = useState(false);
 
-    const { guides, guidesLoading } = useSelector(state => ({
-        guides: sortBy(state.guides.guides, ['title']),
-        guidesLoading: state.guides.loading
-    }), shallowEqual);
-
-    const { questions, questionsLoading } = useSelector(state => ({
-        questions: Collection.sortBy(state.questionBank.questions, ['question']),
-        questionsLoading: state.questionBank.loading
-    }), shallowEqual);
-
     React.useEffect(() => {
-        if (guides.length === 0 && !guidesLoading) {
-            dispatch(loadTemplates())
-        }
-
-        if (questions.length === 0 && !questionsLoading) {
-            dispatch(loadQuestionBank())
-        }
+        loadTemplates();
+        loadQuestionBank();
         // eslint-disable-next-line
     }, []);
 
@@ -73,7 +45,7 @@ const Templates = () => {
     }
 
     const onDelete = (guide) => {
-        dispatch(deleteTemplate(guide.guideId))
+        deleteTemplate(guide.guideId);
         message.success(`Template '${guide.title}' removed.`);
     }
 
@@ -90,7 +62,7 @@ const Templates = () => {
         const copy = cloneDeep(guide)
         copy.guideId = null
         copy.title = `Copy of ${guide.title}`
-        dispatch(addTemplate(copy))
+        addTemplate(copy)
         message.success(`Template '${copy.title}' created.`);
     }
 
@@ -117,7 +89,7 @@ const Templates = () => {
                 xxl: 4,
             }}
             dataSource={guides}
-            loading={guidesLoading || questionsLoading}
+            loading={loading}
             renderItem={guide => <List.Item>
                 <Card hoverable
                       bodyStyle={{ padding: 0 }}
@@ -183,5 +155,16 @@ const Templates = () => {
         </Drawer>
     </Layout>
 }
+const mapDispatch = { loadTemplates, loadQuestionBank, deleteTemplate, addTemplate };
+const mapState = (state) => {
+    const questionBankState = state.questionBank || {};
+    const guidesState = state.guides || {};
 
-export default Templates;
+    return {
+        guides: sortBy(guidesState.guides, ['title']),
+        questions: Collection.sortBy(questionBankState.questions, ['question']),
+        loading: guidesState.loading || questionBankState.loading
+    }
+}
+
+export default connect(mapState, mapDispatch)(Templates);

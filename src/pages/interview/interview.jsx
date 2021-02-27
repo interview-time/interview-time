@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { Button, Divider, Dropdown, Menu, message, Modal, PageHeader, Space, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview.module.css";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { connect} from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import InterviewDetailsCard from "./interview-details-card";
 import { Status } from "../../components/utils/constants";
@@ -11,13 +11,14 @@ import { SyncOutlined } from "@ant-design/icons";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
 import { routeInterviewDetails, routeInterviews } from "../../components/utils/route";
+import { findInterview } from "../../components/utils/converters";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000 // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
 const KEY_EDIT = 'edit'
 const KEY_DELETE = 'delete'
 
-const Interview = () => {
+const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterviews, updateInterview}) => {
 
     const emptyInterview = {
         candidate: '',
@@ -29,35 +30,23 @@ const Interview = () => {
         }
     }
 
-    const { interviews, interviewsLoading, interviewsUploading } = useSelector(state => ({
-        interviews: state.interviews.interviews,
-        interviewsLoading: state.interviews.loading,
-        interviewsUploading: state.interviews.uploading
-    }), shallowEqual);
-
     const [interview, setInterview] = useState(emptyInterview);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
 
     const { id } = useParams();
 
     const history = useHistory();
-    const dispatch = useDispatch();
 
     React.useEffect(() => {
         // initial data loading
         if (!interview.interviewId) {
-            const interview = interviews.find(interview => interview.interviewId === id);
-            if (interview) {
-                setInterview(cloneDeep(interview))
-            }
+            setInterview(cloneDeep(findInterview(id, interviews)))
         }
         // eslint-disable-next-line
     }, [interviews, id]);
 
     React.useEffect(() => {
-        if (interviews.length === 0 && !interviewsLoading) {
-            dispatch(loadInterviews());
-        }
+        loadInterviews();
         // eslint-disable-next-line
     }, []);
 
@@ -71,7 +60,7 @@ const Interview = () => {
     }
 
     let onInterviewChangeDebounce = debounce(function () {
-        dispatch(updateInterview(interview))
+        updateInterview(interview)
         setUnsavedChanges(false)
     }, DATA_CHANGE_DEBOUNCE, { 'maxWait': DATA_CHANGE_DEBOUNCE_MAX })
 
@@ -81,7 +70,7 @@ const Interview = () => {
             okText: "Yes",
             cancelText: "No",
             onOk() {
-                dispatch(deleteInterview(interview.interviewId));
+                deleteInterview(interview.interviewId);
                 history.push(routeInterviews());
                 message.success(`Interview '${interview.candidate}' removed.`);
             }
@@ -100,7 +89,7 @@ const Interview = () => {
                 cancelText: "No",
                 onOk() {
                     const updatedInterview = { ...interview, status: Status.COMPLETED }
-                    dispatch(updateInterview(updatedInterview));
+                    updateInterview(updatedInterview);
                     history.push(routeInterviews());
                     message.success(`Interview '${interview.candidate}' marked as complete.`);
                 }
@@ -113,7 +102,7 @@ const Interview = () => {
     }
 
     const onSaveClicked = () => {
-        dispatch(updateInterview(interview))
+        updateInterview(interview)
         setUnsavedChanges(false)
         message.success(`Interview '${interview.candidate}' updated.`);
     }
@@ -180,4 +169,13 @@ const Interview = () => {
     )
 }
 
-export default Interview;
+const mapDispatch = { deleteInterview, loadInterviews, updateInterview }
+const mapState = (state) => {
+    const interviewsState = state.interviews || {};
+    return {
+        interviews: interviewsState.interviews,
+        interviewsUploading: interviewsState.uploading
+    }
+}
+
+export default connect(mapState, mapDispatch)(Interview);

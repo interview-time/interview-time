@@ -10,6 +10,26 @@ export function findQuestion(id, questions) {
 
 /**
  *
+ * @param {String} id
+ * @param {[*]} interviews
+ * @returns {*}
+ */
+export function findInterview(id, interviews) {
+    return interviews.find(interview => interview.interviewId === id)
+}
+
+/**
+ *
+ * @param {String} id
+ * @param {[*]} guides
+ * @returns {*}
+ */
+export function findGuide(id, guides) {
+    return guides.find(guide => guide.guideId === id);
+}
+
+/**
+ *
  * @param {[String]} questionIds
  * @param {[*]} questions
  * @returns {[]}

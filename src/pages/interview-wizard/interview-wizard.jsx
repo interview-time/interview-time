@@ -3,7 +3,6 @@ import Layout from "../../components/layout/layout";
 import { Drawer, message, PageHeader, Spin, Steps } from "antd";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Collection from "lodash/collection";
 import { cloneDeep } from "lodash/lang";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
@@ -18,6 +17,8 @@ import TemplateQuestions from "../template-wizard/template-questions";
 import InterviewDetailsCard from "../interview/interview-details-card";
 import CreateTemplateModal from "./create-template-modal";
 import { routeInterviews } from "../../components/utils/route";
+import { connect } from "react-redux";
+import { findInterview } from "../../components/utils/converters";
 
 const { Step } = Steps;
 
@@ -26,7 +27,19 @@ const STEP_INTRO = 1
 const STEP_QUESTIONS = 2
 const STEP_SUMMARY = 3
 
-const InterviewWizard = () => {
+const InterviewWizard = (
+    {
+        interviews,
+        questions,
+        categories,
+        guides,
+        loading,
+        addInterview,
+        loadInterviews,
+        updateInterview,
+        loadQuestionBank,
+        loadTemplates
+    }) => {
 
     const emptyInterview = {
         interviewId: undefined,
@@ -49,22 +62,6 @@ const InterviewWizard = () => {
         }
     }
 
-    const {interviews, interviewsLoading} = useSelector(state => ({
-        interviews: state.interviews.interviews,
-        interviewsLoading: state.interviews.loading
-    }), shallowEqual);
-
-    const {categories, questions, questionsLoading} = useSelector(state => ({
-        categories: state.questionBank.categories.sort(),
-        questions: Collection.sortBy(state.questionBank.questions, ['question']),
-        questionsLoading: state.questionBank.loading
-    }), shallowEqual);
-
-    const {guides, guidesLoading} = useSelector(state => ({
-        guides: state.guides.guides,
-        guidesLoading: state.guides.loading
-    }), shallowEqual);
-
     const [step, setStep] = useState(STEP_DETAILS);
     const [interview, setInterview] = useState(emptyInterview);
     const [previewVisible, setPreviewVisible] = useState(false);
@@ -72,32 +69,24 @@ const InterviewWizard = () => {
     const [createGuideVisible, setCreateGuideVisible] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState();
 
-    const dispatch = useDispatch();
-
     const history = useHistory();
     const { id } = useParams();
 
     React.useEffect(() => {
         if (!isNewInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            setInterview(cloneDeep(
-                interviews.find(interview => interview.interviewId === id)
-            ))
+            setInterview(cloneDeep(findInterview(id, interviews)))
         }
         // eslint-disable-next-line
     }, [interviews, id]);
 
     React.useEffect(() => {
         // initial data loading
-        if (!isNewInterviewFlow() && interviews.length === 0 && !interviewsLoading) {
-            dispatch(loadInterviews());
+        if (!isNewInterviewFlow()) {
+            loadInterviews();
         }
-        if (questions.length === 0 && !questionsLoading) {
-            dispatch(loadQuestionBank())
-        }
+        loadQuestionBank();
+        loadTemplates();
 
-        if (guides.length === 0 && !guidesLoading) {
-            dispatch(loadTemplates())
-        }
         // eslint-disable-next-line
     }, []);
 
@@ -184,7 +173,7 @@ const InterviewWizard = () => {
     };
 
     const onSave = () => {
-        if(!interview.guideId) {
+        if (!interview.guideId) {
             setCreateGuideVisible(true)
         } else {
             saveInterview()
@@ -193,10 +182,10 @@ const InterviewWizard = () => {
 
     const saveInterview = () => {
         if (isNewInterviewFlow()) {
-            dispatch(addInterview(interview));
+            addInterview(interview);
             message.success(`Interview '${interview.candidate}' created.`);
         } else {
-            dispatch(updateInterview(interview));
+            updateInterview(interview);
             message.success(`Interview '${interview.candidate}' updated.`);
         }
         history.push(routeInterviews());
@@ -220,7 +209,7 @@ const InterviewWizard = () => {
             </Steps>
         </PageHeader>
     }>
-        <Spin spinning={guidesLoading || questionsLoading || interviewsLoading}>
+        <Spin spinning={loading}>
             {isDetailsStep() && <InterviewWizardDetails
                 interview={interview}
                 guides={guides}
@@ -276,7 +265,7 @@ const InterviewWizard = () => {
                 destroyOnClose={true}
                 onClose={onQuestionsClosed}
                 placement='right'
-                bodyStyle={{padding: 0}}
+                bodyStyle={{ padding: 0 }}
                 visible={questionsVisible}>
                 <TemplateQuestions
                     interview={interview}
@@ -289,7 +278,7 @@ const InterviewWizard = () => {
             <CreateTemplateModal
                 visible={createGuideVisible}
                 guides={guides}
-                guidesLoading={guidesLoading}
+                guidesLoading={loading}
                 interview={interview}
                 onClose={onCloseCreateGuideModal}
             />
@@ -297,4 +286,19 @@ const InterviewWizard = () => {
     </Layout>
 }
 
-export default InterviewWizard
+const mapDispatch = { addInterview, loadInterviews, updateInterview, loadQuestionBank, loadTemplates };
+const mapState = (state) => {
+    const interviewsState = state.interviews || {};
+    const guidesState = state.guides || {};
+    const questionBankState = state.questionBank || {};
+
+    return {
+        interviews: interviewsState.interviews,
+        questions: Collection.sortBy(questionBankState.questions, ['question']),
+        categories: questionBankState.categories.sort(),
+        guides: guidesState.guides,
+        loading: guidesState.loading || questionBankState.loading || interviewsState.loading
+    }
+}
+
+export default connect(mapState, mapDispatch)(InterviewWizard)

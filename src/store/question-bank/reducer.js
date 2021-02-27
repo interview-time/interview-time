@@ -28,12 +28,18 @@ const questionBankReducer = (state = initialState, action) => {
 
         case LOAD_QUESTION_BANK: {
             console.log(action.type)
-            getAccessTokenSilently()
-                .then(token => axios.get(URL, config(token)))
-                .then(res => store.dispatch(setQuestionBank(res.data)))
-                .catch(reason => console.error(reason));
+            const { forceFetch } = action.payload;
 
-            return { ...state, loading: true };
+            if(forceFetch || (state.questions.length === 0 && !state.loading)) {
+                getAccessTokenSilently()
+                    .then(token => axios.get(URL, config(token)))
+                    .then(res => store.dispatch(setQuestionBank(res.data)))
+                    .catch(reason => console.error(reason));
+
+                return { ...state, loading: true };
+            }
+
+            return { ...state };
         }
 
         case SET_QUESTION_BANK: {
@@ -106,7 +112,7 @@ const questionBankReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then((token) => axios.post(URL, question, config(token)))
                 .then(() => console.log(`Question added: ${JSON.stringify(question)}`))
-                .then(() => store.dispatch(loadQuestionBank()))
+                .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
             return {
@@ -126,7 +132,7 @@ const questionBankReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then((token) => axios.post(`${URL}/questions`, questions, config(token)))
                 .then(() => console.log(`Question added: ${JSON.stringify(questions)}`))
-                .then(() => store.dispatch(loadQuestionBank()))
+                .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
             return {
@@ -144,7 +150,7 @@ const questionBankReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then(token => axios.put(URL, question, config(token)))
                 .then(() => console.log(`Question updated: ${JSON.stringify(question)}`))
-                .then(() => store.dispatch(loadQuestionBank()))
+                .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
             const questions = state.questions.map(q => {

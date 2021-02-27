@@ -7,15 +7,15 @@ import TemplateWizardSummary from "./template-wizard-summary";
 import TemplateWizardDetails from "./template-wizard-details";
 import TemplateWizardQuestions from "./template-wizard-questions";
 import { useHistory, useParams } from "react-router-dom";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import lang, { cloneDeep } from "lodash/lang";
 import TemplateInterviewDetailsCard from "../templates/template-interview-details-card";
 import TemplateQuestions from "./template-questions";
 import Collection from "lodash/collection";
-import { questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
+import { findGuide, questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
 import { routeTemplates } from "../../components/utils/route";
+import { connect } from "react-redux";
 
 const { Step } = Steps;
 
@@ -24,7 +24,17 @@ const STEP_INTRO = 1
 const STEP_QUESTIONS = 2
 const STEP_SUMMARY = 3
 
-const TemplateWizard = () => {
+const TemplateWizard = (
+    {
+        questions,
+        categories,
+        guides,
+        loading,
+        loadQuestionBank,
+        addTemplate,
+        loadTemplates,
+        updateTemplate
+    }) => {
 
     const emptyGuide = {
         guideId: undefined,
@@ -46,45 +56,28 @@ const TemplateWizard = () => {
         }
     }
 
-    const { guides, guidesLoading } = useSelector(state => ({
-        guides: state.guides.guides,
-        guidesLoading: state.guides.loading
-    }), shallowEqual);
-
-    const { questions, categories, questionsLoading } = useSelector(state => ({
-        questions: Collection.sortBy(state.questionBank.questions, ['question']),
-        categories: state.questionBank.categories.sort(),
-        questionsLoading: state.questionBank.loading
-    }), shallowEqual);
-
     const [step, setStep] = useState(STEP_DETAILS);
     const [guide, setGuide] = useState(emptyGuide);
     const [previewVisible, setPreviewVisible] = useState(false);
     const [questionsVisible, setQuestionsVisible] = useState(false);
     const [selectedGroup, setSelectedGroup] = useState();
 
-    const dispatch = useDispatch();
     const history = useHistory();
     const { id } = useParams();
 
     React.useEffect(() => {
-        if (!isNewGuideFlow() && !guide.guideId && !guidesLoading) {
-            const guide = guides.find(guide => guide.guideId === id);
-            if (guide) {
-                setGuide(lang.cloneDeep(guide))
-            }
+        if (!isNewGuideFlow() && !guide.guideId && guides.length !== 0) {
+            setGuide(lang.cloneDeep(findGuide(id, guides)))
         }
         // eslint-disable-next-line
     }, [guides, id]);
 
     React.useEffect(() => {
-        if (!isNewGuideFlow() && guides.length === 0 && !guidesLoading) {
-            dispatch(loadTemplates())
+        if (!isNewGuideFlow()) {
+            loadTemplates()
         }
 
-        if (questions.length === 0 && !questionsLoading) {
-            dispatch(loadQuestionBank())
-        }
+        loadQuestionBank()
         // eslint-disable-next-line
     }, []);
 
@@ -112,10 +105,10 @@ const TemplateWizard = () => {
 
     const onSave = () => {
         if (isNewGuideFlow()) {
-            dispatch(addTemplate(guide));
+            addTemplate(guide);
             message.success(`Template '${guide.title}' created.`);
         } else {
-            dispatch(updateTemplate(guide));
+            updateTemplate(guide);
             message.success(`Template '${guide.title}' updated.`);
         }
         history.push(routeTemplates())
@@ -197,7 +190,7 @@ const TemplateWizard = () => {
             </Steps>
         </PageHeader>
     }>
-        <Spin spinning={guidesLoading || questionsLoading}>
+        <Spin spinning={loading}>
 
             {isDetailsStep() && <TemplateWizardDetails
                 guide={guide}
@@ -248,7 +241,7 @@ const TemplateWizard = () => {
                 destroyOnClose={true}
                 onClose={onQuestionsClosed}
                 placement='right'
-                bodyStyle={{padding: 0}}
+                bodyStyle={{ padding: 0 }}
                 visible={questionsVisible}>
                 <TemplateQuestions
                     guide={guide}
@@ -262,4 +255,17 @@ const TemplateWizard = () => {
     </Layout>
 }
 
-export default TemplateWizard
+const mapDispatch = { loadQuestionBank, addTemplate, loadTemplates, updateTemplate };
+const mapState = (state) => {
+    const guidesState = state.guides || {};
+    const questionBankState = state.questionBank || {};
+
+    return {
+        questions: Collection.sortBy(questionBankState.questions, ['question']),
+        categories: questionBankState.categories.sort(),
+        guides: guidesState.guides,
+        loading: guidesState.loading || questionBankState.loading
+    }
+}
+
+export default connect(mapState, mapDispatch)(TemplateWizard)

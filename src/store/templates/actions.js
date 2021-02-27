@@ -4,8 +4,11 @@ export const ADD_TEMPLATE = "ADD_TEMPLATE";
 export const UPDATE_TEMPLATE = "UPDATE_TEMPLATE";
 export const DELETE_TEMPLATE = "DELETE_TEMPLATE";
 
-export const loadTemplates = () => ({
-    type: LOAD_TEMPLATES
+export const loadTemplates = (forceFetch = false) => ({
+    type: LOAD_TEMPLATES,
+    payload: {
+        forceFetch
+    }
 });
 
 export const setTemplates = (guides) => ({
