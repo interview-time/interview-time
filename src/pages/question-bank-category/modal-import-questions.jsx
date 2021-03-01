@@ -1,7 +1,7 @@
 import { Alert, Button, Collapse, Space } from "antd";
 import React, { useRef, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import styles from "./modal-category-details.module.css";
+import styles from "./modal-import-questions.module.css";
 import Text from "antd/lib/typography/Text";
 import { parse as parseCSV } from "csv-string"
 import Modal from "antd/lib/modal/Modal";

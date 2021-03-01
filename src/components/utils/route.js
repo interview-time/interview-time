@@ -18,4 +18,6 @@ export const routeTemplateDetails = (id) => `/templates/details/${id}`
 
 export const routeQuestionBank = () => "/question-bank"
 
+export const routeQuestionBankCategory = (category) => `/question-bank/${category}`
+
 export const routeAccount = () => "/account"

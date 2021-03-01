@@ -1,5 +1,15 @@
 import './App.css';
 import { Redirect, Switch } from "react-router-dom";
+import {
+    routeAccount,
+    routeCommunity,
+    routeInterviewAdd,
+    routeInterviews,
+    routeNews,
+    routeQuestionBank,
+    routeTemplateAdd,
+    routeTemplates
+} from "./components/utils/route";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
 import Interview from "./pages/interview/interview";
@@ -11,17 +21,8 @@ import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import InterviewWizard from "./pages/interview-wizard/interview-wizard";
 import Community from "./pages/community/community";
-import {
-    routeAccount,
-    routeCommunity,
-    routeInterviewAdd,
-    routeInterviews,
-    routeNews,
-    routeQuestionBank,
-    routeTemplateAdd,
-    routeTemplates
-} from "./components/utils/route";
 import News from "./pages/news/news";
+import QuestionBankCategory from "./pages/question-bank-category/question-bank-category";
 
 function App() {
     const { loading } = useAuth0();
@@ -33,7 +34,8 @@ function App() {
     return (
         <Switch>
             <PrivateRoute path="/" exact render={() => <Redirect to={routeQuestionBank()} />} />
-            <PrivateRoute path={routeQuestionBank()} exact component={QuestionBank} />
+            <PrivateRoute path="/question-bank/:category" exact component={QuestionBankCategory} />
+            <PrivateRoute path={""} exact component={QuestionBank} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewWizard} />
             <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />

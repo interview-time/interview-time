@@ -1,48 +1,32 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
-import {
-    addCategory,
-    addQuestion,
-    addQuestions,
-    deleteCategory,
-    deleteQuestion,
-    loadQuestionBank,
-    updateCategory,
-    updateQuestion
-} from "../../store/question-bank/actions";
+import { addCategory, deleteCategory, loadQuestionBank, updateCategory } from "../../store/question-bank/actions";
 import { message, PageHeader } from 'antd';
 import styles from "./question-bank.module.css";
 import CategoryDetailsModal from "./modal-category-details";
 import QuestionBankCategories from "./question-bank-categories";
-import QuestionBankQuestions from "./question-bank-questions";
 import collection from "lodash/collection";
+import { useHistory } from "react-router-dom";
+import { routeQuestionBankCategory } from "../../components/utils/route";
 
-const STATE_CATEGORIES = "categories"
-const STATE_CATEGORY_DETAILS = "category-details"
 
 const QuestionBank = ({
                           categories,
                           questions,
                           loading,
                           loadQuestionBank,
-                          addQuestion,
-                          addQuestions,
-                          updateQuestion,
-                          deleteQuestion,
                           addCategory,
                           deleteCategory,
                           updateCategory,
                       }) => {
 
-    const [state, setState] = useState(STATE_CATEGORIES);
-
-    const [selectedCategory, setSelectedCategory] = useState({});
-
     const [categoryDetailsModal, setCategoryDetailsModal] = useState({
         category: '',
         visible: false
     });
+
+    const history = useHistory();
 
     React.useEffect(() => {
         if ((!questions || questions.length === 0) && !loading) {
@@ -51,17 +35,8 @@ const QuestionBank = ({
         // eslint-disable-next-line
     }, []);
 
-    const isCategoriesState = () => state === STATE_CATEGORIES
-
-    const isCategoryDetailsState = () => state === STATE_CATEGORY_DETAILS
-
     const onCategoryClicked = (category) => {
-        setSelectedCategory(category)
-        setState(STATE_CATEGORY_DETAILS)
-    };
-
-    const onBackToCategoriesClicked = () => {
-        setState(STATE_CATEGORIES)
+        history.push(routeQuestionBankCategory(category.categoryName))
     };
 
     const onAddCategoryClicked = () => {
@@ -120,7 +95,7 @@ const QuestionBank = ({
                 onCreate={onCreateCategoryClicked}
                 onCancel={onCategoryDetailCancel}
             />
-            {isCategoriesState() && <QuestionBankCategories
+            <QuestionBankCategories
                 categories={categories}
                 questions={questions}
                 loading={loading}
@@ -128,16 +103,7 @@ const QuestionBank = ({
                 onAddCategoryClicked={onAddCategoryClicked}
                 onEditCategoryClicked={onEditCategoryClicked}
                 onDeleteCategoryClicked={onDeleteCategoryClicked}
-            />}
-            {isCategoryDetailsState() && <QuestionBankQuestions
-                selectedCategory={selectedCategory}
-                questions={questions}
-                addQuestion={addQuestion}
-                addQuestions={addQuestions}
-                updateQuestion={updateQuestion}
-                deleteQuestion={deleteQuestion}
-                onBackToCategoriesClicked={onBackToCategoriesClicked}
-            />}
+            />
         </Layout>
     )
 }
@@ -154,10 +120,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
     loadQuestionBank,
-    addQuestion,
-    addQuestions,
-    updateQuestion,
-    deleteQuestion,
     addCategory,
     deleteCategory,
     updateCategory
