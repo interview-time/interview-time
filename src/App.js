@@ -35,7 +35,7 @@ function App() {
         <Switch>
             <PrivateRoute path="/" exact render={() => <Redirect to={routeQuestionBank()} />} />
             <PrivateRoute path="/question-bank/:category" exact component={QuestionBankCategory} />
-            <PrivateRoute path={""} exact component={QuestionBank} />
+            <PrivateRoute path={routeQuestionBank()} exact component={QuestionBank} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewWizard} />
             <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
