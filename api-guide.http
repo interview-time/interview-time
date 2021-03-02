@@ -2,13 +2,17 @@
 @baseUrl = https://localhost:5001
 ###@baseUrl = http://interviewerapi-env-1.eba-acpmepbh.ap-southeast-2.elasticbeanstalk.com
 
+@token = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InhJQUpFVVpoWm0tWE5DNVdTNzlNRiJ9.eyJpc3MiOiJodHRwczovL2ludGVydmlld2VyLmF1LmF1dGgwLmNvbS8iLCJzdWIiOiJheW5TektwQXkzVjZmVXpQZnc4bWd0b3JSUUtVc2F4RkBjbGllbnRzIiwiYXVkIjoiaHR0cDovL2ludGVydmlld2VyYXBpLWVudi0xLmViYS1hY3BtZXBiaC5hcC1zb3V0aGVhc3QtMi5lbGFzdGljYmVhbnN0YWxrLmNvbSIsImlhdCI6MTYxMDg3NTE2NCwiZXhwIjoxNjEwOTYxNTY0LCJhenAiOiJheW5TektwQXkzVjZmVXpQZnc4bWd0b3JSUUtVc2F4RiIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyJ9.pLyylT7Hkwmsy9N6DCcztNkr7kJdijZHsi8HIx6RG3atFV2HBcFn-Zlddvf6FlWJ86j1hbF67SjR3voXU4gn_YlkEHc8nEki5iazq0sMDbF9YUELL5YRpPDZ_vZzqJpYHpaSQ8APcxzA58jR-Sf18THEIYVHpmOaS_Y00EvvBW403prezeKE-QwJkwJOhPrvxeNHdxCpLZSyllkXagZr8vdjVy-x6PbBAKbw2PDANPfjp0cJfVfYvfm7zcRCBOpFQ88dPVdwUS47JAO1hIrCuZ-c-WhqtRSx0YSMvaLcYIGKTSpbZGvHrJy_Q5M6k1lW_adm4bk-C2CKVQ88QFamGQ
+
 ### Get all guides
 GET {{baseUrl}}/guide
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ### Create new guide
 POST {{baseUrl}}/guide
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {      
     "title": "Senior Android Engineer",
@@ -38,6 +42,7 @@ Content-Type: application/json
 ### Update guide
 PUT {{baseUrl}}/guide
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {      
     "guideId": "374c8c70-d05b-4cbb-85c7-8093bfe7b396",
@@ -65,3 +70,4 @@ Content-Type: application/json
 @guideId = 374c8c70-d05b-4cbb-85c7-8093bfe7b396
 DELETE {{baseUrl}}/guide/{{guideId}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
