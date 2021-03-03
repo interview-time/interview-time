@@ -1,3 +1,5 @@
+import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
+
 export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a"
 export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ"
 
@@ -25,6 +27,55 @@ export const GroupAssessment = {
     LOW_SKILLED: 'LOW_SKILLED',
     SKILLED: 'SKILLED',
     HIGHLY_SKILLED: 'HIGHLY_SKILLED',
+}
+
+export const TemplateCategories = [
+    {
+        key: 'DEVELOPMENT',
+        title: 'Software Development',
+        titleShort: 'DEVELOPMENT',
+        color: '#1890FF',
+    },
+    {
+        key: 'MANAGEMENT',
+        title: 'Management',
+        titleShort: 'MANAGEMENT',
+        color: '#722ED1'
+    },
+    {
+        key: 'DESIGN',
+        title: 'Design',
+        titleShort: 'DESIGN',
+        color: '#F5222D'
+    },
+    {
+        key: 'CUSTOMER SERVICE',
+        title: 'Customer Service',
+        titleShort: 'CUSTOMER SERVICE',
+        color: '#13C2C2'
+    },
+    {
+        key: 'OTHER',
+        title: 'Other',
+        titleShort: 'OTHER',
+        color: '#1F1F1F'
+    },
+]
+
+export const getTemplateCategoryIcon = (key) => {
+    if(key === TemplateCategories[0].key) {
+        return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 18 }} />
+    } else if(key === TemplateCategories[1].key) {
+        return <ManagementIcon style={{ color: TemplateCategories[1].color, fontSize: 18 }} />
+    } else if(key === TemplateCategories[2].key) {
+        return <DesignIcon style={{ color: TemplateCategories[2].color, fontSize: 18 }} />
+    } else if(key === TemplateCategories[3].key) {
+        return <CustomerServiceIcon style={{ color: TemplateCategories[3].color, fontSize: 18 }} />
+    } else if(key === TemplateCategories[4].key) {
+        return <OtherIcon style={{ color: TemplateCategories[4].color, fontSize: 18 }} />
+    }
+
+    return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 18 }} />
 }
 
 export const getDecisionText = (decision) => {

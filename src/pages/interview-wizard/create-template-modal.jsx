@@ -6,12 +6,12 @@ import lang from "lodash/lang";
 import { questionsToQuestionIds } from "../../components/utils/converters";
 import { addTemplate } from "../../store/templates/actions";
 import { difference, head } from "lodash/array";
+import { TemplateCategories } from "../../components/utils/constants";
 
-const categories = [
-    { value: 'Behavioral' },
-    { value: 'Technical' },
-    { value: 'Management' },
-];
+const categories = TemplateCategories.map(category => ({
+    value: category.key,
+    label: category.title,
+}))
 
 const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClose }) => {
 

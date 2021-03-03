@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import { Alert, Button, Card, Col, Form, Input, Row, Select } from "antd";
 import { FileDoneOutlined } from "@ant-design/icons";
 import { isEmpty } from "../../components/utils/utils";
+import { TemplateCategories } from "../../components/utils/constants";
 
 const { TextArea } = Input;
 
-const categories = [
-    { value: 'Behavioral' },
-    { value: 'Technical' },
-    { value: 'Management' },
-];
+const categories = TemplateCategories.map(category => ({
+    value: category.key,
+    label: category.title,
+}))
 
 const IMAGE_URL = process.env.PUBLIC_URL + '/template-wizard/details.png'
 

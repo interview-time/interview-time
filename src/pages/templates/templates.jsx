@@ -3,18 +3,32 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
-import { Avatar, Button, Card, Col, Drawer, List, message, PageHeader, Popconfirm, Row, Statistic } from "antd";
+import {
+    Avatar,
+    Button,
+    Card,
+    Col,
+    Drawer,
+    Dropdown,
+    List,
+    Menu,
+    message,
+    PageHeader,
+    Row,
+    Space,
+    Tooltip
+} from "antd";
 import { Link, useHistory } from "react-router-dom";
-import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Collection, { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
-import { getAvatarColor } from "../../components/utils/constants";
 import TemplateInterviewDetailsCard from "./template-interview-details-card";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import { routeTemplateAdd, routeTemplateDetails } from "../../components/utils/route";
-
-const { Meta } = Card;
+import { useAuth0 } from "../../react-auth0-spa";
+import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
+import confirm from "antd/lib/modal/confirm";
 
 const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank, deleteTemplate, addTemplate }) => {
 
@@ -25,6 +39,7 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
     }
 
     const history = useHistory();
+    const { user } = useAuth0();
 
     const [guide, setGuide] = useState(emptyGuide);
     const [previewVisible, setPreviewVisible] = useState(false);
@@ -37,8 +52,6 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
 
     const getTotalQuestions = (groups) =>
         sumBy(groups, (group) => group.questions ? group.questions.length : 0)
-
-    const getAvatarText = (text) => text.split(' ').map(item => item.charAt(0)).join('')
 
     const onEdit = (guideId) => {
         history.push(routeTemplateDetails(guideId))
@@ -66,6 +79,51 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
         message.success(`Template '${copy.title}' created.`);
     }
 
+    const getUserName = () => {
+        if (user && user.name) {
+            return user.name;
+        }
+        return 'Unknown User'
+    }
+
+    const getCategory = (guide) => {
+        let category = TemplateCategories.find(category => category.key === guide.type)
+        if (!category) {
+            // backward compatibility
+            category = TemplateCategories[0]
+        }
+        return category
+    }
+
+    function showDeleteConfirm(guide) {
+        confirm({
+            title: `Delete '${guide.title}' Template`,
+            icon: <ExclamationCircleOutlined />,
+            content: 'Are you sure you want to delete this template?',
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk() {
+                onDelete(guide)
+            }
+        });
+    }
+
+    const createMenu = (guide) => <Menu>
+        <Menu.Item onClick={e => {
+            e.domEvent.stopPropagation()
+            onEdit(guide.guideId)
+        }}>Edit template</Menu.Item>
+        <Menu.Item onClick={e => {
+            e.domEvent.stopPropagation()
+            onCopy(guide)
+        }}>Copy template</Menu.Item>
+        <Menu.Item danger onClick={e => {
+            e.domEvent.stopPropagation()
+            showDeleteConfirm(guide)
+        }}>Delete template</Menu.Item>
+    </Menu>;
+
     return <Layout pageHeader={<PageHeader
         className={styles.pageHeader}
         title="Interview Templates"
@@ -82,63 +140,47 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
             grid={{
                 gutter: 16,
                 xs: 1,
-                sm: 1,
-                md: 2,
-                lg: 3,
-                xl: 4,
-                xxl: 4,
+                sm: 2,
+                md: 3,
+                lg: 4,
+                xl: 5,
+                xxl: 5,
             }}
             dataSource={guides}
             loading={loading}
             renderItem={guide => <List.Item>
                 <Card hoverable
                       bodyStyle={{ padding: 0 }}
-                      actions={[
-                          <EditOutlined key="edit" onClick={() => onEdit(guide.guideId)} />,
-                          <Popconfirm
-                              title="Are you sure you want to duplicate this template?"
-                              onConfirm={() => {
-                                  onCopy(guide)
-                              }}
-                              okText="Yes"
-                              cancelText="No">
-                              <CopyOutlined />
-                          </Popconfirm>,
-                          <Popconfirm
-                              title="Are you sure you want to delete this template?"
-                              onConfirm={() => {
-                                  onDelete(guide)
-                              }}
-                              okText="Yes"
-                              cancelText="No">
-                              <DeleteOutlined />
-                          </Popconfirm>
-                      ]}>
+                >
                     <div className={styles.card} onClick={() => onPreview(guide.guideId)}>
-                        <Meta
-                            title={guide.title}
-                            avatar={
-                                <Avatar size="large"
-                                        style={{
-                                            backgroundColor: getAvatarColor(guide.title),
-                                            verticalAlign: 'middle',
-                                        }}>
-                                    {getAvatarText(guide.title)}
-                                </Avatar>
-                            }
-                        />
-                        <Row span={24}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            {getTemplateCategoryIcon(guide.type)}
+                            <div style={{ color: getCategory(guide).color }}
+                                 className={styles.category}>{getCategory(guide).titleShort}</div>
+                            <div style={{ flexGrow: 1 }} />
+                            <Dropdown overlay={createMenu(guide)}>
+                                <EllipsisOutlined style={{ fontSize: 20 }} onClick={e => e.stopPropagation()} />
+                            </Dropdown>
+                        </div>
+                        <div className={styles.cardTitle}>{guide.title}</div>
+
+                        <Row style={{ marginTop: 12 }}>
                             <Col span={12}>
-                                <Statistic title="Questions"
-                                           value={getTotalQuestions(guide.structure.groups)}
-                                           valueStyle={{ fontSize: "large" }} />
+                                <div className={styles.cardMetaTitle}>QUESTIONS</div>
+                                <div className={styles.cardMetaValue}>{getTotalQuestions(guide.structure.groups)}</div>
                             </Col>
                             <Col span={12}>
-                                <Statistic title="Interviews"
-                                           value={guide.totalInterviews}
-                                           valueStyle={{ fontSize: "large" }} />
+                                <div className={styles.cardMetaTitle}>INTERVIEWS</div>
+                                <div className={styles.cardMetaValue}>{guide.totalInterviews}</div>
                             </Col>
                         </Row>
+
+                        <Tooltip title="Author">
+                            <Space style={{ marginTop: 12 }}>
+                                <Avatar size={24} src={user ? user.picture : null} />
+                                <span className={styles.author}>{getUserName()}</span>
+                            </Space>
+                        </Tooltip>
                     </div>
                 </Card>
             </List.Item>}
