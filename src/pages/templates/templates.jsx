@@ -29,6 +29,9 @@ import { routeTemplateAdd, routeTemplateDetails } from "../../components/utils/r
 import { useAuth0 } from "../../react-auth0-spa";
 import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
 import confirm from "antd/lib/modal/confirm";
+import { CustomIcon } from "../../components/utils/icons";
+
+const NEW_TEMPLATE = "NEW_TEMPLATE"
 
 const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank, deleteTemplate, addTemplate }) => {
 
@@ -49,6 +52,10 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
         loadQuestionBank();
         // eslint-disable-next-line
     }, []);
+
+    const onAddTemplateClicked = () => {
+        history.push(routeTemplateAdd())
+    }
 
     const getTotalQuestions = (groups) =>
         sumBy(groups, (group) => group.questions ? group.questions.length : 0)
@@ -95,7 +102,7 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
         return category
     }
 
-    function showDeleteConfirm(guide) {
+    const showDeleteConfirm = (guide) => {
         confirm({
             title: `Delete '${guide.title}' Template`,
             icon: <ExclamationCircleOutlined />,
@@ -149,10 +156,8 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
             dataSource={guides}
             loading={loading}
             renderItem={guide => <List.Item>
-                <Card hoverable
-                      bodyStyle={{ padding: 0 }}
-                >
-                    <div className={styles.card} onClick={() => onPreview(guide.guideId)}>
+                <Card hoverable bodyStyle={{ padding: 0, height: 190 }}>
+                    {guide !== NEW_TEMPLATE && <div className={styles.card} onClick={() => onPreview(guide.guideId)}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             {getTemplateCategoryIcon(guide.type)}
                             <div style={{ color: getCategory(guide).color }}
@@ -181,7 +186,20 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
                                 <span className={styles.author}>{getUserName()}</span>
                             </Space>
                         </Tooltip>
-                    </div>
+                    </div>}
+                    {guide === NEW_TEMPLATE && <div className={styles.card} onClick={onAddTemplateClicked}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <CustomIcon style={{ color: '#1F1F1F', fontSize: 18 }} />
+                            <div className={styles.category}>CUSTOM</div>
+                        </div>
+                        <div className={styles.cardTitle}>New Template</div>
+                        <div className={styles.author}>
+                            To keep the interview process structured, create a template for the desired role.
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Button type="link">Add template</Button>
+                        </div>
+                    </div>}
                 </Card>
             </List.Item>}
         />
@@ -201,9 +219,11 @@ const mapDispatch = { loadTemplates, loadQuestionBank, deleteTemplate, addTempla
 const mapState = (state) => {
     const questionBankState = state.questionBank || {};
     const guidesState = state.guides || {};
+    const guides = sortBy(guidesState.guides, ['title']);
+    guides.unshift(NEW_TEMPLATE) // first element is a new template card
 
     return {
-        guides: sortBy(guidesState.guides, ['title']),
+        guides: guides,
         questions: Collection.sortBy(questionBankState.questions, ['question']),
         loading: guidesState.loading || questionBankState.loading
     }
