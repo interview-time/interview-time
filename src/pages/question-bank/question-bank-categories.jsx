@@ -165,7 +165,7 @@ const QuestionBankCategories = ({
                                 </div>
                                 <div className={styles.cardTitle}>New Category</div>
                                 <div className={styles.author}>
-                                    Start with a bank of questions, to make sure you’re asking a consistent set of questions.
+                                    To make sure you’re asking a consistent set of questions, create your own question bank.
                                 </div>
                                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                                     <Button type="link">Add category</Button>
