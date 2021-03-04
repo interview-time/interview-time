@@ -48,8 +48,8 @@ const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryT
                onOk={onCreateClicked}
                onCancel={onCancelClicked}>
             <Form layout="vertical" preserve={false}>
-                <Form.Item label="Name" required validateStatus={error.status} help={error.help}>
-                    <Input defaultValue={category} onChange={onCategoryChange} />
+                <Form.Item label="Name" validateStatus={error.status} help={error.help}>
+                    <Input defaultValue={category} placeholder="Category name" onChange={onCategoryChange} />
                 </Form.Item>
             </Form>
         </Modal>

@@ -45,7 +45,7 @@
 }
 
 .card {
-    padding: 24px
+    padding: 16px
 }
 
 .sticky {
@@ -57,4 +57,35 @@
 
 .multiLineText {
     white-space: pre-wrap;
+}
+
+.cardTitle {
+    font-weight:  600;
+    font-size: 19px;
+    margin-top: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cardMetaTitle {
+    color: #8C8C8C;
+    font-weight:  600;
+    font-size: 11px
+}
+
+.cardMetaValue {
+    font-weight:  600;
+    font-size: 19px
+}
+
+.author {
+    color: #8C8C8C;
+    font-size: 14px;
+}
+
+.category {
+    font-weight: 600;
+    font-size: 11px;
+    margin-left: 4px;
 }

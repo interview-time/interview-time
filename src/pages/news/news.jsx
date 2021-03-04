@@ -9,8 +9,8 @@ import moment from "moment";
 export const updatesData = [
     {
         version: "v0.3.5",
-        date: moment("2021/03/03", "YYYY/MM/DD").valueOf(),
-        description: "New Template cards design",
+        date: moment("2021/03/04", "YYYY/MM/DD").valueOf(),
+        description: "New Template and Question Bank cards design",
     },
     {
         version: "v0.3.4",
