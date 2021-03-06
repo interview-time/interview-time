@@ -47,6 +47,25 @@ namespace CafApi.Controllers
             }).ToList();
         }
 
+        [HttpGet("categories/questions")]
+        public async Task<List<CommunityCategoryQuestionsResponse>> GetCategoriesWithQuestions()
+        {
+            var responses = new List<CommunityCategoryQuestionsResponse>();
+
+            var categories = await _communityService.GetAllCategories();
+
+            foreach (var category in categories)
+            {
+                var response = new CommunityCategoryQuestionsResponse();
+                response.Category = category;
+                response.Questions = await Get(category.CategoryId);
+
+                responses.Add(response);
+            }
+
+            return responses; 
+        }
+
         [HttpGet("{categoryId}")]
         public async Task<IEnumerable<CommunityQuestion>> Get(string categoryId)
         {
