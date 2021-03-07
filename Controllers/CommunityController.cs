@@ -90,6 +90,12 @@ namespace CafApi.Controllers
             await _communityService.DeleteQuestion(categoryId, questionId);
         }
 
+        [HttpPost("question")]
+        public async Task AddQuestion([FromBody] CommunityQuestion question)
+        {
+            await _communityService.AddQuestion(question);
+        }
+
         [HttpPut("question")]
         public async Task UpdateQuestion([FromBody] CommunityQuestion question)
         {
