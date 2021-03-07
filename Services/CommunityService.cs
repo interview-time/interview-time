@@ -43,6 +43,15 @@ namespace CafApi.Services
             return await _context.QueryAsync<CommunityQuestion>(categoryId).GetRemainingAsync();
         }
 
+         public async Task<CommunityQuestion> AddQuestion(CommunityQuestion communityQuestion)
+        {
+            communityQuestion.QuestionId = Guid.NewGuid().ToString();
+
+            await _context.SaveAsync(communityQuestion);
+
+            return communityQuestion;
+        }
+
         public async Task<CommunityQuestion> ContributeQuestion(string userId, string questionBankId, string categoryId)
         {
             var personalQuestion = await _context.LoadAsync<QuestionBank>(userId, questionBankId);

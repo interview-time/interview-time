@@ -20,6 +20,8 @@ namespace CafApi.Services
 
         Task UpdateQuestion(CommunityQuestion question);
 
+        Task<CommunityQuestion> AddQuestion(CommunityQuestion question);
+
         Task DeleteQuestion(string categoryId, string questionId);
     }
 }
