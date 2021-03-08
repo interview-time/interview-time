@@ -36,13 +36,6 @@
     width: 260px;
 }
 
-.tabHeader {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    align-items: center;
-}
-
 .space {
     flex-grow: 1;
 }
@@ -52,12 +45,8 @@
     width: 500px;
 }
 
-.questionLink:hover  {
+.questionLink:hover {
     color: #40a9ff;
-}
-
-.row {
-    cursor: pointer;
 }
 
 .container {
@@ -76,20 +65,29 @@
     border-top: 1px solid #f0f0f0;
     border-radius: 2px;
     margin-top: calc(24px + var(--header-height));
-    margin-bottom: 24px;
+    margin-bottom: 48px;
 }
 
 .card {
     padding: 24px
 }
 
-.sticky {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
 .multiLineText {
     white-space: pre-wrap;
+}
+
+.selectionCard {
+    position: sticky;
+    bottom: 24px;
+}
+
+.selection {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.selectPersonal {
+    min-width: 240px;
 }

@@ -1,6 +1,6 @@
 import styles from "./question-bank-category.module.css";
 import QuestionDetailsModal from "./modal-question-details";
-import { Button, Card, Dropdown, Input, Menu, message, PageHeader, Select, Space, Table, Tag } from "antd";
+import { Button, Dropdown, Input, Menu, message, Select, Space, Table, Tag } from "antd";
 import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
@@ -28,8 +28,6 @@ import { connect } from "react-redux";
 import { routeQuestionBank } from "../../components/utils/route";
 
 const { Search } = Input;
-
-const TABLE_PADDING = 24
 
 const MENU_KEY_IMPORT_CSV = 'csv'
 
@@ -81,8 +79,6 @@ const QuestionBankCategory = ({
     const [textFilter, setTextFilter] = useState()
     const [difficultyFilter, setDifficultyFilter] = useState()
     const [tagFilter, setTagFilter] = useState()
-
-    const questionsTable = React.useRef(null);
 
     const [questionDetailModal, setQuestionDetailModal] = useState({
         question: null,
@@ -221,10 +217,53 @@ const QuestionBankCategory = ({
     }
 
     return (
-        <Layout pageHeader={<PageHeader
-            className={styles.pageHeader}
-            title="Question Bank"
-        />}>
+        <Layout pageHeader={
+            <div className={styles.header}>
+                <div align="center" onClick={onBackToCategoriesClicked}  className={styles.headerTitleContainer}>
+                    <ArrowLeftOutlined />
+                    <span className={styles.headerTitle} style={{marginLeft: 8, marginRight: 8}}>
+                        Personal • {category}
+                    </span>
+                </div>
+                <Space>
+                    <Search placeholder="Search" allowClear
+                            className={styles.tabHeaderSearch}
+                            onSearch={onQuestionSearchClicked}
+                            onChange={onQuestionSearchChanges}
+                    />
+                    <Select
+                        placeholder="Difficulty"
+                        allowClear
+                        onSelect={onDifficultyChange}
+                        onClear={onDifficultyClear}
+                        options={[
+                            { value: Difficulty.EASY },
+                            { value: Difficulty.MEDIUM },
+                            { value: Difficulty.HARD },
+                        ]}
+                        style={{ width: 125 }}
+                    />
+                    <Select
+                        key={selectedCategoryTags}
+                        placeholder="Tag"
+                        allowClear
+                        onSelect={onTagChange}
+                        onClear={onTagClear}
+                        options={selectedCategoryTags}
+                        style={{ width: 125 }}
+                    />
+                </Space>
+                <Space style={{marginRight: 24}}>
+                    <Button type="primary" onClick={() => onAddQuestionClicked()}>Add question</Button>
+                    <Dropdown overlay={
+                        <Menu onClick={(info) => onMenuClicked(info)}>
+                            <Menu.Item key={MENU_KEY_IMPORT_CSV}>Import from CSV</Menu.Item>
+                        </Menu>}>
+                        <Button icon={<MoreOutlined />} />
+                    </Dropdown>
+                </Space>
+            </div>
+        }>
             <div className={styles.container}>
                 <QuestionDetailsModal
                     visible={questionDetailModal.visible}
@@ -239,62 +278,19 @@ const QuestionBankCategory = ({
                     onImport={(questions) => onImportQuestionsClicked(questions)}
                     onCancel={onImportQuestionCancel}
                 />
-                <Card className={styles.sticky}>
-                    <div className={styles.tabHeader}>
-                        <Button type="link" icon={<ArrowLeftOutlined />}
-                                onClick={onBackToCategoriesClicked}>{category}</Button>
-                        <Space>
-                            <Search placeholder="Search" allowClear
-                                    className={styles.tabHeaderSearch}
-                                    onSearch={onQuestionSearchClicked}
-                                    onChange={onQuestionSearchChanges}
-                            />
-                            <Select
-                                placeholder="Difficulty"
-                                allowClear
-                                onSelect={onDifficultyChange}
-                                onClear={onDifficultyClear}
-                                options={[
-                                    { value: Difficulty.EASY },
-                                    { value: Difficulty.MEDIUM },
-                                    { value: Difficulty.HARD },
-                                ]}
-                                style={{ width: 125 }}
-                            />
-                            <Select
-                                key={selectedCategoryTags}
-                                placeholder="Tag"
-                                allowClear
-                                onSelect={onTagChange}
-                                onClear={onTagClear}
-                                options={selectedCategoryTags}
-                                style={{ width: 125 }}
-                            />
-                        </Space>
-                        <Space>
-                            <Button type="primary" onClick={() => onAddQuestionClicked()}>Add question</Button>
-                            <Dropdown overlay={
-                                <Menu onClick={(info) => onMenuClicked(info)}>
-                                    <Menu.Item key={MENU_KEY_IMPORT_CSV}>Import from CSV</Menu.Item>
-                                </Menu>}>
-                                <Button icon={<MoreOutlined />} />
-                            </Dropdown>
-                        </Space>
-                    </div>
-                </Card>
 
-                <div ref={questionsTable} className={styles.table}>
-                    <Card bodyStyle={{ padding: 0 }} style={{ marginTop: TABLE_PADDING }}>
-                        <Table columns={columns}
-                               pagination={false}
-                               loading={loading}
-                               dataSource={selectedQuestions}
-                               rowClassName={styles.row}
-                               onRow={(record) => ({
-                                   onClick: () => onQuestionClicked(record),
-                               })}
-                        />
-                    </Card>
+                <div className={styles.tableContainer}>
+                    <Table
+                        className={styles.table}
+                        columns={columns}
+                        pagination={false}
+                        loading={loading}
+                        dataSource={selectedQuestions}
+                        rowClassName={styles.row}
+                        onRow={(record) => ({
+                            onClick: () => onQuestionClicked(record),
+                        })}
+                    />
                 </div>
             </div>
         </Layout>
