@@ -168,7 +168,7 @@ const QuestionBank = ({
         });
     }
 
-    const getTagsCount = questions => questionsToTags(questions).size;
+    const getTagsCount = questions => questionsToTags(questions).length
 
     const getUserName = () => {
         if (user && user.name) {

@@ -16,7 +16,6 @@ import { cloneDeep } from "lodash/lang";
 import Text from "antd/lib/typography/Text";
 import { addQuestions, loadQuestionBank } from "../../store/question-bank/actions";
 import RequestQuestionModal from "./modal-request-question";
-import Title from "antd/lib/typography/Title";
 
 const { Link } = Typography;
 const { Search } = Input;
