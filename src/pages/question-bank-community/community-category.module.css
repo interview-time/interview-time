@@ -1,5 +1,31 @@
-.pageHeader {
+:root {
+    --header-height: 70px;
+}
+
+.header {
+    z-index: 10;
+    width: calc(100% - 200px); /* side menu width is 200px */
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    border-bottom: 1px solid #f0f0f0;
     background-color: white;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.headerTitleContainer {
+    margin-left: 24px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.headerTitle {
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .categories {
@@ -8,13 +34,6 @@
 
 .tabHeaderSearch {
     width: 260px;
-}
-
-.tabHeader {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    align-items: center;
 }
 
 .space {
@@ -26,7 +45,7 @@
     width: 500px;
 }
 
-.questionLink:hover  {
+.questionLink:hover {
     color: #40a9ff;
 }
 
@@ -45,7 +64,7 @@
     border-right: 1px solid #f0f0f0;
     border-top: 1px solid #f0f0f0;
     border-radius: 2px;
-    margin-top: 24px;
+    margin-top: calc(24px + var(--header-height));
     margin-bottom: 48px;
 }
 
@@ -53,18 +72,11 @@
     padding: 24px
 }
 
-.sticky {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
 .multiLineText {
     white-space: pre-wrap;
 }
 
-.selectionCard  {
+.selectionCard {
     position: sticky;
     bottom: 24px;
 }

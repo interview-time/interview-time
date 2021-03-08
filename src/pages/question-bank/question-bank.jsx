@@ -188,13 +188,6 @@ const QuestionBank = ({
         }}>Delete category</Menu.Item>
     </Menu>;
 
-    const createCommunityMenu = (category) => <Menu>
-        <Menu.Item onClick={e => {
-            e.domEvent.stopPropagation()
-
-        }}>Add to personal</Menu.Item>
-    </Menu>;
-
     const onRequestCategoryClicked = () => {
         setRequestCategoryVisible(true)
     }
@@ -301,9 +294,6 @@ const QuestionBank = ({
                                     <div style={{ color: TemplateCategories[0].color }}
                                          className={styles.category}>{TemplateCategories[0].titleShort}</div>
                                     <div style={{ flexGrow: 1 }} />
-                                    <Dropdown overlay={createCommunityMenu(community)}>
-                                        <EllipsisOutlined style={{ fontSize: 20 }} onClick={e => e.stopPropagation()} />
-                                    </Dropdown>
                                 </div>
                                 <div className={styles.cardTitle}>{community.category.categoryName}</div>
 

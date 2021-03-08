@@ -1,5 +1,5 @@
 import styles from "./community-category.module.css";
-import { Button, Card, Dropdown, Input, Menu, message, PageHeader, Select, Space, Table, Tag, Typography } from "antd";
+import { Button, Card, Dropdown, Input, Menu, message, Select, Space, Table, Tag, Typography } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
@@ -16,6 +16,7 @@ import { cloneDeep } from "lodash/lang";
 import Text from "antd/lib/typography/Text";
 import { addQuestions, loadQuestionBank } from "../../store/question-bank/actions";
 import RequestQuestionModal from "./modal-request-question";
+import Title from "antd/lib/typography/Title";
 
 const { Link } = Typography;
 const { Search } = Input;
@@ -45,8 +46,6 @@ const CommunityCategory = (
     const [tagFilter, setTagFilter] = useState()
 
     const [requestQuestionVisible, setRequestQuestionVisible] = useState(false);
-
-    const questionsTable = React.useRef(null);
 
     const { id } = useParams();
     const history = useHistory();
@@ -234,54 +233,52 @@ const CommunityCategory = (
     ]
 
     return (
-        <Layout pageHeader={<PageHeader
-            className={styles.pageHeader}
-            title="Question Bank - Community"
-        />}>
+        <Layout pageHeader={
+            <div className={styles.header}>
+                <div align="center" onClick={onBackToCategoriesClicked}  className={styles.headerTitleContainer}>
+                    <ArrowLeftOutlined />
+                    <span className={styles.headerTitle} style={{marginLeft: 8, marginRight: 8}}>
+                        Community • {category.categoryName}
+                    </span>
+                </div>
+                <Space>
+                    <Search placeholder="Search" allowClear
+                            className={styles.tabHeaderSearch}
+                            onSearch={onQuestionSearchClicked}
+                            onChange={onQuestionSearchChanges}
+                    />
+                    <Select
+                        placeholder="Difficulty"
+                        allowClear
+                        onSelect={onDifficultyChange}
+                        onClear={onDifficultyClear}
+                        options={[
+                            { value: Difficulty.EASY },
+                            { value: Difficulty.MEDIUM },
+                            { value: Difficulty.HARD },
+                        ]}
+                        style={{ width: 125 }}
+                    />
+                    <Select
+                        key={categoryTags}
+                        placeholder="Tag"
+                        allowClear
+                        onSelect={onTagChange}
+                        onClear={onTagClear}
+                        options={categoryTags}
+                        style={{ width: 125 }}
+                    />
+                </Space>
+                <Button onClick={onRequestQuestionClicked} style={{marginRight: 24}}>Suggest question</Button>
+            </div>
+        }>
             <RequestQuestionModal
                 visible={requestQuestionVisible}
                 onCancel={onRequestQuestionClose}
             />
             <div className={styles.container}>
-                <Card className={styles.sticky}>
-                    <div className={styles.tabHeader}>
-                        <Button type="link" icon={<ArrowLeftOutlined />}
-                                onClick={onBackToCategoriesClicked}>{category.categoryName}</Button>
-                        <Space>
-                            <Search placeholder="Search" allowClear
-                                    className={styles.tabHeaderSearch}
-                                    onSearch={onQuestionSearchClicked}
-                                    onChange={onQuestionSearchChanges}
-                            />
-                            <Select
-                                placeholder="Difficulty"
-                                allowClear
-                                onSelect={onDifficultyChange}
-                                onClear={onDifficultyClear}
-                                options={[
-                                    { value: Difficulty.EASY },
-                                    { value: Difficulty.MEDIUM },
-                                    { value: Difficulty.HARD },
-                                ]}
-                                style={{ width: 125 }}
-                            />
-                            <Select
-                                key={categoryTags}
-                                placeholder="Tag"
-                                allowClear
-                                onSelect={onTagChange}
-                                onClear={onTagClear}
-                                options={categoryTags}
-                                style={{ width: 125 }}
-                            />
-                        </Space>
-                        <Space>
-                            <Button onClick={onRequestQuestionClicked}>Suggest question</Button>
-                        </Space>
-                    </div>
-                </Card>
 
-                <div ref={questionsTable} className={styles.tableContainer}>
+                <div className={styles.tableContainer}>
                     <Table
                         className={styles.table}
                         columns={columns}
