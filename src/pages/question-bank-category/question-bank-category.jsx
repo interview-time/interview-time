@@ -223,7 +223,7 @@ const QuestionBankCategory = ({
     return (
         <Layout pageHeader={<PageHeader
             className={styles.pageHeader}
-            title="Question Bank"
+            title="Question Bank - Personal"
         />}>
             <div className={styles.container}>
                 <QuestionDetailsModal
@@ -283,18 +283,19 @@ const QuestionBankCategory = ({
                     </div>
                 </Card>
 
-                <div ref={questionsTable} className={styles.table}>
-                    <Card bodyStyle={{ padding: 0 }} style={{ marginTop: TABLE_PADDING }}>
-                        <Table columns={columns}
-                               pagination={false}
-                               loading={loading}
-                               dataSource={selectedQuestions}
-                               rowClassName={styles.row}
-                               onRow={(record) => ({
-                                   onClick: () => onQuestionClicked(record),
-                               })}
-                        />
-                    </Card>
+                <div ref={questionsTable} className={styles.tableContainer}>
+                    <Table
+                        style={{ marginTop: TABLE_PADDING }}
+                        className={styles.table}
+                        columns={columns}
+                        pagination={false}
+                        loading={loading}
+                        dataSource={selectedQuestions}
+                        rowClassName={styles.row}
+                        onRow={(record) => ({
+                            onClick: () => onQuestionClicked(record),
+                        })}
+                    />
                 </div>
             </div>
         </Layout>

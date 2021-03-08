@@ -79,6 +79,12 @@
     font-size: 19px
 }
 
+.cardActionButton {
+    position: absolute;
+    right: 8px;
+    bottom: 16px;
+}
+
 .author {
     color: #8C8C8C;
     font-size: 14px;
@@ -88,4 +94,14 @@
     font-weight: 600;
     font-size: 11px;
     margin-left: 4px;
+}
+
+.personal {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.community {
+    font-weight: 600;
+    font-size: 15px;
 }

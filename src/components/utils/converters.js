@@ -46,3 +46,18 @@ export function questionIdsToQuestions(questionIds, questions) {
 export function questionsToQuestionIds(questions) {
     return questions.map(question => question.questionId)
 }
+
+/**
+ *
+ * @param {[*]} questions
+ * @returns {[String]}
+ */
+export function questionsToTags(questions) {
+    let tags = new Set()
+    questions.forEach(item => {
+        if (item.tags) {
+            item.tags.forEach(tag => tags.add(tag))
+        }
+    })
+    return [...tags]
+}
