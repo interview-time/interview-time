@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { Button, Divider, Dropdown, Menu, message, Modal, PageHeader, Space, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview.module.css";
-import { connect} from "react-redux";
+import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import InterviewDetailsCard from "./interview-details-card";
 import { Status } from "../../components/utils/constants";
@@ -32,6 +32,7 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
 
     const [interview, setInterview] = useState(emptyInterview);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
+    const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
 
     const { id } = useParams();
 
@@ -39,7 +40,7 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
 
     React.useEffect(() => {
         // initial data loading
-        if (!interview.interviewId) {
+        if (!interview.interviewId && interviews.length > 0) {
             setInterview(cloneDeep(findInterview(id, interviews)))
         }
         // eslint-disable-next-line
@@ -47,8 +48,25 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
 
     React.useEffect(() => {
         loadInterviews();
+
+        return () => {
+            onInterviewChangeDebounce.cancel();
+        }
         // eslint-disable-next-line
     }, []);
+
+    // eslint-disable-next-line
+    const onInterviewChangeDebounce = React.useCallback(debounce(function (interview) {
+        updateInterview(interview)
+        setUnsavedChanges(false)
+    }, DATA_CHANGE_DEBOUNCE, { 'maxWait': DATA_CHANGE_DEBOUNCE_MAX }), [])
+
+    React.useEffect(() => {
+        if (interviewChangedCounter > 0) {
+            onInterviewChangeDebounce(interview)
+        }
+        // eslint-disable-next-line
+    }, [interviewChangedCounter])
 
     const isNewStatus = () => interview.status === Status.NEW || interview.status === Status.STARTED
 
@@ -56,13 +74,8 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
 
     const onInterviewChange = () => {
         setUnsavedChanges(true)
-        onInterviewChangeDebounce()
+        setInterviewChangedCounter(interviewChangedCounter + 1)
     }
-
-    let onInterviewChangeDebounce = debounce(function () {
-        updateInterview(interview)
-        setUnsavedChanges(false)
-    }, DATA_CHANGE_DEBOUNCE, { 'maxWait': DATA_CHANGE_DEBOUNCE_MAX })
 
     const onDeleteClicked = () => {
         Modal.confirm({
