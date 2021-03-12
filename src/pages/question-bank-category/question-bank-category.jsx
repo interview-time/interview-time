@@ -15,7 +15,7 @@ import {
 import { flatten, sortedUniq } from "lodash/array";
 import ImportQuestionsModal from "./modal-import-questions";
 import Layout from "../../components/layout/layout";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, withRouter } from "react-router-dom";
 import collection from "lodash/collection";
 import {
     addQuestion,
@@ -38,7 +38,8 @@ const QuestionBankCategory = ({
                                   updateQuestion,
                                   addQuestion,
                                   addQuestions,
-                                  deleteQuestion
+                                  deleteQuestion,
+                                  match
                               }) => {
 
     const columns = [
@@ -86,8 +87,8 @@ const QuestionBankCategory = ({
     });
 
     const [importModalVisible, setImportModalVisible] = useState(false);
-
-    const { category } = useParams();
+    
+    const category = decodeURIComponent(match.params.category);
 
     const history = useHistory();
 
@@ -314,4 +315,4 @@ const mapDispatch = {
     deleteQuestion,
 }
 
-export default connect(mapStateToProps, mapDispatch)(QuestionBankCategory)
+export default withRouter(connect(mapStateToProps, mapDispatch)(QuestionBankCategory))
