@@ -16,7 +16,7 @@ export const routeTemplateDetails = (id) => `/templates/details/${id}`
 
 export const routeQuestionBank = () => "/question-bank"
 
-export const routeQuestionBankCategory = (category) => `/question-bank/${category}`
+export const routeQuestionBankCategory = (category) => `/question-bank/${encodeURIComponent(category)}`
 
 export const routeCommunityCategory = (id) => `/question-bank/community/${id}`
 
