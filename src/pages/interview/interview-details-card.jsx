@@ -17,7 +17,15 @@ import Title from "antd/lib/typography/Title";
 
 const { TextArea } = Input;
 
-const InterviewDetailsCard = ({ interview, disabled, paddingTopContent, paddingTopAnchor, onInterviewChange }) => {
+const PADDING_TOP_ANCHOR = 72 + 24 /* header height + padding */
+const ANCHOR_WIDTH = 148
+
+const InterviewDetailsCard = ({
+                                  interview,
+                                  disabled,
+                                  onInterviewChange,
+                                  hideAnchor
+                              }) => {
 
     const onAssessmentChanged = e => {
         interview.decision = e.target.value
@@ -74,7 +82,7 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTopContent, paddingT
 
     return <div key={interview.interviewId} className={styles.rootContainer}>
 
-        <div className={styles.sticky} style={{ paddingTop: paddingTopAnchor ? paddingTopAnchor : 0 }}>
+        {!hideAnchor && <div className={styles.sticky} style={{ paddingTop: PADDING_TOP_ANCHOR }}>
             <Anchor affix={false}>
                 <Anchor.Link href="#intro" title="Intro" />
                 {getGroups().map(group => {
@@ -82,9 +90,9 @@ const InterviewDetailsCard = ({ interview, disabled, paddingTopContent, paddingT
                 })}
                 <Anchor.Link href="#summary" title="Summary" />
             </Anchor>
-        </div>
+        </div>}
 
-        <div style={{ paddingTop: paddingTopContent ? paddingTopContent : 0, paddingRight: 148 }}>
+        <div style={{ paddingTop: hideAnchor ? 0 : PADDING_TOP_ANCHOR, paddingRight: hideAnchor ? 0 : ANCHOR_WIDTH }}>
 
             {interview.interviewId && <div>
                 {interview.status !== Status.COMPLETED && <Alert

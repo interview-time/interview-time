@@ -8,11 +8,10 @@ import {
     Button,
     Card,
     Col,
-    Drawer,
     Dropdown,
     List,
     Menu,
-    message,
+    message, Modal,
     PageHeader,
     Row,
     Space,
@@ -203,16 +202,16 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
                 </Card>
             </List.Item>}
         />
-        <Drawer
+        <Modal
             title="Interview Experience"
-            width="90%"
-            closable={true}
+            width="80%"
+            style={{ top: '5%' }}
             destroyOnClose={true}
-            onClose={onPreviewClosed}
-            placement='right'
+            footer={null}
+            onCancel={onPreviewClosed}
             visible={previewVisible}>
             <TemplateInterviewDetailsCard guide={guide} questions={questions} />
-        </Drawer>
+        </Modal>
     </Layout>
 }
 const mapDispatch = { loadTemplates, loadQuestionBank, deleteTemplate, addTemplate };
