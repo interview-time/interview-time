@@ -91,7 +91,11 @@ namespace caf_api
                 });
             }
 
-            app.UseHttpsRedirection();
+            if (env.IsStaging() || env.IsProduction())
+            {
+                app.UseHttpsRedirection();
+            }
+            
             app.UseRouting();
 
             app.UseCors();
