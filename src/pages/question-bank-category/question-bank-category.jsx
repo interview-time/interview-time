@@ -15,7 +15,7 @@ import {
 import { flatten, sortedUniq } from "lodash/array";
 import ImportQuestionsModal from "./modal-import-questions";
 import Layout from "../../components/layout/layout";
-import { useHistory, useParams, withRouter } from "react-router-dom";
+import { useHistory, withRouter } from "react-router-dom";
 import collection from "lodash/collection";
 import {
     addQuestion,
@@ -302,7 +302,7 @@ const mapStateToProps = state => {
     const { questions, loading } = state.questionBank || {};
 
     return {
-        questions: collection.sortBy(questions, ['question']),
+        questions: collection.orderBy(questions, ['createdDate'], ['desc']),
         loading
     };
 };
