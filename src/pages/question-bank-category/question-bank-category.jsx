@@ -302,7 +302,7 @@ const mapStateToProps = state => {
     const { questions, loading } = state.questionBank || {};
 
     return {
-        questions: collection.sortBy(questions, ['question']),
+        questions: collection.orderBy(questions, ['createdDate'], ['desc']),
         loading
     };
 };
