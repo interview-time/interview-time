@@ -35,7 +35,7 @@ namespace CafApi.Services
         public async Task DeleteQuestionBank(IEnumerable<QuestionBank> questions)
         {
             var batch = _context.CreateBatchWrite<QuestionBank>();
-            
+
             batch.AddDeleteItems(questions);
 
             await batch.ExecuteAsync();
@@ -44,7 +44,7 @@ namespace CafApi.Services
         public async Task UpdateQuestionBank(IEnumerable<QuestionBank> questions)
         {
             var batch = _context.CreateBatchWrite<QuestionBank>();
-            
+
             batch.AddPutItems(questions);
 
             await batch.ExecuteAsync();
@@ -53,6 +53,7 @@ namespace CafApi.Services
         public async Task<QuestionBank> AddQuestion(QuestionBank questionBank)
         {
             questionBank.QuestionId = Guid.NewGuid().ToString();
+            questionBank.CreatedDate = DateTime.UtcNow;
 
             await _context.SaveAsync(questionBank);
 
@@ -66,7 +67,7 @@ namespace CafApi.Services
             }
 
             var batch = _context.CreateBatchWrite<QuestionBank>();
-            
+
             batch.AddPutItems(questions);
 
             await batch.ExecuteAsync();

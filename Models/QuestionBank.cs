@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 
@@ -23,5 +24,7 @@ namespace CafApi.Models
         public List<string> Tags { get; set; }
 
         public int Time { get; set; }
+
+        public DateTime CreatedDate { get; set; }
     }
 }
