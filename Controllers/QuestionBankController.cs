@@ -43,7 +43,7 @@ namespace CafApi.Controllers
             return new QuestionBankResponse
             {
                 Categories = questions.GroupBy(q => q.Category).Select(q => q.Key).ToList(),
-                Questions = questions.OrderByDescending(q => q.CreatedDate).ToList()
+                Questions = questions
             };
         }
 
