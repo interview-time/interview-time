@@ -1,6 +1,6 @@
 import styles from "./interview-wizard.module.css";
 import Layout from "../../components/layout/layout";
-import { Drawer, message, Modal, PageHeader, Spin, Steps } from "antd";
+import { message, Modal, PageHeader, Spin, Steps } from "antd";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Collection from "lodash/collection";
@@ -254,22 +254,23 @@ const InterviewWizard = (
                 <InterviewDetailsCard interview={interview} hideAnchor={true} />
             </Modal>
 
-            <Drawer
-                title="Add Questions"
+            <Modal
                 width="90%"
-                closable={true}
-                destroyOnClose={true}
-                onClose={onQuestionsClosed}
-                placement='right'
+                style={{ top: 24 }}
                 bodyStyle={{ padding: 0 }}
+                destroyOnClose={true}
+                closable={false}
+                footer={null}
+                onCancel={onQuestionsClosed}
                 visible={questionsVisible}>
                 <TemplateQuestions
                     interview={interview}
                     selectedGroup={selectedGroup}
                     questions={questions}
                     categories={categories}
+                    onDoneClicked={onQuestionsClosed}
                 />
-            </Drawer>
+            </Modal>
 
             <CreateTemplateModal
                 visible={createGuideVisible}

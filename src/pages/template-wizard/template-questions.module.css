@@ -36,9 +36,7 @@
 
 .removeIcon {
     cursor: pointer;
-    padding-left: 16px;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    width: 32px;
 }
 
 .row {
@@ -60,11 +58,15 @@
 }
 
 .cardContainerCompetenceArea {
-    padding: var(--table-padding-vertical) 12px var(--table-padding-vertical) 24px;
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    margin: var(--table-padding-vertical) 12px var(--table-padding-vertical) 24px;
 }
 
 .cardContainerQuestionBank {
-    padding: var(--table-padding-vertical) 24px var(--table-padding-vertical) 12px;
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    margin: var(--table-padding-vertical) 24px var(--table-padding-vertical) 12px;
 }
 
 .table {

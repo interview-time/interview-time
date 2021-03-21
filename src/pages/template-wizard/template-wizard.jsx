@@ -1,7 +1,7 @@
 import styles from "./template-wizard.module.css";
 import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
-import { Drawer, message, Modal, PageHeader, Spin, Steps } from "antd";
+import { message, Modal, PageHeader, Spin, Steps } from "antd";
 import TemplateWizardIntro from "./template-wizard-intro";
 import TemplateWizardSummary from "./template-wizard-summary";
 import TemplateWizardDetails from "./template-wizard-details";
@@ -234,22 +234,23 @@ const TemplateWizard = (
                 <TemplateInterviewDetailsCard guide={guide} />
             </Modal>
 
-            <Drawer
-                title="Add Questions"
+            <Modal
                 width="90%"
-                closable={true}
+                style={{ top: 24 }}
+                bodyStyle={{ padding: 0}}
                 destroyOnClose={true}
-                onClose={onQuestionsClosed}
-                placement='right'
-                bodyStyle={{ padding: 0 }}
+                closable={false}
+                footer={null}
+                onCancel={onQuestionsClosed}
                 visible={questionsVisible}>
                 <TemplateQuestions
                     guide={guide}
                     selectedGroup={selectedGroup}
                     questions={questions}
                     categories={categories}
+                    onDoneClicked={onQuestionsClosed}
                 />
-            </Drawer>
+            </Modal>
         </Spin>
 
     </Layout>

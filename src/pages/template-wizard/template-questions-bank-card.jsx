@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import styles from "./template-questions.module.css";
-import { Card, Divider, Select, Space, Table, Tag } from 'antd';
+import { Divider, Select, Space, Table} from 'antd';
 import Text from "antd/lib/typography/Text";
 import { PlusCircleTwoTone } from "@ant-design/icons";
-import { Difficulty, getDifficultyColor } from "../../components/utils/constants";
+import { Difficulty} from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import { flatten, sortedUniq } from "lodash/array";
 import { filterQuestionCategory, filterQuestionDifficulty, filterQuestionTag } from "../../components/utils/filters";
+import { localeCompare, localeCompareDifficult } from "../../components/utils/comparators";
 
 const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAddQuestionClicked }) => {
 
@@ -73,27 +74,29 @@ const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAd
     const columns = [
         {
             title: 'Question',
+            key: 'question',
             dataIndex: 'question',
-            render: (text, question) => <div className={styles.questionWrapper}>
-                <div className={styles.questionBody}>
-                    <Space direction="vertical">
-                        <Text className={styles.multiLineText}>{question.question}</Text>
-                        <div>
-                            <Tag key={question.difficulty} color={getDifficultyColor(question.difficulty)}>
-                                {question.difficulty}
-                            </Tag>
-                            {defaultTo(question.tags, []).map(tag => <Tag key={tag}>{tag.toLowerCase()}</Tag>)}
-                        </div>
-                    </Space>
-                </div>
-                <PlusCircleTwoTone className={styles.addIcon} />
-            </div>
+            fixed: 'left',
+            sortDirections: ['descend', 'ascend'],
+            className: styles.multiLineText,
+            sorter: (a, b) => localeCompare(a.question, b.question),
+        },
+        {
+            title: 'Difficulty',
+            key: 'difficulty',
+            dataIndex: 'difficulty',
+            width: 125,
+            sorter: (a, b) => localeCompareDifficult(a.difficulty, b.difficulty),
+        },
+        {
+            key: 'action',
+            width: 24,
+            render: () => <PlusCircleTwoTone />
         }
     ];
 
     return (
         <div className={styles.cardContainerQuestionBank}>
-            <Card bodyStyle={{ padding: 0 }}>
                 <div className={styles.cardHeaderSticky}>
                     <Space direction="vertical" size={4}>
                         <Text strong>Question Bank</Text> <Text>{selectedCategoryQuestions.length} questions</Text>
@@ -139,7 +142,6 @@ const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAd
                     <Table
                         rowKey="index"
                         pagination={false}
-                        showHeader={false}
                         dataSource={selectedCategoryQuestions}
                         columns={columns}
                         rowClassName={styles.row}
@@ -148,7 +150,6 @@ const TemplateQuestionsBankCard = ({ questions, categories, groupQuestions, onAd
                         })}
                     />
                 </div>
-            </Card>
         </div>
     );
 }
