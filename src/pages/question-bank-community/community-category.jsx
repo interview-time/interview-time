@@ -16,6 +16,7 @@ import { cloneDeep } from "lodash/lang";
 import Text from "antd/lib/typography/Text";
 import { addQuestions, loadQuestionBank } from "../../store/question-bank/actions";
 import RequestQuestionModal from "./modal-request-question";
+import collection from "lodash/collection";
 
 const { Link } = Typography;
 const { Search } = Input;
@@ -65,7 +66,10 @@ const CommunityCategory = (
         if (community) {
             setCategory(community.category)
 
-            let questions = cloneDeep(community.questions)
+            let questions = collection.orderBy(
+                cloneDeep(community.questions),
+                ['createdDate'], ['desc']
+            )
             questions.forEach(question => {
                 question.key = question.questionId
             })
