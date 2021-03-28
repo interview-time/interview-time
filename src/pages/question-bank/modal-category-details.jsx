@@ -1,5 +1,6 @@
 import { Form, Input, Modal } from "antd";
 import React, { useState } from "react";
+import { personalEvent } from "../../analytics";
 
 const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryToUpdate }) => {
     const noError = {
@@ -29,6 +30,7 @@ const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryT
         } else if (categoryToUpdate) {
             onUpdate(categoryToUpdate, category)
         } else {
+            personalEvent('New Category Created');
             onCreate(category)
         }
     }

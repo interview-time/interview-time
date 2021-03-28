@@ -7,6 +7,7 @@ import { questionsToQuestionIds } from "../../components/utils/converters";
 import { addTemplate } from "../../store/templates/actions";
 import { difference, head } from "lodash/array";
 import { TemplateCategories } from "../../components/utils/constants";
+import { personalEvent } from "../../analytics";
 
 const categories = TemplateCategories.map(category => ({
     value: category.key,
@@ -85,6 +86,8 @@ const CreateTemplateModal = ({ visible, interview, guides, guidesLoading, onClos
                 group.questions = questionsToQuestionIds(group.questions)
             })
             guide.structure = structure
+
+            personalEvent('Template created');
             dispatch(addTemplate(guide))
         }
     }

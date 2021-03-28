@@ -19,6 +19,7 @@ import CreateTemplateModal from "./create-template-modal";
 import { routeInterviews } from "../../components/utils/route";
 import { connect } from "react-redux";
 import { findInterview } from "../../components/utils/converters";
+import { personalEvent } from "../../analytics";
 
 const { Step } = Steps;
 
@@ -182,6 +183,7 @@ const InterviewWizard = (
 
     const saveInterview = () => {
         if (isNewInterviewFlow()) {
+            personalEvent('Interview created');
             addInterview(interview);
             message.success(`Interview '${interview.candidate}' created.`);
         } else {
