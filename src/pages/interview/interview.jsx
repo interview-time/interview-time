@@ -12,6 +12,7 @@ import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
 import { routeInterviewDetails, routeInterviews } from "../../components/utils/route";
 import { findInterview } from "../../components/utils/converters";
+import { personalEvent } from "../../analytics";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000 // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
@@ -105,6 +106,8 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
                     updateInterview(updatedInterview);
                     history.push(routeInterviews());
                     message.success(`Interview '${interview.candidate}' marked as complete.`);
+                    
+                    personalEvent('Interview completed');
                 }
             })
         }

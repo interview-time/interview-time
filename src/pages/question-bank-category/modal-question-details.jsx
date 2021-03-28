@@ -6,6 +6,7 @@ import { Difficulty, getDifficultyColor } from "../../components/utils/constants
 import { defaultTo } from "lodash/util";
 import TagsRadioGroup from "../../components/questions/tags-radio-group";
 import Modal from "antd/lib/modal/Modal";
+import { personalEvent } from "../../analytics";
 
 const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionToUpdate, tags }) => {
 
@@ -77,6 +78,7 @@ const QuestionDetailsModal = ({ visible, onCreate, onRemove, onCancel, questionT
                 help: 'Question field is required.',
             })
         } else {
+            personalEvent('Question added');
             onCreate(question)
         }
     }

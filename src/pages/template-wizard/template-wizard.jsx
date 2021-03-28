@@ -16,6 +16,7 @@ import Collection from "lodash/collection";
 import { findGuide, questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
 import { routeTemplates } from "../../components/utils/route";
 import { connect } from "react-redux";
+import { personalEvent } from "../../analytics";
 
 const { Step } = Steps;
 
@@ -105,6 +106,8 @@ const TemplateWizard = (
 
     const onSave = () => {
         if (isNewGuideFlow()) {
+            
+            personalEvent('Template created');
             addTemplate(guide);
             message.success(`Template '${guide.title}' created.`);
         } else {
