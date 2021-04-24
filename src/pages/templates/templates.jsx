@@ -3,20 +3,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
-import {
-    Avatar,
-    Button,
-    Card,
-    Col,
-    Dropdown,
-    List,
-    Menu,
-    message, Modal,
-    PageHeader,
-    Row,
-    Space,
-    Tooltip
-} from "antd";
+import { Avatar, Button, Card, Col, Dropdown, List, Menu, message, Modal, Row, Space, Tooltip } from "antd";
 import { Link, useHistory } from "react-router-dom";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Collection, { sortBy } from "lodash/collection";
@@ -130,26 +117,25 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
         }}>Delete template</Menu.Item>
     </Menu>;
 
-    return <Layout pageHeader={<PageHeader
-        className={styles.pageHeader}
-        title="Interview Templates"
-        extra={[
+    return <Layout pageHeader={
+        <div className={styles.header}>
+            <span className={styles.headerTitle}>Interview Templates</span>
             <Button type="primary">
                 <Link to={routeTemplateAdd()}>
                     <span className="nav-text">Add template</span>
                 </Link>
-            </Button>,
-        ]}
-    >
-    </PageHeader>}>
+            </Button>
+        </div>
+    }>
         <List
+            style={{marginTop: 24}}
             grid={{
                 gutter: 16,
                 xs: 1,
-                sm: 2,
-                md: 3,
-                lg: 4,
-                xl: 5,
+                sm: 1,
+                md: 2,
+                lg: 3,
+                xl: 4,
                 xxl: 5,
             }}
             dataSource={guides}

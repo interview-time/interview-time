@@ -4,7 +4,7 @@ import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import styles from "../interviews/interviews.module.css";
-import { Badge, Button, Card, Input, PageHeader, Table, Tag } from 'antd';
+import { Badge, Button, Card, Input, PageHeader, Space, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
@@ -113,21 +113,21 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
     };
 
     return (
-        <Layout pageHeader={<PageHeader
-            className={styles.pageHeader}
-            title="Interviews"
-            extra={[
-                <Search placeholder="Search" key="search" style={{ width: 400 }} allowClear enterButton
-                        onSearch={onSearchClicked} onChange={onSearchTextChanged} />,
-                <Button type="primary" key="add-interview-button">
-                    <Link to={routeInterviewAdd()}>
-                        <span className="nav-text">Add interview</span>
-                    </Link>
-                </Button>,
-            ]}
-        >
-        </PageHeader>}>
-            <Card bodyStyle={{ padding: 0 }}>
+        <Layout pageHeader={
+            <div className={styles.header}>
+                <span className={styles.headerTitle}>Question Bank</span>
+                <Space>
+                    <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear enterButton
+                            onSearch={onSearchClicked} onChange={onSearchTextChanged} />
+                    <Button type="primary" key="add-interview-button">
+                        <Link to={routeInterviewAdd()}>
+                            <span className="nav-text">Add interview</span>
+                        </Link>
+                    </Button>
+                </Space>
+            </div>
+        }>
+            <Card bodyStyle={{ padding: 0 }} style={{marginTop: 24}}>
                 <Table
                     pagination={false}
                     columns={columns}

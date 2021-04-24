@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addCategory, deleteCategory, loadQuestionBank, updateCategory } from "../../store/question-bank/actions";
-import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, message, PageHeader, Row, Space, Tooltip } from 'antd';
+import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, message, Row, Space, Tooltip } from 'antd';
 import styles from "./question-bank.module.css";
 import CategoryDetailsModal from "./modal-category-details";
 import collection from "lodash/collection";
@@ -27,10 +27,10 @@ const INTERVIEWER_SPACE_AVATAR = process.env.PUBLIC_URL + '/logo192.png'
 const grid = {
     gutter: 16,
     xs: 1,
-    sm: 2,
-    md: 3,
-    lg: 4,
-    xl: 5,
+    sm: 1,
+    md: 2,
+    lg: 3,
+    xl: 4,
     xxl: 5,
 };
 
@@ -197,16 +197,15 @@ const QuestionBank = ({
     }
 
     return (
-        <Layout pageHeader={<PageHeader
-            className={styles.pageHeader}
-            title="Question Bank"
-            extra={[
+        <Layout pageHeader={
+            <div className={styles.header}>
+                <span className={styles.headerTitle}>Question Bank</span>
                 <Search placeholder="Search" allowClear enterButton className={styles.tabHeaderSearch}
                         onSearch={onSearchClicked}
                         onChange={onSearchChanges}
                 />
-            ]}
-        />}>
+            </div>
+        }>
             <CategoryDetailsModal
                 visible={categoryDetailsModal.visible}
                 categoryToUpdate={categoryDetailsModal.category}
@@ -218,7 +217,7 @@ const QuestionBank = ({
                 visible={requestCategoryVisible}
                 onCancel={onRequestCategoryClose}
             />
-            <div>
+            <div style={{marginTop: 24}}>
                 <span className={styles.personal}>Personal</span>
                 <List
                     className={styles.categories}

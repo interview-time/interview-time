@@ -1,6 +1,21 @@
-.pageHeader {
-    background-color: white;
-    text-align: center;
+.header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    min-height: 64px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.headerTitle {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.headerSearch {
+    width: 260px;
 }
 
 .row {
