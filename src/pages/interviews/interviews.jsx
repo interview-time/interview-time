@@ -115,9 +115,9 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
     return (
         <Layout pageHeader={
             <div className={styles.header}>
-                <span className={styles.headerTitle}>Question Bank</span>
+                <span className={styles.headerTitle}>Interviews</span>
                 <Space>
-                    <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear enterButton
+                    <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear
                             onSearch={onSearchClicked} onChange={onSearchTextChanged} />
                     <Button type="primary" key="add-interview-button">
                         <Link to={routeInterviewAdd()}>

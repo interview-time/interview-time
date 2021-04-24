@@ -119,7 +119,7 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
 
     return <Layout pageHeader={
         <div className={styles.header}>
-            <span className={styles.headerTitle}>Interview Templates</span>
+            <span className={styles.headerTitle}>My Interview Templates</span>
             <Button type="primary">
                 <Link to={routeTemplateAdd()}>
                     <span className="nav-text">Add template</span>

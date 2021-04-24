@@ -223,7 +223,7 @@ const QuestionBankCategory = ({
                 <div align="center" onClick={onBackToCategoriesClicked}  className={styles.headerTitleContainer}>
                     <ArrowLeftOutlined />
                     <span className={styles.headerTitle} style={{marginLeft: 8, marginRight: 8}}>
-                        Personal • {category}
+                        {category}
                     </span>
                 </div>
                 <Space>

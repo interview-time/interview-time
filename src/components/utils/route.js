@@ -16,8 +16,10 @@ export const routeTemplateDetails = (id) => `/templates/details/${id}`
 
 export const routeQuestionBank = () => "/question-bank"
 
+export const routeLibrary = () => "/library"
+
 export const routeQuestionBankCategory = (category) => `/question-bank/${encodeURIComponent(category)}`
 
-export const routeCommunityCategory = (id) => `/question-bank/community/${id}`
+export const routeLibraryCategory = (id) => `/library/${id}`
 
 export const routeAccount = () => "/account"
