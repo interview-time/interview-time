@@ -1,4 +1,4 @@
-import styles from "./community-category.module.css";
+import styles from "./library-category.module.css";
 import { Button, Card, Dropdown, Input, Menu, message, Select, Space, Table, Tag, Typography } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
@@ -9,7 +9,7 @@ import { filterQuestionDifficulty, filterQuestionTag, filterQuestionText } from 
 import Layout from "../../components/layout/layout";
 import { useHistory, useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { routeQuestionBank } from "../../components/utils/route";
+import { routeLibrary} from "../../components/utils/route";
 import { loadCommunityCategories } from "../../store/community-questions/actions";
 import { questionsToTags } from "../../components/utils/converters";
 import { cloneDeep } from "lodash/lang";
@@ -21,7 +21,7 @@ import collection from "lodash/collection";
 const { Link } = Typography;
 const { Search } = Input;
 
-const CommunityCategory = (
+const LibraryCategory = (
     {
         personalCategories,
         personalCategoriesLoading,
@@ -172,7 +172,7 @@ const CommunityCategory = (
     }
 
     const onBackToCategoriesClicked = () => {
-        history.push(routeQuestionBank())
+        history.push(routeLibrary())
     }
 
     const onPersonalCategoryChange = value => {
@@ -241,7 +241,7 @@ const CommunityCategory = (
                 <div align="center" onClick={onBackToCategoriesClicked}  className={styles.headerTitleContainer}>
                     <ArrowLeftOutlined />
                     <span className={styles.headerTitle} style={{marginLeft: 8, marginRight: 8}}>
-                        Community • {category.categoryName}
+                        {category.categoryName}
                     </span>
                 </div>
                 <Space>
@@ -337,4 +337,4 @@ const mapDispatch = {
     addQuestions,
 }
 
-export default connect(mapStateToProps, mapDispatch)(CommunityCategory)
+export default connect(mapStateToProps, mapDispatch)(LibraryCategory)

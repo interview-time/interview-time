@@ -1,5 +1,17 @@
-.pageHeader {
-    background-color: white;
+.header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    min-height: 64px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.headerTitle {
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .categories {
@@ -45,7 +57,11 @@
 }
 
 .card {
-    padding: 16px
+    padding: 16px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .sticky {
@@ -59,10 +75,15 @@
     white-space: pre-wrap;
 }
 
+.cardContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .cardTitle {
-    font-weight:  600;
-    font-size: 19px;
-    margin-top: 12px;
+    font-weight: 700;
+    font-size: 18px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -71,12 +92,7 @@
 .cardMetaTitle {
     color: #8C8C8C;
     font-weight:  600;
-    font-size: 11px
-}
-
-.cardMetaValue {
-    font-weight:  600;
-    font-size: 19px
+    font-size: 11px;
 }
 
 .cardActionButton {
@@ -85,14 +101,9 @@
     bottom: 16px;
 }
 
-.author {
-    color: #8C8C8C;
-    font-size: 14px;
-}
-
 .category {
     font-weight: 600;
-    font-size: 11px;
+    font-size: 12px;
     margin-left: 4px;
 }
 
@@ -104,4 +115,8 @@
 .community {
     font-weight: 600;
     font-size: 15px;
+}
+
+.infoAlert {
+    font-size: 16px;
 }

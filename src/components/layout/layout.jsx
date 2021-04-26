@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Badge, Drawer, Layout as AntLayout, Menu, Progress } from "antd";
 import styles from "./layout.module.css";
 import {
+    CommunityIcon,
     FakeIcon, FeedbackIcon,
     GuideIcon,
     InterviewIcon,
@@ -13,6 +14,7 @@ import {
 import {
     routeAccount,
     routeInterviews,
+    routeLibrary,
     routeNews,
     routeQuestionBank,
     routeTemplates
@@ -59,6 +61,8 @@ const Layout = ({ children, pageHeader }) => {
             return routeAccount()
         } else if (location.pathname.includes(routeNews())) {
             return routeNews()
+        } else if (location.pathname.includes(routeLibrary())) {
+            return routeLibrary()
         }
     }
 
@@ -111,14 +115,20 @@ const Layout = ({ children, pageHeader }) => {
                 <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 <Menu theme="light"
                       mode="inline"
-                      defaultSelectedKeys={[routeQuestionBank()]}
+                      defaultSelectedKeys={[routeLibrary()]}
                       selectedKeys={[getSelectedKey()]}
                       className={styles.menu}
                 >
+                    <Menu.Item key={routeLibrary()} className={styles.menuItem}
+                               icon={<CommunityIcon style={menuIconStyle} />}>
+                        <Link to={routeLibrary()}>
+                            <span className="nav-text">Library</span>
+                        </Link>
+                    </Menu.Item>
                     <Menu.Item key={routeQuestionBank()} className={styles.menuItem}
                                icon={<QuestionBankIcon style={menuIconStyle} />}>
                         <Link to={routeQuestionBank()}>
-                            <span className="nav-text">Question Bank</span>
+                            <span className="nav-text">Questions</span>
                         </Link>
                     </Menu.Item>
                     <Menu.Item key={routeTemplates()} className={styles.menuItem}

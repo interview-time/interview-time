@@ -8,6 +8,11 @@ import moment from "moment";
 
 export const updatesData = [
     {
+        version: "v0.4.1",
+        date: moment("2021/04/26", "YYYY/MM/DD").valueOf(),
+        description: "Community section has been renamed to Library and moved to separate menu item. Updated design of question categories.",
+    },
+    {
         version: "v0.4.0",
         date: moment("2021/03/08", "YYYY/MM/DD").valueOf(),
         description: "Question Bank now has Community section.",

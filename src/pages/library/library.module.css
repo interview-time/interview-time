@@ -14,18 +14,39 @@
     font-weight: 700;
 }
 
-.search {
-    width: 400px
+.infoAlert {
+    font-size: 16px;
+}
+
+.categories {
+    margin-top: 24px
+}
+
+.headerSearch {
+    width: 260px;
 }
 
 .card {
-    padding: 16px
+    padding: 16px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.multiLineText {
+    white-space: pre-wrap;
+}
+
+.cardContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .cardTitle {
-    font-weight:  700;
+    font-weight: 700;
     font-size: 18px;
-    margin-top: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -35,25 +56,4 @@
     color: #8C8C8C;
     font-weight:  600;
     font-size: 11px
-}
-
-.cardMetaValue {
-    font-weight:  700;
-    font-size: 18px
-}
-
-.author {
-    color: #8C8C8C;
-    font-size: 14px;
-}
-
-.category {
-    font-weight: 600;
-    font-size: 12px;
-    margin-left: 4px;
-}
-
-.infoAlert {
-    font-size: 16px;
-    margin-top: 24px;
 }

@@ -140,3 +140,12 @@ const CustomSvg = () => (
 );
 
 export const CustomIcon = props => <Icon component={CustomSvg} {...props} />;
+
+const ArrowRightSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 18 7" fill="currentColor">
+        <path d="M13.296 6.6C13.792 5.576 14.256 4.808 14.688 4.296H0.696V3.288H14.688C14.256 2.776 13.792 2.008 13.296 0.983999H14.136C15.144 2.152 16.2 3.016 17.304 3.576V4.008C16.2 4.552 15.144 5.416 14.136 6.6H13.296Z"/>
+    </svg>
+
+);
+
+export const ArrowRightIcon = props => <Icon component={ArrowRightSvg} {...props} />;
