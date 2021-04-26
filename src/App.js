@@ -23,7 +23,6 @@ import PrivateRoute from "./components/private-route/private-route";
 import InterviewWizard from "./pages/interview-wizard/interview-wizard";
 import News from "./pages/news/news";
 import QuestionBankCategory from "./pages/question-bank-category/question-bank-category";
-import CommunityCategory from "./pages/question-bank-community/community-category";
 import LibraryCategory from "./pages/library-category/library-category";
 import Library from "./pages/library/library";
 import { withRouter } from "react-router-dom";
