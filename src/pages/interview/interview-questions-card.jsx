@@ -117,8 +117,8 @@ const InterviewQuestionsCard = ({ group, disabled, onInterviewChange }) => {
                         {...(disabled ? { value: group.assessment } : { defaultValue: group.assessment })}
                         buttonStyle="solid"
                         onChange={onAssessmentChanged}>
-                        <Radio.Button value={GroupAssessment.LOW_SKILLED}>low skills</Radio.Button>
                         <Radio.Button value={GroupAssessment.NO_PROFICIENCY}>no proficiency</Radio.Button>
+                        <Radio.Button value={GroupAssessment.LOW_SKILLED}>low skills</Radio.Button>
                         <Radio.Button value={GroupAssessment.SKILLED}>skilled</Radio.Button>
                         <Radio.Button value={GroupAssessment.HIGHLY_SKILLED}>highly skilled</Radio.Button>
                     </Radio.Group>
