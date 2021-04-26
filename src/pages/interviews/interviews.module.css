@@ -18,6 +18,11 @@
     width: 260px;
 }
 
+.infoAlert {
+    font-size: 16px;
+    margin-top: 24px;
+}
+
 .row {
     cursor: pointer;
 }

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
-import { Avatar, Card, Col, Input, List, Row, Space, Tooltip } from 'antd';
+import { Alert, Avatar, Card, Input, List, Tooltip } from 'antd';
 import styles from "./library.module.css";
 import { useHistory } from "react-router-dom";
 import { routeLibraryCategory } from "../../components/utils/route";
-import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
 import { loadCommunityCategories } from "../../store/community-questions/actions";
 import { cloneDeep } from "lodash/lang";
 import { questionsToTags } from "../../components/utils/converters";
+import { ArrowRightIcon } from "../../components/utils/icons";
 
 const { Search } = Input;
 
@@ -71,41 +71,32 @@ const Library = ({ categories, categoriesLoading, loadCommunityCategories }) => 
             </div>
         }>
             <div style={{ marginTop: 24 }}>
+
+                <Alert message="Library is a curated list of question to help you get started quickly."
+                       className={styles.infoAlert}
+                       type="info"
+                       closable />
+
                 <List
                     className={styles.categories}
                     grid={grid}
                     dataSource={categoriesData}
                     loading={categoriesLoading}
                     renderItem={community => <List.Item>
-                        <Card hoverable bodyStyle={{ padding: 0, height: 190 }}>
-                            <div className={styles.card}
-                                 onClick={() => onCommunityClicked(community)}>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    {getTemplateCategoryIcon("")}
-                                    {/*Temporary hard code category*/}
-                                    <div style={{ color: TemplateCategories[0].color }}
-                                         className={styles.category}>{TemplateCategories[0].titleShort}</div>
-                                    <div style={{ flexGrow: 1 }} />
-                                </div>
-                                <div className={styles.cardTitle}>{community.category.categoryName}</div>
-
-                                <Row style={{ marginTop: 12 }}>
-                                    <Col span={12}>
-                                        <div className={styles.cardMetaTitle}>QUESTIONS</div>
-                                        <div className={styles.cardMetaValue}>{community.questions.length}</div>
-                                    </Col>
-                                    <Col span={12}>
-                                        <div className={styles.cardMetaTitle}>TAGS</div>
-                                        <div className={styles.cardMetaValue}>{getTagsCount(community.questions)}</div>
-                                    </Col>
-                                </Row>
-
-                                <Tooltip title="Author">
-                                    <Space style={{ marginTop: 12 }}>
+                        <Card hoverable bodyStyle={{ padding: 0 }}>
+                            <div className={styles.card} onClick={() => onCommunityClicked(community)}>
+                                <div className={styles.cardContainer}>
+                                    <span className={styles.cardTitle}>{community.category.categoryName}</span>
+                                    <Tooltip title="By Interviewer.space">
                                         <Avatar size={24} src={INTERVIEWER_SPACE_AVATAR} />
-                                        <span className={styles.author}>Interviewer.space</span>
-                                    </Space>
-                                </Tooltip>
+                                    </Tooltip>
+                                </div>
+
+                                <div className={styles.cardContainer}>
+                                    <span
+                                        className={styles.cardMetaTitle}>{community.questions.length} QUESTIONS • {getTagsCount(community.questions)} TAGS</span>
+                                    <ArrowRightIcon style={{ fontSize: 20 }} />
+                                </div>
                             </div>
                         </Card>
                     </List.Item>}

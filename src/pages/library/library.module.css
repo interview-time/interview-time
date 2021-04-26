@@ -14,6 +14,10 @@
     font-weight: 700;
 }
 
+.infoAlert {
+    font-size: 16px;
+}
+
 .categories {
     margin-top: 24px
 }
@@ -23,17 +27,26 @@
 }
 
 .card {
-    padding: 16px
+    padding: 16px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .multiLineText {
     white-space: pre-wrap;
 }
 
+.cardContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .cardTitle {
     font-weight: 700;
     font-size: 18px;
-    margin-top: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -43,36 +56,4 @@
     color: #8C8C8C;
     font-weight:  600;
     font-size: 11px
-}
-
-.cardMetaValue {
-    font-weight:  700;
-    font-size: 18px
-}
-
-.cardActionButton {
-    position: absolute;
-    right: 8px;
-    bottom: 16px;
-}
-
-.author {
-    color: #8C8C8C;
-    font-size: 14px;
-}
-
-.category {
-    font-weight: 600;
-    font-size: 12px;
-    margin-left: 4px;
-}
-
-.personal {
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.community {
-    font-weight: 600;
-    font-size: 15px;
 }

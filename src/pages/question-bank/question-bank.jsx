@@ -2,17 +2,15 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addCategory, deleteCategory, loadQuestionBank, updateCategory } from "../../store/question-bank/actions";
-import { Avatar, Button, Card, Col, Dropdown, Input, List, Menu, message, Row, Space, Tooltip } from 'antd';
+import { Alert, Button, Card, Dropdown, Input, List, Menu, message, Space } from 'antd';
 import styles from "./question-bank.module.css";
 import CategoryDetailsModal from "./modal-category-details";
 import collection from "lodash/collection";
 import { Link, useHistory } from "react-router-dom";
-import { routeLibrary, routeQuestionBankCategory, routeTemplateAdd } from "../../components/utils/route";
-import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
+import { routeLibrary, routeQuestionBankCategory } from "../../components/utils/route";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import { CustomIcon } from "../../components/utils/icons";
+import { ArrowRightIcon, CustomIcon } from "../../components/utils/icons";
 import confirm from "antd/lib/modal/confirm";
-import { useAuth0 } from "../../react-auth0-spa";
 import { questionsToTags } from "../../components/utils/converters";
 
 const { Search } = Input;
@@ -38,7 +36,6 @@ const QuestionBank = ({
                       }) => {
 
     const history = useHistory();
-    const { user } = useAuth0();
     const [personalCategoriesData, setPersonalCategoriesData] = useState([]);
 
     const [categoryDetailsModal, setCategoryDetailsModal] = useState({
@@ -55,7 +52,7 @@ const QuestionBank = ({
     }, []);
 
     React.useEffect(() => {
-            setPersonalCategoriesData(personalCategories)
+        setPersonalCategoriesData(personalCategories)
     }, [personalCategories]);
 
     const onCategoryClicked = (category) => {
@@ -113,7 +110,7 @@ const QuestionBank = ({
         let lowerCaseText = text.toLocaleLowerCase();
 
         // personal
-        let filteredPersonalCategories =  personalCategories.filter(personal => personal.category
+        let filteredPersonalCategories = personalCategories.filter(personal => personal.category
             && personal.category.categoryName.toLocaleLowerCase().includes(lowerCaseText))
         filteredPersonalCategories.unshift(NEW_CATEGORY) // first element is a new category card
         setPersonalCategoriesData(filteredPersonalCategories)
@@ -134,13 +131,6 @@ const QuestionBank = ({
     }
 
     const getTagsCount = questions => questionsToTags(questions).length
-
-    const getUserName = () => {
-        if (user && user.name) {
-            return user.name;
-        }
-        return 'Unknown User'
-    }
 
     const createPersonalMenu = (category) => <Menu>
         <Menu.Item onClick={e => {
@@ -178,59 +168,42 @@ const QuestionBank = ({
                 onCreate={onCreateCategoryClicked}
                 onCancel={onCategoryDetailCancel}
             />
-            <div style={{marginTop: 24}}>
+            <div style={{ marginTop: 24 }}>
+                <Alert
+                    message="Questions let you create and manage all your interview questions. They are grouped by category, like 'Java' or 'Leadership'. To help get you started quickly browse our Library, or add your unique questions. You can use questions when you create a template or interview."
+                    type="info"
+                    className={styles.infoAlert}
+                    closable
+                />
                 <List
                     className={styles.categories}
                     grid={grid}
                     dataSource={personalCategoriesData}
                     loading={personalCategoriesLoading}
                     renderItem={personal => <List.Item>
-                        <Card hoverable bodyStyle={{ padding: 0, height: 190 }}>
+                        <Card hoverable bodyStyle={{ padding: 0 }}>
                             {personal !== NEW_CATEGORY &&
                             <div className={styles.card} onClick={() => onCategoryClicked(personal.category)}>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    {getTemplateCategoryIcon("")}
-                                    {/*Temporary hard code category*/}
-                                    <div style={{ color: TemplateCategories[0].color }}
-                                         className={styles.category}>{TemplateCategories[0].titleShort}</div>
-                                    <div style={{ flexGrow: 1 }} />
+                                <div className={styles.cardContainer}>
+                                    <span className={styles.cardTitle}>{personal.category.categoryName}</span>
                                     <Dropdown overlay={createPersonalMenu(personal.category)}>
                                         <EllipsisOutlined style={{ fontSize: 20 }} onClick={e => e.stopPropagation()} />
                                     </Dropdown>
                                 </div>
-                                <div className={styles.cardTitle}>{personal.category.categoryName}</div>
 
-                                <Row style={{ marginTop: 12 }}>
-                                    <Col span={12}>
-                                        <div className={styles.cardMetaTitle}>QUESTIONS</div>
-                                        <div className={styles.cardMetaValue}>{personal.questions.length}</div>
-                                    </Col>
-                                    <Col span={12}>
-                                        <div className={styles.cardMetaTitle}>TAGS</div>
-                                        <div className={styles.cardMetaValue}>{getTagsCount(personal.questions)}</div>
-                                    </Col>
-                                </Row>
-
-                                <Tooltip title="Author">
-                                    <Space style={{ marginTop: 12 }}>
-                                        <Avatar size={24} src={user ? user.picture : null} />
-                                        <span className={styles.author}>{getUserName()}</span>
-                                    </Space>
-                                </Tooltip>
+                                <div className={styles.cardContainer}>
+                                    <span
+                                        className={styles.cardMetaTitle}>{personal.questions.length} QUESTIONS • {getTagsCount(personal.questions)} TAGS</span>
+                                    <ArrowRightIcon style={{ fontSize: 20 }} />
+                                </div>
                             </div>}
                             {personal === NEW_CATEGORY && <div className={styles.card} onClick={onAddCategoryClicked}>
-                                <div style={{ display: "flex", alignItems: "center" }}>
+                                <div className={styles.cardContainer}>
+                                    <span className={styles.cardTitle}>New Category</span>
                                     <CustomIcon style={{ color: '#1F1F1F', fontSize: 18 }} />
-                                    <div className={styles.category}>CUSTOM</div>
                                 </div>
-                                <div className={styles.cardTitle}>New Category</div>
-                                <div className={styles.author}>
-                                    To make sure you’re asking a consistent set of questions, create your own question
-                                    bank.
-                                </div>
-                                <div className={styles.cardActionButton}>
-                                    <Button type="link">Add category</Button>
-                                </div>
+                                <span
+                                    className={styles.cardMetaTitle}>ADD YOUR QUESTIONS CATEGORY</span>
                             </div>}
                         </Card>
                     </List.Item>}

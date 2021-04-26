@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
-import { Avatar, Button, Card, Col, Dropdown, List, Menu, message, Modal, Row, Space, Tooltip } from "antd";
+import { Alert, Avatar, Button, Card, Col, Dropdown, List, Menu, message, Modal, Row, Space, Tooltip } from "antd";
 import { Link, useHistory } from "react-router-dom";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import Collection, { sortBy } from "lodash/collection";
@@ -127,6 +127,10 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
             </Button>
         </div>
     }>
+        <Alert message="Templates allow you to build and manage interview templates for any type of interview, like 'Senior Java Developer' or 'Behavioral Interview'. This is a great way to keep the interview process structured and to make sure you’re asking a consistent set of questions. You can use a template when you create an interview."
+               className={styles.infoAlert}
+               type="info"
+               closable />
         <List
             style={{marginTop: 24}}
             grid={{

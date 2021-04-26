@@ -4,7 +4,7 @@ import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import styles from "../interviews/interviews.module.css";
-import { Badge, Button, Card, Input, PageHeader, Space, Table, Tag } from 'antd';
+import { Alert, Badge, Button, Card, Input, Space, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
@@ -127,7 +127,12 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
                 </Space>
             </div>
         }>
-            <Card bodyStyle={{ padding: 0 }} style={{marginTop: 24}}>
+            <Alert message="Interviews help to capture candidate feedback during the interview. Use Template to quickly create the interview with all necessary questions."
+                   type="info"
+                   className={styles.infoAlert}
+                   closable />
+
+            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 24 }}>
                 <Table
                     pagination={false}
                     columns={columns}
