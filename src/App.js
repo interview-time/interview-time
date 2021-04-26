@@ -1,4 +1,5 @@
-import './App.css';
+import "./App.css";
+import React, { useEffect } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import {
     routeAccount,
@@ -8,7 +9,7 @@ import {
     routeNews,
     routeQuestionBank,
     routeTemplateAdd,
-    routeTemplates
+    routeTemplates,
 } from "./components/utils/route";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
@@ -22,10 +23,28 @@ import PrivateRoute from "./components/private-route/private-route";
 import InterviewWizard from "./pages/interview-wizard/interview-wizard";
 import News from "./pages/news/news";
 import QuestionBankCategory from "./pages/question-bank-category/question-bank-category";
+import CommunityCategory from "./pages/question-bank-community/community-category";
 import LibraryCategory from "./pages/library-category/library-category";
 import Library from "./pages/library/library";
+import { withRouter } from "react-router-dom";
+import ReactGA from "react-ga";
 
-function App() {
+function App({ history }) {
+    useEffect(() => {
+        if (process.env.REACT_APP_GA_TRACKING_ID) {
+            ReactGA.initialize(process.env.REACT_APP_GA_TRACKING_ID);
+            ReactGA.set({ page: window.location.pathname + window.location.search });
+            ReactGA.pageview(window.location.pathname + window.location.search);
+        }
+
+        history.listen((location) => {
+            if (process.env.REACT_APP_GA_TRACKING_ID) {
+                ReactGA.set({ page: location.pathname });
+                ReactGA.pageview(location.pathname);
+            }
+        });
+    }, [history]);
+
     const { loading } = useAuth0();
 
     if (loading) {
@@ -52,4 +71,4 @@ function App() {
     );
 }
 
-export default App;
+export default withRouter(App);
