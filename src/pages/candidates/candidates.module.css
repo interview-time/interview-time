@@ -1,0 +1,52 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    min-height: 64px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.headerTitle {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.headerSearch {
+    width: 260px;
+}
+
+.infoAlert {
+    font-size: 16px;
+    margin-top: 24px;
+}
+
+.row {
+    cursor: pointer;
+}
+
+.dot {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dotSmall {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.select {
+    min-width: 160px;
+}
+
+.assessmentPopup {
+    min-width: 300px;
+}

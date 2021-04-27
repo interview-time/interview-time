@@ -2,6 +2,8 @@ export const routeNews = () => "/news"
 
 export const routeInterviews = () => "/interviews"
 
+export const routeCandidates = () => "/candidates"
+
 export const routeInterviewDetails = (id) => `/interviews/details/${id}`
 
 export const routeInterviewAdd = () => `/interviews/add`

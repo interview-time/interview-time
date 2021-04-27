@@ -3,8 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import { Badge, Drawer, Layout as AntLayout, Menu, Progress } from "antd";
 import styles from "./layout.module.css";
 import {
+    CandidatesIcon,
     CommunityIcon,
-    FakeIcon, FeedbackIcon,
+    FakeIcon,
+    FeedbackIcon,
     GuideIcon,
     InterviewIcon,
     NewsIcon,
@@ -13,6 +15,7 @@ import {
 } from "../utils/icons";
 import {
     routeAccount,
+    routeCandidates,
     routeInterviews,
     routeLibrary,
     routeNews,
@@ -63,6 +66,8 @@ const Layout = ({ children, pageHeader }) => {
             return routeNews()
         } else if (location.pathname.includes(routeLibrary())) {
             return routeLibrary()
+        }  else if (location.pathname.includes(routeCandidates())) {
+            return routeCandidates()
         }
     }
 
@@ -141,6 +146,12 @@ const Layout = ({ children, pageHeader }) => {
                                icon={<InterviewIcon style={menuIconStyle} />}>
                         <Link to={routeInterviews()}>
                             <span className="nav-text">Interviews</span>
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key={routeCandidates()} className={styles.menuItem}
+                               icon={<CandidatesIcon style={menuIconStyle} />}>
+                        <Link to={routeCandidates()}>
+                            <span className="nav-text">Candidates</span>
                         </Link>
                     </Menu.Item>
                     <div className={styles.space} />
