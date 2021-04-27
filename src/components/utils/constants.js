@@ -92,14 +92,71 @@ export const getDecisionText = (decision) => {
     return ''
 }
 
+const COLOR_RED_5 = '#ff4d4f';
+const COLOR_ORANGE_5 = '#FFA940';
+const COLOR_GREEN_6 = '#52c41a';
+const COLOR_GREEN_8 = '#389E0D';
+const COLOR_NEUTRAL_6 = '#bfbfbf';
+
 export const getDecisionColor = (decision) => {
     if (decision === InterviewAssessment.YES || decision === InterviewAssessment.STRONG_YES) {
-        return '#52c41a';
+        return COLOR_GREEN_6;
     } else if (decision === InterviewAssessment.NO || decision === InterviewAssessment.STRONG_NO) {
-        return '#ff4d4f';
+        return COLOR_RED_5;
     }
 
-    return '#bfbfbf'
+    return COLOR_NEUTRAL_6
+}
+
+export const getAssessmentColor = (assessment) => {
+    if(assessment === GroupAssessment.HIGHLY_SKILLED) {
+        return COLOR_GREEN_8;
+    } else if (assessment === GroupAssessment.SKILLED) {
+        return COLOR_GREEN_6;
+    } else if (assessment === GroupAssessment.LOW_SKILLED) {
+        return COLOR_ORANGE_5;
+    } else if (assessment === GroupAssessment.NO_PROFICIENCY) {
+        return COLOR_RED_5;
+    }
+
+    return COLOR_NEUTRAL_6
+}
+
+export const getAssessmentText = (assessment) => {
+    if(assessment === GroupAssessment.HIGHLY_SKILLED) {
+        return "highly skilled";
+    } else if (assessment === GroupAssessment.SKILLED) {
+        return "skilled";
+    } else if (assessment === GroupAssessment.LOW_SKILLED) {
+        return "low skills";
+    } else if (assessment === GroupAssessment.NO_PROFICIENCY) {
+        return "no proficiency";
+    }
+
+    return ""
+}
+
+export const getOverallPerformanceColor = (groups) => {
+    let total = 0;
+    groups.forEach(group => {
+        total += getAssessmentNumber(group.assessment)
+    })
+
+    return Math.round((total / groups.length) * 100)
+}
+
+const getAssessmentNumber = (assessment) => {
+    if(assessment === GroupAssessment.HIGHLY_SKILLED) {
+        return 1.0;
+    } else if (assessment === GroupAssessment.SKILLED) {
+        return 0.85;
+    } else if (assessment === GroupAssessment.LOW_SKILLED) {
+        return 0.45;
+    } else if (assessment === GroupAssessment.NO_PROFICIENCY) {
+        return 0;
+    }
+
+    return 0;
 }
 
 export const getDifficultyColor = (difficulty) => {

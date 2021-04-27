@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Redirect, Switch } from "react-router-dom";
 import {
     routeAccount,
+    routeCandidates,
     routeInterviewAdd,
     routeInterviews,
     routeLibrary,
@@ -25,6 +26,7 @@ import News from "./pages/news/news";
 import QuestionBankCategory from "./pages/question-bank-category/question-bank-category";
 import LibraryCategory from "./pages/library-category/library-category";
 import Library from "./pages/library/library";
+import Candidates from "./pages/candidates/candidates";
 import { withRouter } from "react-router-dom";
 import ReactGA from "react-ga";
 
@@ -58,6 +60,7 @@ function App({ history }) {
             <PrivateRoute path="/question-bank/:category" exact component={QuestionBankCategory} />
             <PrivateRoute path={routeQuestionBank()} exact component={QuestionBank} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
+            <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewWizard} />
             <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
             <PrivateRoute path="/interviews/start/:id" exact component={Interview} />
