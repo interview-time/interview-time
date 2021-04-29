@@ -37,16 +37,21 @@ namespace CafApi.Services
         public async Task<List<Category>> GetCategories(string userId, List<QuestionBank> questions)
         {
             var categories = await GetCategories(userId);
+            var categoryNames = questions.GroupBy(q => q.Category).Select(q => q.Key).ToList();
 
-            if (categories == null || categories.Count == 0)
+            if (categories == null || categories.Count < categoryNames.Count || questions.Any(q => q.CategoryId == null))
             {
-                var categoryNames = questions.GroupBy(q => q.Category).Select(q => q.Key).ToList();
                 var newCategories = new List<Category>();
 
                 foreach (var categoryName in categoryNames)
                 {
-                    var category = await AddCategory(userId, categoryName);
-                    newCategories.Add(category);
+                    // check if there is existing new category
+                    var category = categories.FirstOrDefault(c => c.CategoryName == categoryName);
+                    if (category == null)
+                    {
+                        category = await AddCategory(userId, categoryName);
+                        newCategories.Add(category);
+                    }
 
                     // update related questions with new CategoryId
                     var categoryQuestions = questions.Where(q => q.Category == categoryName).ToList();
