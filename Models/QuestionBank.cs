@@ -21,10 +21,16 @@ namespace CafApi.Models
         
         public string ParentQuestionId { get; set; }
 
+        public string CategoryId { get; set; }
+
+        public int Order { get; set; }
+
         public List<string> Tags { get; set; }
 
         public int Time { get; set; }
 
         public DateTime CreatedDate { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
     }
 }

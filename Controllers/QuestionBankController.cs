@@ -33,12 +33,49 @@ namespace CafApi.Controllers
             _questionBankService = questionBankService;
         }
 
+        [HttpGet("categories")]
+        public async Task<List<Category>> GetCategories()
+        {
+            var categories = await _questionBankService.GetCategories(UserId);
+
+            return categories;
+        }
+
+        [HttpPost("category")]
+        public async Task<Category> AddCategory([FromBody] string categoryName)
+        {
+            return await _questionBankService.AddCategory(UserId, categoryName);
+        }
+
+        [HttpPut("category")]
+        public async Task UpdateCategory([FromBody] Category category)
+        {
+            await _questionBankService.UpdateCategory(category);
+        }
+
+        [HttpDelete("category/{categoryId}")]
+        public async Task DeleteCategory(string categoryId)
+        {
+            await _questionBankService.DeleteCategory(UserId, categoryId);
+        }
+
+        [HttpGet("new")]
+        public async Task<QuestionsResponse> GetQuestions()
+        {
+            var questions = await _questionBankService.GetQuestions(UserId);
+            var categories = await _questionBankService.GetCategories(UserId, questions);
+
+            return new QuestionsResponse
+            {
+                Categories = categories,
+                Questions = questions
+            };
+        }
+
         [HttpGet()]
         public async Task<QuestionBankResponse> Get()
         {
-            var questions = await _questionBankService.GetQuestionBank(UserId, null);
-
-            var questionGroups = questions.GroupBy(q => q.Category).ToList();
+            var questions = await _questionBankService.GetQuestionBank(UserId);            
 
             return new QuestionBankResponse
             {
@@ -52,15 +89,15 @@ namespace CafApi.Controllers
         {
             return await _questionBankService.GetQuestionBank(UserId, category);
         }
-        
+
         [HttpDelete("category/{category}")]
         public async Task Delete(string category)
         {
             var questions = await _questionBankService.GetQuestionBank(UserId, category);
-            
+
             await _questionBankService.DeleteQuestionBank(questions);
         }
-        
+
         [HttpPost("category/{category}/{newCategory}")]
         public async Task Update(string category, string newCategory)
         {
@@ -70,7 +107,7 @@ namespace CafApi.Controllers
             {
                 question.Category = newCategory;
             }
-            
+
             await _questionBankService.UpdateQuestionBank(questions);
         }
 
