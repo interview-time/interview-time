@@ -3,9 +3,9 @@ using CafApi.Models;
 
 namespace CafApi.ViewModel
 {
-    public class QuestionsResponse
+    public class QuestionResponse
     {
-        public List<Category> Categories { get; set; }
+        public Category Category { get; set; }
 
         public List<QuestionBank> Questions { get; set; }
     }

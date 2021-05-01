@@ -42,9 +42,9 @@ namespace CafApi.Controllers
         }
 
         [HttpPost("category")]
-        public async Task<Category> AddCategory([FromBody] string categoryName)
+        public async Task<Category> AddCategory([FromBody] CategoryRequest newCategory)
         {
-            return await _questionBankService.AddCategory(UserId, categoryName);
+            return await _questionBankService.AddCategory(UserId, newCategory.CategoryName);
         }
 
         [HttpPut("category")]
@@ -60,22 +60,22 @@ namespace CafApi.Controllers
         }
 
         [HttpGet("new")]
-        public async Task<QuestionsResponse> GetQuestions()
+        public async Task<List<QuestionResponse>> GetQuestions()
         {
             var questions = await _questionBankService.GetQuestions(UserId);
             var categories = await _questionBankService.GetCategories(UserId, questions);
 
-            return new QuestionsResponse
+            return categories.Select(c => new QuestionResponse
             {
-                Categories = categories,
-                Questions = questions
-            };
+                Category = c,
+                Questions = questions.Where(q => q.CategoryId == c.CategoryId).ToList()
+            }).ToList();
         }
 
         [HttpGet()]
         public async Task<QuestionBankResponse> Get()
         {
-            var questions = await _questionBankService.GetQuestionBank(UserId);            
+            var questions = await _questionBankService.GetQuestionBank(UserId);
 
             return new QuestionBankResponse
             {
