@@ -14,9 +14,47 @@ import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
+import { cloneDeep } from "lodash/lang";
+import { orderBy } from "lodash/collection";
+import { findCategory } from "../../components/utils/converters";
+import { findIndex} from "lodash/array";
 
+/**
+ * @typedef {Object} Category
+ * @property {string} userId
+ * @property {string} categoryId
+ * @property {string} categoryName
+ * @property {string|null} image
+ * @property {boolean} isActive
+ * @property {string} createdDate
+ * @property {string} modifiedDate
+ */
+
+/**
+ * @typedef {Object} Question
+ * @property {string} userId
+ * @property {string} questionId
+ * @property {string} category
+ * @property {string} categoryId
+ * @property {string} question
+ * @property {string} difficulty
+ * @property {string|null} parentQuestionId
+ * @property {string[]} tags
+ * @property {string} createdDate
+ * @property {string} modifiedDate
+ */
+
+/**
+ * @typedef {Object} CategoryHolder
+ * @property {Category} category
+ * @property {Question[]} questions
+ */
+
+/**
+ *
+ * @type {{categories: CategoryHolder[], loading: boolean}}
+ */
 const initialState = {
-    questions: [],
     categories: [],
     loading: false
 };
@@ -30,9 +68,9 @@ const questionBankReducer = (state = initialState, action) => {
             console.log(action.type)
             const { forceFetch } = action.payload;
 
-            if(forceFetch || (state.questions.length === 0 && !state.loading)) {
+            if(forceFetch || (state.categories.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then(token => axios.get(URL, config(token)))
+                    .then(token => axios.get(`${URL}/new`, config(token)))
                     .then(res => store.dispatch(setQuestionBank(res.data)))
                     .catch(reason => console.error(reason));
 
@@ -44,43 +82,35 @@ const questionBankReducer = (state = initialState, action) => {
 
         case SET_QUESTION_BANK: {
             console.log(action.type)
-            const { questions, categories } = action.payload;
+
+            const categories = action.payload.filter(c => c.category.isActive)
+            categories.forEach(c =>
+                c.questions = orderBy(c.questions, ['createdDate'], ['asc'])
+            )
 
             return {
                 ...state,
-                questions: questions ? questions : [],
-                categories: categories ? categories : [],
+                categories: categories,
                 loading: false
             };
         }
 
         case UPDATE_CATEGORY: {
             console.log(action.type)
-            const { category, newCategory } = action.payload;
+            const { category } = action.payload;
 
             getAccessTokenSilently()
-                .then(token => axios.post(`${URL}/category/${category}/${newCategory}`, null, config(token)))
-                .then(() => console.log(`Questions with category ${category} updated to ${newCategory}`))
+                .then(token => axios.put(`${URL}/category`, category, config(token)))
+                .then(() => console.log(`Category updated to ${category.categoryName}`))
+                .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
-            const questions = state.questions.map(item => {
-                if (item.category === category) {
-                    item.category = newCategory
-                }
-                return item
-            });
-
-            const categories = state.categories.map(item => {
-                if (item === category) {
-                    return newCategory
-                } else {
-                    return item
-                }
-            });
+            const categories = cloneDeep(state.categories)
+            const index = findIndex(categories, c => c.category.categoryId === category.categoryId)
+            categories[index].category = category
 
             return {
                 ...state,
-                questions: questions,
                 categories: categories
             };
         }
@@ -90,17 +120,13 @@ const questionBankReducer = (state = initialState, action) => {
             const { category } = action.payload;
 
             getAccessTokenSilently()
-                .then(token => axios.delete(`${URL}/category/${category}`, config(token)))
-                .then(() => console.log(`Questions with category removed: ${category}`))
+                .then(token => axios.delete(`${URL}/category/${category.categoryId}`, config(token)))
+                .then(() => console.log(`Questions with category removed: ${category.categoryId}`))
                 .catch(reason => console.error(reason));
-
-            const questions = state.questions.filter(question => question.category !== category);
-            const categories = state.categories.filter(item => item !== category);
 
             return {
                 ...state,
-                questions: questions,
-                categories: categories,
+                categories: state.categories.filter(c => c.category.categoryId !== category.categoryId)
             };
         }
 
@@ -115,11 +141,13 @@ const questionBankReducer = (state = initialState, action) => {
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
+            const categories = cloneDeep(state.categories)
+            findCategory(question.categoryId, categories).questions
+                .push(question)
+
             return {
                 ...state,
-                questions: [
-                    ...state.questions, question
-                ]
+                categories: categories
             };
         }
 
@@ -135,11 +163,13 @@ const questionBankReducer = (state = initialState, action) => {
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
+            const categories = cloneDeep(state.categories)
+            const category = findCategory(questions[0].categoryId, categories)
+            category.questions.push(questions)
+
             return {
                 ...state,
-                questions: [
-                    ...state.questions, questions
-                ]
+                categories: categories
             };
         }
 
@@ -153,48 +183,47 @@ const questionBankReducer = (state = initialState, action) => {
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
-            const questions = state.questions.map(q => {
-                if (q.questionId !== question.questionId) {
-                    return q;
-                }
-
-                return {
-                    ...q, ...question
-                }
-            });
+            const categories = cloneDeep(state.categories)
+            const category = findCategory(question.categoryId, categories)
+            const index = findIndex(category.questions, q => q.questionId === question.questionId)
+            category.questions[index] = question
 
             return {
                 ...state,
-                questions: questions
+                categories: categories
             };
         }
 
         case DELETE_QUESTION: {
             console.log(action.type)
-            const { questionId } = action.payload;
+            const { questionId, categoryId } = action.payload;
 
             getAccessTokenSilently()
                 .then(token => axios.delete(`${URL}/${questionId}`, config(token)))
                 .then(() => console.log(`Question removed: ${JSON.stringify(questionId)}`))
                 .catch(reason => console.error(reason));
 
-            const reducedQuestions = state.questions.filter(question => question.questionId !== questionId);
+            const categories = cloneDeep(state.categories)
+            const category = findCategory(categoryId, categories)
+            category.questions = category.questions.filter(q => q.questionId !== questionId)
 
             return {
                 ...state,
-                questions: reducedQuestions
+                categories: categories
             };
         }
 
         case ADD_CATEGORY: {
-            const { newCategory } = action.payload;
+            console.log(action.type)
+            const { category } = action.payload;
 
-            return {
-                ...state,
-                categories: [
-                    ...state.categories, newCategory
-                ]
-            };
+            getAccessTokenSilently()
+                .then(token => axios.post(`${URL}/category`, {categoryName: category.categoryName}, config(token)))
+                .then(() => console.log(`Category created ${category.categoryName}`))
+                .then(() => store.dispatch(loadQuestionBank(true)))
+                .catch(reason => console.error(reason));
+
+            return { ...state, loading: true };
         }
 
         default:

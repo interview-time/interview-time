@@ -7,7 +7,6 @@ import { localeCompare, localeCompareArray, localeCompareDifficult } from "../..
 import { Difficulty } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import {
-    filterQuestionCategory,
     filterQuestionDifficulty,
     filterQuestionTag,
     filterQuestionText
@@ -15,8 +14,7 @@ import {
 import { flatten, sortedUniq } from "lodash/array";
 import ImportQuestionsModal from "./modal-import-questions";
 import Layout from "../../components/layout/layout";
-import { useHistory, withRouter } from "react-router-dom";
-import collection from "lodash/collection";
+import { useHistory, useParams, withRouter } from "react-router-dom";
 import {
     addQuestion,
     addQuestions,
@@ -31,17 +29,27 @@ const { Search } = Input;
 
 const MENU_KEY_IMPORT_CSV = 'csv'
 
+/**
+ *
+ * @param {CategoryHolder[]} categories
+ * @param categoriesLoading
+ * @param loadQuestionBank
+ * @param updateQuestion
+ * @param addQuestion
+ * @param addQuestions
+ * @param deleteQuestion
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const QuestionBankCategory = ({
-                                  questions,
-                                  loading,
+                                  categories,
+                                  categoriesLoading,
                                   loadQuestionBank,
                                   updateQuestion,
                                   addQuestion,
                                   addQuestions,
                                   deleteQuestion,
-                                  match
                               }) => {
-
     const columns = [
         {
             title: 'Question',
@@ -74,7 +82,22 @@ const QuestionBankCategory = ({
         },
     ]
 
-    const [selectedQuestions, setSelectedQuestions] = useState([]);
+    /**
+     * @type {CategoryHolder}
+     */
+    const emptyCategory= {
+        category: {},
+        questions: []
+    }
+
+    /**
+     *
+     * @type {Question[]}
+     */
+    const emptyQuestions = []
+
+    const [category, setCategory] = useState(emptyCategory);
+    const [filteredQuestions, setFilteredQuestions] = useState(emptyQuestions);
     const [selectedCategoryTags, setSelectedCategoryTags] = useState([])
 
     const [textFilter, setTextFilter] = useState()
@@ -87,42 +110,43 @@ const QuestionBankCategory = ({
     });
 
     const [importModalVisible, setImportModalVisible] = useState(false);
-    
-    const category = decodeURIComponent(match.params.category);
+
+    const { id } = useParams();
 
     const history = useHistory();
 
     React.useEffect(() => {
-        if ((!questions || questions.length === 0) && !loading) {
+        if ((!categories || categories.length === 0) && !categoriesLoading) {
             loadQuestionBank();
         }
         // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
-        let categoryQuestions = filterQuestionCategory(questions, category)
+        let category = categories.find(c => c.category.categoryId === id)
+        if (category) {
+            const categoryTags = sortedUniq(
+                flatten(category.questions.map(question => defaultTo(question.tags, []))).sort()
+            )
+            setSelectedCategoryTags(categoryTags.map(tag => ({ value: tag })))
 
-        const categoryTags = sortedUniq(
-            flatten(categoryQuestions.map(question => defaultTo(question.tags, []))).sort()
-        )
-        setSelectedCategoryTags(categoryTags.map(tag => ({ value: tag })))
+            let filteredQuestions = category.questions
+            if (textFilter && textFilter.length !== '') {
+                filteredQuestions = filterQuestionText(filteredQuestions, textFilter)
+            }
 
-        let filteredQuestions = categoryQuestions
-        if (textFilter && textFilter.length !== '') {
-            filteredQuestions = filterQuestionText(filteredQuestions, textFilter)
+            if (difficultyFilter) {
+                filteredQuestions = filterQuestionDifficulty(filteredQuestions, difficultyFilter)
+            }
+
+            if (tagFilter) {
+                filteredQuestions = filterQuestionTag(filteredQuestions, tagFilter)
+            }
+
+            setCategory(category)
+            setFilteredQuestions(filteredQuestions)
         }
-
-        if (difficultyFilter) {
-            filteredQuestions = filterQuestionDifficulty(filteredQuestions, difficultyFilter)
-        }
-
-        if (tagFilter) {
-            filteredQuestions = filterQuestionTag(filteredQuestions, tagFilter)
-        }
-
-        setSelectedQuestions(filteredQuestions)
-    }, [category, questions, textFilter, difficultyFilter, tagFilter]);
-
+    }, [id, categories, textFilter, difficultyFilter, tagFilter]);
 
     const onAddQuestionClicked = () => {
         setQuestionDetailModal({
@@ -143,7 +167,8 @@ const QuestionBankCategory = ({
         } else {
             addQuestion({
                 ...question,
-                category: category,
+                category: category.category.categoryName,
+                categoryId: category.category.categoryId,
             })
         }
         setQuestionDetailModal({
@@ -153,7 +178,7 @@ const QuestionBankCategory = ({
     };
 
     const onRemoveQuestionClicked = (question) => {
-        deleteQuestion(question.questionId)
+        deleteQuestion(question.questionId, question.categoryId)
         setQuestionDetailModal({
             ...questionDetailModal,
             visible: false
@@ -206,7 +231,8 @@ const QuestionBankCategory = ({
             questions.map(question => ({
                 question: question[0],
                 difficulty: Difficulty.EASY,
-                category: category,
+                categoryId: category.category.categoryId,
+                category: category.category.categoryName,
                 tags: []
             }))
         )
@@ -223,7 +249,7 @@ const QuestionBankCategory = ({
                 <div align="center" onClick={onBackToCategoriesClicked}  className={styles.headerTitleContainer}>
                     <ArrowLeftOutlined />
                     <span className={styles.headerTitle} style={{marginLeft: 8, marginRight: 8}}>
-                        {category}
+                        {category.category.categoryName}
                     </span>
                 </div>
                 <Space>
@@ -285,8 +311,8 @@ const QuestionBankCategory = ({
                         className={styles.table}
                         columns={columns}
                         pagination={false}
-                        loading={loading}
-                        dataSource={selectedQuestions}
+                        loading={categoriesLoading}
+                        dataSource={filteredQuestions}
                         rowClassName={styles.row}
                         onRow={(record) => ({
                             onClick: () => onQuestionClicked(record),
@@ -299,11 +325,11 @@ const QuestionBankCategory = ({
 }
 
 const mapStateToProps = state => {
-    const { questions, loading } = state.questionBank || {};
+    const { categories, loading } = state.questionBank || {};
 
     return {
-        questions: collection.orderBy(questions, ['createdDate'], ['desc']),
-        loading
+        categories: categories,
+        categoriesLoading: loading
     };
 };
 

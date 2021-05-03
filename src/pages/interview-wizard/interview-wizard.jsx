@@ -3,7 +3,7 @@ import Layout from "../../components/layout/layout";
 import { message, Modal, PageHeader, Spin, Steps } from "antd";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import Collection from "lodash/collection";
+import { flatMap } from "lodash/collection";
 import { cloneDeep } from "lodash/lang";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
@@ -293,8 +293,8 @@ const mapState = (state) => {
 
     return {
         interviews: interviewsState.interviews,
-        questions: Collection.sortBy(questionBankState.questions, ['question']),
-        categories: questionBankState.categories.sort(),
+        questions: flatMap(questionBankState.categories, (item) => item.questions),
+        categories: questionBankState.categories.map(c => c.category.categoryName).sort(),
         guides: guidesState.guides,
         loading: guidesState.loading || questionBankState.loading || interviewsState.loading
     }

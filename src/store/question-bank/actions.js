@@ -41,17 +41,18 @@ export const updateQuestion = (question) => ({
     }
 });
 
-export const deleteQuestion = (questionId) => ({
+export const deleteQuestion = (questionId, categoryId) => ({
     type: DELETE_QUESTION,
     payload: {
-        questionId
+        questionId,
+        categoryId
     }
 });
 
-export const addCategory = (newCategory) => ({
+export const addCategory = (category) => ({
     type: ADD_CATEGORY,
     payload: {
-        newCategory
+        category
     }
 });
 
@@ -62,10 +63,9 @@ export const deleteCategory = (category) => ({
     }
 });
 
-export const updateCategory = (category, newCategory) => ({
+export const updateCategory = (category) => ({
     type: UPDATE_CATEGORY,
     payload: {
-        category,
-        newCategory
+        category
     }
 });

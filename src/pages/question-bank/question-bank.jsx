@@ -4,14 +4,14 @@ import Layout from "../../components/layout/layout";
 import { addCategory, deleteCategory, loadQuestionBank, updateCategory } from "../../store/question-bank/actions";
 import { Alert, Button, Card, Dropdown, Input, List, Menu, message, Space } from 'antd';
 import styles from "./question-bank.module.css";
-import CategoryDetailsModal from "./modal-category-details";
-import collection from "lodash/collection";
 import { Link, useHistory } from "react-router-dom";
 import { routeLibrary, routeQuestionBankCategory } from "../../components/utils/route";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { ArrowRightIcon, CustomIcon } from "../../components/utils/icons";
 import confirm from "antd/lib/modal/confirm";
 import { questionsToTags } from "../../components/utils/converters";
+import { cloneDeep } from "lodash/lang";
+import CategoryDetailsModal from "./modal-category-details";
 
 const { Search } = Input;
 
@@ -26,79 +26,115 @@ const grid = {
     xxl: 5,
 };
 
+/**
+ *
+ * @param {CategoryHolder[]} categories
+ * @param categoriesLoading
+ * @param loadQuestionBank
+ * @param addCategory
+ * @param deleteCategory
+ * @param updateCategory
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const QuestionBank = ({
-                          personalCategories,
-                          personalCategoriesLoading,
+                          categories,
+                          categoriesLoading,
                           loadQuestionBank,
                           addCategory,
                           deleteCategory,
                           updateCategory,
                       }) => {
 
+    /**
+     *
+     * @type {CategoryHolder[]}
+     */
+    const emptyCategories = []
+
     const history = useHistory();
-    const [personalCategoriesData, setPersonalCategoriesData] = useState([]);
+    const [filteredCategories, setFilteredCategories] = useState(emptyCategories);
 
     const [categoryDetailsModal, setCategoryDetailsModal] = useState({
-        category: '',
+        category: null,
         visible: false
     });
 
     React.useEffect(() => {
         // first element is a new category card
-        if ((!personalCategories || personalCategories.length <= 1) && !personalCategoriesLoading) {
+        if ((!categories || categories.length <= 1) && !categoriesLoading) {
             loadQuestionBank();
         }
         // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
-        setPersonalCategoriesData(personalCategories)
-    }, [personalCategories]);
+        setFilteredCategories(categories)
+    }, [categories]);
 
+    /**
+     *
+     * @param {Category} category
+     */
     const onCategoryClicked = (category) => {
-        history.push(routeQuestionBankCategory(category.categoryName))
+        history.push(routeQuestionBankCategory(category.categoryId))
     };
+
     const onAddCategoryClicked = () => {
         setCategoryDetailsModal({
-            visible: true,
-            category: ''
+            visible: true
         })
     }
 
-    const onUpdateCategoryClicked = (oldCategory, newCategory) => {
+    /**
+     *
+     * @param {Category} category
+     */
+    const onUpdateCategoryClicked = (category) => {
         setCategoryDetailsModal({
             visible: false,
-            category: ''
+            category: category
         });
-        updateCategory(oldCategory, newCategory)
-        message.success(`Category '${oldCategory}' renamed to '${newCategory}'.`)
+        updateCategory(category)
+        message.success(`Category renamed to '${category.categoryName}'.`)
     };
 
+    /**
+     *
+     * @param {Category} category
+     */
     const onCreateCategoryClicked = (category) => {
         setCategoryDetailsModal({
-            visible: false,
-            category: ''
+            visible: false
         });
         addCategory(category)
-        message.success(`Category '${category}' created.`)
+        message.success(`Category '${category.categoryName}' created.`)
     };
 
     const onCategoryDetailCancel = () => {
         setCategoryDetailsModal({
-            visible: false,
-            category: ''
+           ...categoryDetailsModal,
+            visible: false
         });
     }
 
+    /**
+     *
+     * @param {Category} category
+     */
     const onEditCategoryClicked = (category) => {
         setCategoryDetailsModal({
             visible: true,
-            category: category.categoryName
+            category: category
         });
     };
 
+    /**
+     *
+     * @param {Category} category
+     */
     const onDeleteCategoryClicked = (category) => {
-        deleteCategory(category.categoryName)
+        deleteCategory(category)
         message.success(`Category '${category.categoryName}' removed.`)
     };
 
@@ -109,13 +145,16 @@ const QuestionBank = ({
     const onSearchClicked = text => {
         let lowerCaseText = text.toLocaleLowerCase();
 
-        // personal
-        let filteredPersonalCategories = personalCategories.filter(personal => personal.category
-            && personal.category.categoryName.toLocaleLowerCase().includes(lowerCaseText))
-        filteredPersonalCategories.unshift(NEW_CATEGORY) // first element is a new category card
-        setPersonalCategoriesData(filteredPersonalCategories)
+        let filteredCategories = categories.filter(c => c.category
+            && c.category.categoryName.toLocaleLowerCase().includes(lowerCaseText))
+        filteredCategories.unshift(NEW_CATEGORY) // first element is a new category card
+        setFilteredCategories(filteredCategories)
     }
 
+    /**
+     *
+     * @param {Category} category
+     */
     const showDeleteConfirm = (category) => {
         confirm({
             title: `Delete '${category.categoryName}' Category`,
@@ -178,26 +217,26 @@ const QuestionBank = ({
                 <List
                     className={styles.categories}
                     grid={grid}
-                    dataSource={personalCategoriesData}
-                    loading={personalCategoriesLoading}
-                    renderItem={personal => <List.Item>
+                    dataSource={filteredCategories}
+                    loading={categoriesLoading}
+                    renderItem={item => <List.Item>
                         <Card hoverable bodyStyle={{ padding: 0 }}>
-                            {personal !== NEW_CATEGORY &&
-                            <div className={styles.card} onClick={() => onCategoryClicked(personal.category)}>
+                            {item !== NEW_CATEGORY &&
+                            <div className={styles.card} onClick={() => onCategoryClicked(item.category)}>
                                 <div className={styles.cardContainer}>
-                                    <span className={styles.cardTitle}>{personal.category.categoryName}</span>
-                                    <Dropdown overlay={createPersonalMenu(personal.category)}>
+                                    <span className={styles.cardTitle}>{item.category.categoryName}</span>
+                                    <Dropdown overlay={createPersonalMenu(item.category)}>
                                         <EllipsisOutlined style={{ fontSize: 20 }} onClick={e => e.stopPropagation()} />
                                     </Dropdown>
                                 </div>
 
                                 <div className={styles.cardContainer}>
                                     <span
-                                        className={styles.cardMetaTitle}>{personal.questions.length} QUESTIONS • {getTagsCount(personal.questions)} TAGS</span>
+                                        className={styles.cardMetaTitle}>{item.questions.length} QUESTIONS • {getTagsCount(item.questions)} TAGS</span>
                                     <ArrowRightIcon style={{ fontSize: 20 }} />
                                 </div>
                             </div>}
-                            {personal === NEW_CATEGORY && <div className={styles.card} onClick={onAddCategoryClicked}>
+                            {item === NEW_CATEGORY && <div className={styles.card} onClick={onAddCategoryClicked}>
                                 <div className={styles.cardContainer}>
                                     <span className={styles.cardTitle}>New Category</span>
                                     <CustomIcon style={{ color: '#1F1F1F', fontSize: 18 }} />
@@ -216,23 +255,12 @@ const QuestionBank = ({
 const mapStateToProps = state => {
     const questionBankState = state.questionBank || {};
 
-    // personal
-    let categories = questionBankState.categories.sort()
-    let questions = collection.sortBy(questionBankState.questions, ['question'])
-    let personalCategories = []
-    personalCategories.push(NEW_CATEGORY) // first element is a new category card
-    categories.forEach(category => {
-        personalCategories.push({
-            category: {
-                categoryName: category,
-            },
-            questions: questions.filter(question => question.category === category)
-        })
-    })
+    let categories = cloneDeep(questionBankState.categories)
+    categories.unshift(NEW_CATEGORY) // first element is a new category card
 
     return {
-        personalCategories: personalCategories,
-        personalCategoriesLoading: questionBankState.loading,
+        categories: categories,
+        categoriesLoading: questionBankState.loading,
     };
 };
 

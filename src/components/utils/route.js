@@ -20,7 +20,7 @@ export const routeQuestionBank = () => "/question-bank"
 
 export const routeLibrary = () => "/library"
 
-export const routeQuestionBankCategory = (category) => `/question-bank/${encodeURIComponent(category)}`
+export const routeQuestionBankCategory = (id) => `/question-bank/${id}`
 
 export const routeLibraryCategory = (id) => `/library/${id}`
 
