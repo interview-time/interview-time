@@ -12,7 +12,7 @@ import { loadQuestionBank } from "../../store/question-bank/actions";
 import lang, { cloneDeep } from "lodash/lang";
 import TemplateInterviewDetailsCard from "../templates/template-interview-details-card";
 import TemplateQuestions from "./template-questions";
-import Collection from "lodash/collection";
+import { flatMap } from "lodash/collection";
 import { findGuide, questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
 import { routeTemplates } from "../../components/utils/route";
 import { connect } from "react-redux";
@@ -265,8 +265,8 @@ const mapState = (state) => {
     const questionBankState = state.questionBank || {};
 
     return {
-        questions: Collection.sortBy(questionBankState.questions, ['question']),
-        categories: questionBankState.categories.sort(),
+        questions: flatMap(questionBankState.categories, (item) => item.questions),
+        categories: questionBankState.categories.map(c => c.category.categoryName).sort(),
         guides: guidesState.guides,
         loading: guidesState.loading || questionBankState.loading
     }

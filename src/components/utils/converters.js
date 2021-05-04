@@ -7,6 +7,15 @@
 export function findQuestion(id, questions) {
     return questions.find(question => question.questionId === id)
 }
+/**
+ *
+ * @param {String} id
+ * @param {[CategoryHolder]} categories
+ * @returns {CategoryHolder}
+ */
+export function findCategory(id, categories) {
+    return categories.find(item => item.category.categoryId === id)
+}
 
 /**
  *

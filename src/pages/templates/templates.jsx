@@ -6,7 +6,7 @@ import { addTemplate, deleteTemplate, loadTemplates } from "../../store/template
 import { Alert, Avatar, Button, Card, Col, Dropdown, List, Menu, message, Modal, Row, Space, Tooltip } from "antd";
 import { Link, useHistory } from "react-router-dom";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import Collection, { sortBy } from "lodash/collection";
+import { flatMap, sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 import TemplateInterviewDetailsCard from "./template-interview-details-card";
@@ -213,7 +213,7 @@ const mapState = (state) => {
 
     return {
         guides: guides,
-        questions: Collection.sortBy(questionBankState.questions, ['question']),
+        questions: flatMap(questionBankState.categories, (item) => item.questions),
         loading: guidesState.loading || questionBankState.loading
     }
 }

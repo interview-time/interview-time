@@ -1,34 +1,60 @@
 import { Form, Input, Modal } from "antd";
 import React, { useState } from "react";
 import { personalEvent } from "../../analytics";
+import { cloneDeep } from "lodash/lang";
 
+/**
+ *
+ * @param visible
+ * @param onUpdate
+ * @param onCreate
+ * @param onCancel
+ * @param {Category} categoryToUpdate
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryToUpdate }) => {
     const noError = {
         status: '',
         help: '',
     }
-    const [category, setCategory] = useState('');
+
+    /**
+     * @type {Category}
+     */
+    const emptyCategory= {
+
+    }
+
+    const [category, setCategory] = useState(emptyCategory);
     const [error, setError] = useState(noError);
 
     React.useEffect(() => {
-        setCategory(categoryToUpdate ? categoryToUpdate : '')
+        if(categoryToUpdate) {
+            setCategory(cloneDeep(categoryToUpdate))
+        } else {
+            setCategory(emptyCategory)
+        }
         setError(noError)
         // eslint-disable-next-line
     }, [categoryToUpdate]);
 
     const onCategoryChange = (e) => {
         setError(noError)
-        setCategory(e.target.value)
+        setCategory({
+            ...category,
+            categoryName: e.target.value
+        })
     }
 
     const onCreateClicked = () => {
-        if (category.length === 0) {
+        if (category.categoryName.length === 0) {
             setError({
                 status: 'error',
                 help: 'Category name is required.',
             })
         } else if (categoryToUpdate) {
-            onUpdate(categoryToUpdate, category)
+            onUpdate(category)
         } else {
             personalEvent('New Category Created');
             onCreate(category)
@@ -41,17 +67,17 @@ const CategoryDetailsModal = ({ visible, onUpdate, onCreate, onCancel, categoryT
     }
 
     return (
-        <Modal destroyOnClose={true} title={categoryToUpdate ? "Update category" : "Add category"}
-               visible={visible} closable={false}
-               okText={categoryToUpdate ? "Update" : "Add"} cancelText="Cancel"
-               afterClose={()=>{
-                   setCategory('')
-               }}
+        <Modal title={categoryToUpdate ? "Update category" : "Add category"}
+               visible={visible}
+               closable={false}
+               destroyOnClose={true}
+               okText={categoryToUpdate ? "Update" : "Add"}
+               cancelText="Cancel"
                onOk={onCreateClicked}
                onCancel={onCancelClicked}>
             <Form layout="vertical" preserve={false}>
                 <Form.Item label="Name" validateStatus={error.status} help={error.help}>
-                    <Input defaultValue={category} placeholder="Category name" onChange={onCategoryChange} />
+                    <Input defaultValue={category.categoryName} placeholder="Category name" onChange={onCategoryChange} />
                 </Form.Item>
             </Form>
         </Modal>

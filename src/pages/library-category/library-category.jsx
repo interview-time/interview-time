@@ -21,6 +21,18 @@ import collection from "lodash/collection";
 const { Link } = Typography;
 const { Search } = Input;
 
+/**
+ *
+ * @param {Category[]} personalCategories
+ * @param personalCategoriesLoading
+ * @param communityCategories
+ * @param communityCategoriesLoading
+ * @param loadQuestionBank
+ * @param loadCommunityCategories
+ * @param addQuestions
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const LibraryCategory = (
     {
         personalCategories,
@@ -68,7 +80,7 @@ const LibraryCategory = (
 
             let questions = collection.orderBy(
                 cloneDeep(community.questions),
-                ['createdDate'], ['desc']
+                ['createdDate'], ['asc']
             )
             questions.forEach(question => {
                 question.key = question.questionId
@@ -86,8 +98,9 @@ const LibraryCategory = (
 
     React.useEffect(() => {
         setPersonalCategoriesPicker(
-            personalCategories.map(categoryName => ({
-                value: categoryName,
+            personalCategories.map(category => ({
+                value: category.categoryId,
+                label: category.categoryName,
             }))
         )
         // eslint-disable-next-line
@@ -120,12 +133,12 @@ const LibraryCategory = (
             selectedQuestionIds.forEach(questionId => {
                 let question = cloneDeep(questions.find(question => question.questionId === questionId))
                 question.parentQuestionId = question.questionId
-                question.category = selectedPersonalCategory
+                question.categoryId = selectedPersonalCategory
                 selectedQuestions.push(question)
             })
 
             addQuestions(selectedQuestions)
-            message.success(`'${selectedQuestionIds.length}' questions added to your personal question bank '${selectedPersonalCategory}'.`)
+            message.success(`'${selectedQuestionIds.length}' questions added to your personal question bank.`)
             setSelectedQuestionIds([])
         }
     }
@@ -134,10 +147,10 @@ const LibraryCategory = (
         let selectedPersonalCategory = event.key
         let question = cloneDeep(questions.find(question => question.questionId === questionId))
         question.parentQuestionId = question.questionId
-        question.category = selectedPersonalCategory
+        question.categoryId = selectedPersonalCategory
 
         addQuestions([question])
-        message.success(`Question added to your personal question bank '${selectedPersonalCategory}'.`)
+        message.success(`Question added to your personal question bank.`)
         setSelectedQuestionIds([])
     }
 
@@ -225,7 +238,7 @@ const LibraryCategory = (
                 <>
                     <Dropdown overlay={
                         <Menu onClick={e => onAddQuestionClicked(e, record.questionId)}>
-                            {personalCategories.map(category => <Menu.Item key={category}>{category}</Menu.Item>)}
+                            {personalCategories.map(category => <Menu.Item key={category.categoryId}>{category.categoryName}</Menu.Item>)}
                         </Menu>
                     }>
                         <Link link>Add to Personal</Link>
@@ -321,7 +334,7 @@ const mapStateToProps = state => {
     const communityQuestionsState = state.communityQuestions || {};
     const questionBankState = state.questionBank || {};
 
-    let categories = questionBankState.categories.sort()
+    let categories = questionBankState.categories.map(c => c.category)
 
     return {
         personalCategories: categories,

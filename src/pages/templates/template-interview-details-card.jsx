@@ -4,6 +4,7 @@ import { loadQuestionBank } from "../../store/question-bank/actions";
 import InterviewDetailsCard from "../interview/interview-details-card";
 import { cloneDeep } from "lodash/lang";
 import { defaultTo } from "lodash/util";
+import { flatMap } from "lodash/collection";
 
 const TemplateInterviewDetailsCard = ({ guide, questions, loading, loadQuestionBank }) => {
 
@@ -42,10 +43,10 @@ const TemplateInterviewDetailsCard = ({ guide, questions, loading, loadQuestionB
 }
 
 const mapStateToProps = state => {
-    const { loading, questions } = state.questionBank || {};
+    const { loading, categories } = state.questionBank || {};
 
     return {
-        questions: cloneDeep(questions),
+        questions: flatMap(categories, (item) => item.questions),
         loading
     };
 };

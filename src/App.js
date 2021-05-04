@@ -57,7 +57,7 @@ function App({ history }) {
             <PrivateRoute path="/" exact render={() => <Redirect to={routeLibrary()} />} />
             <PrivateRoute path={routeLibrary()} exact component={Library} />
             <PrivateRoute path="/library/:id" exact component={LibraryCategory} />
-            <PrivateRoute path="/question-bank/:category" exact component={QuestionBankCategory} />
+            <PrivateRoute path="/question-bank/:id" exact component={QuestionBankCategory} />
             <PrivateRoute path={routeQuestionBank()} exact component={QuestionBank} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
