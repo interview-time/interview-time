@@ -1,0 +1,25 @@
+:root {
+    --header-height: 64px;
+}
+
+.stickyHeader {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: white;
+    min-height: var(--header-height);
+    padding-left: 24px;
+    padding-right: 24px;
+    z-index: 10;
+    width: calc(100% - 200px); /* side menu width is 200px */
+    position: fixed;
+    top: 0;
+}
+
+.headerTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-left: 8px;
+}

@@ -20,37 +20,6 @@ import { findCategory } from "../../components/utils/converters";
 import { findIndex} from "lodash/array";
 
 /**
- * @typedef {Object} Category
- * @property {string} userId
- * @property {string} categoryId
- * @property {string} categoryName
- * @property {string|null} image
- * @property {boolean} isActive
- * @property {string} createdDate
- * @property {string} modifiedDate
- */
-
-/**
- * @typedef {Object} Question
- * @property {string} userId
- * @property {string} questionId
- * @property {string} category
- * @property {string} categoryId
- * @property {string} question
- * @property {string} difficulty
- * @property {string|null} parentQuestionId
- * @property {string[]} tags
- * @property {string} createdDate
- * @property {string} modifiedDate
- */
-
-/**
- * @typedef {Object} CategoryHolder
- * @property {Category} category
- * @property {Question[]} questions
- */
-
-/**
  *
  * @type {{categories: CategoryHolder[], loading: boolean}}
  */

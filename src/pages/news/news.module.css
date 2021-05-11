@@ -1,8 +1,5 @@
-.pageHeader {
-    background-color: white;
-    text-align: center;
-}
-
-.detailsCard {
-    width: 500px;
+.pageContent {
+    margin-top: 88px;
+    margin-left: 24px;
+    margin-right: 24px;
 }

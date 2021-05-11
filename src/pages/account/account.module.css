@@ -1,6 +1,7 @@
-.pageHeader {
-    background-color: white;
-    text-align: center;
+.pageContent {
+    margin-top: 88px;
+    margin-left: 24px;
+    margin-right: 24px;
 }
 
 .button {

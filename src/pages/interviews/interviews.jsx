@@ -18,7 +18,8 @@ import {
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
-import { routeInterviewAdd, routeStartInterview } from "../../components/utils/route";
+import { routeInterviewAdd, routeInterviewScorecard } from "../../components/utils/route";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const { Search } = Input;
 
@@ -62,7 +63,7 @@ const columns = [
         render: status => <Badge status={getStatusColor(status)} text={getStatusText(status)} />,
     },
     {
-        title: 'Decision',
+        title: 'Recommendation',
         key: 'decision',
         dataIndex: 'decision',
         sortDirections: ['descend', 'ascend'],
@@ -94,7 +95,7 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
     }, [interviews]);
 
     const onRowClicked = (record) => {
-        history.push(routeStartInterview(record.interviewId));
+        history.push(routeInterviewScorecard(record.interviewId));
     }
 
     const onSearchTextChanged = e => {
@@ -114,8 +115,7 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
 
     return (
         <Layout pageHeader={
-            <div className={styles.header}>
-                <span className={styles.headerTitle}>Interviews</span>
+            <StickyHeader title="Interviews">
                 <Space>
                     <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear
                             onSearch={onSearchClicked} onChange={onSearchTextChanged} />
@@ -125,14 +125,14 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
                         </Link>
                     </Button>
                 </Space>
-            </div>
-        }>
+            </StickyHeader>
+        } contentStyle={styles.pageContent}>
             <Alert message="Interviews help to capture candidate feedback during the interview. Use Template to quickly create the interview with all necessary questions."
                    type="info"
                    className={styles.infoAlert}
                    closable />
 
-            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 24 }}>
+            <Card bodyStyle={{ padding: 0 }}>
                 <Table
                     pagination={false}
                     columns={columns}

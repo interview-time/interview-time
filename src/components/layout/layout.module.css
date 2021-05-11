@@ -1,6 +1,8 @@
 :root {
     --logo-height: 70px;
-    --menu-height: calc(100% - var(--logo-height))
+    --menu-height: calc(100% - var(--logo-height));
+    --color-primary: #1890ff;
+    --color-background: #F0F2F5;
 }
 
 .pageHeader {
@@ -81,7 +83,7 @@
 }
 
 .avatar {
-    background-color: #1890ff;
+    background-color: var(--color-primary);
     margin-left: -4px;
     margin-right: 8px;
 }

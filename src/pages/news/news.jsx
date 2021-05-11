@@ -1,12 +1,18 @@
 import styles from "./news.module.css";
 import Layout from "../../components/layout/layout";
-import { List, PageHeader } from "antd";
+import { Card, Col, List, Row } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
 import { updateNewsVisitTime } from "../../components/utils/storage";
 import moment from "moment";
+import StickyHeader from "../../components/layout/header-sticky";
 
 export const updatesData = [
+    {
+        version: "v0.5.0",
+        date: moment("2021/05/11", "YYYY/MM/DD").valueOf(),
+        description: "New Interview Scorecard & Candidate Evaluation experience. General design updates.",
+    },
     {
         version: "v0.4.2",
         date: moment("2021/04/27", "YYYY/MM/DD").valueOf(),
@@ -85,26 +91,32 @@ const News = () => {
     }, [])
 
     return (
-        <Layout pageHeader={<PageHeader
-            className={styles.pageHeader}
-            title="What's new"
-        >
-        </PageHeader>}>
-
-            <List
-                size="large"
-                header={<Text strong>Recent updates from the Interviewer team.</Text>}
-                bordered
-                dataSource={updatesData}
-                renderItem={item =>
-                    <List.Item>
-                        <List.Item.Meta
-                            title={moment(item.date).format("MMM DD, YYYY") + " • " + item.version}
-                            description={item.description}
+        <Layout pageHeader={
+            <StickyHeader title="What's new" />
+        } contentStyle={styles.pageContent}>
+            <Row>
+                <Col
+                    xxl={{ span: 16, offset: 4 }}
+                    xl={{ span: 20, offset: 2 }}
+                    lg={{ span: 24 }}>
+                    <Card bodyStyle={{ padding: 0 }}>
+                        <List
+                            size="large"
+                            header={<Text strong style={{ marginLeft: 24 }}>Recent updates from the Interviewer
+                                team.</Text>}
+                            dataSource={updatesData}
+                            renderItem={item =>
+                                <List.Item>
+                                    <List.Item.Meta
+                                        title={moment(item.date).format("MMM DD, YYYY") + " • " + item.version}
+                                        description={item.description}
+                                    />
+                                </List.Item>
+                            }
                         />
-                    </List.Item>
-                }
-            />
+                    </Card>
+                </Col>
+            </Row>
         </Layout>
     )
 }

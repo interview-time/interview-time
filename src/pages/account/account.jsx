@@ -1,11 +1,12 @@
 import styles from "./account.module.css";
 import Layout from "../../components/layout/layout";
-import { Button, Card, PageHeader } from "antd";
+import { Button, Card, Col, Row } from "antd";
 import React from "react";
 import { ProfileIcon } from "../../components/utils/icons";
 import Avatar from "antd/es/avatar/avatar";
 import { useAuth0 } from "../../react-auth0-spa";
 import Meta from "antd/lib/card/Meta";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const Account = () => {
 
@@ -30,12 +31,14 @@ const Account = () => {
     }
 
     return (
-        <Layout pageHeader={<PageHeader
-            className={styles.pageHeader}
-            title="Profile"
-        >
-        </PageHeader>}>
-
+        <Layout pageHeader={
+            <StickyHeader title="Profile" />
+        } contentStyle={styles.pageContent}>
+            <Row>
+                <Col
+                    xxl={{ span: 16, offset: 4 }}
+                    xl={{ span: 20, offset: 2 }}
+                    lg={{ span: 24 }}>
             <Card>
                 <Meta
                     avatar={
@@ -49,7 +52,8 @@ const Account = () => {
                 />
                 <Button className={styles.button} onClick={onSignOutClicked}>Sign out</Button>
             </Card>
-
+                    </Col>
+            </Row>
         </Layout>
     )
 }

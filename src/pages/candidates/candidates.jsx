@@ -12,14 +12,15 @@ import {
     getAssessmentText,
     getDecisionColor,
     getDecisionText,
-    getOverallPerformanceColor,
+    getOverallPerformance,
     getStatusText
 } from "../../components/utils/constants";
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse, sortedUniq } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
-import { routeStartInterview } from "../../components/utils/route";
+import { routeInterviewScorecard } from "../../components/utils/route";
 import { TrophyTwoTone } from "@ant-design/icons";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const { Search } = Input;
 
@@ -54,7 +55,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
     }, [position]);
 
     const onRowClicked = (record) => {
-        history.push(routeStartInterview(record.interviewId));
+        history.push(routeInterviewScorecard(record.interviewId));
     }
 
     const onSearchTextChanged = e => {
@@ -99,9 +100,9 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
             title: 'Overall Performance',
             key: 'position',
             sortDirections: ['descend', 'ascend'],
-            sorter: (a, b) => getOverallPerformanceColor(a.structure.groups) - getOverallPerformanceColor(b.structure.groups),
+            sorter: (a, b) => getOverallPerformance(a.structure.groups) - getOverallPerformance(b.structure.groups),
             render: interview => {
-                const overallPerformanceColor = getOverallPerformanceColor(interview.structure.groups);
+                const overallPerformanceColor = getOverallPerformance(interview.structure.groups);
 
                 return <Space>
                     {overallPerformanceColor + '%'}
@@ -136,7 +137,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
             </Space></Popover>,
         },
         {
-            title: 'Decision',
+            title: 'Recommendation',
             key: 'decision',
             dataIndex: 'decision',
             sortDirections: ['descend', 'ascend'],
@@ -153,8 +154,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
 
     return (
         <Layout pageHeader={
-            <div className={styles.header}>
-                <span className={styles.headerTitle}>Candidates</span>
+            <StickyHeader title="Candidates">
                 <Space>
                     <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear
                             onSearch={onSearchClicked} onChange={onSearchTextChanged} />
@@ -179,8 +179,8 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
                         }
                     />
                 </Space>
-            </div>
-        }>
+            </StickyHeader>
+        } contentStyle={styles.pageContent}>
             <Alert message="Candidates let you to compare several candidates and find the best performer."
                    type="info"
                    className={styles.infoAlert}

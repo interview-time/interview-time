@@ -14,12 +14,6 @@
     top: 0;
 }
 
-.headerTitleContainer {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
 .headerTitle {
     font-size: 18px;
     font-weight: 700;
@@ -44,11 +38,42 @@
 
 .space {
     width: 100%;
-    padding-top: 24px;
+}
+
+.divAlert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .divSpaceBetween {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 16px;
+}
+
+.divHorizontalCenter {
+    display: flex;
+    align-items: center;
+}
+
+.divVerticalCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dotSmall {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.card {
+    height: 280px;
+    overflow: scroll;
 }

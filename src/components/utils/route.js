@@ -8,7 +8,9 @@ export const routeInterviewDetails = (id) => `/interviews/details/${id}`
 
 export const routeInterviewAdd = () => `/interviews/add`
 
-export const routeStartInterview = (id) => `/interviews/start/${id}`
+export const routeInterviewScorecard = (id) => `/interviews/scorecard/${id}`
+
+export const routeInterviewCandidate = (id) => `/interviews/candidate/${id}`
 
 export const routeTemplates = () => "/templates"
 

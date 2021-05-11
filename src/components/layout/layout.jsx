@@ -40,7 +40,7 @@ const menuIconStyle = { fontSize: '24px' }
 const menuIconWithBadgeStyle = { fontSize: '24px', position: "absolute" }
 const menuIconBadgeStyle = { position: "absolute" }
 
-const Layout = ({ children, pageHeader }) => {
+const Layout = ({ children, pageHeader, contentStyle }) => {
 
     const location = useLocation();
     const { user } = useAuth0();
@@ -211,7 +211,7 @@ const Layout = ({ children, pageHeader }) => {
             </AntLayout.Sider>
             <AntLayout className="site-layout">
                 {pageHeader}
-                <AntLayout.Content className={styles.pageContent}>
+                <AntLayout.Content className={contentStyle ? contentStyle : styles.pageContent}>
                     <Drawer
                         title="Quick Start"
                         width={700}

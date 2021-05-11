@@ -10,13 +10,13 @@ import { useHistory, useParams } from "react-router-dom";
 import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import lang, { cloneDeep } from "lodash/lang";
-import TemplateInterviewDetailsCard from "../templates/template-interview-details-card";
 import TemplateQuestions from "./template-questions";
 import { flatMap } from "lodash/collection";
 import { findGuide, questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
 import { routeTemplates } from "../../components/utils/route";
 import { connect } from "react-redux";
 import { personalEvent } from "../../analytics";
+import { TemplatePreviewCard } from "../interview/interview-sections";
 
 const { Step } = Steps;
 
@@ -192,7 +192,7 @@ const TemplateWizard = (
                 <Step title="Summary Section" />
             </Steps>
         </PageHeader>
-    }>
+    } contentStyle={styles.pageContent}>
         <Spin spinning={loading}>
 
             {isDetailsStep() && <TemplateWizardDetails
@@ -228,13 +228,13 @@ const TemplateWizard = (
 
             <Modal
                 title="Interview Experience"
-                width="80%"
+                width={1000}
                 style={{ top: '5%' }}
                 destroyOnClose={true}
                 footer={null}
                 onCancel={onPreviewClosed}
                 visible={previewVisible}>
-                <TemplateInterviewDetailsCard guide={guide} />
+                <TemplatePreviewCard guide={guide} questions={questions} />
             </Modal>
 
             <Modal
