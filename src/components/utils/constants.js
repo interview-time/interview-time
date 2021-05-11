@@ -1,4 +1,5 @@
 import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
+import { flatMap } from "lodash/collection";
 
 export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a"
 export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ"
@@ -27,6 +28,12 @@ export const GroupAssessment = {
     LOW_SKILLED: 'LOW_SKILLED',
     SKILLED: 'SKILLED',
     HIGHLY_SKILLED: 'HIGHLY_SKILLED',
+}
+
+export const QuestionAssessment = {
+    YES: "YES",
+    NO: "NO",
+    MAYBE: "MAYBE",
 }
 
 export const TemplateCategories = [
@@ -80,13 +87,13 @@ export const getTemplateCategoryIcon = (key) => {
 
 export const getDecisionText = (decision) => {
     if (decision === InterviewAssessment.YES) {
-        return 'YES';
+        return 'hire';
     } else if (decision === InterviewAssessment.STRONG_YES) {
-        return 'STRONG YES';
+        return 'strong hire';
     } else if (decision === InterviewAssessment.NO) {
-        return 'NO';
+        return 'no hire';
     } else if (decision === InterviewAssessment.STRONG_NO) {
-        return 'STRONG NO';
+        return 'strong no hire';
     }
 
     return ''
@@ -133,19 +140,59 @@ export const getAssessmentText = (assessment) => {
         return "no proficiency";
     }
 
-    return ""
+    return "needs evaluation"
+}
+
+/**
+ *
+ * @param {InterviewGroup[]} groups
+ * @returns {Question[]}
+ */
+export const getQuestionsWithAssessment = (groups) => {
+    return flatMap(groups, (item) => item.questions)
+        .filter(question => question.assessment != null)
+}
+
+/**
+ *
+ * @param {InterviewGroup} group
+ * @returns {number}
+ */
+export const getQuestionsPerformance = (group) => {
+    let questions = group.questions.filter(question => question.assessment != null)
+    let total = 0;
+    questions.forEach(question => {
+        total += getQuestionAssessmentNumber(question.assessment)
+    })
+
+    if(questions.length > 0) {
+        return Math.round((total / questions.length) * 100)
+    } else {
+        return 0
+    }
 }
 
 export const getOverallPerformanceColor = (groups) => {
+    let performance = getOverallPerformance(groups)
+    if(performance >= 80) {
+        return COLOR_GREEN_6
+    } else if(performance <= 50) {
+        return COLOR_ORANGE_5
+    } else {
+        return COLOR_RED_5
+    }
+}
+
+export const getOverallPerformance = (groups) => {
     let total = 0;
     groups.forEach(group => {
-        total += getAssessmentNumber(group.assessment)
+        total += getGroupAssessmentNumber(group.assessment)
     })
 
     return Math.round((total / groups.length) * 100)
 }
 
-const getAssessmentNumber = (assessment) => {
+const getGroupAssessmentNumber = (assessment) => {
     if(assessment === GroupAssessment.HIGHLY_SKILLED) {
         return 1.0;
     } else if (assessment === GroupAssessment.SKILLED) {
@@ -154,6 +201,18 @@ const getAssessmentNumber = (assessment) => {
         return 0.45;
     } else if (assessment === GroupAssessment.NO_PROFICIENCY) {
         return 0;
+    }
+
+    return 0;
+}
+
+const getQuestionAssessmentNumber = (assessment) => {
+    if(assessment === QuestionAssessment.YES) {
+        return 1.0;
+    } else if (assessment === QuestionAssessment.MAYBE) {
+        return 0.8;
+    } else if (assessment === QuestionAssessment.NO) {
+        return 0.2;
     }
 
     return 0;

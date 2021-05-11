@@ -9,6 +9,7 @@ import { loadCommunityCategories } from "../../store/community-questions/actions
 import { cloneDeep } from "lodash/lang";
 import { questionsToTags } from "../../components/utils/converters";
 import { ArrowRightIcon } from "../../components/utils/icons";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const { Search } = Input;
 
@@ -62,15 +63,14 @@ const Library = ({ categories, categoriesLoading, loadCommunityCategories }) => 
 
     return (
         <Layout pageHeader={
-            <div className={styles.header}>
-                <span className={styles.headerTitle}>Interview Questions Library</span>
+            <StickyHeader title="Interview Questions Library">
                 <Search placeholder="Search" allowClear className={styles.headerSearch}
                         onSearch={onSearchClicked}
                         onChange={onSearchChanges}
                 />
-            </div>
-        }>
-            <div style={{ marginTop: 24 }}>
+            </StickyHeader>
+        } contentStyle={styles.pageContent}>
+            <div>
 
                 <Alert message="Library is a curated list of question to help you get started quickly."
                        className={styles.infoAlert}
@@ -78,7 +78,6 @@ const Library = ({ categories, categoriesLoading, loadCommunityCategories }) => 
                        closable />
 
                 <List
-                    className={styles.categories}
                     grid={grid}
                     dataSource={categoriesData}
                     loading={categoriesLoading}

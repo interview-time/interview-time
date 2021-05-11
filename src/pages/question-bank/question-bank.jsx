@@ -12,6 +12,7 @@ import confirm from "antd/lib/modal/confirm";
 import { questionsToTags } from "../../components/utils/converters";
 import { cloneDeep } from "lodash/lang";
 import CategoryDetailsModal from "./modal-category-details";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const { Search } = Input;
 
@@ -184,8 +185,7 @@ const QuestionBank = ({
 
     return (
         <Layout pageHeader={
-            <div className={styles.header}>
-                <span className={styles.headerTitle}>My Interview Questions</span>
+            <StickyHeader title="Interview Questions">
                 <Space>
                     <Search placeholder="Search" allowClear className={styles.tabHeaderSearch}
                             onSearch={onSearchClicked}
@@ -198,8 +198,8 @@ const QuestionBank = ({
                     </Button>
                     <Button type="primary" onClick={onAddCategoryClicked}>Add category</Button>
                 </Space>
-            </div>
-        }>
+            </StickyHeader>
+        } contentStyle={styles.pageContent}>
             <CategoryDetailsModal
                 visible={categoryDetailsModal.visible}
                 categoryToUpdate={categoryDetailsModal.category}
@@ -207,7 +207,7 @@ const QuestionBank = ({
                 onCreate={onCreateCategoryClicked}
                 onCancel={onCategoryDetailCancel}
             />
-            <div style={{ marginTop: 24 }}>
+            <div>
                 <Alert
                     message="Questions let you create and manage all your interview questions. They are grouped by category, like 'Java' or 'Leadership'. To help get you started quickly browse our Library, or add your unique questions. You can use questions when you create a template or interview."
                     type="info"
@@ -215,7 +215,6 @@ const QuestionBank = ({
                     closable
                 />
                 <List
-                    className={styles.categories}
                     grid={grid}
                     dataSource={filteredCategories}
                     loading={categoriesLoading}

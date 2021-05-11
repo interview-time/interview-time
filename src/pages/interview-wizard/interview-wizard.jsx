@@ -14,12 +14,13 @@ import TemplateWizardSummary from "../template-wizard/template-wizard-summary";
 import { Status } from "../../components/utils/constants";
 import TemplateWizardQuestions from "../template-wizard/template-wizard-questions";
 import TemplateQuestions from "../template-wizard/template-questions";
-import InterviewDetailsCard from "../interview/interview-details-card";
+import { InterviewPreviewCard } from "../interview/interview-sections";
 import CreateTemplateModal from "./create-template-modal";
 import { routeInterviews } from "../../components/utils/route";
 import { connect } from "react-redux";
 import { findInterview } from "../../components/utils/converters";
 import { personalEvent } from "../../analytics";
+import { useAuth0 } from "../../react-auth0-spa";
 
 const { Step } = Steps;
 
@@ -72,6 +73,7 @@ const InterviewWizard = (
 
     const history = useHistory();
     const { id } = useParams();
+    const { user } = useAuth0();
 
     React.useEffect(() => {
         if (!isNewInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
@@ -210,7 +212,7 @@ const InterviewWizard = (
                 <Step title="Summary Section" />
             </Steps>
         </PageHeader>
-    }>
+    } contentStyle={styles.pageContent}>
         <Spin spinning={loading}>
             {isDetailsStep() && <InterviewWizardDetails
                 interview={interview}
@@ -247,13 +249,13 @@ const InterviewWizard = (
 
             <Modal
                 title="Interview Experience"
-                width="80%"
+                width={1000}
                 style={{ top: '5%' }}
                 destroyOnClose={true}
                 footer={null}
                 onCancel={onPreviewClosed}
                 visible={previewVisible}>
-                <InterviewDetailsCard interview={interview} hideAnchor={true} />
+                <InterviewPreviewCard interview={interview} username={user.name} />
             </Modal>
 
             <Modal

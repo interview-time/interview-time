@@ -9,13 +9,14 @@ import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { flatMap, sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
-import TemplateInterviewDetailsCard from "./template-interview-details-card";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import { routeTemplateAdd, routeTemplateDetails } from "../../components/utils/route";
 import { useAuth0 } from "../../react-auth0-spa";
 import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
 import confirm from "antd/lib/modal/confirm";
 import { CustomIcon } from "../../components/utils/icons";
+import { TemplatePreviewCard } from "../interview/interview-sections";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const NEW_TEMPLATE = "NEW_TEMPLATE"
 
@@ -118,15 +119,14 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
     </Menu>;
 
     return <Layout pageHeader={
-        <div className={styles.header}>
-            <span className={styles.headerTitle}>My Interview Templates</span>
+        <StickyHeader title="Interview Templates">
             <Button type="primary">
                 <Link to={routeTemplateAdd()}>
                     <span className="nav-text">Add template</span>
                 </Link>
             </Button>
-        </div>
-    }>
+        </StickyHeader>
+    } contentStyle={styles.pageContent}>
         <Alert message="Templates allow you to build and manage interview templates for any type of interview, like 'Senior Java Developer' or 'Behavioral Interview'. This is a great way to keep the interview process structured and to make sure you’re asking a consistent set of questions. You can use a template when you create an interview."
                className={styles.infoAlert}
                type="info"
@@ -194,13 +194,13 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
         />
         <Modal
             title="Interview Experience"
-            width="80%"
+            width={1000}
             style={{ top: '5%' }}
             destroyOnClose={true}
             footer={null}
             onCancel={onPreviewClosed}
             visible={previewVisible}>
-            <TemplateInterviewDetailsCard guide={guide} questions={questions} />
+            <TemplatePreviewCard guide={guide} questions={questions} />
         </Modal>
     </Layout>
 }

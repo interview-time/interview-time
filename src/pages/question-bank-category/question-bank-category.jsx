@@ -1,7 +1,7 @@
 import styles from "./question-bank-category.module.css";
 import QuestionDetailsModal from "./modal-question-details";
 import { Button, Dropdown, Input, Menu, message, Select, Space, Table, Tag } from "antd";
-import { ArrowLeftOutlined, MoreOutlined } from "@ant-design/icons";
+import { MoreOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
 import { Difficulty } from "../../components/utils/constants";
@@ -14,7 +14,7 @@ import {
 import { flatten, sortedUniq } from "lodash/array";
 import ImportQuestionsModal from "./modal-import-questions";
 import Layout from "../../components/layout/layout";
-import { useHistory, useParams, withRouter } from "react-router-dom";
+import { useParams, withRouter } from "react-router-dom";
 import {
     addQuestion,
     addQuestions,
@@ -23,7 +23,7 @@ import {
     updateQuestion
 } from "../../store/question-bank/actions";
 import { connect } from "react-redux";
-import { routeQuestionBank } from "../../components/utils/route";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const { Search } = Input;
 
@@ -112,8 +112,6 @@ const QuestionBankCategory = ({
     const [importModalVisible, setImportModalVisible] = useState(false);
 
     const { id } = useParams();
-
-    const history = useHistory();
 
     React.useEffect(() => {
         if ((!categories || categories.length === 0) && !categoriesLoading) {
@@ -239,19 +237,9 @@ const QuestionBankCategory = ({
         message.success(`${questions.length} questions imported.`)
     }
 
-    const onBackToCategoriesClicked = () => {
-        history.push(routeQuestionBank())
-    }
-
     return (
         <Layout pageHeader={
-            <div className={styles.header}>
-                <div align="center" onClick={onBackToCategoriesClicked}  className={styles.headerTitleContainer}>
-                    <ArrowLeftOutlined />
-                    <span className={styles.headerTitle} style={{marginLeft: 8, marginRight: 8}}>
-                        {category.category.categoryName}
-                    </span>
-                </div>
+            <StickyHeader title={category.category.categoryName} backButton>
                 <Space>
                     <Search placeholder="Search" allowClear
                             className={styles.tabHeaderSearch}
@@ -280,7 +268,7 @@ const QuestionBankCategory = ({
                         style={{ width: 125 }}
                     />
                 </Space>
-                <Space style={{marginRight: 24}}>
+                <Space>
                     <Button type="primary" onClick={() => onAddQuestionClicked()}>Add question</Button>
                     <Dropdown overlay={
                         <Menu onClick={(info) => onMenuClicked(info)}>
@@ -289,8 +277,8 @@ const QuestionBankCategory = ({
                         <Button icon={<MoreOutlined />} />
                     </Dropdown>
                 </Space>
-            </div>
-        }>
+            </StickyHeader>
+        } contentStyle={styles.pageContent}>
             <div className={styles.container}>
                 <QuestionDetailsModal
                     visible={questionDetailModal.visible}

@@ -1,6 +1,5 @@
 import styles from "./library-category.module.css";
 import { Button, Card, Dropdown, Input, Menu, message, Select, Space, Table, Tag, Typography } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
 import { Difficulty } from "../../components/utils/constants";
@@ -9,7 +8,6 @@ import { filterQuestionDifficulty, filterQuestionTag, filterQuestionText } from 
 import Layout from "../../components/layout/layout";
 import { useHistory, useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import { routeLibrary} from "../../components/utils/route";
 import { loadCommunityCategories } from "../../store/community-questions/actions";
 import { questionsToTags } from "../../components/utils/converters";
 import { cloneDeep } from "lodash/lang";
@@ -17,6 +15,7 @@ import Text from "antd/lib/typography/Text";
 import { addQuestions, loadQuestionBank } from "../../store/question-bank/actions";
 import RequestQuestionModal from "./modal-request-question";
 import collection from "lodash/collection";
+import StickyHeader from "../../components/layout/header-sticky";
 
 const { Link } = Typography;
 const { Search } = Input;
@@ -60,8 +59,7 @@ const LibraryCategory = (
     const [requestQuestionVisible, setRequestQuestionVisible] = useState(false);
 
     const { id } = useParams();
-    const history = useHistory();
-
+    useHistory();
     React.useEffect(() => {
         if (communityCategories.length === 0 && !communityCategoriesLoading) {
             loadCommunityCategories();
@@ -183,11 +181,6 @@ const LibraryCategory = (
     const onRequestQuestionClose = () => {
         setRequestQuestionVisible(false)
     }
-
-    const onBackToCategoriesClicked = () => {
-        history.push(routeLibrary())
-    }
-
     const onPersonalCategoryChange = value => {
         setSelectedPersonalCategory(value)
     }
@@ -250,13 +243,7 @@ const LibraryCategory = (
 
     return (
         <Layout pageHeader={
-            <div className={styles.header}>
-                <div align="center" onClick={onBackToCategoriesClicked}  className={styles.headerTitleContainer}>
-                    <ArrowLeftOutlined />
-                    <span className={styles.headerTitle} style={{marginLeft: 8, marginRight: 8}}>
-                        {category.categoryName}
-                    </span>
-                </div>
+            <StickyHeader title={category.categoryName} backButton>
                 <Space>
                     <Search placeholder="Search" allowClear
                             className={styles.tabHeaderSearch}
@@ -285,9 +272,9 @@ const LibraryCategory = (
                         style={{ width: 125 }}
                     />
                 </Space>
-                <Button onClick={onRequestQuestionClicked} style={{marginRight: 24}}>Suggest question</Button>
-            </div>
-        }>
+                <Button onClick={onRequestQuestionClicked}>Suggest question</Button>
+            </StickyHeader>
+        } contentStyle={styles.pageContent}>
             <RequestQuestionModal
                 visible={requestQuestionVisible}
                 onCancel={onRequestQuestionClose}

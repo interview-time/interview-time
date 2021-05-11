@@ -1,0 +1,27 @@
+.multiLineText {
+    white-space: pre-wrap;
+}
+
+.mainCol {
+    background-color: #FFFFFF;
+    padding: 24px;
+}
+
+.summary {
+    margin-top: 64px;
+}
+
+.questionArea {
+    margin-top: 64px;
+}
+
+.space {
+    width: 100%;
+    padding-top: 24px;
+}
+
+.more {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+}

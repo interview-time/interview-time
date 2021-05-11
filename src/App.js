@@ -27,6 +27,7 @@ import QuestionBankCategory from "./pages/question-bank-category/question-bank-c
 import LibraryCategory from "./pages/library-category/library-category";
 import Library from "./pages/library/library";
 import Candidates from "./pages/candidates/candidates";
+import InterviewCandidate from "./pages/interview-evaluation/interview-evaluation";
 import { withRouter } from "react-router-dom";
 import ReactGA from "react-ga";
 
@@ -63,7 +64,8 @@ function App({ history }) {
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewWizard} />
             <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
-            <PrivateRoute path="/interviews/start/:id" exact component={Interview} />
+            <PrivateRoute path="/interviews/scorecard/:id" exact component={Interview} />
+            <PrivateRoute path="/interviews/candidate/:id" exact component={InterviewCandidate} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
             <PrivateRoute path={routeTemplateAdd()} exact component={TemplateWizard} />
             <PrivateRoute path="/templates/details/:id" exact component={TemplateWizard} />

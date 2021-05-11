@@ -1,41 +1,70 @@
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Divider, Dropdown, Menu, message, Modal, PageHeader, Space, Tag } from 'antd';
+import { Button, Card, Col, Divider, message, Row, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview.module.css";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import InterviewDetailsCard from "./interview-details-card";
-import { Status } from "../../components/utils/constants";
-import { SyncOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, SyncOutlined } from "@ant-design/icons";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import { routeInterviewDetails, routeInterviews } from "../../components/utils/route";
-import { findInterview } from "../../components/utils/converters";
-import { personalEvent } from "../../analytics";
+import { routeInterviewCandidate, routeInterviews } from "../../components/utils/route";
+import { findGroup, findInterview, findQuestionInGroups, findTemplate } from "../../components/utils/converters";
+import Text from "antd/lib/typography/Text";
+import { useAuth0 } from "../../react-auth0-spa";
+import InterviewDecisionAlert from "../interview-evaluation/interview-decision-alert";
+import { loadTemplates } from "../../store/templates/actions";
+import { GroupsSection, IntroSection, SummarySection, InterviewInformationSection } from "./interview-sections";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000 // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
-const KEY_EDIT = 'edit'
-const KEY_DELETE = 'delete'
 
-const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterviews, updateInterview}) => {
+/**
+ *
+ * @param {Interview[]} interviews
+ * @param {Template[]} templates
+ * @param {boolean} interviewsUploading
+ * @param deleteInterview
+ * @param loadInterviews
+ * @param updateInterview
+ * @param loadTemplates
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Interview = ({
+                       interviews,
+                       templates,
+                       interviewsUploading,
+                       deleteInterview,
+                       loadInterviews,
+                       updateInterview,
+                       loadTemplates
+                   }) => {
 
+    /**
+     * @type {Interview}
+     */
     const emptyInterview = {
         candidate: '',
         position: '',
-        guideId: '',
         interviewDateTime: '',
         structure: {
             groups: []
         }
     }
 
+    /**
+     * @type {Template}
+     */
+    const emptyTemplate = {}
+
     const [interview, setInterview] = useState(emptyInterview);
+    const [template, setTemplate] = useState(emptyTemplate);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
 
     const { id } = useParams();
+    const { user } = useAuth0();
 
     const history = useHistory();
 
@@ -48,7 +77,19 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
     }, [interviews, id]);
 
     React.useEffect(() => {
+        // initial data loading
+        if (!template.guideId && templates.length > 0 && interview.guideId) {
+            const interviewTemplate = findTemplate(interview.guideId, templates);
+            if (interviewTemplate) {
+                setTemplate(cloneDeep(interviewTemplate))
+            }
+        }
+        // eslint-disable-next-line
+    }, [interview, templates]);
+
+    React.useEffect(() => {
         loadInterviews();
+        loadTemplates();
 
         return () => {
             onInterviewChangeDebounce.cancel();
@@ -68,53 +109,20 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
         }
         // eslint-disable-next-line
     }, [interviewChangedCounter])
-
-    const isNewStatus = () => interview.status === Status.NEW || interview.status === Status.STARTED
-
-    const isCompletedStatus = () => interview.status === Status.COMPLETED
+    const initialLoading = () => !interview.interviewId
 
     const onInterviewChange = () => {
         setUnsavedChanges(true)
         setInterviewChangedCounter(interviewChangedCounter + 1)
     }
 
-    const onDeleteClicked = () => {
-        Modal.confirm({
-            title: "Are you sure that you want to delete the interview?",
-            okText: "Yes",
-            cancelText: "No",
-            onOk() {
-                deleteInterview(interview.interviewId);
-                history.push(routeInterviews());
-                message.success(`Interview '${interview.candidate}' removed.`);
-            }
-        })
-    }
-
-    const onCompletedClicked = () => {
-        if (!interview.decision) {
-            Modal.warn({
-                title: "Please select summary 'decision'.",
-            })
-        } else {
-            Modal.confirm({
-                title: "When you complete the interview you will not be able to make changes to this interview anymore. Are you sure that you want to complete the interview?",
-                okText: "Yes",
-                cancelText: "No",
-                onOk() {
-                    const updatedInterview = { ...interview, status: Status.COMPLETED }
-                    updateInterview(updatedInterview);
-                    history.push(routeInterviews());
-                    message.success(`Interview '${interview.candidate}' marked as complete.`);
-                    
-                    personalEvent('Interview completed');
-                }
-            })
-        }
+    const onDeleteInterview = () => {
+        deleteInterview(interview.interviewId);
+        history.push(routeInterviews());
     }
 
     const onBackClicked = () => {
-        history.push(routeInterviews());
+        history.goBack()
     }
 
     const onSaveClicked = () => {
@@ -123,72 +131,110 @@ const Interview = ({interviews, interviewsUploading, deleteInterview, loadInterv
         message.success(`Interview '${interview.candidate}' updated.`);
     }
 
-    const onEditClicked = () => {
-        history.push(routeInterviewDetails(id))
+    const onNoteChanges = e => {
+        interview.notes = e.target.value
+        onInterviewChange()
+    };
+
+    const onGroupAssessmentChanged = (group, assessment) => {
+        findGroup(group.groupId, interview.structure.groups).assessment = assessment
+        onInterviewChange()
+    };
+
+    const onQuestionAssessmentChanged = (question, assessment) => {
+        findQuestionInGroups(question.questionId, interview.structure.groups).assessment = assessment
+        console.log(question)
+        console.log(interview.structure.groups)
+        onInterviewChange()
     }
 
-    const handleMenuClick = (e) => {
-        if (e.key === KEY_EDIT) {
-            onEditClicked()
-        } else if (e.key === KEY_DELETE) {
-            onDeleteClicked()
+    const onGroupNotesChanged = (group, notes) => {
+        findGroup(group.groupId, interview.structure.groups).notes = notes
+        onInterviewChange()
+    };
+
+    const onCandidateEvaluationClicked = () => {
+        if(unsavedChanges) {
+            onSaveClicked()
         }
-    }
-
-    const menu = (
-        <Menu onClick={handleMenuClick}>
-            <Menu.Item key={KEY_EDIT}>Edit</Menu.Item>
-            <Menu.Item key={KEY_DELETE} danger>Delete</Menu.Item>
-        </Menu>
-    );
+        history.push(routeInterviewCandidate(interview.interviewId))
+    };
 
     return (
         <Layout pageHeader={
-            <div className={styles.sticky}>
-                <PageHeader
-                    className={styles.pageHeader}
-                    title={`Interview • ${interview.candidate}`}
-                    tags={
-                        <>
-                            {interviewsUploading && <Tag
-                                icon={<SyncOutlined spin />}
-                                color="processing">saving data</Tag>}
-                            {unsavedChanges && <Tag color="processing">unsaved changes</Tag>}
-                        </>
-                    }
-                    onBack={onBackClicked}
-                    extra={[
-                        <>{isNewStatus() && <Space>
-                            <Dropdown.Button
-                                loading
-                                overlay={menu}
-                                onClick={onSaveClicked}>
-                                Save
-                            </Dropdown.Button>
-                            <Button type="primary" onClick={onCompletedClicked}>Complete</Button>
-                        </Space>}
-                            {isCompletedStatus() && <Button danger onClick={onDeleteClicked}>Delete</Button>}
-                        </>
-                    ]}>
-                </PageHeader>
-                <Divider style={{ padding: 0, margin: 0 }} />
+            <div className={styles.header}>
+                <div className={styles.headerTitleContainer}>
+                    <div onClick={onBackClicked}>
+                        <ArrowLeftOutlined />
+                        <span className={styles.headerTitle}>Interview Scorecard</span>
+                    </div>
+                    <>
+                        {interviewsUploading && <Tag
+                            style={{ marginLeft: 16 }}
+                            icon={<SyncOutlined spin />}
+                            color="processing">saving data</Tag>}
+                        {unsavedChanges && <Tag
+                            style={{ marginLeft: 16 }}
+                            color="processing">unsaved changes</Tag>}
+                    </>
+                </div>
+                <Button
+                    type="primary"
+                    loading={interviewsUploading}
+                    onClick={onSaveClicked}>Save</Button>
             </div>
         }>
-            <InterviewDetailsCard
-                interview={interview}
-                onInterviewChange={onInterviewChange}
-                disabled={isCompletedStatus()} />
+            <Row className={styles.rootContainer}>
+                <Col key={interview.interviewId}
+                     xxl={{ span: 16, offset: 4 }}
+                     xl={{ span: 20, offset: 2 }}
+                     lg={{ span: 24 }}>
 
+                    {interview.decision && <InterviewDecisionAlert interview={interview} />}
+
+                    <div style={{ marginBottom: 12 }}>
+                        <InterviewInformationSection
+                            onDeleteInterview={onDeleteInterview}
+                            loading={initialLoading()}
+                            showMoreSection={true}
+                            userName={user.name}
+                            interview={interview}
+                            template={template} />
+                    </div>
+
+                    <Card>
+
+                        <IntroSection interview={interview} />
+                        <GroupsSection
+                            interview={interview}
+                            onGroupAssessmentChanged={onGroupAssessmentChanged}
+                            onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                            onNotesChanged={onGroupNotesChanged}
+                        />
+                        <SummarySection interview={interview} onNoteChanges={onNoteChanges} />
+
+                        <Divider />
+
+                        <div className={styles.divSpaceBetween}>
+                            <Text bold>Ready to make hiring recommendation?</Text>
+                            <Button type="primary" onClick={onCandidateEvaluationClicked}>Open Candidate Evaluation</Button>
+                        </div>
+
+                    </Card>
+                </Col>
+            </Row>
         </Layout>
     )
 }
 
-const mapDispatch = { deleteInterview, loadInterviews, updateInterview }
+const mapDispatch = { deleteInterview, loadInterviews, updateInterview, loadTemplates }
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
+    const templatesState = state.guides || {};
     return {
         interviews: interviewsState.interviews,
-        interviewsUploading: interviewsState.uploading
+        interviewsUploading: interviewsState.uploading,
+        templates: templatesState.guides
     }
 }
 
