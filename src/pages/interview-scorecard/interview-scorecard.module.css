@@ -31,7 +31,7 @@
 }
 
 .rootContainer {
-    margin-top: 88px;
+    margin-top: var(--header-height-with-padding);
 }
 
 .summary {
@@ -51,4 +51,21 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.toc {
+    position: fixed;
+    top: calc(16px + var(--header-height-with-padding));
+    display: flex;
+    flex-direction: column;
+    margin-left: 24px;
+}
+
+.anchorLink {
+    color: #8C8C8C;
+    font-size: 13px
+}
+
+.hash {
+    scroll-margin-top: var(--header-height-with-padding);
 }

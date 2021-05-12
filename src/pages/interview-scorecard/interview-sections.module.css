@@ -3,12 +3,8 @@
 }
 
 .mainCol {
-    background-color: #FFFFFF;
+    background-color: white;
     padding: 24px;
-}
-
-.summary {
-    margin-top: 64px;
 }
 
 .questionArea {

@@ -16,7 +16,7 @@ import { findGuide, questionIdsToQuestions, questionsToQuestionIds } from "../..
 import { routeTemplates } from "../../components/utils/route";
 import { connect } from "react-redux";
 import { personalEvent } from "../../analytics";
-import { TemplatePreviewCard } from "../interview/interview-sections";
+import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 
 const { Step } = Steps;
 

@@ -15,7 +15,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
 import confirm from "antd/lib/modal/confirm";
 import { CustomIcon } from "../../components/utils/icons";
-import { TemplatePreviewCard } from "../interview/interview-sections";
+import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 import StickyHeader from "../../components/layout/header-sticky";
 
 const NEW_TEMPLATE = "NEW_TEMPLATE"

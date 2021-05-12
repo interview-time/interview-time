@@ -179,10 +179,11 @@ export const InterviewInformationSection = ({
 /**
  *
  * @param {Interview} interview
+ * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
  */
-export const IntroSection = ({ interview }) => {
+export const IntroSection = ({ interview , hashStyle}) => {
 
     const getHeader = () => {
         if (interview && interview.structure && interview.structure.header) {
@@ -193,7 +194,7 @@ export const IntroSection = ({ interview }) => {
     }
 
     return <>
-        <Title id="intro" level={4}>Intro</Title>
+        <Title id="intro" level={4} className={hashStyle ? hashStyle : null}>Intro</Title>
         <div className={styles.multiLineText}>{getHeader()}</div>
     </>
 }
@@ -202,10 +203,11 @@ export const IntroSection = ({ interview }) => {
  *
  * @param {Interview} interview
  * @param onNoteChanges
+ * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
  */
-export const SummarySection = ({ interview, onNoteChanges }) => {
+export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
 
     const getFooter = () => {
         if (interview && interview.structure && interview.structure.footer) {
@@ -218,7 +220,8 @@ export const SummarySection = ({ interview, onNoteChanges }) => {
     const isCompletedStatus = () => interview.status === Status.COMPLETED
 
     return <>
-        <Title id="summary" level={4} className={styles.summary}>Summary</Title>
+        <Title id="summary" level={4} style={{marginTop: 64}}
+               className={hashStyle ? hashStyle : null}>Summary</Title>
         <div className={styles.multiLineText}>{getFooter()}</div>
         <Space className={styles.space} direction="vertical">
             <Text strong>Notes</Text>
@@ -239,6 +242,7 @@ export const SummarySection = ({ interview, onNoteChanges }) => {
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
  * @param onNotesChanged
+ * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
  */
@@ -248,6 +252,7 @@ const InterviewQuestionsCard = ({
                                     onGroupAssessmentChanged,
                                     onQuestionAssessmentChanged,
                                     onNotesChanged,
+                                    hashStyle
                                 }) => {
 
     const [collapsed, setCollapsed] = React.useState(false)
@@ -307,8 +312,8 @@ const InterviewQuestionsCard = ({
         setCollapsed(!collapsed)
     }
 
-    return <div id={group.name} className={styles.questionArea}>
-        <Title level={4} onClick={onCollapseClicked} style={{ cursor: 'pointer' }}>
+    return <div className={styles.questionArea}>
+        <Title id={group.name} level={4} onClick={onCollapseClicked} style={{ cursor: 'pointer' }} className={hashStyle ? hashStyle : null}>
             {collapsed && <CaretRightOutlined onClick={onCollapseClicked} style={{ paddingRight: 8 }} />}
             {!collapsed && <CaretDownOutlined onClick={onCollapseClicked} style={{ paddingRight: 8 }} />}
             {group.name} ({group.questions.length})
@@ -363,10 +368,17 @@ const InterviewQuestionsCard = ({
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
  * @param onNotesChanged
+ * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
  */
-export const GroupsSection = ({ interview, onGroupAssessmentChanged, onQuestionAssessmentChanged, onNotesChanged }) => {
+export const GroupsSection = ({
+                                  interview,
+                                  onGroupAssessmentChanged,
+                                  onQuestionAssessmentChanged,
+                                  onNotesChanged,
+                                  hashStyle
+}) => {
 
     const getGroups = () => {
         if (interview && interview.structure && interview.structure.groups) {
@@ -398,6 +410,7 @@ export const GroupsSection = ({ interview, onGroupAssessmentChanged, onQuestionA
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                 onNotesChanged={onNotesChanged}
+                hashStyle={hashStyle}
             />)
         }
     </>
