@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Button, Card, Col, Divider, message, Row, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
-import styles from "./interview.module.css";
+import styles from "./interview-scorecard.module.css";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { ArrowLeftOutlined, SyncOutlined } from "@ant-design/icons";
@@ -31,7 +31,7 @@ const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
  * @returns {JSX.Element}
  * @constructor
  */
-const Interview = ({
+const InterviewScorecard = ({
                        interviews,
                        templates,
                        interviewsUploading,
@@ -42,7 +42,7 @@ const Interview = ({
                    }) => {
 
     /**
-     * @type {Interview}
+     * @type {InterviewScorecard}
      */
     const emptyInterview = {
         candidate: '',
@@ -143,8 +143,6 @@ const Interview = ({
 
     const onQuestionAssessmentChanged = (question, assessment) => {
         findQuestionInGroups(question.questionId, interview.structure.groups).assessment = assessment
-        console.log(question)
-        console.log(interview.structure.groups)
         onInterviewChange()
     }
 
@@ -187,7 +185,7 @@ const Interview = ({
             <Row className={styles.rootContainer}>
                 <Col key={interview.interviewId}
                      xxl={{ span: 16, offset: 4 }}
-                     xl={{ span: 20, offset: 2 }}
+                     xl={{ span: 20 }}
                      lg={{ span: 24 }}>
 
                     {interview.decision && <InterviewDecisionAlert interview={interview} />}
@@ -203,13 +201,13 @@ const Interview = ({
                     </div>
 
                     <Card>
-
-                        <IntroSection interview={interview} />
+                        <IntroSection interview={interview} hashStyle={styles.hash} />
                         <GroupsSection
                             interview={interview}
                             onGroupAssessmentChanged={onGroupAssessmentChanged}
                             onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                             onNotesChanged={onGroupNotesChanged}
+                            hashStyle={styles.hash}
                         />
                         <SummarySection interview={interview} onNoteChanges={onNoteChanges} />
 
@@ -221,6 +219,18 @@ const Interview = ({
                         </div>
 
                     </Card>
+                </Col>
+                <Col key={interview.interviewId}
+                     xxl={{ span: 4}}
+                     xl={{ span: 4}}
+                     lg={{ span: 0 }}>
+                    <div className={styles.toc}>
+                        <a href={"#intro"} className={styles.anchorLink}>Intro</a>
+                        {interview.structure.groups.map(group =>
+                            <a href={`#${group.name}`} className={styles.anchorLink}>{group.name}</a>)
+                        }
+                        <a href={"#summary"} className={styles.anchorLink}>Summary</a>
+                    </div>
                 </Col>
             </Row>
         </Layout>
@@ -238,4 +248,4 @@ const mapState = (state) => {
     }
 }
 
-export default connect(mapState, mapDispatch)(Interview);
+export default connect(mapState, mapDispatch)(InterviewScorecard);

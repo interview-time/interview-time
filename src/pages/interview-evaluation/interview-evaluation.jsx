@@ -22,7 +22,7 @@ import { findInterview, findTemplate } from "../../components/utils/converters";
 import { useAuth0 } from "../../react-auth0-spa";
 import Radio from "antd/es/radio/radio";
 import { loadTemplates } from "../../store/templates/actions";
-import { InterviewInformationSection } from "../interview/interview-sections";
+import { InterviewInformationSection } from "../interview-scorecard/interview-sections";
 import InterviewDecisionAlert from "./interview-decision-alert";
 import { personalEvent } from "../../analytics";
 import { routeCandidates} from "../../components/utils/route";

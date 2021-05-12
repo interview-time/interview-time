@@ -14,7 +14,7 @@ import {
 } from "./components/utils/route";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
-import Interview from "./pages/interview/interview";
+import Interview from "./pages/interview-scorecard/interview-scorecard";
 import Templates from "./pages/templates/templates";
 import TemplateWizard from "./pages/template-wizard/template-wizard";
 import Account from "./pages/account/account";

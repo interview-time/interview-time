@@ -1,5 +1,6 @@
 :root {
     --header-height: 64px;
+    --header-height-with-padding: 88px;
 }
 
 .stickyHeader {

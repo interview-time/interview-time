@@ -12,7 +12,7 @@
 }
 
 .pageContent {
-    margin-top: 88px;
+    margin-top: var(--header-height-with-padding);
     margin-left: 24px;
     margin-right: 24px;
 }
