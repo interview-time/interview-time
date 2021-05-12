@@ -11,11 +11,13 @@ namespace CafApi.Services
 {
     public class QuestionBankService : IQuestionBankService
     {
+        private readonly IGuideService _guideService;
         private readonly DynamoDBContext _context;
 
-        public QuestionBankService(IAmazonDynamoDB dynamoDbClient)
+        public QuestionBankService(IAmazonDynamoDB dynamoDbClient, IGuideService guideService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
+            _guideService = guideService;
         }
 
         public async Task<Category> GetCategory(string userId, string categoryId)
@@ -50,8 +52,8 @@ namespace CafApi.Services
                     if (category == null)
                     {
                         category = await AddCategory(userId, categoryName);
-                        newCategories.Add(category);
                     }
+                    newCategories.Add(category);
 
                     // update related questions with new CategoryId
                     var categoryQuestions = questions.Where(q => q.Category == categoryName).ToList();
@@ -96,12 +98,35 @@ namespace CafApi.Services
 
         public async Task DeleteCategory(string userId, string categoryId)
         {
-            var category = await GetCategory(userId, categoryId);
+            var questions = await GetQuestions(userId, categoryId);
+            var guides = await _guideService.GetGuides(userId);
 
-            category.IsActive = false;
-            category.ModifiedDate = DateTime.UtcNow;
+            // remove questions from guides
+            foreach (var guide in guides)
+            {
+                if (guide.Structure?.Groups != null)
+                {
+                    foreach (var group in guide.Structure?.Groups)
+                    {
+                        foreach (var question in questions)
+                        {
+                            if (group.Questions.Contains(question.QuestionId))
+                            {
+                                group.Questions.Remove(question.QuestionId);
+                            }
+                        }
+                    }
+                    await _context.SaveAsync(guide);
+                }
+            }
 
-            await _context.SaveAsync(category);
+            // delete questions from category           
+            var batch = _context.CreateBatchWrite<QuestionBank>();
+            batch.AddDeleteItems(questions);
+            await batch.ExecuteAsync();
+
+            // delete category
+            await _context.DeleteAsync<Category>(userId, categoryId);
         }
 
         public async Task<List<QuestionBank>> GetQuestions(string userId, string categoryId = null)
