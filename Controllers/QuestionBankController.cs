@@ -88,15 +88,7 @@ namespace CafApi.Controllers
         public async Task<IEnumerable<QuestionBank>> Get(string category)
         {
             return await _questionBankService.GetQuestionBank(UserId, category);
-        }
-
-        [HttpDelete("category/{category}")]
-        public async Task Delete(string category)
-        {
-            var questions = await _questionBankService.GetQuestionBank(UserId, category);
-
-            await _questionBankService.DeleteQuestionBank(questions);
-        }
+        }        
 
         [HttpPost("category/{category}/{newCategory}")]
         public async Task Update(string category, string newCategory)
