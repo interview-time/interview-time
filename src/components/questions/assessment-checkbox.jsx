@@ -17,7 +17,12 @@ const YES = "YES";
 
 const AssessmentCheckbox = (props) => {
 
-    const [assessment, setAssessment] = useState(props.assessment)
+    const [assessment, setAssessment] = useState()
+
+    React.useEffect(() => {
+        setAssessment(props.assessment)
+        // eslint-disable-next-line
+    }, [props.assessment]);
 
     const onDislikeClicked = () => {
         if (!props.disabled) {
