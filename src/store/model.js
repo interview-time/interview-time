@@ -85,5 +85,10 @@
  * @typedef {Object} TemplateGroup
  * @property {string} groupId
  * @property {string} name
- * @property {String[]} questions - question ids
+ * @property {TemplateQuestion[]} questions
+ */
+
+/**
+ * @typedef {Object} TemplateQuestion
+ * @property {string} questionId
  */
