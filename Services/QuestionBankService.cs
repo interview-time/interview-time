@@ -110,9 +110,9 @@ namespace CafApi.Services
                     {
                         foreach (var question in questions)
                         {
-                            if (group.Questions != null && group.Questions.Contains(question.QuestionId))
+                            if (group.Questions != null)
                             {
-                                group.Questions.Remove(question.QuestionId);
+                                group.Questions.RemoveAll(question => question.QuestionId.Equals(question.QuestionId));
                             }
                         }
                     }
