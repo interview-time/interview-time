@@ -9,6 +9,11 @@ import StickyHeader from "../../components/layout/header-sticky";
 
 export const updatesData = [
     {
+        version: "v0.5.1",
+        date: moment("2021/05/15", "YYYY/MM/DD").valueOf(),
+        description: "Questions can be sorted inside Template and Interview.",
+    },
+    {
         version: "v0.5.0",
         date: moment("2021/05/11", "YYYY/MM/DD").valueOf(),
         description: "New Interview Scorecard & Candidate Evaluation experience. General design updates.",

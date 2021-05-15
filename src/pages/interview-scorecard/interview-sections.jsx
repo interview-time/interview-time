@@ -5,7 +5,7 @@ import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/u
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
-import { findQuestion } from "../../components/utils/converters";
+import { questionIdsToQuestions } from "../../components/utils/converters";
 import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import { CaretDownOutlined, CaretRightOutlined, DownOutlined } from "@ant-design/icons";
@@ -75,7 +75,7 @@ export const TemplatePreviewCard = ({ guide, questions }) => {
             }
             guide.structure.groups.forEach(group => {
                 const interviewGroup = cloneDeep(group)
-                const interviewQuestions = group.questions.map(questionId => findQuestion(questionId, questions))
+                const interviewQuestions = questionIdsToQuestions(group.questions, questions)
                 interviewGroup.questions = defaultTo(interviewQuestions, [])
                 interview.structure.groups.push(interviewGroup)
             })

@@ -74,21 +74,23 @@ export function findQuestionInGroups(id, groups) {
 
 /**
  *
- * @param {[String]} questionIds
- * @param {[*]} questions
- * @returns {[]}
+ * @param {TemplateQuestion[]} questionIds
+ * @param {Question[]} questions
+ * @returns {Question[]}
  */
 export function questionIdsToQuestions(questionIds, questions) {
-    return questionIds.map(id => findQuestion(id, questions))
+    return questionIds.map(q => q.questionId).map(id => findQuestion(id, questions))
 }
 
 /**
  *
- * @param {[*]} questions
- * @returns {[String]}
+ * @param {Question[]} questions
+ * @returns {TemplateQuestion[]}
  */
 export function questionsToQuestionIds(questions) {
-    return questions.map(question => question.questionId)
+    return questions.map(question => ({
+        questionId: question.questionId
+    }))
 }
 
 /**
