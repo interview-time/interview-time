@@ -112,7 +112,7 @@ namespace CafApi.Services
                         {
                             if (group.Questions != null)
                             {
-                                group.Questions.RemoveAll(question => question.QuestionId.Equals(question.QuestionId));
+                                group.Questions.RemoveAll(q => q.QuestionId.Equals(question.QuestionId));
                             }
                         }
                     }
@@ -217,6 +217,23 @@ namespace CafApi.Services
 
         public async Task DeleteQuestion(string userId, string questionId)
         {
+            var guides = await _guideService.GetGuides(userId);
+
+            // remove questions from guides
+            foreach (var guide in guides)
+            {
+                if (guide.Structure?.Groups != null)
+                {
+                    foreach (var group in guide.Structure?.Groups)
+                    {
+                        if (group.Questions != null)
+                        {
+                            group.Questions.RemoveAll(q => q.QuestionId.Equals(questionId));
+                        }
+                    }
+                    await _context.SaveAsync(guide);
+                }
+            }
             await _context.DeleteAsync<QuestionBank>(userId, questionId);
         }
     }
