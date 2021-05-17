@@ -11,8 +11,11 @@ import { addTemplate, loadTemplates, updateTemplate } from "../../store/template
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import lang, { cloneDeep } from "lodash/lang";
 import TemplateQuestions from "./template-questions";
-import { flatMap } from "lodash/collection";
-import { findGuide, questionIdsToQuestions, questionsToQuestionIds } from "../../components/utils/converters";
+import {
+    findGuide,
+    findInterviewGroupQuestions,
+    questionsToQuestionIds
+} from "../../components/utils/converters";
 import { routeTemplates } from "../../components/utils/route";
 import { connect } from "react-redux";
 import { personalEvent } from "../../analytics";
@@ -25,9 +28,20 @@ const STEP_INTRO = 1
 const STEP_QUESTIONS = 2
 const STEP_SUMMARY = 3
 
+/**
+ *
+ * @param {CategoryHolder[]} categories
+ * @param {Template[]} guides
+ * @param loading
+ * @param loadQuestionBank
+ * @param addTemplate
+ * @param loadTemplates
+ * @param updateTemplate
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const TemplateWizard = (
     {
-        questions,
         categories,
         guides,
         loading,
@@ -164,7 +178,7 @@ const TemplateWizard = (
 
     const onAddQuestionClicked = (group) => {
         const selectedGroup = cloneDeep(group)
-        selectedGroup.questions = questionIdsToQuestions(selectedGroup.questions, questions)
+        selectedGroup.questions = findInterviewGroupQuestions(selectedGroup, categories)
 
         setSelectedGroup(selectedGroup)
         setQuestionsVisible(true)
@@ -234,7 +248,7 @@ const TemplateWizard = (
                 footer={null}
                 onCancel={onPreviewClosed}
                 visible={previewVisible}>
-                <TemplatePreviewCard guide={guide} questions={questions} />
+                <TemplatePreviewCard guide={guide} categories={categories} />
             </Modal>
 
             <Modal
@@ -249,7 +263,6 @@ const TemplateWizard = (
                 <TemplateQuestions
                     guide={guide}
                     selectedGroup={selectedGroup}
-                    questions={questions}
                     categories={categories}
                     onDoneClicked={onQuestionsClosed}
                 />
@@ -265,8 +278,7 @@ const mapState = (state) => {
     const questionBankState = state.questionBank || {};
 
     return {
-        questions: flatMap(questionBankState.categories, (item) => item.questions),
-        categories: questionBankState.categories.map(c => c.category.categoryName).sort(),
+        categories: questionBankState.categories,
         guides: guidesState.guides,
         loading: guidesState.loading || questionBankState.loading
     }

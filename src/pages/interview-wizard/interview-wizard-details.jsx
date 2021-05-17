@@ -6,13 +6,13 @@ import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER } from "../../components/utils/
 import moment from "moment";
 import { isEmpty } from "../../components/utils/utils";
 import lang from "lodash/lang";
-import { questionIdsToQuestions } from "../../components/utils/converters";
+import { findInterviewGroupQuestions} from "../../components/utils/converters";
 
 const { TextArea } = Input;
 
 const IMAGE_URL = process.env.PUBLIC_URL + '/interview-wizard/details.png'
 
-const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscard, onPreview }) => {
+const InterviewWizardDetails = ({ interview, guides, categories, onNext, onDiscard, onPreview }) => {
 
     const noError = {
         status: null,
@@ -57,7 +57,7 @@ const InterviewWizardDetails = ({ interview, guides, questions, onNext, onDiscar
             const structure = lang.cloneDeep(guide.structure)
 
             structure.groups.forEach(group => {
-                group.questions = questionIdsToQuestions(group.questions, questions)
+                group.questions = findInterviewGroupQuestions(group, categories)
             })
 
             interview.guideId = guide.guideId

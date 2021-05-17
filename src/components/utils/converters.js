@@ -1,7 +1,7 @@
 /**
  *
  * @param {String} id
- * @param {[*]} questions
+ * @param {Question[]} questions
  * @returns {*}
  */
 export function findQuestion(id, questions) {
@@ -74,12 +74,28 @@ export function findQuestionInGroups(id, groups) {
 
 /**
  *
- * @param {TemplateQuestion[]} questionIds
- * @param {Question[]} questions
+ * @param {String} id
+ * @param {CategoryHolder[]} categories
+ * @returns {Question}
+ */
+export function findQuestionInCategories(id, categories) {
+    for (let category of categories) {
+        let question = findQuestion(id, category.questions)
+        if(question) {
+            return question
+        }
+    }
+}
+
+/**
+ *
+ * @param {(InterviewGroup||TemplateGroup)} group
+ * @param {CategoryHolder[]} categories
  * @returns {Question[]}
  */
-export function questionIdsToQuestions(questionIds, questions) {
-    return questionIds.map(q => q.questionId).map(id => findQuestion(id, questions))
+export function findInterviewGroupQuestions(group, categories) {
+    return group.questions.map(q => q.questionId)
+        .map(id => findQuestionInCategories(id, categories))
 }
 
 /**

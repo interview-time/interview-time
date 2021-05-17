@@ -5,7 +5,7 @@ import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/u
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
-import { questionIdsToQuestions } from "../../components/utils/converters";
+import { findInterviewGroupQuestions} from "../../components/utils/converters";
 import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import { CaretDownOutlined, CaretRightOutlined, DownOutlined } from "@ant-design/icons";
@@ -44,11 +44,11 @@ export const InterviewPreviewCard = ({ interview, username}) => {
 /**
  *
  * @param {Template} guide
- * @param {Question[]} questions
+ * @param {CategoryHolder[]} categories
  * @returns {JSX.Element}
  * @constructor
  */
-export const TemplatePreviewCard = ({ guide, questions }) => {
+export const TemplatePreviewCard = ({ guide, categories }) => {
 
     /**
      * @type {Interview}
@@ -75,7 +75,7 @@ export const TemplatePreviewCard = ({ guide, questions }) => {
             }
             guide.structure.groups.forEach(group => {
                 const interviewGroup = cloneDeep(group)
-                const interviewQuestions = questionIdsToQuestions(group.questions, questions)
+                const interviewQuestions = findInterviewGroupQuestions(group, categories)
                 interviewGroup.questions = defaultTo(interviewQuestions, [])
                 interview.structure.groups.push(interviewGroup)
             })
@@ -83,7 +83,7 @@ export const TemplatePreviewCard = ({ guide, questions }) => {
             setInterview(interview)
         }
         // eslint-disable-next-line
-    }, [questions, guide]);
+    }, [categories, guide]);
 
     return <div>
         <IntroSection interview={interview} />

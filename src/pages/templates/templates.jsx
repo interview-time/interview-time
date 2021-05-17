@@ -6,7 +6,7 @@ import { addTemplate, deleteTemplate, loadTemplates } from "../../store/template
 import { Alert, Avatar, Button, Card, Col, Dropdown, List, Menu, message, Modal, Row, Space, Tooltip } from "antd";
 import { Link, useHistory } from "react-router-dom";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import { flatMap, sortBy } from "lodash/collection";
+import { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 import { loadQuestionBank } from "../../store/question-bank/actions";
@@ -20,7 +20,19 @@ import StickyHeader from "../../components/layout/header-sticky";
 
 const NEW_TEMPLATE = "NEW_TEMPLATE"
 
-const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank, deleteTemplate, addTemplate }) => {
+/**
+ *
+ * @param {Template[]} guides
+ * @param {CategoryHolder[]} categories
+ * @param {boolean} loading
+ * @param loadTemplates
+ * @param loadQuestionBank
+ * @param deleteTemplate
+ * @param addTemplate
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBank, deleteTemplate, addTemplate }) => {
 
     const emptyGuide = {
         structure: {
@@ -200,7 +212,7 @@ const Templates = ({ guides, questions, loading, loadTemplates, loadQuestionBank
             footer={null}
             onCancel={onPreviewClosed}
             visible={previewVisible}>
-            <TemplatePreviewCard guide={guide} questions={questions} />
+            <TemplatePreviewCard guide={guide} categories={categories} />
         </Modal>
     </Layout>
 }
@@ -213,7 +225,7 @@ const mapState = (state) => {
 
     return {
         guides: guides,
-        questions: flatMap(questionBankState.categories, (item) => item.questions),
+        categories: questionBankState.categories,
         loading: guidesState.loading || questionBankState.loading
     }
 }

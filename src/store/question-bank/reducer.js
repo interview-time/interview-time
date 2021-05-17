@@ -133,8 +133,8 @@ const questionBankReducer = (state = initialState, action) => {
                 .catch(reason => console.error(reason));
 
             const categories = cloneDeep(state.categories)
-            const category = findCategory(questions[0].categoryId, categories)
-            category.questions.push(questions)
+            findCategory(questions[0].categoryId, categories).questions
+                .push(questions)
 
             return {
                 ...state,

@@ -8,7 +8,7 @@ import TemplateQuestionsBankCard from "./template-questions-bank-card";
  *
  * Updates `selectedGroup.questions`.
  */
-const TemplateQuestions = ({selectedGroup, questions, categories, onDoneClicked }) => {
+const TemplateQuestions = ({selectedGroup, categories, onDoneClicked }) => {
     const emptyGroup = {
         questions: []
     }
@@ -55,7 +55,6 @@ const TemplateQuestions = ({selectedGroup, questions, categories, onDoneClicked 
         </Col>
         <Col span={12}>
             <TemplateQuestionsBankCard
-                questions={questions}
                 categories={categories}
                 groupQuestions={group.questions}
                 onAddQuestionClicked={onAddQuestionClicked} />

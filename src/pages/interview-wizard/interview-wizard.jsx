@@ -3,7 +3,6 @@ import Layout from "../../components/layout/layout";
 import { message, Modal, PageHeader, Spin, Steps } from "antd";
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { flatMap } from "lodash/collection";
 import { cloneDeep } from "lodash/lang";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadQuestionBank } from "../../store/question-bank/actions";
@@ -29,10 +28,23 @@ const STEP_INTRO = 1
 const STEP_QUESTIONS = 2
 const STEP_SUMMARY = 3
 
+/**
+ *
+ * @param {Interview[]} interviews
+ * @param {CategoryHolder[]} categories
+ * @param guides
+ * @param loading
+ * @param addInterview
+ * @param loadInterviews
+ * @param updateInterview
+ * @param loadQuestionBank
+ * @param loadTemplates
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const InterviewWizard = (
     {
         interviews,
-        questions,
         categories,
         guides,
         loading,
@@ -43,6 +55,10 @@ const InterviewWizard = (
         loadTemplates
     }) => {
 
+    /**
+     *
+     * @type {Interview}
+     */
     const emptyInterview = {
         interviewId: undefined,
         status: Status.NEW,
@@ -217,7 +233,7 @@ const InterviewWizard = (
             {isDetailsStep() && <InterviewWizardDetails
                 interview={interview}
                 guides={guides}
-                questions={questions}
+                categories={categories}
                 onNext={onNext}
                 onDiscard={onDiscard}
                 onPreview={onPreviewClicked}
@@ -270,7 +286,6 @@ const InterviewWizard = (
                 <TemplateQuestions
                     interview={interview}
                     selectedGroup={selectedGroup}
-                    questions={questions}
                     categories={categories}
                     onDoneClicked={onQuestionsClosed}
                 />
@@ -295,8 +310,7 @@ const mapState = (state) => {
 
     return {
         interviews: interviewsState.interviews,
-        questions: flatMap(questionBankState.categories, (item) => item.questions),
-        categories: questionBankState.categories.map(c => c.category.categoryName).sort(),
+        categories: questionBankState.categories,
         guides: guidesState.guides,
         loading: guidesState.loading || questionBankState.loading || interviewsState.loading
     }

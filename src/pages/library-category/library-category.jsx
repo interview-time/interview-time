@@ -23,9 +23,9 @@ const { Search } = Input;
 /**
  *
  * @param {Category[]} personalCategories
- * @param personalCategoriesLoading
- * @param communityCategories
- * @param communityCategoriesLoading
+ * @param {boolean} personalCategoriesLoading
+ * @param {CategoryHolder[]} communityCategories
+ * @param {boolean} communityCategoriesLoading
  * @param loadQuestionBank
  * @param loadCommunityCategories
  * @param addQuestions
@@ -131,7 +131,8 @@ const LibraryCategory = (
             selectedQuestionIds.forEach(questionId => {
                 let question = cloneDeep(questions.find(question => question.questionId === questionId))
                 question.parentQuestionId = question.questionId
-                question.categoryId = selectedPersonalCategory
+                question.categoryId = selectedPersonalCategory.categoryId
+                question.category = selectedPersonalCategory.categoryName
                 selectedQuestions.push(question)
             })
 
@@ -142,10 +143,11 @@ const LibraryCategory = (
     }
 
     const onAddQuestionClicked = (event, questionId) => {
-        let selectedPersonalCategory = event.key
+        let selectedPersonalCategory = personalCategories.find(category => category.categoryId === event.key)
         let question = cloneDeep(questions.find(question => question.questionId === questionId))
         question.parentQuestionId = question.questionId
-        question.categoryId = selectedPersonalCategory
+        question.categoryId = selectedPersonalCategory.categoryId
+        question.category = selectedPersonalCategory.categoryName
 
         addQuestions([question])
         message.success(`Question added to your personal question bank.`)
@@ -182,7 +184,7 @@ const LibraryCategory = (
         setRequestQuestionVisible(false)
     }
     const onPersonalCategoryChange = value => {
-        setSelectedPersonalCategory(value)
+        setSelectedPersonalCategory(personalCategories.find(category => category.categoryId === value))
     }
 
     const onSelectChange = selectedRowKeys => {
@@ -321,10 +323,8 @@ const mapStateToProps = state => {
     const communityQuestionsState = state.communityQuestions || {};
     const questionBankState = state.questionBank || {};
 
-    let categories = questionBankState.categories.map(c => c.category)
-
     return {
-        personalCategories: categories,
+        personalCategories: questionBankState.categories.map(c => c.category),
         personalCategoriesLoading: questionBankState.loading,
         communityCategories: communityQuestionsState.categories,
         communityCategoriesLoading: communityQuestionsState.loading
