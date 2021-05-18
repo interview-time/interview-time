@@ -42,7 +42,14 @@ const TemplateWizardQuestions = ({
     }
 
     return <Row key={getDataId()} align="middle" wrap={false} className={styles.row}>
-        <Col span={12}>
+        <Col
+            xxl={{ span: 12, offset: 0 }}
+            xl={{ span: 14, offset: 0 }}
+            lg={{ span: 16, offset: 4 }}
+            md={{ span: 16, offset: 4 }}
+            sm={{ span: 16, offset: 4 }}
+            xs={{ span: 16, offset: 4 }}
+        >
             <div className={styles.container}>
                 <Alert
                     className={styles.alert}
@@ -100,7 +107,14 @@ const TemplateWizardQuestions = ({
                 </Card>
             </div>
         </Col>
-        <Col span={12}>
+        <Col
+            xxl={{ span: 12}}
+            xl={{ span: 10 }}
+            lg={{ span: 0 }}
+            md={{ span: 0 }}
+            sm={{ span: 0 }}
+            xs={{ span: 0 }}
+        >
             <div className={styles.container}>
                 <img alt="Intro" src={IMAGE_URL} className={styles.image} />
                 <Button
