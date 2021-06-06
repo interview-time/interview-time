@@ -54,10 +54,10 @@ namespace CafApi.Controllers
             await _interviewService.UpdateInterview(interview);
         }
 
-        [HttpDelete("{guideId}")]
-        public async Task DeleteInterview(string guideId)
+        [HttpDelete("{interviewId}")]
+        public async Task DeleteInterview(string interviewId)
         {
-            await _interviewService.DeleteInterview(UserId, guideId);
+            await _interviewService.DeleteInterview(UserId, interviewId);
         }
 
         [HttpPatch("scorecard")]

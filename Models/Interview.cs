@@ -14,7 +14,7 @@ namespace CafApi.Models
         public string InterviewId { get; set; }
 
         public string Candidate { get; set; }
-        
+
         public string CandidateNotes { get; set; }
 
         public string Position { get; set; }
@@ -22,7 +22,7 @@ namespace CafApi.Models
         public DateTime InterviewDateTime { get; set; }
 
         [DynamoDBGlobalSecondaryIndexHashKey]
-        public string GuideId { get; set; }
+        public string TemplateId { get; set; }
 
         public string Status { get; set; }
 
@@ -31,6 +31,10 @@ namespace CafApi.Models
         public string Notes { get; set; }
 
         public InterviewStructure Structure { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
     }
 
     public class InterviewStructure
@@ -58,14 +62,16 @@ namespace CafApi.Models
     public class InterviewQuestion
     {
         public string QuestionId { get; set; }
-        
+
         public string Question { get; set; }
-        
+
         public string Difficulty { get; set; }
 
         public List<string> Tags { get; set; }
 
         public int Time { get; set; }
+
+        public string Notes { get; set; }
 
         public string Assessment { get; set; }
     }

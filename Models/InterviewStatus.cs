@@ -1,6 +1,6 @@
 namespace CafApi.Models
 {
-    public enum InterviewStatusType
+    public enum InterviewStatus
     {
         NEW,
         COMPLETED

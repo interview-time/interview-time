@@ -19,9 +19,7 @@ namespace CafApi.Services
         }
 
         public async Task<Interview> GetInterview(string userId, string interviewId)
-        {
-            var config = new DynamoDBOperationConfig();
-
+        {        
             return await _context.LoadAsync<Interview>(userId, interviewId);
         }
 
@@ -32,19 +30,21 @@ namespace CafApi.Services
             return await _context.QueryAsync<Interview>(userId, config).GetRemainingAsync();
         }
 
-        public async Task<List<Interview>> GetGuideInterviews(string guideId)
+        public async Task<List<Interview>> GetInterviewsByTemplate(string templateId)
         {
             var config = new DynamoDBOperationConfig
             {
-                IndexName = "GuideId-index"
+                IndexName = "TemplateId-Index"
             };
 
-            return await _context.QueryAsync<Interview>(guideId, config).GetRemainingAsync();
+            return await _context.QueryAsync<Interview>(templateId, config).GetRemainingAsync();
         }
 
         public async Task<Interview> AddInterview(Interview interview)
         {
             interview.InterviewId = Guid.NewGuid().ToString();
+            interview.CreatedDate = DateTime.UtcNow;
+            interview.ModifiedDate = DateTime.UtcNow;
 
             if (interview.Structure != null && interview.Structure.Groups != null)
             {
@@ -61,6 +61,7 @@ namespace CafApi.Services
 
         public async Task UpdateInterview(Interview interview)
         {
+            interview.ModifiedDate = DateTime.UtcNow;
 
             if (interview.Structure != null && interview.Structure.Groups != null)
             {
