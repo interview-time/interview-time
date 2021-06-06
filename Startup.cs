@@ -71,10 +71,8 @@ namespace caf_api
                 }
             );
 
-            services.AddSingleton<IQuestionBankService, QuestionBankService>();
-            services.AddSingleton<IGuideService, GuideService>();
+            services.AddSingleton<ITemplateService, TemplateService>();
             services.AddSingleton<IInterviewService, InterviewService>();
-            services.AddSingleton<ICommunityService, CommunityService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,7 +93,7 @@ namespace caf_api
             {
                 app.UseHttpsRedirection();
             }
-            
+
             app.UseRouting();
 
             app.UseCors();
