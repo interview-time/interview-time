@@ -4,14 +4,12 @@ import { Badge, Drawer, Layout as AntLayout, Menu, Progress } from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
-    CommunityIcon,
     FakeIcon,
     FeedbackIcon,
     GuideIcon,
     InterviewIcon,
     NewsIcon,
     ProfileIcon,
-    QuestionBankIcon,
 } from "../utils/icons";
 import {
     routeAccount,
@@ -120,22 +118,10 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                 <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 <Menu theme="light"
                       mode="inline"
-                      defaultSelectedKeys={[routeLibrary()]}
+                      defaultSelectedKeys={[routeTemplates()]}
                       selectedKeys={[getSelectedKey()]}
                       className={styles.menu}
                 >
-                    <Menu.Item key={routeLibrary()} className={styles.menuItem}
-                               icon={<CommunityIcon style={menuIconStyle} />}>
-                        <Link to={routeLibrary()}>
-                            <span className="nav-text">Library</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key={routeQuestionBank()} className={styles.menuItem}
-                               icon={<QuestionBankIcon style={menuIconStyle} />}>
-                        <Link to={routeQuestionBank()}>
-                            <span className="nav-text">Questions</span>
-                        </Link>
-                    </Menu.Item>
                     <Menu.Item key={routeTemplates()} className={styles.menuItem}
                                icon={<GuideIcon style={menuIconStyle} />}>
                         <Link to={routeTemplates()}>
