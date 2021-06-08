@@ -1,11 +1,11 @@
 import styles from "./template.module.css";
-import { Button, Dropdown, Input, Menu, Select, Space, Table, Tag } from "antd";
+import { Button, Dropdown, Input, Menu, Select, Space, Table, Tag, Tooltip } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
 import { cloneDeep } from "lodash/lang";
 import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
-import { ReorderIcon } from "../../components/utils/icons";
+import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import { isEmpty } from "../../components/utils/utils";
@@ -40,6 +40,7 @@ const TemplateQuestionsCard = ({
     const [questions, setQuestions] = React.useState([])
     const [questionsTags, setQuestionsTags] = React.useState([])
     const [selectedTag, setSelectedTag] = React.useState()
+    const [collapsed, setCollapsed] = React.useState(false)
     const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
     React.useEffect(() => {
@@ -119,6 +120,10 @@ const TemplateQuestionsCard = ({
         updateQuestionsTags()
     }
 
+    const onCollapseClicked = () => {
+        setCollapsed(!collapsed)
+    }
+
     const columns = [
         {
             width: 30,
@@ -196,11 +201,19 @@ const TemplateQuestionsCard = ({
                       onClick={() => onGroupTitleClicked(group.groupId, group.name)}>{group.name}</Text>
                 <Text type="secondary">{group.questions.length} questions</Text>
             </Space>
-            <Dropdown overlay={menu}>
-                <MoreOutlined style={{ fontSize: 20, cursor: 'pointer' }} />
-            </Dropdown>
+            <Space>
+                {collapsed && <Tooltip title="Expand group">
+                    <ExpandIcon onClick={onCollapseClicked} style={{ paddingRight: 8 }} />
+                </Tooltip>}
+                {!collapsed && <Tooltip title="Collapse group">
+                    <CollapseIcon onClick={onCollapseClicked} style={{ paddingRight: 8 }} />
+                </Tooltip>}
+                <Dropdown overlay={menu}>
+                    <MoreOutlined style={{ fontSize: 20, cursor: 'pointer' }} />
+                </Dropdown>
+            </Space>
         </div>
-        <div className={styles.questionsCard}>
+        {!collapsed && <div className={styles.questionsCard}>
             <Table
                 pagination={false}
                 showHeader={false}
@@ -220,7 +233,7 @@ const TemplateQuestionsCard = ({
                         onClick={() => onAddQuestionClicked(group.groupId)}
                         icon={<PlusOutlined />}>New question</Button>
             </div>
-        </div>
+        </div>}
     </div>
 }
 
