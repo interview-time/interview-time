@@ -1,0 +1,100 @@
+.rootContainer {
+    background-color: var(--color-background);
+    height: 100%;
+}
+
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.divFlexGrow {
+    flex-grow: 1;
+}
+
+.test {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.questionDragging {
+    background-color: white;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-left: 16px;
+    z-index: 1000;
+}
+
+.questionDragging td {
+    visibility: visible;
+    z-index: 1000;
+}
+
+.questionDragging .tagsVisible {
+    visibility: hidden;
+}
+
+.questionDragging .removeVisible {
+    visibility: hidden;
+}
+
+.questionDragging .dragVisible {
+    visibility: visible;
+    z-index: 1000;
+}
+
+.questionDragging .questionVisible {
+    visibility: visible;
+    z-index: 1000;
+    padding-left: 24px;
+    padding-right: 24px;
+    flex-grow: 1;
+}
+
+.reorderIcon {
+    cursor: grab;
+    font-size: 20px;
+}
+
+.removeIcon {
+    cursor: pointer;
+    width: 32px;
+}
+
+.questionsCard {
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    margin-top: 16px;
+}
+
+.questionAddContainer {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.groupTitle {
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.clickableTag {
+    cursor: pointer;
+}
+
+.addQuestionButton {
+    color: #00000073;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+}

@@ -16,7 +16,7 @@ import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
 import Interview from "./pages/interview-scorecard/interview-scorecard";
 import Templates from "./pages/templates/templates";
-import TemplateWizard from "./pages/template-wizard/template-wizard";
+import Template from "./pages/template/template-details";
 import Account from "./pages/account/account";
 import { useAuth0 } from "./react-auth0-spa";
 import Spinner from "./components/spinner/spinner";
@@ -67,8 +67,8 @@ function App({ history }) {
             <PrivateRoute path="/interviews/scorecard/:id" exact component={Interview} />
             <PrivateRoute path="/interviews/candidate/:id" exact component={InterviewCandidate} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
-            <PrivateRoute path={routeTemplateAdd()} exact component={TemplateWizard} />
-            <PrivateRoute path="/templates/details/:id" exact component={TemplateWizard} />
+            <PrivateRoute path={routeTemplateAdd()} exact component={Template} />
+            <PrivateRoute path="/templates/details/:id" exact component={Template} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
         </Switch>

@@ -9,7 +9,6 @@ import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
-import { loadQuestionBank } from "../../store/question-bank/actions";
 import { routeTemplateAdd, routeTemplateDetails } from "../../components/utils/route";
 import { useAuth0 } from "../../react-auth0-spa";
 import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
@@ -22,19 +21,17 @@ const NEW_TEMPLATE = "NEW_TEMPLATE"
 
 /**
  *
- * @param {Template[]} guides
- * @param {CategoryHolder[]} categories
+ * @param {Template[]} templates
  * @param {boolean} loading
  * @param loadTemplates
- * @param loadQuestionBank
  * @param deleteTemplate
  * @param addTemplate
  * @returns {JSX.Element}
  * @constructor
  */
-const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBank, deleteTemplate, addTemplate }) => {
+const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTemplate }) => {
 
-    const emptyGuide = {
+    const emptyTemplate = {
         structure: {
             groups: [],
         }
@@ -43,12 +40,11 @@ const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBan
     const history = useHistory();
     const { user } = useAuth0();
 
-    const [guide, setGuide] = useState(emptyGuide);
+    const [template, setTemplate] = useState(emptyTemplate);
     const [previewVisible, setPreviewVisible] = useState(false);
 
     React.useEffect(() => {
         loadTemplates();
-        loadQuestionBank();
         // eslint-disable-next-line
     }, []);
 
@@ -59,28 +55,28 @@ const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBan
     const getTotalQuestions = (groups) =>
         sumBy(groups, (group) => group.questions ? group.questions.length : 0)
 
-    const onEdit = (guideId) => {
-        history.push(routeTemplateDetails(guideId))
+    const onEdit = (templateId) => {
+        history.push(routeTemplateDetails(templateId))
     }
 
-    const onDelete = (guide) => {
-        deleteTemplate(guide.guideId);
-        message.success(`Template '${guide.title}' removed.`);
+    const onDelete = (template) => {
+        deleteTemplate(template.templateId);
+        message.success(`Template '${template.title}' removed.`);
     }
 
     const onPreviewClosed = () => {
         setPreviewVisible(false)
     };
 
-    const onPreview = (guideId) => {
-        setGuide(guides.find(guide => guide.guideId === guideId))
+    const onPreview = (templateId) => {
+        setTemplate(templates.find(template => template.templateId === templateId))
         setPreviewVisible(true)
     }
 
-    const onCopy = (guide) => {
-        const copy = cloneDeep(guide)
-        copy.guideId = null
-        copy.title = `Copy of ${guide.title}`
+    const onCopy = (template) => {
+        const copy = cloneDeep(template)
+        copy.templateId = null
+        copy.title = `Copy of ${template.title}`
         addTemplate(copy)
         message.success(`Template '${copy.title}' created.`);
     }
@@ -92,41 +88,34 @@ const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBan
         return 'Unknown User'
     }
 
-    const getCategory = (guide) => {
-        let category = TemplateCategories.find(category => category.key === guide.type)
-        if (!category) {
-            // backward compatibility
-            category = TemplateCategories[0]
-        }
-        return category
-    }
+    const getCategory = (template) => TemplateCategories.find(category => category.key === template.type)
 
-    const showDeleteConfirm = (guide) => {
+    const showDeleteConfirm = (template) => {
         confirm({
-            title: `Delete '${guide.title}' Template`,
+            title: `Delete '${template.title}' Template`,
             icon: <ExclamationCircleOutlined />,
             content: 'Are you sure you want to delete this template?',
             okText: 'Yes',
             okType: 'danger',
             cancelText: 'No',
             onOk() {
-                onDelete(guide)
+                onDelete(template)
             }
         });
     }
 
-    const createMenu = (guide) => <Menu>
+    const createMenu = (template) => <Menu>
         <Menu.Item onClick={e => {
             e.domEvent.stopPropagation()
-            onEdit(guide.guideId)
+            onEdit(template.templateId)
         }}>Edit template</Menu.Item>
         <Menu.Item onClick={e => {
             e.domEvent.stopPropagation()
-            onCopy(guide)
+            onCopy(template)
         }}>Copy template</Menu.Item>
         <Menu.Item danger onClick={e => {
             e.domEvent.stopPropagation()
-            showDeleteConfirm(guide)
+            showDeleteConfirm(template)
         }}>Delete template</Menu.Item>
     </Menu>;
 
@@ -154,30 +143,30 @@ const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBan
                 xl: 4,
                 xxl: 5,
             }}
-            dataSource={guides}
+            dataSource={templates}
             loading={loading}
-            renderItem={guide => <List.Item>
+            renderItem={template => <List.Item>
                 <Card hoverable bodyStyle={{ padding: 0, height: 190 }}>
-                    {guide !== NEW_TEMPLATE && <div className={styles.card} onClick={() => onPreview(guide.guideId)}>
+                    {template !== NEW_TEMPLATE && <div className={styles.card} onClick={() => onPreview(template.templateId)}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            {getTemplateCategoryIcon(guide.type)}
-                            <div style={{ color: getCategory(guide).color }}
-                                 className={styles.category}>{getCategory(guide).titleShort}</div>
+                            {getTemplateCategoryIcon(template.type)}
+                            <div style={{ color: getCategory(template).color }}
+                                 className={styles.category}>{getCategory(template).titleShort}</div>
                             <div style={{ flexGrow: 1 }} />
-                            <Dropdown overlay={createMenu(guide)}>
+                            <Dropdown overlay={createMenu(template)}>
                                 <EllipsisOutlined style={{ fontSize: 20 }} onClick={e => e.stopPropagation()} />
                             </Dropdown>
                         </div>
-                        <div className={styles.cardTitle}>{guide.title}</div>
+                        <div className={styles.cardTitle}>{template.title}</div>
 
                         <Row style={{ marginTop: 12 }}>
                             <Col span={12}>
                                 <div className={styles.cardMetaTitle}>QUESTIONS</div>
-                                <div className={styles.cardMetaValue}>{getTotalQuestions(guide.structure.groups)}</div>
+                                <div className={styles.cardMetaValue}>{getTotalQuestions(template.structure.groups)}</div>
                             </Col>
                             <Col span={12}>
                                 <div className={styles.cardMetaTitle}>INTERVIEWS</div>
-                                <div className={styles.cardMetaValue}>{guide.totalInterviews}</div>
+                                <div className={styles.cardMetaValue}>{template.totalInterviews}</div>
                             </Col>
                         </Row>
 
@@ -188,7 +177,7 @@ const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBan
                             </Space>
                         </Tooltip>
                     </div>}
-                    {guide === NEW_TEMPLATE && <div className={styles.card} onClick={onAddTemplateClicked}>
+                    {template === NEW_TEMPLATE && <div className={styles.card} onClick={onAddTemplateClicked}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <CustomIcon style={{ color: '#1F1F1F', fontSize: 18 }} />
                             <div className={styles.category}>CUSTOM</div>
@@ -212,21 +201,19 @@ const Templates = ({ guides, categories, loading, loadTemplates, loadQuestionBan
             footer={null}
             onCancel={onPreviewClosed}
             visible={previewVisible}>
-            <TemplatePreviewCard guide={guide} categories={categories} />
+            {/*TODO fix me*/}
+            {/*<TemplatePreviewCard template={template} categories={categories} />*/}
         </Modal>
     </Layout>
 }
-const mapDispatch = { loadTemplates, loadQuestionBank, deleteTemplate, addTemplate };
+const mapDispatch = { loadTemplates, deleteTemplate, addTemplate };
 const mapState = (state) => {
-    const questionBankState = state.questionBank || {};
-    const guidesState = state.guides || {};
-    const guides = sortBy(guidesState.guides, ['title']);
-    guides.unshift(NEW_TEMPLATE) // first element is a new template card
-
+    const templateState = state.templates || {};
+    const templates = sortBy(templateState.templates, ['title']);
+    templates.unshift(NEW_TEMPLATE) // first element is a new template card
     return {
-        guides: guides,
-        categories: questionBankState.categories,
-        loading: guidesState.loading || questionBankState.loading
+        templates: templates,
+        loading: templateState.loading
     }
 }
 

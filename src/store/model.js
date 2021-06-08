@@ -65,7 +65,7 @@
 /**
  * @typedef {Object} Template
  * @property {string} userId
- * @property {string} guideId
+ * @property {string} templateId
  * @property {string} title
  * @property {string} image
  * @property {string} type
@@ -85,7 +85,7 @@
  * @typedef {Object} TemplateGroup
  * @property {string} groupId
  * @property {string} name
- * @property {TemplateQuestion[]} questions
+ * @property {Question[]} questions
  */
 
 /**

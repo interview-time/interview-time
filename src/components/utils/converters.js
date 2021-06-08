@@ -34,7 +34,7 @@ export function findInterview(id, interviews) {
  * @returns {Template}
  */
 export function findTemplate(id, templates) {
-    return templates.find(template => template.guideId === id)
+    return templates.find(template => template.templateId === id)
 }
 
 /**
