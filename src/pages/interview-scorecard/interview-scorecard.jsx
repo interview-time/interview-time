@@ -78,7 +78,7 @@ const InterviewScorecard = ({
 
     React.useEffect(() => {
         // initial data loading
-        if (!template.guideId && templates.length > 0 && interview.guideId) {
+        if (!template.templateId && templates.length > 0 && interview.guideId) {
             const interviewTemplate = findTemplate(interview.guideId, templates);
             if (interviewTemplate) {
                 setTemplate(cloneDeep(interviewTemplate))
@@ -240,11 +240,11 @@ const InterviewScorecard = ({
 const mapDispatch = { deleteInterview, loadInterviews, updateInterview, loadTemplates }
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-    const templatesState = state.guides || {};
+    const templatesState = state.templates || {};
     return {
         interviews: interviewsState.interviews,
         interviewsUploading: interviewsState.uploading,
-        templates: templatesState.guides
+        templates: templatesState.templates
     }
 }
 

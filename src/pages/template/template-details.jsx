@@ -76,6 +76,8 @@ const TemplateDetails = ({
 
     const isNewTemplateFlow = () => !id;
 
+    const isInitialLoading = () => !isNewTemplateFlow() && !template.templateId
+
     const onBackClicked = () => {
         history.goBack()
     }
@@ -224,7 +226,7 @@ const TemplateDetails = ({
                 sm={{ span: 24 }}
                 xs={{ span: 24 }}
             >
-                <Card style={marginTop24} key={template.templateId}>
+                <Card style={marginTop24} key={template.templateId} loading={isInitialLoading()}>
                     <Title level={4}>Interview Template</Title>
                     <Text type="secondary">Enter template detail information so you can easily discover it among other
                         templates.</Text>
@@ -254,7 +256,7 @@ const TemplateDetails = ({
                     </div>
                 </Card>
 
-                <Card style={marginTop24}>
+                <Card style={marginTop24} loading={isInitialLoading()}>
                     <Title level={4}>Intro</Title>
                     <Text type="secondary">Intro section serves as a reminder for what interviewer must do at the
                         beginning of the interview.</Text>
@@ -266,7 +268,7 @@ const TemplateDetails = ({
                         placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
                 </Card>
 
-                <Card style={marginTop24}>
+                <Card style={marginTop24} loading={isInitialLoading()}>
                     <Title level={4}>Questions</Title>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
                         and make a
@@ -289,7 +291,7 @@ const TemplateDetails = ({
                     <Button style={marginTop24} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
                 </Card>
 
-                <Card style={marginVertical24}>
+                <Card style={marginVertical24} loading={isInitialLoading()}>
                     <Title level={4}>Summary</Title>
                     <Text type="secondary">The summary section serves as a reminder for what interviewer must do at the
                         end of the interview. It also contains fields to take notes and make a final assessment.</Text>

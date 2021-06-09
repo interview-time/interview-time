@@ -40,10 +40,10 @@ const columns = [
     },
     {
         title: 'Template',
-        key: 'guide',
-        dataIndex: 'guide',
+        key: 'template',
+        dataIndex: 'template',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => localeCompare(a.guide, b.guide),
+        sorter: (a, b) => localeCompare(a.template, b.template),
     },
     {
         title: 'Date',
@@ -151,21 +151,21 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
 const mapDispatch = { loadInterviews, loadTemplates };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-    const guidesState = state.guides || {};
+    const templatesState = state.templates || {};
 
     const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ['interviewDateTime']))
-    if (guidesState.guides.length > 0) {
+    if (templatesState.templates.length > 0) {
         interviews.forEach(interview => {
-            const guide = guidesState.guides.find(guide => guide.guideId === interview.guideId)
-            if (guide) {
-                interview.guide = guide.title
+            const template = templatesState.templates.find(template => template.templateId === interview.guideId)
+            if (template) {
+                interview.template = template.title
             }
         })
     }
 
     return {
         interviews: interviews,
-        loading: interviewsState.loading || guidesState.loading
+        loading: interviewsState.loading || templatesState.loading
     }
 }
 

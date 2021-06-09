@@ -12,6 +12,10 @@ import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 
+/**
+ *
+ * @type {{templates: Template[], loading: boolean}}
+ */
 const initialState = {
     templates: [],
     loading: false
