@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { loadQuestionBank } from "../../store/question-bank/actions";
 import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { connect } from "react-redux";
-import { Button, Card, Col, Divider, Input, message, Row, Select, Space } from "antd";
+import { Button, Card, Col, Divider, Input, message, Modal, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ import { personalEvent } from "../../analytics";
 import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
+import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 
 const { TextArea } = Input;
 
@@ -50,6 +51,7 @@ const TemplateDetails = ({
     const { id } = useParams();
 
     const [template, setTemplate] = useState(emptyTemplate);
+    const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [questionGroupModal, setQuestionGroupModal] = useState({
         visible: false,
         name: null,
@@ -73,6 +75,10 @@ const TemplateDetails = ({
     }, []);
 
     const isNewTemplateFlow = () => !id;
+
+    const onBackClicked = () => {
+        history.goBack()
+    }
 
     const onCategoryChange = value => {
         template.type = value;
@@ -196,6 +202,14 @@ const TemplateDetails = ({
         setTemplate(updatedTemplate)
     }
 
+    const onPreviewClosed = () => {
+        setPreviewModalVisible(false)
+    };
+
+    const onPreviewClicked = () => {
+        setPreviewModalVisible(true)
+    }
+
     const margin24 = { marginTop: 24 };
     const margin16 = { marginTop: 16 };
 
@@ -287,9 +301,9 @@ const TemplateDetails = ({
                     <Divider />
 
                     <div className={styles.divSpaceBetween}>
-                        <Button>Back</Button>
+                        <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button type="primary">Interview Preview</Button>
+                            <Button onClick={onPreviewClicked}>Interview Preview</Button>
                             <Button type="primary" onClick={onSaveClicked}>Save</Button>
                         </Space>
                     </div>
@@ -305,6 +319,17 @@ const TemplateDetails = ({
             onAdd={onGroupModalAdd}
             onUpdate={onGroupModalUpdate}
         />
+
+        <Modal
+            title="Interview Experience"
+            width={1000}
+            style={{ top: '5%' }}
+            destroyOnClose={true}
+            footer={null}
+            onCancel={onPreviewClosed}
+            visible={previewModalVisible}>
+            <TemplatePreviewCard template={template} />
+        </Modal>
     </Layout>
 }
 

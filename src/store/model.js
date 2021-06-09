@@ -88,6 +88,7 @@
  * @property {Question[]} questions
  */
 
+// TODO remove
 /**
  * @typedef {Object} TemplateQuestion
  * @property {string} questionId

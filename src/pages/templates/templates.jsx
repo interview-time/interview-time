@@ -41,7 +41,7 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
     const { user } = useAuth0();
 
     const [template, setTemplate] = useState(emptyTemplate);
-    const [previewVisible, setPreviewVisible] = useState(false);
+    const [previewModalVisible, setPreviewModalVisible] = useState(false);
 
     React.useEffect(() => {
         loadTemplates();
@@ -65,12 +65,12 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
     }
 
     const onPreviewClosed = () => {
-        setPreviewVisible(false)
+        setPreviewModalVisible(false)
     };
 
     const onPreview = (templateId) => {
         setTemplate(templates.find(template => template.templateId === templateId))
-        setPreviewVisible(true)
+        setPreviewModalVisible(true)
     }
 
     const onCopy = (template) => {
@@ -200,9 +200,8 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
             destroyOnClose={true}
             footer={null}
             onCancel={onPreviewClosed}
-            visible={previewVisible}>
-            {/*TODO fix me*/}
-            {/*<TemplatePreviewCard template={template} categories={categories} />*/}
+            visible={previewModalVisible}>
+            <TemplatePreviewCard template={template} />
         </Modal>
     </Layout>
 }

@@ -1,15 +1,13 @@
 import styles from "./interview-sections.module.css";
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, Col, Dropdown, Input, Menu, message, Modal, Radio, Row, Space, Table, Tag } from "antd";
 import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
-import { findInterviewGroupQuestions} from "../../components/utils/converters";
-import { localeCompare, localeCompareArray, localeCompareDifficult } from "../../components/utils/comparators";
+import { localeCompare, localeCompareArray} from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import { CaretDownOutlined, CaretRightOutlined, DownOutlined } from "@ant-design/icons";
-import { cloneDeep } from "lodash/lang";
 import { Link } from "react-router-dom";
 import { routeInterviewDetails, routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
@@ -24,73 +22,33 @@ const { TextArea } = Input;
  * @returns {JSX.Element}
  * @constructor
  */
-export const InterviewPreviewCard = ({ interview, username}) => {
-
-    return <div>
+export const InterviewPreviewCard = ({ interview, username}) =>
+    <div>
         <InterviewInformationSection
             loading={false}
             userName={username}
             interview={interview}
             template={{}}
         />
-        <div style={{marginTop: 64}}>
+        <div style={{ marginTop: 64 }}>
             <IntroSection interview={interview} />
         </div>
         <GroupsSection interview={interview} />
         <SummarySection interview={interview} />
     </div>
-}
 
 /**
  *
- * @param {Template} guide
- * @param {CategoryHolder[]} categories
+ * @param {Template} template
  * @returns {JSX.Element}
  * @constructor
  */
-export const TemplatePreviewCard = ({ guide, categories }) => {
-
-    /**
-     * @type {Interview}
-     */
-    const emptyInterview = {
-        candidate: '',
-        position: '',
-        interviewDateTime: '',
-        structure: {
-            groups: []
-        }
-    }
-
-    const [interview, setInterview] = useState(emptyInterview)
-
-    React.useEffect(() => {
-        if (guide && guide.structure) {
-            let interview = {
-                structure: {
-                    header: guide.structure.header,
-                    footer: guide.structure.footer,
-                    groups: []
-                }
-            }
-            guide.structure.groups.forEach(group => {
-                const interviewGroup = cloneDeep(group)
-                const interviewQuestions = findInterviewGroupQuestions(group, categories)
-                interviewGroup.questions = defaultTo(interviewQuestions, [])
-                interview.structure.groups.push(interviewGroup)
-            })
-
-            setInterview(interview)
-        }
-        // eslint-disable-next-line
-    }, [categories, guide]);
-
-    return <div>
-        <IntroSection interview={interview} />
-        <GroupsSection interview={interview} />
-        <SummarySection interview={interview} />
+export const TemplatePreviewCard = ({ template }) =>
+    <div>
+        <IntroSection interview={template} />
+        <GroupsSection interview={template} />
+        <SummarySection interview={template} />
     </div>
-}
 
 /**
  *
@@ -178,7 +136,7 @@ export const InterviewInformationSection = ({
 
 /**
  *
- * @param {Interview} interview
+ * @param {(Interview|Template)} interview
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -201,7 +159,7 @@ export const IntroSection = ({ interview , hashStyle}) => {
 
 /**
  *
- * @param {Interview} interview
+ * @param {(Interview|Template)} interview
  * @param onNoteChanges
  * @param hashStyle
  * @returns {JSX.Element}
@@ -265,13 +223,6 @@ const InterviewQuestionsCard = ({
             sortDirections: ['descend', 'ascend'],
             className: styles.multiLineText,
             sorter: (a, b) => localeCompare(a.question, b.question),
-        },
-        {
-            title: 'Difficulty',
-            key: 'difficulty',
-            dataIndex: 'difficulty',
-            width: 125,
-            sorter: (a, b) => localeCompareDifficult(a.difficulty, b.difficulty),
         },
         {
             title: 'Tags',
@@ -364,7 +315,7 @@ const InterviewQuestionsCard = ({
 
 /**
  *
- * @param {Interview} interview
+ * @param {(Interview|Template)} interview
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
  * @param onNotesChanged
