@@ -210,8 +210,9 @@ const TemplateDetails = ({
         setPreviewModalVisible(true)
     }
 
-    const margin24 = { marginTop: 24 };
-    const margin16 = { marginTop: 16 };
+    const marginTop24 = { marginTop: 24 };
+    const marginVertical24 = { marginTop: 24, marginBottom: 24 };
+    const marginTop16 = { marginTop: 16 };
 
     return <Layout>
         <Row className={styles.rootContainer}>
@@ -223,7 +224,7 @@ const TemplateDetails = ({
                 sm={{ span: 24 }}
                 xs={{ span: 24 }}
             >
-                <Card style={margin24} key={template.templateId}>
+                <Card style={marginTop24} key={template.templateId}>
                     <Title level={4}>Interview Template</Title>
                     <Text type="secondary">Enter template detail information so you can easily discover it among other
                         templates.</Text>
@@ -253,19 +254,19 @@ const TemplateDetails = ({
                     </div>
                 </Card>
 
-                <Card style={margin24}>
+                <Card style={marginTop24}>
                     <Title level={4}>Intro</Title>
                     <Text type="secondary">Intro section serves as a reminder for what interviewer must do at the
                         beginning of the interview.</Text>
                     <TextArea
-                        style={margin16}
+                        style={marginTop16}
                         defaultValue={template.structure.header}
                         onChange={onHeaderChanged}
                         autoSize={{ minRows: 3, maxRows: 5 }}
                         placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
                 </Card>
 
-                <Card style={margin24}>
+                <Card style={marginTop24}>
                     <Title level={4}>Questions</Title>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
                         and make a
@@ -285,15 +286,15 @@ const TemplateDetails = ({
                             />
                         )}
                     </div>
-                    <Button style={margin24} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
+                    <Button style={marginTop24} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
                 </Card>
 
-                <Card style={margin24}>
+                <Card style={marginVertical24}>
                     <Title level={4}>Summary</Title>
                     <Text type="secondary">The summary section serves as a reminder for what interviewer must do at the
                         end of the interview. It also contains fields to take notes and make a final assessment.</Text>
                     <TextArea
-                        style={margin16}
+                        style={marginTop16}
                         defaultValue={template.structure.footer}
                         onChange={onFooterChanged}
                         autoSize={{ minRows: 3, maxRows: 5 }}
