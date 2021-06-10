@@ -18,7 +18,7 @@ import Account from "./pages/account/account";
 import { useAuth0 } from "./react-auth0-spa";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
-import InterviewWizard from "./pages/interview-wizard/interview-wizard";
+import InterviewDetails from "./pages/interview/interview-details";
 import News from "./pages/news/news";
 import Candidates from "./pages/candidates/candidates";
 import InterviewCandidate from "./pages/interview-evaluation/interview-evaluation";
@@ -51,8 +51,8 @@ function App({ history }) {
             <PrivateRoute path="/" exact render={() => <Redirect to={routeTemplates()} />} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
-            <PrivateRoute path={routeInterviewAdd()} exact component={InterviewWizard} />
-            <PrivateRoute path="/interviews/details/:id" exact component={InterviewWizard} />
+            <PrivateRoute path={routeInterviewAdd()} exact component={InterviewDetails} />
+            <PrivateRoute path="/interviews/details/:id" exact component={InterviewDetails} />
             <PrivateRoute path="/interviews/scorecard/:id" exact component={Interview} />
             <PrivateRoute path="/interviews/candidate/:id" exact component={InterviewCandidate} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />

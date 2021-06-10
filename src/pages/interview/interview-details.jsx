@@ -1,46 +1,47 @@
-import styles from "./template.module.css";
+import styles from "./interview.module.css";
 import React, { useState } from "react";
-import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { connect } from "react-redux";
-import { Button, Card, Col, Divider, Input, message, Modal, Row, Select, Space } from "antd";
+import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import { findTemplate } from "../../components/utils/converters";
-import { TemplateCategories } from "../../components/utils/constants";
-import TemplateQuestionsCard from "./template-questions-card";
+import { findInterview} from "../../components/utils/converters";
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER} from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
-import { personalEvent } from "../../analytics";
-import { routeTemplates } from "../../components/utils/route";
-import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
+import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
+import TemplateGroupModal from "../template/template-group-modal";
+import TemplateQuestionsCard from "../template/template-questions-card";
+import moment from "moment";
+import { personalEvent } from "../../analytics";
+import { routeInterviews } from "../../components/utils/route";
 
 const { TextArea } = Input;
 
 /**
  *
- * @param {Template[]} templates
- * @param addTemplate
- * @param loadTemplates
- * @param updateTemplate
+ * @param {Interview[]} interviews
+ * @param addInterview
+ * @param loadInterviews
+ * @param updateInterview
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplateDetails = ({
-    templates,
-    addTemplate,
-    loadTemplates,
-    updateTemplate
+const InterviewDetails = ({
+    interviews,
+    addInterview,
+    loadInterviews,
+    updateInterview
 }) => {
 
     /**
      *
-     * @type {Template}
+     * @type {Interview}
      */
-    const emptyTemplate = {
-        templateId: undefined,
+    const emptyInterview = {
+        interviewId: undefined,
         title: "",
         structure: {
             header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
@@ -49,15 +50,11 @@ const TemplateDetails = ({
         }
     }
 
-    const templateCategories = TemplateCategories.map(category => ({
-        value: category.key,
-        label: category.title,
-    }))
     const history = useHistory();
 
     const { id } = useParams();
 
-    const [template, setTemplate] = useState(emptyTemplate);
+    const [interview, setInterview] = useState(emptyInterview);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [questionGroupModal, setQuestionGroupModal] = useState({
         visible: false,
@@ -66,62 +63,65 @@ const TemplateDetails = ({
     });
 
     React.useEffect(() => {
-        if (!isNewTemplateFlow() && !template.templateId && templates.length !== 0) {
-            setTemplate(cloneDeep(findTemplate(id, templates)))
+        if (!isNewInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
+            setInterview(cloneDeep(findInterview(id, interviews)))
         }
         // eslint-disable-next-line
-    }, [templates, id]);
+    }, [interviews, id]);
 
     React.useEffect(() => {
-        if (!isNewTemplateFlow()) {
-            loadTemplates()
+        if (!isNewInterviewFlow()) {
+            loadInterviews()
         }
-
         // eslint-disable-next-line
     }, []);
 
-    const isNewTemplateFlow = () => !id;
+    const isNewInterviewFlow = () => !id;
 
-    const isInitialLoading = () => !isNewTemplateFlow() && !template.templateId
+    const isInitialLoading = () => !isNewInterviewFlow() && !interview.interviewId
 
     const onBackClicked = () => {
         history.goBack()
     }
 
-    const onCategoryChange = value => {
-        template.type = value;
+    const onCandidateChange = e => {
+        interview.candidate = e.target.value
     }
 
-    const onTitleChange = e => {
-        template.title = e.target.value
+    const onPositionChange = e => {
+        interview.position = e.target.value
     }
+
+    const onDateChange = (date) => {
+        interview.interviewDateTime = date.utc().format(DATE_FORMAT_SERVER)
+    };
 
     const onQuestionsSortChange = (groupId, questions) => {
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups
+        const updatedInterview = cloneDeep(interview)
+        updatedInterview.structure.groups
             .find(group => group.groupId === groupId).questions = questions
-        setTemplate(updatedTemplate)
+        setInterview(updatedInterview)
     }
 
     const onAddQuestionClicked = (groupId) => {
         const questionId = Date.now().toString()
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups
+        const updatedInterview = cloneDeep(interview)
+        updatedInterview.structure.groups
             .find(group => group.groupId === groupId).questions
             .push({
                 questionId: questionId,
                 question: "",
                 tags: []
             })
-        setTemplate(updatedTemplate)
+        setInterview(updatedInterview)
     }
 
     const onRemoveQuestionClicked = (questionId) => {
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups.forEach(group =>
+        const updatedInterview = cloneDeep(interview)
+        updatedInterview.structure.groups.forEach(group =>
             group.questions = group.questions.filter(q => q.questionId !== questionId)
         )
-        setTemplate(updatedTemplate)
+        setInterview(updatedInterview)
     }
 
     const onGroupTitleClicked = (id, name) => {
@@ -141,29 +141,29 @@ const TemplateDetails = ({
     }
 
     const onDeleteGroupClicked = id => {
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups = updatedTemplate.structure.groups.filter(g => g.groupId !== id)
-        setTemplate(updatedTemplate)
+        const updatedInterview = cloneDeep(interview)
+        updatedInterview.structure.groups = updatedInterview.structure.groups.filter(g => g.groupId !== id)
+        setInterview(updatedInterview)
     }
 
     const onSaveClicked = () => {
-        if (isNewTemplateFlow()) {
-            personalEvent('Template created');
-            addTemplate(template);
-            message.success(`Template '${template.title}' created.`);
+        if (isNewInterviewFlow()) {
+            personalEvent('Interview created');
+            addInterview(interview);
+            message.success(`Interview '${interview.candidate}' created.`);
         } else {
-            updateTemplate(template);
-            message.success(`Template '${template.title}' updated.`);
+            updateInterview(interview);
+            message.success(`Interview '${interview.candidate}' updated.`);
         }
-        history.push(routeTemplates())
+        history.push(routeInterviews())
     }
 
     const onHeaderChanged = e => {
-        template.structure.header = e.target.value
+        interview.structure.header = e.target.value
     }
 
     const onFooterChanged = e => {
-        template.structure.footer = e.target.value
+        interview.structure.footer = e.target.value
     }
 
     const onGroupModalCancel = () => {
@@ -174,40 +174,40 @@ const TemplateDetails = ({
     }
 
     const onGroupModalUpdate = (id, name) => {
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups
+        const updatedInterview = cloneDeep(interview)
+        updatedInterview.structure.groups
             .find(group => group.groupId === id)
             .name = name
-        setTemplate(updatedTemplate)
+        setInterview(updatedInterview)
         setQuestionGroupModal(false)
     }
 
     const onGroupModalAdd = name => {
         const groupId = Date.now().toString()
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups.push({
+        const updatedInterview = cloneDeep(interview)
+        updatedInterview.structure.groups.push({
             groupId: groupId,
             name: name,
             questions: []
         })
-        setTemplate(updatedTemplate)
+        setInterview(updatedInterview)
         setQuestionGroupModal(false)
     }
 
     const onMoveGroupUpClicked = id => {
-        const updatedTemplate = cloneDeep(template)
-        const fromIndex = updatedTemplate.structure.groups.findIndex(g => g.groupId === id)
+        const updatedInterview = cloneDeep(interview)
+        const fromIndex = updatedInterview.structure.groups.findIndex(g => g.groupId === id)
         const toIndex = fromIndex - 1
-        updatedTemplate.structure.groups = arrayMove(updatedTemplate.structure.groups, fromIndex, toIndex)
-        setTemplate(updatedTemplate)
+        updatedInterview.structure.groups = arrayMove(updatedInterview.structure.groups, fromIndex, toIndex)
+        setInterview(updatedInterview)
     }
 
     const onMoveGroupDownClicked = id => {
-        const updatedTemplate = cloneDeep(template)
-        const fromIndex = updatedTemplate.structure.groups.findIndex(g => g.groupId === id)
+        const updatedInterview = cloneDeep(interview)
+        const fromIndex = updatedInterview.structure.groups.findIndex(g => g.groupId === id)
         const toIndex = fromIndex + 1
-        updatedTemplate.structure.groups = arrayMove(updatedTemplate.structure.groups, fromIndex, toIndex)
-        setTemplate(updatedTemplate)
+        updatedInterview.structure.groups = arrayMove(updatedInterview.structure.groups, fromIndex, toIndex)
+        setInterview(updatedInterview)
     }
 
     const onPreviewClosed = () => {
@@ -232,31 +232,34 @@ const TemplateDetails = ({
                 sm={{ span: 24 }}
                 xs={{ span: 24 }}
             >
-                <Card style={marginTop24} key={template.templateId} loading={isInitialLoading()}>
-                    <Title level={4}>Interview Template</Title>
-                    <Text type="secondary">Enter template detail information so you can easily discover it among other
-                        templates.</Text>
+                <Card style={marginTop24} key={interview.interviewId} loading={isInitialLoading()}>
+                    <Title level={4}>Interview</Title>
+                    <Text type="secondary">Enter interview details information so you can easily discover it among other interviews.</Text>
                     <div className={styles.divSpaceBetween}>
                         <Space direction="vertical" className={styles.divFlexGrow} style={{ marginRight: 16 }}>
-                            <Text strong>Title</Text>
+                            <Text strong>Candidate</Text>
                             <Input
-                                placeholder="e.g. Software Developer"
-                                onChange={onTitleChange}
-                                defaultValue={template.title}
+                                placeholder="e.g. Kristin Watson"
+                                onChange={onCandidateChange}
+                                defaultValue={interview.candidate}
+                            />
+                        </Space>
+                        <Space direction="vertical" className={styles.divFlexGrow} style={{ marginRight: 16 }}>
+                            <Text strong>Interview Date</Text>
+                            <DatePicker showTime
+                                        allowClear={false}
+                                        format={DATE_FORMAT_DISPLAY}
+                                        className={styles.date}
+                                        defaultValue={interview.interviewDateTime ? moment(interview.interviewDateTime) : ''}
+                                        onChange={onDateChange}
                             />
                         </Space>
                         <Space direction="vertical" className={styles.divFlexGrow}>
-                            <Text strong>Category</Text>
-                            <Select
-                                style={{ width: '100%' }}
-                                placeholder="Select category"
-                                defaultValue={template.type}
-                                onSelect={onCategoryChange}
-                                options={templateCategories}
-                                showSearch
-                                filterOption={(inputValue, option) =>
-                                    option.value.toLocaleLowerCase().includes(inputValue)
-                                }
+                            <Text strong>Position</Text>
+                            <Input
+                                placeholder="e.g. Junior Software Developer"
+                                defaultValue={interview.position}
+                                onChange={onPositionChange}
                             />
                         </Space>
                     </div>
@@ -268,7 +271,7 @@ const TemplateDetails = ({
                         beginning of the interview.</Text>
                     <TextArea
                         style={marginTop16}
-                        defaultValue={template.structure.header}
+                        defaultValue={interview.structure.header}
                         onChange={onHeaderChanged}
                         autoSize={{ minRows: 3, maxRows: 5 }}
                         placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
@@ -277,12 +280,11 @@ const TemplateDetails = ({
                 <Card style={marginTop24} loading={isInitialLoading()}>
                     <Title level={4}>Questions</Title>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
-                        and make a
-                        more granular assessment.</Text>
+                        and make a more granular assessment.</Text>
                     <div>
-                        {template.structure.groups.map(group =>
+                        {interview.structure.groups.map(group =>
                             <TemplateQuestionsCard
-                                template={template}
+                                template={interview}
                                 group={group}
                                 onQuestionsSortChange={onQuestionsSortChange}
                                 onAddQuestionClicked={onAddQuestionClicked}
@@ -303,7 +305,7 @@ const TemplateDetails = ({
                         end of the interview. It also contains fields to take notes and make a final assessment.</Text>
                     <TextArea
                         style={marginTop16}
-                        defaultValue={template.structure.footer}
+                        defaultValue={interview.structure.footer}
                         onChange={onFooterChanged}
                         autoSize={{ minRows: 3, maxRows: 5 }}
                         placeholder="Allow 10 minutes at the end for the candidate to ask questions." />
@@ -330,25 +332,25 @@ const TemplateDetails = ({
         />
 
         <Modal
-            title="Interview Experience"
+            title="Interview"
             width={1000}
             style={{ top: '5%' }}
             destroyOnClose={true}
             footer={null}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
-            <TemplatePreviewCard template={template} />
+            <TemplatePreviewCard template={interview} />
         </Modal>
     </Layout>
 }
 
-const mapDispatch = { addTemplate, loadTemplates, updateTemplate };
+const mapDispatch = { addInterview, loadInterviews, updateInterview };
 const mapState = (state) => {
-    const templateState = state.templates || {};
+    const interviewState = state.interviews || {};
 
     return {
-        templates: templateState.templates
+        interviews: interviewState.interviews
     }
 }
 
-export default connect(mapState, mapDispatch)(TemplateDetails)
+export default connect(mapState, mapDispatch)(InterviewDetails)
