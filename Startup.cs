@@ -1,23 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Amazon.DynamoDBv2;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon;
 using CafApi.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace caf_api
+namespace CafApi
 {
     public class Startup
     {
@@ -39,7 +33,11 @@ namespace caf_api
             {
                 options.Authority = Configuration["Auth0:Authority"];
                 options.Audience = Configuration["Auth0:Audience"];
-                options.RequireHttpsMetadata = false;
+                options.RequireHttpsMetadata = false;             
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ManageLibrary", policy => policy.Requirements.Add(new IsLibraryAuthorizationRequirement()));
             });
 
             services.AddCors(options =>
@@ -73,6 +71,7 @@ namespace caf_api
 
             services.AddSingleton<ITemplateService, TemplateService>();
             services.AddSingleton<IInterviewService, InterviewService>();
+            services.AddSingleton<IAuthorizationHandler, IsLibraryAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

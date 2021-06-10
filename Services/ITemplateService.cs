@@ -18,5 +18,13 @@ namespace CafApi.Services
         Task DeleteTemplate(string userId, string templateId);
 
         Task<List<Library>> GetTemplatesLibrary();
+
+        Task<Library> GetLibraryTemplate(string userId, string templateId);
+
+        Task<Library> CreateLibraryTemplate(string userId, TemplateRequest newTemplate);
+
+        Task<Library> UpdateLibraryTemplate(string userId, TemplateRequest updatedTemplate);
+
+        Task DeleteLibraryTemplate(string userId, string libraryId);
     }
 }

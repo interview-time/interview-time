@@ -58,12 +58,33 @@ namespace CafApi.Controllers
             await _templateService.UpdateTemplate(UserId, request);
         }
 
-        [HttpGet("library")]
+        [HttpGet("library")]        
         public async Task<List<Library>> GetTemplatesLibrary()
         {
             var templates = await _templateService.GetTemplatesLibrary();
 
             return templates;
+        }
+
+        [HttpPost("library")]
+        [Authorize(Policy = "ManageLibrary")]
+        public async Task<Library> CreateLibraryTemplate([FromBody] TemplateRequest request)
+        {
+            return await _templateService.CreateLibraryTemplate(UserId, request);
+        }
+
+        [HttpPut("library")]
+        [Authorize(Policy = "ManageLibrary")]
+        public async Task UpdateLibraryTemplate([FromBody] TemplateRequest request)
+        {
+            await _templateService.UpdateLibraryTemplate(UserId, request);
+        }
+
+        [HttpDelete("library/{libraryId}")]
+        [Authorize(Policy = "ManageLibrary")]
+        public async Task DeleteLibraryTemplate(string libraryId)
+        {
+            await _templateService.DeleteLibraryTemplate(UserId, libraryId);
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sentry;
 
-namespace caf_api
+namespace CafApi
 {
     public class Program
     {
