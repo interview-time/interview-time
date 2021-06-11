@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CafApi
 {
-    public class IsLibraryAuthorizationHandler : AuthorizationHandler<IsLibraryAuthorizationRequirement>
+    public class IsAdminAuthorizationHandler : AuthorizationHandler<IsAdminAuthorizationRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsLibraryAuthorizationRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsAdminAuthorizationRequirement requirement)
         {
             var permission = context.User?.Claims?.FirstOrDefault(x => x.Type == "permissions" && x.Value == requirement.ValidPermission);
             if (permission != null)
@@ -15,8 +15,8 @@ namespace CafApi
             return Task.CompletedTask;
         }
     }
-    
-    public class IsLibraryAuthorizationRequirement : IAuthorizationRequirement
+
+    public class IsAdminAuthorizationRequirement : IAuthorizationRequirement
     {
         public string ValidPermission = "write:library";
     }

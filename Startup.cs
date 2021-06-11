@@ -37,7 +37,7 @@ namespace CafApi
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ManageLibrary", policy => policy.Requirements.Add(new IsLibraryAuthorizationRequirement()));
+                options.AddPolicy("Admin", policy => policy.Requirements.Add(new IsAdminAuthorizationRequirement()));
             });
 
             services.AddCors(options =>
@@ -71,7 +71,7 @@ namespace CafApi
 
             services.AddSingleton<ITemplateService, TemplateService>();
             services.AddSingleton<IInterviewService, InterviewService>();
-            services.AddSingleton<IAuthorizationHandler, IsLibraryAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
