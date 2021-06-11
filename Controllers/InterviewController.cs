@@ -64,6 +64,6 @@ namespace CafApi.Controllers
         public async Task SubmitScoreCard([FromBody] ScoreCardRequest scoreCard)
         {
             await _interviewService.SubmitScorecard(UserId, scoreCard);
-        }
+        }        
     }
 }
