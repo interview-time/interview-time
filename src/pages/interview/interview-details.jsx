@@ -7,7 +7,7 @@ import Text from "antd/lib/typography/Text";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER} from "../../components/utils/constants";
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
 import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
@@ -48,6 +48,7 @@ const InterviewDetails = ({
     const emptyInterview = {
         interviewId: undefined,
         templateId: undefined,
+        status: Status.NEW,
         title: "",
         structure: {
             header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
@@ -83,6 +84,7 @@ const InterviewDetails = ({
             setInterview({
                 interviewId: undefined,
                 templateId: template.templateId,
+                status: Status.NEW,
                 title: "",
                 structure: template.structure
             })
