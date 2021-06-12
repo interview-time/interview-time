@@ -15,7 +15,7 @@ import { personalEvent } from "../../analytics";
 import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
-import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
+import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
 
 const { TextArea } = Input;
 
@@ -55,7 +55,7 @@ const TemplateDetails = ({
     }))
     const history = useHistory();
 
-    const { id } = useParams();
+    const { id} = useParams();
 
     const [template, setTemplate] = useState(emptyTemplate);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -218,8 +218,8 @@ const TemplateDetails = ({
         setPreviewModalVisible(true)
     }
 
-    const marginTop24 = { marginTop: 24 };
-    const marginVertical24 = { marginTop: 24, marginBottom: 24 };
+    const marginTop12 = { marginTop: 12 };
+    const marginVertical12 = { marginTop: 12, marginBottom: 12 };
     const marginTop16 = { marginTop: 16 };
 
     return <Layout>
@@ -232,7 +232,7 @@ const TemplateDetails = ({
                 sm={{ span: 24 }}
                 xs={{ span: 24 }}
             >
-                <Card style={marginTop24} key={template.templateId} loading={isInitialLoading()}>
+                <Card style={marginTop12} key={template.templateId} loading={isInitialLoading()}>
                     <Title level={4}>Interview Template</Title>
                     <Text type="secondary">Enter template detail information so you can easily discover it among other
                         templates.</Text>
@@ -262,7 +262,7 @@ const TemplateDetails = ({
                     </div>
                 </Card>
 
-                <Card style={marginTop24} loading={isInitialLoading()}>
+                <Card style={marginTop12} loading={isInitialLoading()}>
                     <Title level={4}>Intro</Title>
                     <Text type="secondary">Intro section serves as a reminder for what interviewer must do at the
                         beginning of the interview.</Text>
@@ -274,7 +274,7 @@ const TemplateDetails = ({
                         placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
                 </Card>
 
-                <Card style={marginTop24} loading={isInitialLoading()}>
+                <Card style={marginTop12} loading={isInitialLoading()}>
                     <Title level={4}>Questions</Title>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
                         and make a
@@ -294,10 +294,10 @@ const TemplateDetails = ({
                             />
                         )}
                     </div>
-                    <Button style={marginTop24} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
+                    <Button style={marginTop12} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
                 </Card>
 
-                <Card style={marginVertical24} loading={isInitialLoading()}>
+                <Card style={marginVertical12} loading={isInitialLoading()}>
                     <Title level={4}>Summary</Title>
                     <Text type="secondary">The summary section serves as a reminder for what interviewer must do at the
                         end of the interview. It also contains fields to take notes and make a final assessment.</Text>
@@ -312,7 +312,7 @@ const TemplateDetails = ({
                     <div className={styles.divSpaceBetween}>
                         <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button onClick={onPreviewClicked}>Interview Preview</Button>
+                            <Button onClick={onPreviewClicked}>Preview Interview Experience</Button>
                             <Button type="primary" onClick={onSaveClicked}>Save</Button>
                         </Space>
                     </div>
@@ -330,14 +330,16 @@ const TemplateDetails = ({
         />
 
         <Modal
-            title="Interview Experience"
+            title={null}
+            footer={null}
+            closable={false}
+            destroyOnClose={true}
             width={1000}
             style={{ top: '5%' }}
-            destroyOnClose={true}
-            footer={null}
+            bodyStyle={{backgroundColor: '#EEF0F2F5' }}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
-            <TemplatePreviewCard template={template} />
+            <TemplateDetailsPreviewCard template={template} onCloseClicked={onPreviewClosed}/>
         </Modal>
     </Layout>
 }

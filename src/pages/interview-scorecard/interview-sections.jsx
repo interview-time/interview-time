@@ -1,13 +1,13 @@
 import styles from "./interview-sections.module.css";
 import React from 'react';
-import { Card, Col, Dropdown, Input, Menu, message, Modal, Radio, Row, Space, Table, Tag, Tooltip } from "antd";
+import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Radio, Row, Space, Table, Tag, Tooltip } from "antd";
 import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { DownOutlined } from "@ant-design/icons";
+import { CloseOutlined, DownOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { routeInterviewDetails, routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
@@ -41,15 +41,63 @@ export const InterviewPreviewCard = ({ interview, username }) =>
 /**
  *
  * @param {Template} template
+ * @param onCloseClicked
+ * @param onCreateInterviewClicked
  * @returns {JSX.Element}
  * @constructor
  */
-export const TemplatePreviewCard = ({ template }) =>
-    <div>
-        <IntroSection interview={template} />
-        <GroupsSection interview={template} />
-        <SummarySection interview={template} />
-    </div>
+export const TemplatePreviewCard = ({ template, onCloseClicked, onCreateInterviewClicked }) => {
+    const marginTop12 = { marginTop: 12 };
+    return <div>
+        <div className={styles.divSpaceBetween}>
+            <Title level={4} style={{ marginBottom: 0 }}>Template</Title>
+            <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
+        </div>
+        <div className={styles.divSpaceBetween} style={marginTop12}>
+            <Text>Use this template to create new interview and customize as you go.</Text>
+            <Button type="primary" onClick={onCreateInterviewClicked}>Create interview</Button>
+        </div>
+        <Card style={marginTop12}>
+            <IntroSection interview={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <GroupsSection interview={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <SummarySection interview={template} />
+        </Card>
+    </div>;
+}
+
+/**
+ *
+ * @param {Template} template
+ * @param onCloseClicked
+ * @param onCreateInterviewClicked
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
+    const marginTop12 = { marginTop: 12 };
+    return <div>
+        <div className={styles.divSpaceBetween}>
+            <Title level={4} style={{ marginBottom: 0 }}>Template</Title>
+            <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
+        </div>
+        <div className={styles.divSpaceBetween} style={marginTop12}>
+            <Text>Use this template to create new interview and customize as you go.</Text>
+        </div>
+        <Card style={marginTop12}>
+            <IntroSection interview={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <GroupsSection interview={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <SummarySection interview={template} />
+        </Card>
+    </div>;
+}
 
 /**
  *
@@ -179,7 +227,7 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
     const isCompletedStatus = () => interview.status === Status.COMPLETED
 
     return <>
-        <Title id="summary" level={4} style={{ marginTop: 64 }}
+        <Title id="summary" level={4}
                className={hashStyle ? hashStyle : null}>Summary</Title>
         <div className={styles.multiLineText}>{getFooter()}</div>
         <Space className={styles.space} direction="vertical">
@@ -196,6 +244,7 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
 
 /**
  *
+ * @param {number} index
  * @param {InterviewGroup} group
  * @param {boolean} disabled
  * @param onGroupAssessmentChanged
@@ -206,6 +255,7 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
  * @constructor
  */
 const InterviewQuestionsCard = ({
+    index,
     group,
     disabled,
     onGroupAssessmentChanged,
@@ -264,7 +314,7 @@ const InterviewQuestionsCard = ({
         setCollapsed(!collapsed)
     }
 
-    return <div className={styles.questionArea}>
+    return <div style={index === 0 ? { marginTop: 0 } : { marginTop: 64 }}>
         <div className={styles.divSpaceBetween}>
             <Space style={{ marginBottom: 8 }}>
                 <Title id={group.name} level={4} onClick={onCollapseClicked}
@@ -366,8 +416,9 @@ export const GroupsSection = ({
     const isCompletedStatus = () => interview.status === Status.COMPLETED
 
     return <>
-        {getGroups().map(group =>
+        {getGroups().map((group, index) =>
             <InterviewQuestionsCard
+                index={index}
                 group={group}
                 disabled={isCompletedStatus()}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}

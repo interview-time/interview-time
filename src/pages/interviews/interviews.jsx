@@ -156,7 +156,7 @@ const mapState = (state) => {
     const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ['interviewDateTime']))
     if (templatesState.templates.length > 0) {
         interviews.forEach(interview => {
-            const template = templatesState.templates.find(template => template.templateId === interview.guideId)
+            const template = templatesState.templates.find(template => template.templateId === interview.templateId)
             if (template) {
                 interview.template = template.title
             }

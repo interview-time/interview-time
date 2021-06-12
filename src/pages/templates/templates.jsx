@@ -3,19 +3,41 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
-import { Alert, Avatar, Button, Card, Col, Dropdown, List, Menu, message, Modal, Row, Space, Tooltip } from "antd";
+import {
+    Alert,
+    Avatar,
+    Button,
+    Card,
+    Col,
+    Divider,
+    Dropdown,
+    List,
+    Menu,
+    message,
+    Modal,
+    Row,
+    Space,
+    Tooltip
+} from "antd";
 import { Link, useHistory } from "react-router-dom";
-import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, CloseOutlined, EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
-import { routeTemplateAdd, routeTemplateDetails } from "../../components/utils/route";
+import {
+    routeInterviewAdd,
+    routeInterviewAddFromTemplate,
+    routeTemplateAdd,
+    routeTemplateDetails
+} from "../../components/utils/route";
 import { useAuth0 } from "../../react-auth0-spa";
 import { getTemplateCategoryIcon, TemplateCategories } from "../../components/utils/constants";
 import confirm from "antd/lib/modal/confirm";
 import { CustomIcon } from "../../components/utils/icons";
 import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 import StickyHeader from "../../components/layout/header-sticky";
+import Title from "antd/lib/typography/Title";
+import Text from "antd/lib/typography/Text";
 
 const NEW_TEMPLATE = "NEW_TEMPLATE"
 
@@ -102,6 +124,11 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
                 onDelete(template)
             }
         });
+    }
+
+    const onCreateInterviewClicked = (template) => {
+        setPreviewModalVisible(false)
+        history.push(routeInterviewAddFromTemplate(template.templateId))
     }
 
     const createMenu = (template) => <Menu>
@@ -194,14 +221,18 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
             </List.Item>}
         />
         <Modal
-            title="Interview Experience"
+            title={null}
+            footer={null}
+            closable={false}
+            destroyOnClose={true}
             width={1000}
             style={{ top: '5%' }}
-            destroyOnClose={true}
-            footer={null}
+            bodyStyle={{backgroundColor: '#EEF0F2F5' }}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
-            <TemplatePreviewCard template={template} />
+            <TemplatePreviewCard template={template}
+                                 onCloseClicked={onPreviewClosed}
+                                 onCreateInterviewClicked={()=> onCreateInterviewClicked(template)}/>
         </Modal>
     </Layout>
 }

@@ -4,14 +4,15 @@ import { connect } from "react-redux";
 import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import { findInterview} from "../../components/utils/converters";
+import { findInterview, findTemplate } from "../../components/utils/converters";
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER} from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
 import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
+import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template/template-group-modal";
 import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
@@ -23,17 +24,21 @@ const { TextArea } = Input;
 /**
  *
  * @param {Interview[]} interviews
+ * @param {Template[]} templates
  * @param addInterview
  * @param loadInterviews
  * @param updateInterview
+ * @param loadTemplates
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewDetails = ({
     interviews,
+    templates,
     addInterview,
     loadInterviews,
-    updateInterview
+    updateInterview,
+    loadTemplates,
 }) => {
 
     /**
@@ -42,6 +47,7 @@ const InterviewDetails = ({
      */
     const emptyInterview = {
         interviewId: undefined,
+        templateId: undefined,
         title: "",
         structure: {
             header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
@@ -53,6 +59,7 @@ const InterviewDetails = ({
     const history = useHistory();
 
     const { id } = useParams();
+    const location = useLocation();
 
     const [interview, setInterview] = useState(emptyInterview);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -63,22 +70,50 @@ const InterviewDetails = ({
     });
 
     React.useEffect(() => {
-        if (!isNewInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
+        if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
+            console.log("setInterview " + id)
             setInterview(cloneDeep(findInterview(id, interviews)))
         }
         // eslint-disable-next-line
     }, [interviews, id]);
 
     React.useEffect(() => {
-        if (!isNewInterviewFlow()) {
+        if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
+            const template = cloneDeep(findTemplate(fromTemplateId(), templates))
+            setInterview({
+                interviewId: undefined,
+                templateId: template.templateId,
+                title: "",
+                structure: template.structure
+            })
+        }
+        // eslint-disable-next-line
+    }, [templates]);
+
+    React.useEffect(() => {
+        if(isFromTemplateFlow()) {
+            loadTemplates()
+        } else if (isExistingInterviewFlow()) {
             loadInterviews()
         }
         // eslint-disable-next-line
     }, []);
 
-    const isNewInterviewFlow = () => !id;
+    const isExistingInterviewFlow = () => id;
 
-    const isInitialLoading = () => !isNewInterviewFlow() && !interview.interviewId
+    const isFromTemplateFlow = () => fromTemplateId() !== null;
+
+    const isInitialLoading = () =>
+        (isExistingInterviewFlow() && !interview.interviewId) || (isFromTemplateFlow() && !interview.templateId)
+
+    /**
+     *
+     * @returns {string|null}
+     */
+    const fromTemplateId = () => {
+        const params = new URLSearchParams(location.search);
+        return params.get('fromTemplate');
+    }
 
     const onBackClicked = () => {
         history.goBack()
@@ -147,13 +182,13 @@ const InterviewDetails = ({
     }
 
     const onSaveClicked = () => {
-        if (isNewInterviewFlow()) {
+        if (isExistingInterviewFlow()) {
+            updateInterview(interview);
+            message.success(`Interview '${interview.candidate}' updated.`);
+        } else {
             personalEvent('Interview created');
             addInterview(interview);
             message.success(`Interview '${interview.candidate}' created.`);
-        } else {
-            updateInterview(interview);
-            message.success(`Interview '${interview.candidate}' updated.`);
         }
         history.push(routeInterviews())
     }
@@ -218,8 +253,8 @@ const InterviewDetails = ({
         setPreviewModalVisible(true)
     }
 
-    const marginTop24 = { marginTop: 24 };
-    const marginVertical24 = { marginTop: 24, marginBottom: 24 };
+    const marginTop12 = { marginTop: 12 };
+    const marginVertical12 = { marginTop: 12, marginBottom: 12 };
     const marginTop16 = { marginTop: 16 };
 
     return <Layout>
@@ -232,7 +267,7 @@ const InterviewDetails = ({
                 sm={{ span: 24 }}
                 xs={{ span: 24 }}
             >
-                <Card style={marginTop24} key={interview.interviewId} loading={isInitialLoading()}>
+                <Card style={marginTop12} key={interview.interviewId} loading={isInitialLoading()}>
                     <Title level={4}>Interview</Title>
                     <Text type="secondary">Enter interview details information so you can easily discover it among other interviews.</Text>
                     <div className={styles.divSpaceBetween}>
@@ -265,7 +300,7 @@ const InterviewDetails = ({
                     </div>
                 </Card>
 
-                <Card style={marginTop24} loading={isInitialLoading()}>
+                <Card style={marginTop12} loading={isInitialLoading()}>
                     <Title level={4}>Intro</Title>
                     <Text type="secondary">Intro section serves as a reminder for what interviewer must do at the
                         beginning of the interview.</Text>
@@ -277,7 +312,7 @@ const InterviewDetails = ({
                         placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
                 </Card>
 
-                <Card style={marginTop24} loading={isInitialLoading()}>
+                <Card style={marginTop12} loading={isInitialLoading()}>
                     <Title level={4}>Questions</Title>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
                         and make a more granular assessment.</Text>
@@ -296,10 +331,10 @@ const InterviewDetails = ({
                             />
                         )}
                     </div>
-                    <Button style={marginTop24} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
+                    <Button style={marginTop12} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
                 </Card>
 
-                <Card style={marginVertical24} loading={isInitialLoading()}>
+                <Card style={marginVertical12} loading={isInitialLoading()}>
                     <Title level={4}>Summary</Title>
                     <Text type="secondary">The summary section serves as a reminder for what interviewer must do at the
                         end of the interview. It also contains fields to take notes and make a final assessment.</Text>
@@ -314,7 +349,7 @@ const InterviewDetails = ({
                     <div className={styles.divSpaceBetween}>
                         <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button onClick={onPreviewClicked}>Interview Preview</Button>
+                            <Button onClick={onPreviewClicked}>Preview</Button>
                             <Button type="primary" onClick={onSaveClicked}>Save</Button>
                         </Space>
                     </div>
@@ -344,12 +379,14 @@ const InterviewDetails = ({
     </Layout>
 }
 
-const mapDispatch = { addInterview, loadInterviews, updateInterview };
+const mapDispatch = { addInterview, loadInterviews, updateInterview, loadTemplates };
 const mapState = (state) => {
     const interviewState = state.interviews || {};
+    const templateState = state.templates || {};
 
     return {
-        interviews: interviewState.interviews
+        interviews: interviewState.interviews,
+        templates: templateState.templates,
     }
 }
 
