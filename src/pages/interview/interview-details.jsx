@@ -1,7 +1,7 @@
 import styles from "./interview.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Row, Select, Space } from "antd";
+import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Row, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useParams, useLocation } from "react-router-dom";

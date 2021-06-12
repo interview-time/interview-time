@@ -54,6 +54,7 @@ const TemplateQuestionsCard = ({
             setQuestions(questions)
             updateQuestionsTags();
         }
+        // eslint-disable-next-line
     }, [group]);
 
     function updateQuestionsTags() {

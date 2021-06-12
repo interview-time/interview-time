@@ -9,7 +9,6 @@ import {
     Button,
     Card,
     Col,
-    Divider,
     Dropdown,
     List,
     Menu,
@@ -20,12 +19,11 @@ import {
     Tooltip
 } from "antd";
 import { Link, useHistory } from "react-router-dom";
-import { ArrowLeftOutlined, CloseOutlined, EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 import {
-    routeInterviewAdd,
     routeInterviewAddFromTemplate,
     routeTemplateAdd,
     routeTemplateDetails
@@ -36,8 +34,6 @@ import confirm from "antd/lib/modal/confirm";
 import { CustomIcon } from "../../components/utils/icons";
 import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 import StickyHeader from "../../components/layout/header-sticky";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
 
 const NEW_TEMPLATE = "NEW_TEMPLATE"
 
