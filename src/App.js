@@ -12,6 +12,7 @@ import {
     routeTemplateAdd,
     routeTemplates,
 } from "./components/utils/route";
+import Default from "./pages/default/default";
 import QuestionBank from "./pages/question-bank/question-bank";
 import Interviews from "./pages/interviews/interviews";
 import Interview from "./pages/interview-scorecard/interview-scorecard";
@@ -55,7 +56,7 @@ function App({ history }) {
 
     return (
         <Switch>
-            <PrivateRoute path="/" exact render={() => <Redirect to={routeLibrary()} />} />
+            <PrivateRoute path="/" exact component={Default} />
             <PrivateRoute path={routeLibrary()} exact component={Library} />
             <PrivateRoute path="/library/:id" exact component={LibraryCategory} />
             <PrivateRoute path="/question-bank/:id" exact component={QuestionBankCategory} />
