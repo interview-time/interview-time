@@ -1,17 +1,15 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Badge, Drawer, Layout as AntLayout, Menu, Progress } from "antd";
+import { Badge, Layout as AntLayout, Menu} from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
-    CommunityIcon,
     FakeIcon,
     FeedbackIcon,
     GuideIcon,
     InterviewIcon,
     NewsIcon,
     ProfileIcon,
-    QuestionBankIcon,
 } from "../utils/icons";
 import {
     routeAccount,
@@ -25,15 +23,10 @@ import {
 
 import { useAuth0 } from "../../react-auth0-spa";
 import {
-    isAddInterviewClicked, isAddTemplateClicked,
-    isQuestionBankClicked,
-    isQuickstartDisplayed,
     isUpdateAvailable
 } from "../utils/storage";
 import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
-import Text from "antd/lib/typography/Text";
-import Quickstart from "../../pages/quickstart/quickstart";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
 
 const menuIconStyle = { fontSize: '24px' }
@@ -45,13 +38,7 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
     const location = useLocation();
     const { user } = useAuth0();
 
-    const [quickStartVisible, setQuickStartVisible] = React.useState(
-        location.pathname.includes(routeQuestionBank()) && !isQuickstartDisplayed()
-    );
-
     const [feedbackVisible, setFeedbackVisible] = React.useState(false)
-
-    const tasksCount = 3
 
     const getSelectedKey = () => {
         if (location.pathname.includes(routeQuestionBank())) {
@@ -80,32 +67,6 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
         return 'Profile'
     }
 
-    const onQuickStartClosed = () => {
-        setQuickStartVisible(false)
-    }
-
-    const onProgressClicked = () => {
-        setQuickStartVisible(true)
-    }
-
-    const getTaskProgress = () => {
-        return (tasksCount - getRemainingTasksCount()) * (100 / tasksCount)
-    }
-
-    const getRemainingTasksCount = () => {
-        let remainingTasks = 0;
-        if (!isQuestionBankClicked()) {
-            remainingTasks++;
-        }
-        if (!isAddInterviewClicked()) {
-            remainingTasks++;
-        }
-        if (!isAddTemplateClicked()) {
-            remainingTasks++;
-        }
-        return remainingTasks
-    }
-
     const onFeedbackClicked = () => {
         setFeedbackVisible(true)
     }
@@ -120,22 +81,10 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                 <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 <Menu theme="light"
                       mode="inline"
-                      defaultSelectedKeys={[routeLibrary()]}
+                      defaultSelectedKeys={[routeTemplates()]}
                       selectedKeys={[getSelectedKey()]}
                       className={styles.menu}
                 >
-                    <Menu.Item key={routeLibrary()} className={styles.menuItem}
-                               icon={<CommunityIcon style={menuIconStyle} />}>
-                        <Link to={routeLibrary()}>
-                            <span className="nav-text">Library</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key={routeQuestionBank()} className={styles.menuItem}
-                               icon={<QuestionBankIcon style={menuIconStyle} />}>
-                        <Link to={routeQuestionBank()}>
-                            <span className="nav-text">Questions</span>
-                        </Link>
-                    </Menu.Item>
                     <Menu.Item key={routeTemplates()} className={styles.menuItem}
                                icon={<GuideIcon style={menuIconStyle} />}>
                         <Link to={routeTemplates()}>
@@ -155,27 +104,6 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                         </Link>
                     </Menu.Item>
                     <div className={styles.space} />
-                    {getRemainingTasksCount() > 0 && <div
-                        className={styles.progressContainer}
-                        onClick={onProgressClicked}>
-                        <Progress
-                            className={styles.progress}
-                            type="circle"
-                            width={32}
-                            strokeColor={{
-                                '0%': '#108ee9',
-                                '100%': '#87d068',
-                            }}
-                            format={() => getRemainingTasksCount()}
-                            strokeWidth={16}
-                            percent={getTaskProgress()}
-                        />
-                        <div className={styles.progressTextContainer}>
-                            <Text>Quick start</Text>
-                            <Text className={styles.progressTextSecondary}>{getRemainingTasksCount()} Remaining
-                                tasks</Text>
-                        </div>
-                    </div>}
                     <Menu.Item key="feedback" className={styles.menuItem}
                                icon={<FeedbackIcon style={menuIconStyle} />}
                                onClick={onFeedbackClicked}>
@@ -212,18 +140,6 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
             <AntLayout className="site-layout">
                 {pageHeader}
                 <AntLayout.Content className={contentStyle ? contentStyle : styles.pageContent}>
-                    <Drawer
-                        title="Quick Start"
-                        width={700}
-                        style={{ marginLeft: 200 }}
-                        zIndex={100}
-                        closable={true}
-                        destroyOnClose={true}
-                        onClose={onQuickStartClosed}
-                        placement='left'
-                        visible={quickStartVisible}>
-                        <Quickstart onButtonClicked={onQuickStartClosed} />
-                    </Drawer>
                     <FeedbackModal
                         visible={feedbackVisible}
                         onClose={onFeedbackClose}

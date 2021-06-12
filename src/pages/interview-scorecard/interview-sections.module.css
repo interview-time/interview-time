@@ -21,3 +21,9 @@
     top: 24px;
     right: 24px;
 }
+
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

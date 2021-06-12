@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Card, Col, Divider, message, Row, Tag } from 'antd';
+import { Button, Card, Col, message, Row, Tag } from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-scorecard.module.css";
 import { connect } from "react-redux";
@@ -78,8 +78,8 @@ const InterviewScorecard = ({
 
     React.useEffect(() => {
         // initial data loading
-        if (!template.guideId && templates.length > 0 && interview.guideId) {
-            const interviewTemplate = findTemplate(interview.guideId, templates);
+        if (!template.templateId && templates.length > 0 && interview.templateId) {
+            const interviewTemplate = findTemplate(interview.templateId, templates);
             if (interviewTemplate) {
                 setTemplate(cloneDeep(interviewTemplate))
             }
@@ -200,8 +200,11 @@ const InterviewScorecard = ({
                             template={template} />
                     </div>
 
-                    <Card>
+                    <Card style={{marginBottom: 12}}>
                         <IntroSection interview={interview} hashStyle={styles.hash} />
+                    </Card>
+
+                    <Card style={{marginBottom: 12}}>
                         <GroupsSection
                             interview={interview}
                             onGroupAssessmentChanged={onGroupAssessmentChanged}
@@ -209,15 +212,17 @@ const InterviewScorecard = ({
                             onNotesChanged={onGroupNotesChanged}
                             hashStyle={styles.hash}
                         />
+                    </Card>
+
+                    <Card style={{marginBottom: 12}}>
                         <SummarySection interview={interview} onNoteChanges={onNoteChanges} />
+                    </Card>
 
-                        <Divider />
-
+                    <Card style={{marginBottom: 12}}>
                         <div className={styles.divSpaceBetween}>
-                            <Text bold>Ready to make hiring recommendation?</Text>
+                            <Text strong>Ready to make hiring recommendation?</Text>
                             <Button type="primary" onClick={onCandidateEvaluationClicked}>Open Candidate Evaluation</Button>
                         </div>
-
                     </Card>
                 </Col>
                 <Col key={interview.interviewId}
@@ -240,11 +245,11 @@ const InterviewScorecard = ({
 const mapDispatch = { deleteInterview, loadInterviews, updateInterview, loadTemplates }
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-    const templatesState = state.guides || {};
+    const templatesState = state.templates || {};
     return {
         interviews: interviewsState.interviews,
         interviewsUploading: interviewsState.uploading,
-        templates: templatesState.guides
+        templates: templatesState.templates
     }
 }
 
