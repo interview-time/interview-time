@@ -11,30 +11,30 @@ export const loadTemplates = (forceFetch = false) => ({
     }
 });
 
-export const setTemplates = (guides) => ({
+export const setTemplates = (templates) => ({
     type: SET_TEMPLATES,
     payload: {
-        guides
+        templates
     }
 });
 
-export const addTemplate = (guide) => ({
+export const addTemplate = (template) => ({
     type: ADD_TEMPLATE,
     payload: {
-        guide
+        template
     }
 });
 
-export const updateTemplate = (guide) => ({
+export const updateTemplate = (template) => ({
     type: UPDATE_TEMPLATE,
     payload: {
-        guide
+        template
     }
 });
 
-export const deleteTemplate = (guideId) => ({
+export const deleteTemplate = (templateId) => ({
     type: DELETE_TEMPLATE,
     payload: {
-        guideId
+        templateId
     }
 });

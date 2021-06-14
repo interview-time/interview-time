@@ -1,11 +1,5 @@
 import { includes } from "./comparators";
 import { defaultTo } from "lodash/util";
-
-export const filterQuestionCategory = (questions, category) => {
-    return defaultTo(questions, [])
-        .filter(question => question.category === category)
-}
-
 /**
  *
  * @param {Question[]} questions

@@ -12,12 +12,16 @@ import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 
+/**
+ *
+ * @type {{templates: Template[], loading: boolean}}
+ */
 const initialState = {
-    guides: [],
+    templates: [],
     loading: false
 };
 
-const URL = `${process.env.REACT_APP_API_URL}/guide`;
+const URL = `${process.env.REACT_APP_API_URL}/template`;
 
 const templatesReducer = (state = initialState, action) => {
 
@@ -27,7 +31,7 @@ const templatesReducer = (state = initialState, action) => {
             console.log(action.type)
             const { forceFetch } = action.payload;
 
-            if (forceFetch || (state.guides.length === 0 && !state.loading)) {
+            if (forceFetch || (state.templates.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
                     .then(token => axios.get(URL, config(token)))
                     .then(res => store.dispatch(setTemplates(res.data || [])))
@@ -41,11 +45,11 @@ const templatesReducer = (state = initialState, action) => {
 
         case SET_TEMPLATES: {
             console.log(action.type)
-            const { guides } = action.payload;
+            const { templates } = action.payload;
 
             // helps to avoid dealing with null collections
-            guides.forEach(guide => {
-                guide.structure.groups.forEach(group => {
+            templates.forEach(template => {
+                template.structure.groups.forEach(group => {
                     if (!group.questions) {
                         group.questions = []
                     }
@@ -53,19 +57,19 @@ const templatesReducer = (state = initialState, action) => {
             })
             return {
                 ...state,
-                guides: guides,
+                templates: templates,
                 loading: false
             };
         }
 
         case ADD_TEMPLATE: {
             console.log(action.type)
-            const { guide } = action.payload;
-            guide.guideId = Date.now().toString()
+            const { template } = action.payload;
+            template.templateId = Date.now().toString()
 
             getAccessTokenSilently()
-                .then(token => axios.post(URL, guide, config(token)))
-                .then(() => console.log(`Template added: ${JSON.stringify(guide)}`))
+                .then(token => axios.post(URL, template, config(token)))
+                .then(() => console.log(`Template added: ${JSON.stringify(template)}`))
                 .then(() => {
                     store.dispatch(loadTemplates(true));
                 })
@@ -76,39 +80,39 @@ const templatesReducer = (state = initialState, action) => {
 
         case UPDATE_TEMPLATE: {
             console.log(action.type)
-            const { guide } = action.payload;
+            const { template } = action.payload;
 
             getAccessTokenSilently()
-                .then(token => axios.put(URL, guide, config(token)))
-                .then(() => console.log(`Template updated: ${JSON.stringify(guide)}`))
+                .then(token => axios.put(URL, template, config(token)))
+                .then(() => console.log(`Template updated: ${JSON.stringify(template)}`))
                 .then(() => store.dispatch(loadTemplates(true)))
                 .catch(reason => console.error(reason));
 
-            const guides = state.guides.map(item => {
-                if (item.guideId !== guide.guideId) {
+            const templates = state.templates.map(item => {
+                if (item.templateId !== template.templateId) {
                     return item;
                 }
 
                 return {
-                    ...item, ...guide
+                    ...item, ...template
                 }
             });
 
             return {
                 ...state,
-                guides: guides
+                templates: templates
             };
         }
 
         case DELETE_TEMPLATE: {
             console.log(action.type)
-            const { guideId } = action.payload;
+            const { templateId } = action.payload;
 
             getAccessTokenSilently()
-                .then(token => axios.delete(`${URL}/${guideId}`, config(token)))
+                .then(token => axios.delete(`${URL}/${templateId}`, config(token)))
                 .then(() => {
-                    console.log("Guide removed.");
-                    store.dispatch(setTemplates(state.guides.filter(item => item.guideId !== guideId)))
+                    console.log("Template removed.");
+                    store.dispatch(setTemplates(state.templates.filter(item => item.templateId !== templateId)))
                 })
                 .catch(reason => console.error(reason));
 
