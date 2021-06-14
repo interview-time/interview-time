@@ -11,7 +11,7 @@ namespace CafApi.ViewModel
         public string Notes { get; set; }
 
         [Required]
-        public string Decision { get; set; }
+        public int Decision { get; set; }
 
         [Required]
         public string Status { get; set; }
