@@ -11,7 +11,7 @@ namespace CafApi.ViewModel
         public string Notes { get; set; }
 
         [Required]
-        public string Decision { get; set; }
+        public int Decision { get; set; }
 
         [Required]
         public string Status { get; set; }
@@ -27,7 +27,7 @@ namespace CafApi.ViewModel
         public string Notes { get; set; }
 
         [Required]
-        public string Assessment { get; set; }
+        public int Assessment { get; set; }
 
         public List<QuestionResult> Questions { get; set; }
     }
@@ -38,6 +38,6 @@ namespace CafApi.ViewModel
         public string QuestionId { get; set; }
 
         [Required]
-        public string Assessment { get; set; }
+        public int Assessment { get; set; }
     }
 }

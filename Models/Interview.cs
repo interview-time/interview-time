@@ -26,7 +26,7 @@ namespace CafApi.Models
 
         public string Status { get; set; }
 
-        public string Decision { get; set; }
+        public int Decision { get; set; }
 
         public string Notes { get; set; }
 
@@ -56,7 +56,7 @@ namespace CafApi.Models
 
         public string Notes { get; set; }
 
-        public string Assessment { get; set; }
+        public int Assessment { get; set; }
     }
 
     public class InterviewQuestion
@@ -73,6 +73,6 @@ namespace CafApi.Models
 
         public string Notes { get; set; }
 
-        public string Assessment { get; set; }
+        public int Assessment { get; set; }
     }
 }
