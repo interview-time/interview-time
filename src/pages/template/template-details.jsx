@@ -339,7 +339,7 @@ const TemplateDetails = ({
             bodyStyle={{backgroundColor: '#EEF0F2F5' }}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
-            <TemplateDetailsPreviewCard template={template} onCloseClicked={onPreviewClosed}/>
+            <TemplateDetailsPreviewCard template={template} onCloseClicked={onPreviewClosed} />
         </Modal>
     </Layout>
 }

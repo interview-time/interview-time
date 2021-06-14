@@ -40,16 +40,6 @@ export function findTemplate(id, templates) {
 /**
  *
  * @param {String} id
- * @param {Template[]} guides
- * @returns {*}
- */
-export function findGuide(id, guides) {
-    return guides.find(guide => guide.guideId === id);
-}
-
-/**
- *
- * @param {String} id
  * @param {InterviewGroup[]} groups
  * @returns {InterviewGroup}
  */
@@ -96,17 +86,6 @@ export function findQuestionInCategories(id, categories) {
 export function findInterviewGroupQuestions(group, categories) {
     return group.questions.map(q => q.questionId)
         .map(id => findQuestionInCategories(id, categories))
-}
-
-/**
- *
- * @param {Question[]} questions
- * @returns {TemplateQuestion[]}
- */
-export function questionsToQuestionIds(questions) {
-    return questions.map(question => ({
-        questionId: question.questionId
-    }))
 }
 
 /**

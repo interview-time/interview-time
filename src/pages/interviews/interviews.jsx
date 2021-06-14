@@ -67,10 +67,10 @@ const columns = [
         key: 'decision',
         dataIndex: 'decision',
         sortDirections: ['descend', 'ascend'],
-        sorter: (a, b) => localeCompare(a.decision, b.decision),
+        sorter: (a, b) => a.decision - b.decision,
         render: decision => (
             <>
-                {decision && <Tag color={getDecisionColor(decision)} key={decision}>
+                {<Tag color={getDecisionColor(decision)} key={decision}>
                     {getDecisionText(decision)}
                 </Tag>}
             </>
