@@ -18,25 +18,28 @@ const { TextArea } = Input;
 /**
  *
  * @param {Interview} interview
- * @param {Template} template
- * @param {string} username
+ * @param onCloseClicked
  * @returns {JSX.Element}
  * @constructor
  */
-export const InterviewPreviewCard = ({ interview, username }) =>
-    <div>
-        <InterviewInformationSection
-            loading={false}
-            userName={username}
-            interview={interview}
-            template={{}}
-        />
-        <div style={{ marginTop: 64 }}>
-            <IntroSection interview={interview} />
+export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
+    const marginTop12 = { marginTop: 12 };
+    return <div>
+        <div className={styles.divSpaceBetween}>
+            <Title level={4} style={{ marginBottom: 0 }}>Interview</Title>
+            <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <GroupsSection interview={interview} />
-        <SummarySection interview={interview} />
-    </div>
+        <Card style={marginTop12}>
+            <IntroSection interview={interview} />
+        </Card>
+        <Card style={marginTop12}>
+            <InterviewGroupsSection interview={interview} />
+        </Card>
+        <Card style={marginTop12}>
+            <SummarySection interview={interview} />
+        </Card>
+    </div>;
+}
 
 /**
  *
@@ -61,7 +64,7 @@ export const TemplatePreviewCard = ({ template, onCloseClicked, onCreateIntervie
             <IntroSection interview={template} />
         </Card>
         <Card style={marginTop12}>
-            <GroupsSection interview={template} />
+            <TemplateGroupsSection template={template} />
         </Card>
         <Card style={marginTop12}>
             <SummarySection interview={template} />
@@ -73,7 +76,6 @@ export const TemplatePreviewCard = ({ template, onCloseClicked, onCreateIntervie
  *
  * @param {Template} template
  * @param onCloseClicked
- * @param onCreateInterviewClicked
  * @returns {JSX.Element}
  * @constructor
  */
@@ -91,7 +93,7 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
             <IntroSection interview={template} />
         </Card>
         <Card style={marginTop12}>
-            <GroupsSection interview={template} />
+            <TemplateGroupsSection template={template} />
         </Card>
         <Card style={marginTop12}>
             <SummarySection interview={template} />
@@ -167,7 +169,7 @@ export const InterviewInformationSection = ({
                 <Col flex="1">
                     <Space direction='vertical'>
                         <Text>{interview.position}</Text>
-                        <Link to={routeTemplateDetails(interview.guideId)} style={{ color: '#000000d9' }}>
+                        <Link to={routeTemplateDetails(interview.templateId)} style={{ color: '#000000d9' }}>
                             <span>{template.title ? template.title : null}</span>
                         </Link>
                     </Space>
@@ -295,11 +297,9 @@ const InterviewQuestionsCard = ({
         },
         {
             title: 'Assessment',
-            key: 'question',
-            dataIndex: 'question',
             width: 140,
-            render: (text, question) => <AssessmentCheckbox
-                assessment={defaultTo(question.assessment, '')}
+            render: (question) => <AssessmentCheckbox
+                defaultValue={question.assessment}
                 disabled={disabled}
                 onChange={value => {
                     if (onQuestionAssessmentChanged) {
@@ -377,7 +377,7 @@ const InterviewQuestionsCard = ({
 
 /**
  *
- * @param {(Interview|Template)} interview
+ * @param {Interview} interview
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
  * @param onNotesChanged
@@ -385,7 +385,7 @@ const InterviewQuestionsCard = ({
  * @returns {JSX.Element}
  * @constructor
  */
-export const GroupsSection = ({
+export const InterviewGroupsSection = ({
     interview,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
@@ -393,34 +393,47 @@ export const GroupsSection = ({
     hashStyle
 }) => {
 
-    const getGroups = () => {
-        if (interview && interview.structure && interview.structure.groups) {
-            if (interview.status === Status.COMPLETED) {
-                let groups = []
-                interview.structure.groups.forEach(group => {
-                    group.questions = group.questions.filter(question =>
-                        defaultTo(question.assessment, '').length > 0)
-                    if (group.questions.length > 0) {
-                        groups.push(group)
-                    }
-                })
-                return groups
-            } else {
-                return interview.structure.groups
-            }
-        } else {
-            return []
-        }
-    }
-
     const isCompletedStatus = () => interview.status === Status.COMPLETED
 
     return <>
-        {getGroups().map((group, index) =>
+        {interview.structure.groups.map((group, index) =>
             <InterviewQuestionsCard
                 index={index}
                 group={group}
                 disabled={isCompletedStatus()}
+                onGroupAssessmentChanged={onGroupAssessmentChanged}
+                onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                onNotesChanged={onNotesChanged}
+                hashStyle={hashStyle}
+            />)
+        }
+    </>
+}
+
+/**
+ *
+ * @param {(Template)} template
+ * @param onGroupAssessmentChanged
+ * @param onQuestionAssessmentChanged
+ * @param onNotesChanged
+ * @param hashStyle
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const TemplateGroupsSection = ({
+    template,
+    onGroupAssessmentChanged,
+    onQuestionAssessmentChanged,
+    onNotesChanged,
+    hashStyle
+}) => {
+
+    return <>
+        {template.structure.groups.map((group, index) =>
+            <InterviewQuestionsCard
+                index={index}
+                group={group}
+                disabled={false}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                 onNotesChanged={onNotesChanged}

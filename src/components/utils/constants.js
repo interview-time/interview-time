@@ -17,23 +17,23 @@ export const Difficulty = {
 }
 
 export const InterviewAssessment = {
-    YES: 'YES',
-    NO: 'NO',
-    STRONG_YES: 'STRONG_YES',
-    STRONG_NO: 'STRONG_NO',
+    YES: 1,
+    NO: 2,
+    STRONG_YES: 3,
+    STRONG_NO: 4,
 }
 
 export const GroupAssessment = {
-    NO_PROFICIENCY: 'NO_PROFICIENCY',
-    LOW_SKILLED: 'LOW_SKILLED',
-    SKILLED: 'SKILLED',
-    HIGHLY_SKILLED: 'HIGHLY_SKILLED',
+    NO_PROFICIENCY: 1,
+    LOW_SKILLED: 2,
+    SKILLED: 3,
+    HIGHLY_SKILLED: 4,
 }
 
 export const QuestionAssessment = {
-    YES: "YES",
-    NO: "NO",
-    MAYBE: "MAYBE",
+    YES: 1,
+    NO: 2,
+    MAYBE: 3,
 }
 
 export const TemplateCategories = [
@@ -96,7 +96,7 @@ export const getDecisionText = (decision) => {
         return 'strong no hire';
     }
 
-    return ''
+    return 'none'
 }
 
 const COLOR_RED_5 = '#ff4d4f';

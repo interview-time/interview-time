@@ -88,8 +88,8 @@ const InterviewEvaluation = ({
 
     React.useEffect(() => {
         // initial data loading
-        if (!template.templateId && templates.length > 0 && interview.guideId) {
-            const interviewTemplate = findTemplate(interview.guideId, templates);
+        if (!template.templateId && templates.length > 0 && interview.templateId) {
+            const interviewTemplate = findTemplate(interview.templateId, templates);
             if(interviewTemplate) {
                 setTemplate(cloneDeep(interviewTemplate))
             }
@@ -241,7 +241,7 @@ const InterviewEvaluation = ({
                      xl={{ span: 20, offset: 2 }}
                      lg={{ span: 24 }}>
 
-                    {interview.decision && <InterviewDecisionAlert interview={interview} />}
+                    {interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
 
                     <div style={{ marginBottom: 12 }}>
                         <InterviewInformationSection

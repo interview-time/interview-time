@@ -21,7 +21,7 @@
  * @property {string[]} tags
  * @property {string} createdDate
  * @property {string} modifiedDate
- * @property {string} assessment
+ * @property {number} assessment
  */
 
 /**
@@ -38,11 +38,11 @@
  * @property {string} candidateNotes
  * @property {string} position
  * @property {string} interviewDateTime
- * @property {string} guideId
+ * @property {string} templateId
  * @property {string} status
  * @property {string} decision
  * @property {string} notes
- * @property {string} decision
+ * @property {number} decision
  * @property {InterviewStructure} structure
  */
 
@@ -58,7 +58,7 @@
  * @property {string} groupId
  * @property {string} name
  * @property {string} notes
- * @property {string} assessment
+ * @property {number} assessment
  * @property {Question[]} questions
  */
 
@@ -86,10 +86,4 @@
  * @property {string} groupId
  * @property {string} name
  * @property {Question[]} questions
- */
-
-// TODO remove
-/**
- * @typedef {Object} TemplateQuestion
- * @property {string} questionId
  */

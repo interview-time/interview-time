@@ -42,7 +42,6 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
     }, [interviews]);
 
     React.useEffect(() => {
-        console.log("position " + position)
         if (position) {
             let lowerCaseText = position.toLocaleLowerCase()
             setInterviews(interviews.filter(interview =>
@@ -144,7 +143,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
             sorter: (a, b) => localeCompare(a.decision, b.decision),
             render: decision => (
                 <>
-                    {decision && <Tag color={getDecisionColor(decision)} key={decision}>
+                    {<Tag color={getDecisionColor(decision)} key={decision}>
                         {getDecisionText(decision)}
                     </Tag>}
                 </>

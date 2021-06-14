@@ -10,7 +10,7 @@ import { findInterview, findTemplate } from "../../components/utils/converters";
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
-import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
+import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template/template-group-modal";
@@ -351,7 +351,7 @@ const InterviewDetails = ({
                     <div className={styles.divSpaceBetween}>
                         <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button onClick={onPreviewClicked}>Preview</Button>
+                            <Button onClick={onPreviewClicked}>Preview Interview Experience</Button>
                             <Button type="primary" onClick={onSaveClicked}>Save</Button>
                         </Space>
                     </div>
@@ -369,14 +369,16 @@ const InterviewDetails = ({
         />
 
         <Modal
-            title="Interview"
+            title={null}
+            footer={null}
+            closable={false}
+            destroyOnClose={true}
             width={1000}
             style={{ top: '5%' }}
-            destroyOnClose={true}
-            footer={null}
+            bodyStyle={{backgroundColor: '#EEF0F2F5' }}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
-            <TemplatePreviewCard template={interview} />
+            <InterviewPreviewCard interview={interview} onCloseClicked={onPreviewClosed} />
         </Modal>
     </Layout>
 }
