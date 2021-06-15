@@ -6,10 +6,12 @@ import { ReactComponent as TemplateIcon } from "../../assets/template.svg";
 import { ReactComponent as CsvIcon } from "../../assets/csv.svg";
 import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
+import { loadTemplates, loadLibrary } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
 import { reverse, sortedUniq } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
+import TemplateCard from "../../components/template-card/template-card";
 import styles from "./default.module.css";
 
 const { Title, Text } = Typography;
@@ -31,28 +33,35 @@ const columns = [
     },
 ];
 
-const Default = ({ interviews, loading, loadInterviews }) => {
+const Default = ({
+    interviews,
+    loadingInterviews,
+    templates,
+    loadingTemplates,
+    loadInterviews,
+    loadTemplates,
+    loadLibrary,
+}) => {
     const history = useHistory();
-    const [interviewsData, setInterviews] = React.useState([]);
+
+    // const [interviewsData, setInterviews] = React.useState([]);
+    // const [template, setTemplate] = React.useState(emptyTemplate);
 
     React.useEffect(() => {
         loadInterviews();
+        loadTemplates();
+        loadLibrary();
         // eslint-disable-next-line
     }, []);
 
-    React.useEffect(() => {
-        setInterviews(interviews);
-        // eslint-disable-next-line
-    }, [interviews]);
-
     return (
         <Layout className={styles.page}>
-            <Col span={18} offset={3}>
+            <Col xl={{ span: 14, offset: 5 }}>
                 <div className={styles.header}>
                     <Title level={2}>Create new interview</Title>
                     <Text type="secondary">How would you like to start</Text>
                 </div>
-                <Row gutter={16}>
+                <Row justify="space-between" gutter={[32, 32]}>
                     <Col>
                         <Card hoverable bodyStyle={{ padding: 0 }}>
                             <div
@@ -104,30 +113,50 @@ const Default = ({ interviews, loading, loadInterviews }) => {
                     </Col>
                 </Row>
 
+                <Title level={5}>Upcoming Interviews</Title>
                 <Table
                     pagination={false}
                     columns={columns}
                     showHeader={false}
-                    dataSource={interviewsData}
-                    loading={loading}
+                    dataSource={interviews}
+                    loading={loadingInterviews}
                     rowClassName={styles.row}
                 />
+
+                <Title level={5}>Templates</Title>
+                <Row>
+                    {templates.map((template) => (
+                        <Col>
+                            <TemplateCard
+                                name={template.title}
+                                image={template.image}
+                                totalQuestions={0}
+                            />
+                        </Col>
+                    ))}
+                </Row>
             </Col>
         </Layout>
     );
 };
 
-const mapDispatch = { loadInterviews };
+const mapDispatch = { loadInterviews, loadTemplates, loadLibrary };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
+    const templateState = state.templates || {};
 
     const interviews = reverse(
         sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"])
     );
 
+    const allTemplates = templateState.templates.concat(templateState.library);
+    const templates = sortBy(allTemplates, ["title"]).slice(0, 3);
+
     return {
         interviews: interviews,
-        loading: interviewsState.loading,
+        loadingInterviews: interviewsState.loading,
+        templates: templates,
+        loadingTemplates: templateState.loading && templateState.loadingLibrary,
     };
 };
 
