@@ -18,6 +18,7 @@ import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
 import { personalEvent } from "../../analytics";
 import { routeInterviews } from "../../components/utils/route";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -333,7 +334,11 @@ const InterviewDetails = ({
                             />
                         )}
                     </div>
-                    <Button style={marginTop12} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
+                    <Button style={marginTop12}
+                            icon={<PlusOutlined />}
+                            type="primary"
+                            ghost
+                            onClick={onAddQuestionGroupClicked}>New question group</Button>
                 </Card>
 
                 <Card style={marginVertical12} loading={isInitialLoading()}>

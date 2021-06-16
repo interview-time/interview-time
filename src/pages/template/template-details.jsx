@@ -16,6 +16,7 @@ import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -294,7 +295,11 @@ const TemplateDetails = ({
                             />
                         )}
                     </div>
-                    <Button style={marginTop12} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
+                    <Button style={marginTop12}
+                            icon={<PlusOutlined />}
+                            type="primary"
+                            ghost
+                            onClick={onAddQuestionGroupClicked}>New question group</Button>
                 </Card>
 
                 <Card style={marginVertical12} loading={isInitialLoading()}>
