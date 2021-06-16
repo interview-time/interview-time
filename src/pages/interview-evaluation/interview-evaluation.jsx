@@ -223,7 +223,7 @@ const InterviewEvaluation = ({
                     <Button type="primary"
                             onClick={onSubmitClicked}
                             disabled={isCompletedStatus()}>
-                        Submit Candidate Evaluation
+                        Submit candidate evaluation
                     </Button>
                 </div>
             </Space>

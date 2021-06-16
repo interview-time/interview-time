@@ -16,6 +16,7 @@ import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -312,8 +313,8 @@ const TemplateDetails = ({
                     <div className={styles.divSpaceBetween}>
                         <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button onClick={onPreviewClicked}>Preview Interview Experience</Button>
-                            <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                            <Button onClick={onPreviewClicked}>Interview experience</Button>
+                            <Button type="primary" onClick={onSaveClicked}>Save template</Button>
                         </Space>
                     </div>
                 </Card>
