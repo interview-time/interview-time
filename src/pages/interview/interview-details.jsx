@@ -1,7 +1,7 @@
 import styles from "./interview.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Row, Space } from "antd";
+import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Popover, Row, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useParams, useLocation } from "react-router-dom";
@@ -18,7 +18,7 @@ import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
 import { personalEvent } from "../../analytics";
 import { routeInterviews } from "../../components/utils/route";
-import { PlusOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -316,7 +316,16 @@ const InterviewDetails = ({
                 </Card>
 
                 <Card style={marginTop12} loading={isInitialLoading()}>
-                    <Title level={4}>Questions</Title>
+                    <Space style={{ width: '100%' }}>
+                        <Title level={4}>Questions</Title>
+                        <Popover content={
+                            <img alt="Interviewer"
+                                 style={{ width: 400 }}
+                                 src={process.env.PUBLIC_URL + '/app/interview-groups.png'} />
+                        }>
+                            <InfoCircleOutlined style={{ marginBottom: 12, cursor: 'pointer' }} />
+                        </Popover>
+                    </Space>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
                         and make a more granular assessment.</Text>
                     <div>
