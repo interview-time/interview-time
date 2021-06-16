@@ -16,7 +16,6 @@ import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
-import { PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
