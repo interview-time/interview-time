@@ -90,10 +90,6 @@
     cursor: pointer;
 }
 
-.addQuestionButton {
-    color: #00000073;
-}
-
 .modalFooter {
     display: flex;
     justify-content: flex-end;

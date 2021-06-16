@@ -229,8 +229,7 @@ const TemplateQuestionsCard = ({
                 }}
             />
             <div className={styles.questionAddContainer}>
-                <Button type="text"
-                        className={styles.addQuestionButton}
+                <Button type="link"
                         onClick={() => onAddQuestionClicked(group.groupId)}
                         icon={<PlusOutlined />}>New question</Button>
             </div>
