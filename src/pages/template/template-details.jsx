@@ -312,8 +312,8 @@ const TemplateDetails = ({
                     <div className={styles.divSpaceBetween}>
                         <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button onClick={onPreviewClicked}>Preview Interview Experience</Button>
-                            <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                            <Button onClick={onPreviewClicked}>Interview experience</Button>
+                            <Button type="primary" onClick={onSaveClicked}>Save template</Button>
                         </Space>
                     </div>
                 </Card>

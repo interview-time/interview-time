@@ -122,6 +122,11 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
         });
     }
 
+    const onEditClicked = (template) => {
+        setPreviewModalVisible(false)
+        onEdit(template.templateId)
+    }
+
     const onCreateInterviewClicked = (template) => {
         setPreviewModalVisible(false)
         history.push(routeInterviewAddFromTemplate(template.templateId))
@@ -228,6 +233,7 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
             visible={previewModalVisible}>
             <TemplatePreviewCard template={template}
                                  onCloseClicked={onPreviewClosed}
+                                 onEditClicked={()=> onEditClicked(template)}
                                  onCreateInterviewClicked={()=> onCreateInterviewClicked(template)}/>
         </Modal>
     </Layout>

@@ -1,6 +1,21 @@
 import styles from "./interview-sections.module.css";
 import React from 'react';
-import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Radio, Row, Space, Table, Tag, Tooltip } from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    Dropdown,
+    Input,
+    Menu,
+    message,
+    Modal,
+    Radio,
+    Row,
+    Space,
+    Table,
+    Tag,
+    Tooltip
+} from "antd";
 import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -45,20 +60,17 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
  *
  * @param {Template} template
  * @param onCloseClicked
+ * @param onEditClicked
  * @param onCreateInterviewClicked
  * @returns {JSX.Element}
  * @constructor
  */
-export const TemplatePreviewCard = ({ template, onCloseClicked, onCreateInterviewClicked }) => {
+export const TemplatePreviewCard = ({ template, onCloseClicked, onEditClicked, onCreateInterviewClicked }) => {
     const marginTop12 = { marginTop: 12 };
     return <div>
         <div className={styles.divSpaceBetween}>
-            <Title level={4} style={{ marginBottom: 0 }}>Template</Title>
+            <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
-        </div>
-        <div className={styles.divSpaceBetween} style={marginTop12}>
-            <Text>Use this template to create new interview and customize as you go.</Text>
-            <Button type="primary" onClick={onCreateInterviewClicked}>Create interview</Button>
         </div>
         <Card style={marginTop12}>
             <IntroSection interview={template} />
@@ -68,6 +80,15 @@ export const TemplatePreviewCard = ({ template, onCloseClicked, onCreateIntervie
         </Card>
         <Card style={marginTop12}>
             <SummarySection interview={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <div className={styles.divSpaceBetween}>
+                <Text strong>Use this template to create new interview and customize as you go.</Text>
+                <Space>
+                    <Button onClick={onEditClicked}>Edit template</Button>
+                    <Button type="primary" onClick={onCreateInterviewClicked}>Use template</Button>
+                </Space>
+            </div>
         </Card>
     </div>;
 }
@@ -83,11 +104,8 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
     const marginTop12 = { marginTop: 12 };
     return <div>
         <div className={styles.divSpaceBetween}>
-            <Title level={4} style={{ marginBottom: 0 }}>Template</Title>
+            <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
-        </div>
-        <div className={styles.divSpaceBetween} style={marginTop12}>
-            <Text>Use this template to create new interview and customize as you go.</Text>
         </div>
         <Card style={marginTop12}>
             <IntroSection interview={template} />
