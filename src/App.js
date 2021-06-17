@@ -2,6 +2,7 @@ import "./App.css";
 import React, { useEffect } from "react";
 import { Redirect, Switch, withRouter } from "react-router-dom";
 import {
+    routeHome,
     routeAccount,
     routeCandidates,
     routeInterviewAdd,
@@ -49,7 +50,7 @@ function App({ history }) {
 
     return (
         <Switch>
-            <PrivateRoute path="/" exact component={Default} />
+            <PrivateRoute path={routeHome()} exact component={Default} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewDetails} />

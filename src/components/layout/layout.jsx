@@ -10,10 +10,12 @@ import {
     InterviewIcon,
     NewsIcon,
     ProfileIcon,
+    HomeIcon
 } from "../utils/icons";
 import {
     routeAccount,
     routeCandidates,
+    routeHome,
     routeInterviews,
     routeLibrary,
     routeNews,
@@ -85,6 +87,12 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                       selectedKeys={[getSelectedKey()]}
                       className={styles.menu}
                 >
+                    <Menu.Item key={routeTemplates()} className={styles.menuItem}
+                               icon={ <HomeIcon style={menuIconStyle} />}>
+                        <Link to={routeHome()}>
+                            <span className="nav-text">Home</span>
+                        </Link>
+                    </Menu.Item>
                     <Menu.Item key={routeTemplates()} className={styles.menuItem}
                                icon={<GuideIcon style={menuIconStyle} />}>
                         <Link to={routeTemplates()}>
