@@ -9,7 +9,7 @@ import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates, loadLibrary } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
-import { reverse, sortedUniq } from "lodash/array";
+import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import TemplateCard from "../../components/template-card/template-card";
 import {

@@ -8,7 +8,7 @@ const TemplateCard = ({ name, image, totalQuestions, onClick }) => {
         <Card hoverable bodyStyle={{ padding: 0 }} onClick={onClick}>
             <div className={styles.card}>
                 <div>
-                    <img src={image ? image : defaultIcon} width={50} />
+                    <img alt={name} src={image ? image : defaultIcon} width={50} />
                 </div>
                 <div className={styles.cardTitle}>{name}</div>
                 <div className={styles.cardMetaTitle}>{totalQuestions} QUESTIONS</div>

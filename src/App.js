@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useEffect } from "react";
-import { Redirect, Switch, withRouter } from "react-router-dom";
+import { Switch, withRouter } from "react-router-dom";
 import {
     routeHome,
     routeAccount,
