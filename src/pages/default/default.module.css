@@ -1,0 +1,28 @@
+.page {
+}
+
+.header {
+    text-align: center;
+    padding: 24px;
+}
+
+.card {
+    padding: 24px;
+    height: 150px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.cardIcon {
+    padding-right: 16px;
+}
+
+.cardTitle {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    cursor: pointer;
+}

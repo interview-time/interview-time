@@ -1,7 +1,8 @@
 import "./App.css";
 import React, { useEffect } from "react";
-import { Redirect, Switch, withRouter } from "react-router-dom";
+import { Switch, withRouter } from "react-router-dom";
 import {
+    routeHome,
     routeAccount,
     routeCandidates,
     routeInterviewAdd,
@@ -10,6 +11,7 @@ import {
     routeTemplateAdd,
     routeTemplates,
 } from "./components/utils/route";
+import Default from "./pages/default/default";
 import Interviews from "./pages/interviews/interviews";
 import Interview from "./pages/interview-scorecard/interview-scorecard";
 import Templates from "./pages/templates/templates";
@@ -48,7 +50,7 @@ function App({ history }) {
 
     return (
         <Switch>
-            <PrivateRoute path="/" exact render={() => <Redirect to={routeTemplates()} />} />
+            <PrivateRoute path={routeHome()} exact component={Default} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewDetails} />
