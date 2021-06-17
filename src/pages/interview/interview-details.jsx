@@ -1,7 +1,7 @@
 import styles from "./interview.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Row, Space } from "antd";
+import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Popover, Row, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useParams, useLocation } from "react-router-dom";
@@ -10,7 +10,7 @@ import { findInterview, findTemplate } from "../../components/utils/converters";
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
-import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
+import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template/template-group-modal";
@@ -18,6 +18,7 @@ import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
 import { personalEvent } from "../../analytics";
 import { routeInterviews } from "../../components/utils/route";
+import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -315,7 +316,16 @@ const InterviewDetails = ({
                 </Card>
 
                 <Card style={marginTop12} loading={isInitialLoading()}>
-                    <Title level={4}>Questions</Title>
+                    <Space style={{ width: '100%' }}>
+                        <Title level={4}>Questions</Title>
+                        <Popover content={
+                            <img alt="Interviewer"
+                                 style={{ width: 400 }}
+                                 src={process.env.PUBLIC_URL + '/app/interview-groups.png'} />
+                        }>
+                            <InfoCircleOutlined style={{ marginBottom: 12, cursor: 'pointer' }} />
+                        </Popover>
+                    </Space>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
                         and make a more granular assessment.</Text>
                     <div>
@@ -333,7 +343,11 @@ const InterviewDetails = ({
                             />
                         )}
                     </div>
-                    <Button style={marginTop12} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
+                    <Button style={marginTop12}
+                            icon={<PlusOutlined />}
+                            type="primary"
+                            ghost
+                            onClick={onAddQuestionGroupClicked}>New question group</Button>
                 </Card>
 
                 <Card style={marginVertical12} loading={isInitialLoading()}>
@@ -351,8 +365,8 @@ const InterviewDetails = ({
                     <div className={styles.divSpaceBetween}>
                         <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button onClick={onPreviewClicked}>Preview</Button>
-                            <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                            <Button onClick={onPreviewClicked}>Interview experience</Button>
+                            <Button type="primary" onClick={onSaveClicked}>Save interview</Button>
                         </Space>
                     </div>
                 </Card>
@@ -369,14 +383,16 @@ const InterviewDetails = ({
         />
 
         <Modal
-            title="Interview"
+            title={null}
+            footer={null}
+            closable={false}
+            destroyOnClose={true}
             width={1000}
             style={{ top: '5%' }}
-            destroyOnClose={true}
-            footer={null}
+            bodyStyle={{backgroundColor: '#EEF0F2F5' }}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
-            <TemplatePreviewCard template={interview} />
+            <InterviewPreviewCard interview={interview} onCloseClicked={onPreviewClosed} />
         </Modal>
     </Layout>
 }

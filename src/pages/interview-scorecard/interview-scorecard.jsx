@@ -14,7 +14,7 @@ import Text from "antd/lib/typography/Text";
 import { useAuth0 } from "../../react-auth0-spa";
 import InterviewDecisionAlert from "../interview-evaluation/interview-decision-alert";
 import { loadTemplates } from "../../store/templates/actions";
-import { GroupsSection, IntroSection, SummarySection, InterviewInformationSection } from "./interview-sections";
+import { InterviewGroupsSection, IntroSection, SummarySection, InterviewInformationSection } from "./interview-sections";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000 // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
@@ -188,7 +188,7 @@ const InterviewScorecard = ({
                      xl={{ span: 20 }}
                      lg={{ span: 24 }}>
 
-                    {interview.decision && <InterviewDecisionAlert interview={interview} />}
+                    {interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
 
                     <div style={{ marginBottom: 12 }}>
                         <InterviewInformationSection
@@ -205,7 +205,7 @@ const InterviewScorecard = ({
                     </Card>
 
                     <Card style={{marginBottom: 12}}>
-                        <GroupsSection
+                        <InterviewGroupsSection
                             interview={interview}
                             onGroupAssessmentChanged={onGroupAssessmentChanged}
                             onQuestionAssessmentChanged={onQuestionAssessmentChanged}

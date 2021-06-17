@@ -2,7 +2,7 @@ import styles from "./template.module.css";
 import React, { useState } from "react";
 import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { connect } from "react-redux";
-import { Button, Card, Col, Divider, Input, message, Modal, Row, Select, Space } from "antd";
+import { Button, Card, Col, Divider, Input, message, Modal, Popover, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
+import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -275,10 +276,18 @@ const TemplateDetails = ({
                 </Card>
 
                 <Card style={marginTop12} loading={isInitialLoading()}>
-                    <Title level={4}>Questions</Title>
+                    <Space style={{ width: '100%' }}>
+                        <Title level={4}>Questions</Title>
+                        <Popover content={
+                            <img alt="Interviewer"
+                                 style={{ width: 400 }}
+                                 src={process.env.PUBLIC_URL + '/app/interview-groups.png'} />
+                        }>
+                            <InfoCircleOutlined style={{ marginBottom: 12, cursor: 'pointer' }} />
+                        </Popover>
+                    </Space>
                     <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
-                        and make a
-                        more granular assessment.</Text>
+                        and make a more granular assessment.</Text>
                     <div>
                         {template.structure.groups.map(group =>
                             <TemplateQuestionsCard
@@ -294,7 +303,11 @@ const TemplateDetails = ({
                             />
                         )}
                     </div>
-                    <Button style={marginTop12} onClick={onAddQuestionGroupClicked}>Add Question Group</Button>
+                    <Button style={marginTop12}
+                            icon={<PlusOutlined />}
+                            type="primary"
+                            ghost
+                            onClick={onAddQuestionGroupClicked}>New question group</Button>
                 </Card>
 
                 <Card style={marginVertical12} loading={isInitialLoading()}>
@@ -312,8 +325,8 @@ const TemplateDetails = ({
                     <div className={styles.divSpaceBetween}>
                         <Button onClick={onBackClicked}>Back</Button>
                         <Space>
-                            <Button onClick={onPreviewClicked}>Preview Interview Experience</Button>
-                            <Button type="primary" onClick={onSaveClicked}>Save</Button>
+                            <Button onClick={onPreviewClicked}>Interview experience</Button>
+                            <Button type="primary" onClick={onSaveClicked}>Save template</Button>
                         </Space>
                     </div>
                 </Card>
@@ -339,7 +352,7 @@ const TemplateDetails = ({
             bodyStyle={{backgroundColor: '#EEF0F2F5' }}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
-            <TemplateDetailsPreviewCard template={template} onCloseClicked={onPreviewClosed}/>
+            <TemplateDetailsPreviewCard template={template} onCloseClicked={onPreviewClosed} />
         </Modal>
     </Layout>
 }

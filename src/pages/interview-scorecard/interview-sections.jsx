@@ -1,6 +1,21 @@
 import styles from "./interview-sections.module.css";
 import React from 'react';
-import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Radio, Row, Space, Table, Tag, Tooltip } from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    Dropdown,
+    Input,
+    Menu,
+    message,
+    Modal,
+    Radio,
+    Row,
+    Space,
+    Table,
+    Tag,
+    Tooltip
+} from "antd";
 import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -18,53 +33,25 @@ const { TextArea } = Input;
 /**
  *
  * @param {Interview} interview
- * @param {Template} template
- * @param {string} username
- * @returns {JSX.Element}
- * @constructor
- */
-export const InterviewPreviewCard = ({ interview, username }) =>
-    <div>
-        <InterviewInformationSection
-            loading={false}
-            userName={username}
-            interview={interview}
-            template={{}}
-        />
-        <div style={{ marginTop: 64 }}>
-            <IntroSection interview={interview} />
-        </div>
-        <GroupsSection interview={interview} />
-        <SummarySection interview={interview} />
-    </div>
-
-/**
- *
- * @param {Template} template
  * @param onCloseClicked
- * @param onCreateInterviewClicked
  * @returns {JSX.Element}
  * @constructor
  */
-export const TemplatePreviewCard = ({ template, onCloseClicked, onCreateInterviewClicked }) => {
+export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
     const marginTop12 = { marginTop: 12 };
     return <div>
         <div className={styles.divSpaceBetween}>
-            <Title level={4} style={{ marginBottom: 0 }}>Template</Title>
+            <Title level={4} style={{ marginBottom: 0 }}>Interview</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <div className={styles.divSpaceBetween} style={marginTop12}>
-            <Text>Use this template to create new interview and customize as you go.</Text>
-            <Button type="primary" onClick={onCreateInterviewClicked}>Create interview</Button>
-        </div>
         <Card style={marginTop12}>
-            <IntroSection interview={template} />
+            <IntroSection interview={interview} />
         </Card>
         <Card style={marginTop12}>
-            <GroupsSection interview={template} />
+            <InterviewGroupsSection interview={interview} />
         </Card>
         <Card style={marginTop12}>
-            <SummarySection interview={template} />
+            <SummarySection interview={interview} />
         </Card>
     </div>;
 }
@@ -73,7 +60,43 @@ export const TemplatePreviewCard = ({ template, onCloseClicked, onCreateIntervie
  *
  * @param {Template} template
  * @param onCloseClicked
+ * @param onEditClicked
  * @param onCreateInterviewClicked
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const TemplatePreviewCard = ({ template, onCloseClicked, onEditClicked, onCreateInterviewClicked }) => {
+    const marginTop12 = { marginTop: 12 };
+    return <div>
+        <div className={styles.divSpaceBetween}>
+            <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
+            <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
+        </div>
+        <Card style={marginTop12}>
+            <IntroSection interview={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <TemplateGroupsSection template={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <SummarySection interview={template} />
+        </Card>
+        <Card style={marginTop12}>
+            <div className={styles.divSpaceBetween}>
+                <Text strong>Use this template to create new interview and customize as you go.</Text>
+                <Space>
+                    <Button onClick={onEditClicked}>Edit template</Button>
+                    <Button type="primary" onClick={onCreateInterviewClicked}>Use template</Button>
+                </Space>
+            </div>
+        </Card>
+    </div>;
+}
+
+/**
+ *
+ * @param {Template} template
+ * @param onCloseClicked
  * @returns {JSX.Element}
  * @constructor
  */
@@ -81,17 +104,14 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
     const marginTop12 = { marginTop: 12 };
     return <div>
         <div className={styles.divSpaceBetween}>
-            <Title level={4} style={{ marginBottom: 0 }}>Template</Title>
+            <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
-        </div>
-        <div className={styles.divSpaceBetween} style={marginTop12}>
-            <Text>Use this template to create new interview and customize as you go.</Text>
         </div>
         <Card style={marginTop12}>
             <IntroSection interview={template} />
         </Card>
         <Card style={marginTop12}>
-            <GroupsSection interview={template} />
+            <TemplateGroupsSection template={template} />
         </Card>
         <Card style={marginTop12}>
             <SummarySection interview={template} />
@@ -167,7 +187,7 @@ export const InterviewInformationSection = ({
                 <Col flex="1">
                     <Space direction='vertical'>
                         <Text>{interview.position}</Text>
-                        <Link to={routeTemplateDetails(interview.guideId)} style={{ color: '#000000d9' }}>
+                        <Link to={routeTemplateDetails(interview.templateId)} style={{ color: '#000000d9' }}>
                             <span>{template.title ? template.title : null}</span>
                         </Link>
                     </Space>
@@ -295,11 +315,9 @@ const InterviewQuestionsCard = ({
         },
         {
             title: 'Assessment',
-            key: 'question',
-            dataIndex: 'question',
             width: 140,
-            render: (text, question) => <AssessmentCheckbox
-                assessment={defaultTo(question.assessment, '')}
+            render: (question) => <AssessmentCheckbox
+                defaultValue={question.assessment}
                 disabled={disabled}
                 onChange={value => {
                     if (onQuestionAssessmentChanged) {
@@ -377,7 +395,7 @@ const InterviewQuestionsCard = ({
 
 /**
  *
- * @param {(Interview|Template)} interview
+ * @param {Interview} interview
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
  * @param onNotesChanged
@@ -385,7 +403,7 @@ const InterviewQuestionsCard = ({
  * @returns {JSX.Element}
  * @constructor
  */
-export const GroupsSection = ({
+export const InterviewGroupsSection = ({
     interview,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
@@ -393,34 +411,47 @@ export const GroupsSection = ({
     hashStyle
 }) => {
 
-    const getGroups = () => {
-        if (interview && interview.structure && interview.structure.groups) {
-            if (interview.status === Status.COMPLETED) {
-                let groups = []
-                interview.structure.groups.forEach(group => {
-                    group.questions = group.questions.filter(question =>
-                        defaultTo(question.assessment, '').length > 0)
-                    if (group.questions.length > 0) {
-                        groups.push(group)
-                    }
-                })
-                return groups
-            } else {
-                return interview.structure.groups
-            }
-        } else {
-            return []
-        }
-    }
-
     const isCompletedStatus = () => interview.status === Status.COMPLETED
 
     return <>
-        {getGroups().map((group, index) =>
+        {interview.structure.groups.map((group, index) =>
             <InterviewQuestionsCard
                 index={index}
                 group={group}
                 disabled={isCompletedStatus()}
+                onGroupAssessmentChanged={onGroupAssessmentChanged}
+                onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                onNotesChanged={onNotesChanged}
+                hashStyle={hashStyle}
+            />)
+        }
+    </>
+}
+
+/**
+ *
+ * @param {(Template)} template
+ * @param onGroupAssessmentChanged
+ * @param onQuestionAssessmentChanged
+ * @param onNotesChanged
+ * @param hashStyle
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const TemplateGroupsSection = ({
+    template,
+    onGroupAssessmentChanged,
+    onQuestionAssessmentChanged,
+    onNotesChanged,
+    hashStyle
+}) => {
+
+    return <>
+        {template.structure.groups.map((group, index) =>
+            <InterviewQuestionsCard
+                index={index}
+                group={group}
+                disabled={false}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                 onNotesChanged={onNotesChanged}
