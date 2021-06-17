@@ -154,9 +154,10 @@ const Default = ({
                     {templates.map((template) => (
                         <Col span={24} lg={{ span: 8 }}>
                             <TemplateCard
+                                key={template.id}
                                 name={template.title}
                                 image={template.image}
-                                totalQuestions={0}
+                                totalQuestions={template.questions}
                                 onClick={() => history.push(routeTemplateDetails(template.id))}
                             />
                         </Col>
@@ -180,7 +181,18 @@ const mapState = (state) => {
     return {
         interviews: interviews,
         loadingInterviews: interviewsState.loading,
-        templates: templates,
+        templates: templates.map((template) => {
+            var totalquestions = 0;
+
+            template.structure?.groups?.forEach((group) => (totalquestions += group.questions.length));
+
+            return {
+                id: template.templateId ? template.templateId : template.libraryId,
+                title: template.title,
+                image: template.image,
+                questions: totalquestions,
+            };
+        }),
         loadingTemplates: templateState.loading && templateState.loadingLibrary,
     };
 };
