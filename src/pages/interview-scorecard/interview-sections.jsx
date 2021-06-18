@@ -85,7 +85,7 @@ export const TemplatePreviewCard = ({ template, onCloseClicked, onEditClicked, o
             <div className={styles.divSpaceBetween}>
                 <Text strong>Use this template to create new interview and customize as you go.</Text>
                 <Space>
-                    <Button onClick={onEditClicked}>Edit template</Button>
+                    {template.templateId && <Button onClick={onEditClicked}>Edit template</Button>}
                     <Button type="primary" onClick={onCreateInterviewClicked}>Use template</Button>
                 </Space>
             </div>

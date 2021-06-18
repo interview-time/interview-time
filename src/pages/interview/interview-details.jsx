@@ -4,15 +4,15 @@ import { connect } from "react-redux";
 import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Popover, Row, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { useHistory, useParams, useLocation } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import { findInterview, findTemplate } from "../../components/utils/converters";
+import { findInterview, findLibraryTemplate, findTemplate } from "../../components/utils/converters";
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import { loadTemplates } from "../../store/templates/actions";
+import { loadLibrary, loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template/template-group-modal";
 import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
@@ -26,20 +26,24 @@ const { TextArea } = Input;
  *
  * @param {Interview[]} interviews
  * @param {Template[]} templates
+ * @param {Template[]} library
  * @param addInterview
  * @param loadInterviews
  * @param updateInterview
  * @param loadTemplates
+ * @param loadLibrary
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewDetails = ({
     interviews,
     templates,
+    library,
     addInterview,
     loadInterviews,
     updateInterview,
     loadTemplates,
+    loadLibrary,
 }) => {
 
     /**
@@ -49,6 +53,7 @@ const InterviewDetails = ({
     const emptyInterview = {
         interviewId: undefined,
         templateId: undefined,
+        libraryId: undefined,
         status: Status.NEW,
         title: "",
         structure: {
@@ -73,7 +78,6 @@ const InterviewDetails = ({
 
     React.useEffect(() => {
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            console.log("setInterview " + id)
             setInterview(cloneDeep(findInterview(id, interviews)))
         }
         // eslint-disable-next-line
@@ -94,10 +98,26 @@ const InterviewDetails = ({
     }, [templates]);
 
     React.useEffect(() => {
+        if (isFromLibraryFlow() && !interview.libraryId && library.length !== 0) {
+            const template = cloneDeep(findLibraryTemplate(fromLibraryId(), library))
+            setInterview({
+                interviewId: undefined,
+                libraryId: template.libraryId,
+                status: Status.NEW,
+                title: "",
+                structure: template.structure
+            })
+        }
+        // eslint-disable-next-line
+    }, [library]);
+
+    React.useEffect(() => {
         if(isFromTemplateFlow()) {
             loadTemplates()
         } else if (isExistingInterviewFlow()) {
             loadInterviews()
+        } else if (isFromLibraryFlow()) {
+            loadLibrary()
         }
         // eslint-disable-next-line
     }, []);
@@ -106,8 +126,11 @@ const InterviewDetails = ({
 
     const isFromTemplateFlow = () => fromTemplateId() !== null;
 
-    const isInitialLoading = () =>
-        (isExistingInterviewFlow() && !interview.interviewId) || (isFromTemplateFlow() && !interview.templateId)
+    const isFromLibraryFlow = () => fromLibraryId() !== null;
+
+    const isInitialLoading = () => (isExistingInterviewFlow() && !interview.interviewId)
+        || (isFromTemplateFlow() && !interview.templateId)
+        || (isFromLibraryFlow() && !interview.libraryId)
 
     /**
      *
@@ -116,6 +139,15 @@ const InterviewDetails = ({
     const fromTemplateId = () => {
         const params = new URLSearchParams(location.search);
         return params.get('fromTemplate');
+    }
+
+    /**
+     *
+     * @returns {string|null}
+     */
+    const fromLibraryId = () => {
+        const params = new URLSearchParams(location.search);
+        return params.get('fromLibrary');
     }
 
     const onBackClicked = () => {
@@ -397,7 +429,7 @@ const InterviewDetails = ({
     </Layout>
 }
 
-const mapDispatch = { addInterview, loadInterviews, updateInterview, loadTemplates };
+const mapDispatch = { addInterview, loadInterviews, updateInterview, loadTemplates, loadLibrary };
 const mapState = (state) => {
     const interviewState = state.interviews || {};
     const templateState = state.templates || {};
@@ -405,6 +437,7 @@ const mapState = (state) => {
     return {
         interviews: interviewState.interviews,
         templates: templateState.templates,
+        library: templateState.library,
     }
 }
 
