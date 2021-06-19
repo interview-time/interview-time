@@ -40,6 +40,16 @@ export function findTemplate(id, templates) {
 /**
  *
  * @param {String} id
+ * @param {[Template]} templates
+ * @returns {Template}
+ */
+export function findLibraryTemplate(id, templates) {
+    return templates.find(template => template.libraryId === id)
+}
+
+/**
+ *
+ * @param {String} id
  * @param {InterviewGroup[]} groups
  * @returns {InterviewGroup}
  */

@@ -66,6 +66,7 @@
  * @typedef {Object} Template
  * @property {string} userId
  * @property {string} templateId
+ * @property {string} libraryId
  * @property {string} title
  * @property {string} image
  * @property {string} type

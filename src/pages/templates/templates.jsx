@@ -2,28 +2,15 @@ import styles from "./templates.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
-import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
-import {
-    Alert,
-    Avatar,
-    Button,
-    Card,
-    Col,
-    Dropdown,
-    List,
-    Menu,
-    message,
-    Modal,
-    Row,
-    Space,
-    Tooltip
-} from "antd";
+import { addTemplate, deleteTemplate, loadLibrary, loadTemplates } from "../../store/templates/actions";
+import { Alert, Avatar, Button, Card, Col, Dropdown, List, Menu, message, Modal, Row, Space, Tooltip } from "antd";
 import { Link, useHistory } from "react-router-dom";
 import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 import {
+    routeInterviewAddFromLibrary,
     routeInterviewAddFromTemplate,
     routeTemplateAdd,
     routeTemplateDetails
@@ -34,20 +21,34 @@ import confirm from "antd/lib/modal/confirm";
 import { CustomIcon } from "../../components/utils/icons";
 import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 import StickyHeader from "../../components/layout/header-sticky";
+import Title from "antd/lib/typography/Title";
+import TemplateCard from "../../components/template-card/template-card";
 
 const NEW_TEMPLATE = "NEW_TEMPLATE"
 
 /**
  *
  * @param {Template[]} templates
- * @param {boolean} loading
+ * @param {Template[]} library
+ * @param {boolean} loadingTemplates
+ * @param {boolean} loadingLibrary
  * @param loadTemplates
+ * @param loadLibrary
  * @param deleteTemplate
  * @param addTemplate
  * @returns {JSX.Element}
  * @constructor
  */
-const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTemplate }) => {
+const Templates = ({
+    templates,
+    library,
+    loadingTemplates,
+    loadingLibrary,
+    loadTemplates,
+    loadLibrary,
+    deleteTemplate,
+    addTemplate
+}) => {
 
     const emptyTemplate = {
         structure: {
@@ -63,6 +64,7 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
 
     React.useEffect(() => {
         loadTemplates();
+        loadLibrary();
         // eslint-disable-next-line
     }, []);
 
@@ -86,8 +88,8 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
         setPreviewModalVisible(false)
     };
 
-    const onPreview = (templateId) => {
-        setTemplate(templates.find(template => template.templateId === templateId))
+    const onPreview = (template) => {
+        setTemplate(template)
         setPreviewModalVisible(true)
     }
 
@@ -129,7 +131,11 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
 
     const onCreateInterviewClicked = (template) => {
         setPreviewModalVisible(false)
-        history.push(routeInterviewAddFromTemplate(template.templateId))
+        if (template.templateId) {
+            history.push(routeInterviewAddFromTemplate(template.templateId))
+        } else if (template.libraryId) {
+            history.push(routeInterviewAddFromLibrary(template.libraryId))
+        }
     }
 
     const createMenu = (template) => <Menu>
@@ -156,12 +162,16 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
             </Button>
         </StickyHeader>
     } contentStyle={styles.pageContent}>
-        <Alert message="Templates allow you to build and manage interview templates for any type of interview, like 'Senior Java Developer' or 'Behavioral Interview'. This is a great way to keep the interview process structured and to make sure you’re asking a consistent set of questions. You can use a template when you create an interview."
-               className={styles.infoAlert}
-               type="info"
-               closable />
+        <Alert
+            message="Templates allow you to build and manage interview templates for any type of interview, like 'Senior Java Developer' or 'Behavioral Interview'. This is a great way to keep the interview process structured and to make sure you’re asking a consistent set of questions. You can use a template when you create an interview."
+            className={styles.infoAlert}
+            type="info"
+            closable />
+
+        <Title level={5}>My Templates</Title>
+
         <List
-            style={{marginTop: 24}}
+            style={{ marginTop: 24 }}
             grid={{
                 gutter: 16,
                 xs: 1,
@@ -172,10 +182,11 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
                 xxl: 5,
             }}
             dataSource={templates}
-            loading={loading}
+            loading={loadingTemplates}
             renderItem={template => <List.Item>
                 <Card hoverable bodyStyle={{ padding: 0, height: 190 }}>
-                    {template !== NEW_TEMPLATE && <div className={styles.card} onClick={() => onPreview(template.templateId)}>
+                    {template !== NEW_TEMPLATE &&
+                    <div className={styles.card} onClick={() => onPreview(template)}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                             {getTemplateCategoryIcon(template.type)}
                             <div style={{ color: getCategory(template).color }}
@@ -190,7 +201,8 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
                         <Row style={{ marginTop: 12 }}>
                             <Col span={12}>
                                 <div className={styles.cardMetaTitle}>QUESTIONS</div>
-                                <div className={styles.cardMetaValue}>{getTotalQuestions(template.structure.groups)}</div>
+                                <div
+                                    className={styles.cardMetaValue}>{getTotalQuestions(template.structure.groups)}</div>
                             </Col>
                             <Col span={12}>
                                 <div className={styles.cardMetaTitle}>INTERVIEWS</div>
@@ -221,6 +233,33 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
                 </Card>
             </List.Item>}
         />
+
+        <Title level={5}>Library Templates</Title>
+
+        <List
+            style={{ marginTop: 24 }}
+            grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 1,
+                md: 2,
+                lg: 3,
+                xl: 4,
+                xxl: 5,
+            }}
+            dataSource={library}
+            loading={loadingLibrary}
+            renderItem={template => <List.Item>
+                <TemplateCard
+                    key={template.libraryId}
+                    name={template.title}
+                    image={template.image}
+                    totalQuestions={getTotalQuestions(template.structure.groups)}
+                    onClick={() => onPreview(template)}
+                />
+            </List.Item>}
+        />
+
         <Modal
             title={null}
             footer={null}
@@ -228,24 +267,27 @@ const Templates = ({ templates, loading, loadTemplates, deleteTemplate, addTempl
             destroyOnClose={true}
             width={1000}
             style={{ top: '5%' }}
-            bodyStyle={{backgroundColor: '#EEF0F2F5' }}
+            bodyStyle={{ backgroundColor: '#EEF0F2F5' }}
             onCancel={onPreviewClosed}
             visible={previewModalVisible}>
             <TemplatePreviewCard template={template}
                                  onCloseClicked={onPreviewClosed}
-                                 onEditClicked={()=> onEditClicked(template)}
-                                 onCreateInterviewClicked={()=> onCreateInterviewClicked(template)}/>
+                                 onEditClicked={() => onEditClicked(template)}
+                                 onCreateInterviewClicked={() => onCreateInterviewClicked(template)} />
         </Modal>
     </Layout>
 }
-const mapDispatch = { loadTemplates, deleteTemplate, addTemplate };
+const mapDispatch = { loadTemplates, loadLibrary, deleteTemplate, addTemplate };
 const mapState = (state) => {
     const templateState = state.templates || {};
     const templates = sortBy(templateState.templates, ['title']);
     templates.unshift(NEW_TEMPLATE) // first element is a new template card
+
     return {
         templates: templates,
-        loading: templateState.loading
+        library: templateState.library,
+        loadingTemplates: templateState.loading,
+        loadingLibrary: templateState.loadingLibrary
     }
 }
 
