@@ -45,12 +45,10 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
             <Title level={4} style={{ marginBottom: 0 }}>Interview</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <Card style={marginTop12}>
+        <Card style={{marginTop: 12, marginBottom: 12}}>
             <IntroSection interview={interview} />
         </Card>
-        <Card style={marginTop12}>
-            <InterviewGroupsSection interview={interview} />
-        </Card>
+        <InterviewGroupsSection interview={interview} />
         <Card style={marginTop12}>
             <SummarySection interview={interview} />
         </Card>
@@ -73,12 +71,10 @@ export const TemplatePreviewCard = ({ template, onCloseClicked, onEditClicked, o
             <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <Card style={marginTop12}>
+        <Card style={{marginTop: 12, marginBottom: 12}}>
             <IntroSection interview={template} />
         </Card>
-        <Card style={marginTop12}>
-            <TemplateGroupsSection template={template} />
-        </Card>
+        <TemplateGroupsSection template={template} />
         <Card style={marginTop12}>
             <SummarySection interview={template} />
         </Card>
@@ -108,12 +104,10 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
             <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <Card style={marginTop12}>
+        <Card style={{marginTop: 12, marginBottom: 12}}>
             <IntroSection interview={template} />
         </Card>
-        <Card style={marginTop12}>
-            <TemplateGroupsSection template={template} />
-        </Card>
+        <TemplateGroupsSection template={template} />
         <Card style={marginTop12}>
             <SummarySection interview={template} />
         </Card>
@@ -271,7 +265,6 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
  * @param {boolean} disabled
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
- * @param onNotesChanged
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -283,7 +276,6 @@ const InterviewQuestionsCard = ({
     disabled,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    onNotesChanged,
     hashStyle
 }) => {
 
@@ -334,8 +326,7 @@ const InterviewQuestionsCard = ({
     const onCollapseClicked = () => {
         setCollapsed(!collapsed)
     }
-
-    return <div style={index === 0 ? { marginTop: 0 } : { marginTop: 64 }}>
+    return <Card style={ index === 0 ? { marginTop: 0 } : { marginTop: 12 }}>
         <div className={styles.divSpaceBetween}>
             <Space style={{ marginBottom: 8 }}>
                 <Title id={group.name} level={4} onClick={onCollapseClicked}
@@ -358,23 +349,7 @@ const InterviewQuestionsCard = ({
             </Card>
 
             <Space className={styles.space} direction="vertical">
-
-                <Text strong>Notes</Text>
-
-                <TextArea
-                    {...(disabled ? { readonly: "true" } : {})}
-                    placeholder="Capture any key moments that happened during the interview."
-                    autoSize={{ minRows: 3, maxRows: 5 }}
-                    onChange={e => {
-                        if (onNotesChanged) {
-                            onNotesChanged(group, e.target.value)
-                        }
-                    }}
-                    defaultValue={group.notes} />
-            </Space>
-
-            <Space className={styles.space} direction="vertical">
-                <Text strong>Assessment</Text>
+                <Text strong>Overall category assessment </Text>
 
                 <Radio.Group
                     key={group.assessment}
@@ -393,7 +368,7 @@ const InterviewQuestionsCard = ({
                 </Radio.Group>
             </Space>
         </div>}
-    </div>
+    </Card>
 }
 
 /**
@@ -401,7 +376,6 @@ const InterviewQuestionsCard = ({
  * @param {Interview} interview
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
- * @param onNotesChanged
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -410,7 +384,6 @@ export const InterviewGroupsSection = ({
     interview,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    onNotesChanged,
     hashStyle
 }) => {
 
@@ -426,7 +399,6 @@ export const InterviewGroupsSection = ({
                 disabled={isCompletedStatus()}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                onNotesChanged={onNotesChanged}
                 hashStyle={hashStyle}
             />)
         }
@@ -438,7 +410,6 @@ export const InterviewGroupsSection = ({
  * @param {(Template)} template
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
- * @param onNotesChanged
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -447,7 +418,6 @@ export const TemplateGroupsSection = ({
     template,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    onNotesChanged,
     hashStyle
 }) => {
 
@@ -462,7 +432,6 @@ export const TemplateGroupsSection = ({
                 disabled={false}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                onNotesChanged={onNotesChanged}
                 hashStyle={hashStyle}
             />)
         }

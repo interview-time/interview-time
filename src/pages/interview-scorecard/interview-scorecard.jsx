@@ -146,11 +146,6 @@ const InterviewScorecard = ({
         onInterviewChange()
     }
 
-    const onGroupNotesChanged = (group, notes) => {
-        findGroup(group.groupId, interview.structure.groups).notes = notes
-        onInterviewChange()
-    };
-
     const onCandidateEvaluationClicked = () => {
         if(unsavedChanges) {
             onSaveClicked()
@@ -186,7 +181,10 @@ const InterviewScorecard = ({
                 <Col key={interview.interviewId}
                      xxl={{ span: 16, offset: 4 }}
                      xl={{ span: 20 }}
-                     lg={{ span: 24 }}>
+                     lg={{ span: 24 }}
+                     md={{ span: 24 }}
+                     sm={{ span: 24 }}
+                     xs={{ span: 24 }}>
 
                     {interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
 
@@ -204,21 +202,17 @@ const InterviewScorecard = ({
                         <IntroSection interview={interview} hashStyle={styles.hash} />
                     </Card>
 
-                    <Card style={{marginBottom: 12}}>
-                        <InterviewGroupsSection
-                            interview={interview}
-                            onGroupAssessmentChanged={onGroupAssessmentChanged}
-                            onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                            onNotesChanged={onGroupNotesChanged}
-                            hashStyle={styles.hash}
-                        />
-                    </Card>
+                    <InterviewGroupsSection
+                        interview={interview}
+                        onGroupAssessmentChanged={onGroupAssessmentChanged}
+                        onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                        hashStyle={styles.hash} />
 
-                    <Card style={{marginBottom: 12}}>
+                    <Card style={{marginTop: 12}}>
                         <SummarySection interview={interview} onNoteChanges={onNoteChanges} />
                     </Card>
 
-                    <Card style={{marginBottom: 12}}>
+                    <Card style={{marginTop: 12, marginBottom: 12}}>
                         <div className={styles.divSpaceBetween}>
                             <Text strong>Ready to make hiring recommendation?</Text>
                             <Button type="primary" onClick={onCandidateEvaluationClicked}>Open Candidate Evaluation</Button>
@@ -228,7 +222,10 @@ const InterviewScorecard = ({
                 <Col key={interview.interviewId}
                      xxl={{ span: 4}}
                      xl={{ span: 4}}
-                     lg={{ span: 0 }}>
+                     lg={{ span: 0 }}
+                     md={{ span: 0 }}
+                     sm={{ span: 0 }}
+                     xs={{ span: 0 }}>
                     <div className={styles.toc}>
                         <a href={"#intro"} className={styles.anchorLink}>Intro</a>
                         {interview.structure.groups.map(group =>
