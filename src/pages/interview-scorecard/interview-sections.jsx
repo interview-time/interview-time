@@ -1,21 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from 'react';
-import {
-    Button,
-    Card,
-    Col,
-    Dropdown,
-    Input,
-    Menu,
-    message,
-    Modal,
-    Radio,
-    Row,
-    Space,
-    Table,
-    Tag,
-    Tooltip
-} from "antd";
+import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
 import { createTagColors, DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -26,7 +11,14 @@ import { CloseOutlined, DownOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { routeInterviewDetails, routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
-import { CollapseIcon, ExpandIcon } from "../../components/utils/icons";
+import {
+    CollapseIcon,
+    ExpandIcon,
+    StarEmphasisIcon,
+    StarFilledIcon,
+    StarHalfIcon,
+    StarIcon
+} from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
 
 const { TextArea } = Input;
@@ -350,25 +342,80 @@ const InterviewQuestionsCard = ({
 
             <Space className={styles.space} direction="vertical">
                 <Text strong>Overall category assessment </Text>
-
-                <Radio.Group
-                    key={group.assessment}
-                    value={group.assessment}
-                    buttonStyle="solid"
+                <GroupAssessmentButtons
+                    assessment={group.assessment}
                     disabled={disabled}
-                    onChange={e => {
+                    onGroupAssessmentChanged={(assessment) => {
                         if (onGroupAssessmentChanged) {
-                            onGroupAssessmentChanged(group, e.target.value);
+                            onGroupAssessmentChanged(group, assessment)
                         }
-                    }}>
-                    <Radio.Button value={GroupAssessment.NO_PROFICIENCY}>no proficiency</Radio.Button>
-                    <Radio.Button value={GroupAssessment.LOW_SKILLED}>low skills</Radio.Button>
-                    <Radio.Button value={GroupAssessment.SKILLED}>skilled</Radio.Button>
-                    <Radio.Button value={GroupAssessment.HIGHLY_SKILLED}>highly skilled</Radio.Button>
-                </Radio.Group>
+                    }}
+                />
             </Space>
         </div>}
     </Card>
+}
+
+/**
+ *
+ * @param {string} assessment
+ * @param {boolean} disabled
+ * @param onGroupAssessmentChanged
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const GroupAssessmentButtons = ({ assessment, disabled, onGroupAssessmentChanged }) => {
+
+    const [activeAssessment, setActiveAssessment] = React.useState(assessment)
+
+    const onButtonClicked = (groupAssessment) => {
+        if (!disabled) {
+            if (activeAssessment === groupAssessment) {
+                setActiveAssessment(null)
+            } else {
+                setActiveAssessment(groupAssessment)
+            }
+            onGroupAssessmentChanged(groupAssessment)
+        }
+    }
+
+    const getAssessmentTextBlue = (assessment) => activeAssessment === assessment
+        ? styles.assessmentTextBlue : styles.assessmentText
+
+    const getAssessmentTextRed = (assessment) => activeAssessment === assessment
+        ? styles.assessmentTextRed : styles.assessmentText
+
+    const getAssessmentButtonBlue = (assessment) => activeAssessment === assessment
+        ? styles.assessmentButtonBlue : styles.assessmentButton
+
+    const getAssessmentButtonRed = (assessment) => activeAssessment === assessment
+        ? styles.assessmentButtonRed : styles.assessmentButton
+
+    const getAssessmentIconStyle = (assessment) => activeAssessment === assessment
+        ? styles.assessmentIconActive : styles.assessmentIcon
+
+    return <Space size={16}>
+        <div className={getAssessmentButtonRed(GroupAssessment.NO_PROFICIENCY)}
+             onClick={() => onButtonClicked(GroupAssessment.NO_PROFICIENCY)}>
+            <StarIcon className={getAssessmentIconStyle(GroupAssessment.NO_PROFICIENCY)} />
+            <Text className={getAssessmentTextRed(GroupAssessment.NO_PROFICIENCY)}>no proficiency</Text>
+        </div>
+        <div className={getAssessmentButtonRed(GroupAssessment.LOW_SKILLED)}
+             onClick={() => onButtonClicked(GroupAssessment.LOW_SKILLED)}>
+            <StarHalfIcon className={getAssessmentIconStyle(GroupAssessment.LOW_SKILLED)} />
+            <Text className={getAssessmentTextRed(GroupAssessment.LOW_SKILLED)}>low skills</Text>
+        </div>
+        <div className={getAssessmentButtonBlue(GroupAssessment.SKILLED)}
+             onClick={() => onButtonClicked(GroupAssessment.SKILLED)}>
+            <StarFilledIcon className={getAssessmentIconStyle(GroupAssessment.SKILLED)} />
+            <Text className={getAssessmentTextBlue(GroupAssessment.SKILLED)}>skilled</Text>
+        </div>
+        <div className={getAssessmentButtonBlue(GroupAssessment.HIGHLY_SKILLED)}
+             onClick={() => onButtonClicked(GroupAssessment.HIGHLY_SKILLED)}>
+            <StarEmphasisIcon className={getAssessmentIconStyle(GroupAssessment.HIGHLY_SKILLED)} />
+            <Text className={getAssessmentTextBlue(GroupAssessment.HIGHLY_SKILLED)}>highly skilled</Text>
+        </div>
+    </Space>
 }
 
 /**

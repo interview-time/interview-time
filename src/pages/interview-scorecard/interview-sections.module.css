@@ -31,3 +31,61 @@
 .tag {
     color: rgba(0, 0, 0, 0.85);
 }
+
+.assessmentButton {
+    width: 140px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid #F0F0F0;
+}
+
+.assessmentButtonBlue {
+    width: 140px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid #1890FF;
+    background-color: rgba(230, 247, 255, 0.4);
+}
+
+.assessmentButtonRed {
+    width: 140px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid #FF4D4F;
+    background-color: rgba(255, 241, 240, 0.4);
+}
+
+.assessmentText {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.assessmentTextBlue {
+    color: #1890FF;
+}
+
+.assessmentTextRed {
+    color: #FF4D4F;
+}
+
+.assessmentIcon {
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 20px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.assessmentIconActive {
+    color: #FADB14;
+    font-size: 20px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
