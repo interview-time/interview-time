@@ -16,7 +16,7 @@ import {
     Tag,
     Tooltip
 } from "antd";
-import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
+import { createTagColors, DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
@@ -27,6 +27,7 @@ import { Link } from "react-router-dom";
 import { routeInterviewDetails, routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
 import { CollapseIcon, ExpandIcon } from "../../components/utils/icons";
+import { interviewToTags } from "../../components/utils/converters";
 
 const { TextArea } = Input;
 
@@ -265,6 +266,7 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
 /**
  *
  * @param {number} index
+ * @param {Map<string, string>} tagColors
  * @param {InterviewGroup} group
  * @param {boolean} disabled
  * @param onGroupAssessmentChanged
@@ -276,6 +278,7 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
  */
 const InterviewQuestionsCard = ({
     index,
+    tagColors,
     group,
     disabled,
     onGroupAssessmentChanged,
@@ -305,7 +308,7 @@ const InterviewQuestionsCard = ({
                 <>
                     {defaultTo(tags, []).map(tag => {
                         return (
-                            <Tag key={tag}>
+                            <Tag key={tag} className={styles.tag} color={tagColors.get(tag)}>
                                 {tag.toLowerCase()}
                             </Tag>
                         );
@@ -412,11 +415,13 @@ export const InterviewGroupsSection = ({
 }) => {
 
     const isCompletedStatus = () => interview.status === Status.COMPLETED
+    const tagColors = createTagColors(interviewToTags(interview))
 
     return <>
         {interview.structure.groups.map((group, index) =>
             <InterviewQuestionsCard
                 index={index}
+                tagColors={tagColors}
                 group={group}
                 disabled={isCompletedStatus()}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
@@ -446,10 +451,13 @@ export const TemplateGroupsSection = ({
     hashStyle
 }) => {
 
+    const tagColors = createTagColors(interviewToTags(template))
+
     return <>
         {template.structure.groups.map((group, index) =>
             <InterviewQuestionsCard
                 index={index}
+                tagColors={tagColors}
                 group={group}
                 disabled={false}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}

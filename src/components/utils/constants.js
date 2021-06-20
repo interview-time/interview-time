@@ -247,21 +247,41 @@ export const getStatusText = (status) => {
 }
 
 export const colors = [
-    '#2f54eb',
-    '#722ed1',
-    '#eb2f96',
-    '#52c41a',
-    '#13c2c2',
-    '#1890ff',
-    '#faad14',
-    '#a0d911',
-    '#f5222d',
+    '#B7EB8F',
+    '#91D5FF',
+    '#FFA39E',
+    '#D3ADF7',
+    '#FFE58F',
+    '#FFADD2',
+    '#FFBB96',
+    '#ADC6FF',
+    '#87E8DE',
 ]
 
 export const getAvatarColor = (text) => {
     let stringIndex = Math.abs(text.charCodeAt(0)).toString();
     let index = parseInt(stringIndex.charAt(0))
     return colors[index]
+}
+
+/**
+ *
+ * @param {string[]} tags
+ * @returns {Map<string, string>}
+ */
+export const createTagColors = (tags) => {
+    let tagColorsMap = new Map();
+    let colorIndex = 0;
+    tags.forEach(tag => {
+        if (!tagColorsMap.has(tag)) {
+            tagColorsMap.set(tag, colors[colorIndex])
+            colorIndex++
+            if (colorIndex >= colors.length) {
+                colorIndex = 0
+            }
+        }
+    })
+    return tagColorsMap
 }
 
 export const getAvatarText = (text) => text.split(' ').slice(0, 3).map(item => item.charAt(0)).join('')
