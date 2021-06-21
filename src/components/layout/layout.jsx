@@ -57,6 +57,8 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
             return routeLibrary()
         }  else if (location.pathname.includes(routeCandidates())) {
             return routeCandidates()
+        } else if (location.pathname.includes(routeHome())) {
+            return routeHome()
         }
     }
 
@@ -83,11 +85,11 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                 <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 <Menu theme="light"
                       mode="inline"
-                      defaultSelectedKeys={[routeTemplates()]}
+                      defaultSelectedKeys={[routeHome()]}
                       selectedKeys={[getSelectedKey()]}
                       className={styles.menu}
                 >
-                    <Menu.Item key={routeTemplates()} className={styles.menuItem}
+                    <Menu.Item key={routeHome()} className={styles.menuItem}
                                icon={ <HomeIcon style={menuIconStyle} />}>
                         <Link to={routeHome()}>
                             <span className="nav-text">Home</span>
