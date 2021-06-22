@@ -6,18 +6,23 @@ import { ReactComponent as TemplateIcon } from "../../assets/template.svg";
 import { ReactComponent as CsvIcon } from "../../assets/csv.svg";
 import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
-import { loadTemplates, loadLibrary } from "../../store/templates/actions";
+import { loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
 import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
+import moment from "moment";
+import { DATE_FORMAT_DISPLAY } from "../../components/utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
 import {
     routeInterviewScorecard,
     routeInterviewAdd,
     routeTemplates,
     routeTemplateDetails,
+    routeInterviewAddFromLibrary,
+    routeInterviewAddFromTemplate,
 } from "../../components/utils/route";
+import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 import { createEvent } from "../../analytics";
 import styles from "./default.module.css";
 
@@ -33,31 +38,62 @@ const columns = [
         dataIndex: "position",
     },
     {
-        key: "date",
-    },
-    {
-        key: "status",
+        key: "interviewDateTime",
+        dataIndex: "interviewDateTime",
+        render: (interviewDateTime) => (
+            <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
+        ),
     },
 ];
 
 const Default = ({
-    interviews,
+    upcomingInterviews,
     loadingInterviews,
     templates,
     loadingTemplates,
     loadInterviews,
     loadTemplates,
-    loadLibrary,
 }) => {
-    const history = useHistory();
+    const emptyTemplate = {
+        structure: {
+            groups: [],
+        },
+    };
 
-    // const [interviewsData, setInterviews] = React.useState([]);
-    // const [template, setTemplate] = React.useState(emptyTemplate);
+    const history = useHistory();
+    const [previewModalVisible, setPreviewModalVisible] = React.useState(false);
+    const [template, setTemplate] = React.useState(emptyTemplate);
+
+    const onPreviewClosed = () => {
+        setPreviewModalVisible(false);
+    };
+
+    const onPreview = (template) => {
+        setTemplate(template);
+        setPreviewModalVisible(true);
+    };
+
+    const onEditClicked = (template) => {
+        setPreviewModalVisible(false);
+        onEdit(template.templateId);
+    };
+
+    const onEdit = (templateId) => {
+        history.push(routeTemplateDetails(templateId));
+    };
+
+    const onCreateInterviewClicked = (template) => {
+        setPreviewModalVisible(false);
+        if (template.templateId) {
+            history.push(routeInterviewAddFromTemplate(template.templateId));
+        } else if (template.libraryId) {
+            history.push(routeInterviewAddFromLibrary(template.libraryId));
+        }
+    };
 
     React.useEffect(() => {
         loadInterviews();
         loadTemplates();
-        loadLibrary();
         // eslint-disable-next-line
     }, []);
 
@@ -79,7 +115,7 @@ const Default = ({
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                 <div className={styles.header}>
                     <Title level={2}>Create new interview</Title>
-                    <Text type="secondary">How would you like to start</Text>
+                    <Text type="secondary">How would you like to start?</Text>
                 </div>
                 <Row justify="space-between" gutter={[32, 32]}>
                     <Col span={24} lg={{ span: 8 }}>
@@ -111,7 +147,7 @@ const Default = ({
                                 </div>
                                 <div className={styles.cardTitle}>
                                     <Title level={5}>From template</Title>
-                                    <Text type="secondary">Choose from library</Text>
+                                    <Text type="secondary">Choose from our library</Text>
                                     <div></div>
                                 </div>
                             </div>
@@ -125,7 +161,7 @@ const Default = ({
                                 </div>
                                 <div className={styles.cardTitle}>
                                     <Title level={5}>From CSV file</Title>
-                                    <Text type="secondary">Import existing questions</Text>
+                                    <Text type="secondary">Import your existing questions</Text>
                                 </div>
                             </div>
                         </Card>
@@ -139,7 +175,7 @@ const Default = ({
                             pagination={false}
                             columns={columns}
                             showHeader={false}
-                            dataSource={interviews}
+                            dataSource={upcomingInterviews}
                             loading={loadingInterviews}
                             rowClassName={styles.row}
                             onRow={(record) => ({
@@ -149,37 +185,55 @@ const Default = ({
                     </Col>
                 </Row>
 
-                <Title level={5}>Templates</Title>
+                <Title level={5}>Recent templates</Title>
                 <Row gutter={[32, 32]}>
-                    {templates.map((template) => (
+                    {templates.map((t) => (
                         <Col span={24} lg={{ span: 8 }}>
                             <TemplateCard
-                                key={template.id}
-                                name={template.title}
-                                image={template.image}
-                                totalQuestions={template.questions}
-                                onClick={() => history.push(routeTemplateDetails(template.id))}
+                                key={t.template.id}
+                                name={t.template.title}
+                                image={t.template.image}
+                                totalQuestions={t.questions}
+                                onClick={() => onPreview(t.template)}
                             />
                         </Col>
                     ))}
                 </Row>
             </Col>
+
+            <Modal
+                title={null}
+                footer={null}
+                closable={false}
+                destroyOnClose={true}
+                width={1000}
+                style={{ top: "5%" }}
+                bodyStyle={{ backgroundColor: "#EEF0F2F5" }}
+                onCancel={onPreviewClosed}
+                visible={previewModalVisible}
+            >
+                <TemplatePreviewCard
+                    template={template}
+                    onCloseClicked={onPreviewClosed}
+                    onEditClicked={() => onEditClicked(template)}
+                    onCreateInterviewClicked={() => onCreateInterviewClicked(template)}
+                />
+            </Modal>
         </Layout>
     );
 };
 
-const mapDispatch = { loadInterviews, loadTemplates, loadLibrary };
+const mapDispatch = { loadInterviews, loadTemplates };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
     const templateState = state.templates || {};
 
     const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"]));
 
-    const allTemplates = templateState.templates.concat(templateState.library);
-    const templates = sortBy(allTemplates, ["title"]).slice(0, 3);
+    const templates = sortBy(templateState.templates, ["title"]).slice(0, 3);
 
     return {
-        interviews: interviews,
+        upcomingInterviews: interviews.filter((i) => Date.parse(i.interviewDateTime) > Date.now()),
         loadingInterviews: interviewsState.loading,
         templates: templates.map((template) => {
             var totalquestions = 0;
@@ -187,13 +241,11 @@ const mapState = (state) => {
             template.structure?.groups?.forEach((group) => (totalquestions += group.questions.length));
 
             return {
-                id: template.templateId ? template.templateId : template.libraryId,
-                title: template.title,
-                image: template.image,
+                template: template,
                 questions: totalquestions,
             };
         }),
-        loadingTemplates: templateState.loading && templateState.loadingLibrary,
+        loadingTemplates: templateState.loading,
     };
 };
 
