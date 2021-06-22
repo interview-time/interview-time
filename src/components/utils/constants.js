@@ -247,15 +247,15 @@ export const getStatusText = (status) => {
 }
 
 export const colors = [
-    '#B7EB8F',
-    '#91D5FF',
-    '#FFA39E',
-    '#D3ADF7',
-    '#FFE58F',
-    '#FFADD2',
-    '#FFBB96',
-    '#ADC6FF',
-    '#87E8DE',
+    '#D8E7E2',
+    '#D6E4F7',
+    '#FCD6D5',
+    '#DFD4F7',
+    '#F9EED8',
+    '#F5D5E5',
+    '#F9E1D4',
+    '#E6E6E5',
+    '#E6D7D0',
 ]
 
 export const getAvatarColor = (text) => {
