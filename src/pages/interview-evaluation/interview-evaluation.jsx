@@ -25,7 +25,7 @@ import { loadTemplates } from "../../store/templates/actions";
 import { InterviewInformationSection } from "../interview-scorecard/interview-sections";
 import InterviewDecisionAlert from "./interview-decision-alert";
 import { personalEvent } from "../../analytics";
-import { routeCandidates} from "../../components/utils/route";
+import { routeCandidates, routeInterviewDetails } from "../../components/utils/route";
 import StickyHeader from "../../components/layout/header-sticky";
 
 function bodyStyleCard() {
@@ -141,6 +141,14 @@ const InterviewEvaluation = ({
         history.push(routeCandidates());
     }
 
+    const onEditInterview = () => {
+        history.push(routeInterviewDetails(interview.interviewId));
+    }
+
+    const onBackClicked = () => {
+        history.goBack()
+    }
+
     const initialLoading = () => !interview.interviewId
 
     const CompetenceAreaCard = () => <Card title="Competence Areas"
@@ -231,9 +239,7 @@ const InterviewEvaluation = ({
     </Card>;
 
     return (
-        <Layout pageHeader={
-            <StickyHeader title="Candidate Evaluation" backButton />
-        }>
+        <Layout>
             <Row className={styles.rootContainer}>
 
                 <Col key={interview.interviewId}
@@ -245,9 +251,11 @@ const InterviewEvaluation = ({
 
                     <div style={{ marginBottom: 12 }}>
                         <InterviewInformationSection
+                            title="Candidate Evaluation"
+                            onBackClicked={onBackClicked}
                             onDeleteInterview={onDeleteInterview}
+                            onEditInterview={onEditInterview}
                             loading={initialLoading()}
-                            showMoreSection={true}
                             userName={user.name}
                             interview={interview}
                             template={template} />

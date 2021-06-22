@@ -1,15 +1,15 @@
 import styles from "./interview-sections.module.css";
 import React from 'react';
-import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
+import { Button, Card, Col, Input, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
 import { createTagColors, DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { CloseOutlined, DownOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { routeInterviewDetails, routeTemplateDetails } from "../../components/utils/route";
+import { routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
 import {
     CollapseIcon,
@@ -109,21 +109,25 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
 /**
  *
  * @param {boolean} loading
- * @param {boolean} showMoreSection
+ * @param {String} title
  * @param {String} userName
  * @param {Interview} interview
  * @param {Template} template
  * @param onDeleteInterview
+ * @param onEditInterview
+ * @param onBackClicked
  * @returns {JSX.Element}
  * @constructor
  */
 export const InterviewInformationSection = ({
     loading,
-    showMoreSection,
+    title,
     userName,
     interview,
     template,
     onDeleteInterview,
+    onEditInterview,
+    onBackClicked
 }) => {
 
     const onDeleteClicked = () => {
@@ -139,18 +143,14 @@ export const InterviewInformationSection = ({
         })
     }
 
-    const menu = (
-        <Menu>
-            <Menu.Item>
-                <Link to={routeInterviewDetails(interview.interviewId)}>Edit Interview</Link>
-            </Menu.Item>
-            <Menu.Item danger onClick={onDeleteClicked}>Delete Interview</Menu.Item>
-        </Menu>
-    );
-
     return (
         <Card loading={loading}>
-            <Row>
+            <div className={styles.header}>
+                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                    <ArrowLeftOutlined /> <span className={styles.headerTitle}>{title}</span>
+                </div>
+            </div>
+            <Row style={{marginTop: "24px"}}>
                 <Col flex="140px">
                     <Space direction='vertical'>
                         <Text type="secondary">Candidate Name:</Text>
@@ -181,11 +181,12 @@ export const InterviewInformationSection = ({
                 </Col>
             </Row>
 
-            {showMoreSection && <Dropdown
-                className={styles.more}
-                overlay={menu}>
-                <Link>More <DownOutlined /></Link>
-            </Dropdown>}
+            <div className={styles.interviewActionButtonContainer}>
+                <Space>
+                    <Button type="link" danger onClick={onDeleteClicked}>Delete</Button>
+                    <Button type="link" onClick={onEditInterview}>Edit</Button>
+                </Space>
+            </div>
         </Card>
     )
 }

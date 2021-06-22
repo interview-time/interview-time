@@ -25,7 +25,7 @@
 }
 
 .rootContainer {
-    margin-top: var(--header-height-with-padding);
+    margin-top: 24px;
 }
 
 .summary {
