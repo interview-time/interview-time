@@ -147,7 +147,7 @@ export const InterviewInformationSection = ({
         <Card loading={loading}>
             <div className={styles.header}>
                 <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                    <ArrowLeftOutlined /> <span className={styles.headerTitle}>{title}</span>
+                    <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>{title}</Title>
                 </div>
             </div>
             <Row style={{marginTop: "24px"}}>

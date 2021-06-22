@@ -26,7 +26,6 @@ import { InterviewInformationSection } from "../interview-scorecard/interview-se
 import InterviewDecisionAlert from "./interview-decision-alert";
 import { personalEvent } from "../../analytics";
 import { routeCandidates, routeInterviewDetails } from "../../components/utils/route";
-import StickyHeader from "../../components/layout/header-sticky";
 
 function bodyStyleCard() {
     return {

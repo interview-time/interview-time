@@ -11,7 +11,6 @@ import { defaultTo } from "lodash/util";
 import { isEmpty } from "../../components/utils/utils";
 import { flatten, sortedUniq } from "lodash/array";
 import { createTagColors } from "../../components/utils/constants";
-import { interviewToTags } from "../../components/utils/converters";
 
 /**
  *

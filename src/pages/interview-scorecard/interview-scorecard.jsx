@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Card, Col, message, Row, Space, Tag } from 'antd';
+import { Button, Card, Col, message, Row, Space} from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-scorecard.module.css";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import { ArrowLeftOutlined, SyncOutlined } from "@ant-design/icons";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
 import { routeInterviewCandidate, routeInterviewDetails, routeInterviews } from "../../components/utils/route";
@@ -169,7 +168,7 @@ const InterviewScorecard = ({
                      sm={{ span: 24 }}
                      xs={{ span: 24 }}>
 
-                    {interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
+                    {interview.interviewId && interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
 
                     <div style={{ marginBottom: 12 }}>
                         <InterviewInformationSection

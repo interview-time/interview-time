@@ -100,12 +100,6 @@
     align-items: center;
 }
 
-.headerTitle {
-    font-size: 18px;
-    font-weight: 700;
-    margin-left: 8px;
-}
-
 .interviewActionButtonContainer {
     display: flex;
     justify-content: flex-end;

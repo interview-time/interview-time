@@ -16,7 +16,7 @@ import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
-import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -234,7 +234,12 @@ const TemplateDetails = ({
                 xs={{ span: 24 }}
             >
                 <Card style={marginTop12} key={template.templateId} loading={isInitialLoading()}>
-                    <Title level={4}>Interview Template</Title>
+                    <div className={styles.header} style={{marginBottom: 12}}>
+                        <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                            <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>Interview
+                            Template</Title>
+                        </div>
+                    </div>
                     <Text type="secondary">Enter template detail information so you can easily discover it among other
                         templates.</Text>
                     <div className={styles.divSpaceBetween}>
@@ -323,7 +328,7 @@ const TemplateDetails = ({
                     <Divider />
 
                     <div className={styles.divSpaceBetween}>
-                        <Button onClick={onBackClicked}>Back</Button>
+                        <Text />
                         <Space>
                             <Button onClick={onPreviewClicked}>Interview experience</Button>
                             <Button type="primary" onClick={onSaveClicked}>Save template</Button>
