@@ -18,7 +18,7 @@ import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
 import { personalEvent } from "../../analytics";
 import { routeInterviews } from "../../components/utils/route";
-import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -303,7 +303,11 @@ const InterviewDetails = ({
                 xs={{ span: 24 }}
             >
                 <Card style={marginTop12} key={interview.interviewId} loading={isInitialLoading()}>
-                    <Title level={4}>Interview</Title>
+                    <div className={styles.header} style={{marginBottom: 12}}>
+                        <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                            <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>Interview Edit</Title>
+                        </div>
+                    </div>
                     <Text type="secondary">Enter interview details information so you can easily discover it among other interviews.</Text>
                     <div className={styles.divSpaceBetween}>
                         <Space direction="vertical" className={styles.divFlexGrow} style={{ marginRight: 16 }}>
@@ -395,7 +399,7 @@ const InterviewDetails = ({
                     <Divider />
 
                     <div className={styles.divSpaceBetween}>
-                        <Button onClick={onBackClicked}>Back</Button>
+                        <Text />
                         <Space>
                             <Button onClick={onPreviewClicked}>Interview experience</Button>
                             <Button type="primary" onClick={onSaveClicked}>Save interview</Button>

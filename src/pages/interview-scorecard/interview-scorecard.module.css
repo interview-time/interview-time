@@ -31,7 +31,7 @@
 }
 
 .rootContainer {
-    margin-top: var(--header-height-with-padding);
+    margin-top: 24px;
 }
 
 .summary {
@@ -55,7 +55,7 @@
 
 .toc {
     position: fixed;
-    top: calc(16px + var(--header-height-with-padding));
+    top: 48px;
     display: flex;
     flex-direction: column;
     margin-left: 24px;

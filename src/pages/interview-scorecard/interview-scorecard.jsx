@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Card, Col, message, Row, Tag } from 'antd';
+import { Button, Card, Col, message, Row, Space} from 'antd';
 import Layout from "../../components/layout/layout";
 import styles from "./interview-scorecard.module.css";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import { ArrowLeftOutlined, SyncOutlined } from "@ant-design/icons";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import { routeInterviewCandidate, routeInterviews } from "../../components/utils/route";
+import { routeInterviewCandidate, routeInterviewDetails, routeInterviews } from "../../components/utils/route";
 import { findGroup, findInterview, findQuestionInGroups, findTemplate } from "../../components/utils/converters";
 import Text from "antd/lib/typography/Text";
 import { useAuth0 } from "../../react-auth0-spa";
@@ -121,8 +120,13 @@ const InterviewScorecard = ({
         history.push(routeInterviews());
     }
 
+    const onEditInterview = () => {
+        history.push(routeInterviewDetails(interview.interviewId));
+    }
+
     const onBackClicked = () => {
-        history.goBack()
+        // don't use back because of anchor links
+        history.push(routeInterviews());
     }
 
     const onSaveClicked = () => {
@@ -146,11 +150,6 @@ const InterviewScorecard = ({
         onInterviewChange()
     }
 
-    const onGroupNotesChanged = (group, notes) => {
-        findGroup(group.groupId, interview.structure.groups).notes = notes
-        onInterviewChange()
-    };
-
     const onCandidateEvaluationClicked = () => {
         if(unsavedChanges) {
             onSaveClicked()
@@ -159,42 +158,25 @@ const InterviewScorecard = ({
     };
 
     return (
-        <Layout pageHeader={
-            <div className={styles.header}>
-                <div className={styles.headerTitleContainer}>
-                    <div onClick={onBackClicked}>
-                        <ArrowLeftOutlined />
-                        <span className={styles.headerTitle}>Interview Scorecard</span>
-                    </div>
-                    <>
-                        {interviewsUploading && <Tag
-                            style={{ marginLeft: 16 }}
-                            icon={<SyncOutlined spin />}
-                            color="processing">saving data</Tag>}
-                        {unsavedChanges && <Tag
-                            style={{ marginLeft: 16 }}
-                            color="processing">unsaved changes</Tag>}
-                    </>
-                </div>
-                <Button
-                    type="primary"
-                    loading={interviewsUploading}
-                    onClick={onSaveClicked}>Save</Button>
-            </div>
-        }>
+        <Layout>
             <Row className={styles.rootContainer}>
                 <Col key={interview.interviewId}
                      xxl={{ span: 16, offset: 4 }}
                      xl={{ span: 20 }}
-                     lg={{ span: 24 }}>
+                     lg={{ span: 24 }}
+                     md={{ span: 24 }}
+                     sm={{ span: 24 }}
+                     xs={{ span: 24 }}>
 
-                    {interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
+                    {interview.interviewId && interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
 
                     <div style={{ marginBottom: 12 }}>
                         <InterviewInformationSection
+                            title="Interview"
+                            onBackClicked={onBackClicked}
                             onDeleteInterview={onDeleteInterview}
+                            onEditInterview={onEditInterview}
                             loading={initialLoading()}
-                            showMoreSection={true}
                             userName={user.name}
                             interview={interview}
                             template={template} />
@@ -204,31 +186,37 @@ const InterviewScorecard = ({
                         <IntroSection interview={interview} hashStyle={styles.hash} />
                     </Card>
 
-                    <Card style={{marginBottom: 12}}>
-                        <InterviewGroupsSection
-                            interview={interview}
-                            onGroupAssessmentChanged={onGroupAssessmentChanged}
-                            onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                            onNotesChanged={onGroupNotesChanged}
-                            hashStyle={styles.hash}
-                        />
-                    </Card>
+                    <InterviewGroupsSection
+                        interview={interview}
+                        onGroupAssessmentChanged={onGroupAssessmentChanged}
+                        onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                        hashStyle={styles.hash} />
 
-                    <Card style={{marginBottom: 12}}>
+                    <Card style={{marginTop: 12}}>
                         <SummarySection interview={interview} onNoteChanges={onNoteChanges} />
                     </Card>
 
-                    <Card style={{marginBottom: 12}}>
+                    <Card style={{marginTop: 12, marginBottom: 12}}>
                         <div className={styles.divSpaceBetween}>
                             <Text strong>Ready to make hiring recommendation?</Text>
-                            <Button type="primary" onClick={onCandidateEvaluationClicked}>Open Candidate Evaluation</Button>
+                            <Space>
+                                <Button
+                                    loading={interviewsUploading}
+                                    onClick={onSaveClicked}>Save</Button>
+                                <Button
+                                    type="primary"
+                                    onClick={onCandidateEvaluationClicked}>Open Candidate Evaluation</Button>
+                            </Space>
                         </div>
                     </Card>
                 </Col>
                 <Col key={interview.interviewId}
                      xxl={{ span: 4}}
                      xl={{ span: 4}}
-                     lg={{ span: 0 }}>
+                     lg={{ span: 0 }}
+                     md={{ span: 0 }}
+                     sm={{ span: 0 }}
+                     xs={{ span: 0 }}>
                     <div className={styles.toc}>
                         <a href={"#intro"} className={styles.anchorLink}>Intro</a>
                         {interview.structure.groups.map(group =>

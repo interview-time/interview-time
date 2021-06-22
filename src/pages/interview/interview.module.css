@@ -98,3 +98,13 @@
 .date {
     width: 100%;
 }
+
+.header {
+    display: flex;
+}
+
+.headerTitleContainer {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}

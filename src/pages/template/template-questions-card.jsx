@@ -10,6 +10,7 @@ import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import { isEmpty } from "../../components/utils/utils";
 import { flatten, sortedUniq } from "lodash/array";
+import { createTagColors } from "../../components/utils/constants";
 
 /**
  *
@@ -38,6 +39,7 @@ const TemplateQuestionsCard = ({
 }) => {
 
     const [questions, setQuestions] = React.useState([])
+    const [tagColors, setTagsColors] = React.useState(new Map())
     const [questionsTags, setQuestionsTags] = React.useState([])
     const [selectedTag, setSelectedTag] = React.useState()
     const [collapsed, setCollapsed] = React.useState(false)
@@ -64,7 +66,9 @@ const TemplateQuestionsCard = ({
                 tags.push(question.tags)
             })
         })
-        setQuestionsTags(sortedUniq(flatten(tags).sort()).map(tag => ({ value: tag })))
+        const tagsFlat = flatten(tags);
+        setTagsColors(createTagColors(tagsFlat))
+        setQuestionsTags(sortedUniq(tagsFlat.sort()).map(tag => ({ value: tag })))
     }
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
@@ -154,6 +158,7 @@ const TemplateQuestionsCard = ({
                     {question.questionId !== selectedTag && defaultTo(question.tags, []).map(tag =>
                         (<Tag key={tag}
                               className={styles.clickableTag}
+                              color={tagColors.get(tag)}
                               onClick={() => onTagClicked(question.questionId)}>
                             {tag.toLowerCase()}
                         </Tag>)

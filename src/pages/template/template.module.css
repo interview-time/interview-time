@@ -88,9 +88,20 @@
 
 .clickableTag {
     cursor: pointer;
+    color: rgba(0, 0, 0, 0.85);
 }
 
 .modalFooter {
     display: flex;
     justify-content: flex-end;
+}
+
+.header {
+    display: flex;
+}
+
+.headerTitleContainer {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
 }

@@ -1,32 +1,25 @@
 import styles from "./interview-sections.module.css";
 import React from 'react';
-import {
-    Button,
-    Card,
-    Col,
-    Dropdown,
-    Input,
-    Menu,
-    message,
-    Modal,
-    Radio,
-    Row,
-    Space,
-    Table,
-    Tag,
-    Tooltip
-} from "antd";
-import { DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
+import { Button, Card, Col, Input, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
+import { createTagColors, DATE_FORMAT_DISPLAY, GroupAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { CloseOutlined, DownOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, CloseOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { routeInterviewDetails, routeTemplateDetails } from "../../components/utils/route";
+import { routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
-import { CollapseIcon, ExpandIcon } from "../../components/utils/icons";
+import {
+    CollapseIcon,
+    ExpandIcon,
+    StarEmphasisIcon,
+    StarFilledIcon,
+    StarHalfIcon,
+    StarIcon
+} from "../../components/utils/icons";
+import { interviewToTags } from "../../components/utils/converters";
 
 const { TextArea } = Input;
 
@@ -44,12 +37,10 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
             <Title level={4} style={{ marginBottom: 0 }}>Interview</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <Card style={marginTop12}>
+        <Card style={{marginTop: 12, marginBottom: 12}}>
             <IntroSection interview={interview} />
         </Card>
-        <Card style={marginTop12}>
-            <InterviewGroupsSection interview={interview} />
-        </Card>
+        <InterviewGroupsSection interview={interview} />
         <Card style={marginTop12}>
             <SummarySection interview={interview} />
         </Card>
@@ -72,12 +63,10 @@ export const TemplatePreviewCard = ({ template, onCloseClicked, onEditClicked, o
             <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <Card style={marginTop12}>
+        <Card style={{marginTop: 12, marginBottom: 12}}>
             <IntroSection interview={template} />
         </Card>
-        <Card style={marginTop12}>
-            <TemplateGroupsSection template={template} />
-        </Card>
+        <TemplateGroupsSection template={template} />
         <Card style={marginTop12}>
             <SummarySection interview={template} />
         </Card>
@@ -107,12 +96,10 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
             <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
             <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
         </div>
-        <Card style={marginTop12}>
+        <Card style={{marginTop: 12, marginBottom: 12}}>
             <IntroSection interview={template} />
         </Card>
-        <Card style={marginTop12}>
-            <TemplateGroupsSection template={template} />
-        </Card>
+        <TemplateGroupsSection template={template} />
         <Card style={marginTop12}>
             <SummarySection interview={template} />
         </Card>
@@ -122,21 +109,25 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
 /**
  *
  * @param {boolean} loading
- * @param {boolean} showMoreSection
+ * @param {String} title
  * @param {String} userName
  * @param {Interview} interview
  * @param {Template} template
  * @param onDeleteInterview
+ * @param onEditInterview
+ * @param onBackClicked
  * @returns {JSX.Element}
  * @constructor
  */
 export const InterviewInformationSection = ({
     loading,
-    showMoreSection,
+    title,
     userName,
     interview,
     template,
     onDeleteInterview,
+    onEditInterview,
+    onBackClicked
 }) => {
 
     const onDeleteClicked = () => {
@@ -152,18 +143,14 @@ export const InterviewInformationSection = ({
         })
     }
 
-    const menu = (
-        <Menu>
-            <Menu.Item>
-                <Link to={routeInterviewDetails(interview.interviewId)}>Edit Interview</Link>
-            </Menu.Item>
-            <Menu.Item danger onClick={onDeleteClicked}>Delete Interview</Menu.Item>
-        </Menu>
-    );
-
     return (
         <Card loading={loading}>
-            <Row>
+            <div className={styles.header}>
+                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                    <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>{title}</Title>
+                </div>
+            </div>
+            <Row style={{marginTop: "24px"}}>
                 <Col flex="140px">
                     <Space direction='vertical'>
                         <Text type="secondary">Candidate Name:</Text>
@@ -194,11 +181,12 @@ export const InterviewInformationSection = ({
                 </Col>
             </Row>
 
-            {showMoreSection && <Dropdown
-                className={styles.more}
-                overlay={menu}>
-                <Link>More <DownOutlined /></Link>
-            </Dropdown>}
+            <div className={styles.interviewActionButtonContainer}>
+                <Space>
+                    <Button type="link" danger onClick={onDeleteClicked}>Delete</Button>
+                    <Button type="link" onClick={onEditInterview}>Edit</Button>
+                </Space>
+            </div>
         </Card>
     )
 }
@@ -265,22 +253,22 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
 /**
  *
  * @param {number} index
+ * @param {Map<string, string>} tagColors
  * @param {InterviewGroup} group
  * @param {boolean} disabled
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
- * @param onNotesChanged
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewQuestionsCard = ({
     index,
+    tagColors,
     group,
     disabled,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    onNotesChanged,
     hashStyle
 }) => {
 
@@ -305,7 +293,7 @@ const InterviewQuestionsCard = ({
                 <>
                     {defaultTo(tags, []).map(tag => {
                         return (
-                            <Tag key={tag}>
+                            <Tag key={tag} className={styles.tag} color={tagColors.get(tag)}>
                                 {tag.toLowerCase()}
                             </Tag>
                         );
@@ -331,8 +319,7 @@ const InterviewQuestionsCard = ({
     const onCollapseClicked = () => {
         setCollapsed(!collapsed)
     }
-
-    return <div style={index === 0 ? { marginTop: 0 } : { marginTop: 64 }}>
+    return <Card style={ index === 0 ? { marginTop: 0 } : { marginTop: 12 }}>
         <div className={styles.divSpaceBetween}>
             <Space style={{ marginBottom: 8 }}>
                 <Title id={group.name} level={4} onClick={onCollapseClicked}
@@ -355,42 +342,81 @@ const InterviewQuestionsCard = ({
             </Card>
 
             <Space className={styles.space} direction="vertical">
-
-                <Text strong>Notes</Text>
-
-                <TextArea
-                    {...(disabled ? { readonly: "true" } : {})}
-                    placeholder="Capture any key moments that happened during the interview."
-                    autoSize={{ minRows: 3, maxRows: 5 }}
-                    onChange={e => {
-                        if (onNotesChanged) {
-                            onNotesChanged(group, e.target.value)
+                <Text strong>Overall category assessment </Text>
+                <GroupAssessmentButtons
+                    assessment={group.assessment}
+                    disabled={disabled}
+                    onGroupAssessmentChanged={(assessment) => {
+                        if (onGroupAssessmentChanged) {
+                            onGroupAssessmentChanged(group, assessment)
                         }
                     }}
-                    defaultValue={group.notes} />
-            </Space>
-
-            <Space className={styles.space} direction="vertical">
-                <Text strong>Assessment</Text>
-
-                <Radio.Group
-                    key={group.assessment}
-                    value={group.assessment}
-                    buttonStyle="solid"
-                    disabled={disabled}
-                    onChange={e => {
-                        if (onGroupAssessmentChanged) {
-                            onGroupAssessmentChanged(group, e.target.value);
-                        }
-                    }}>
-                    <Radio.Button value={GroupAssessment.NO_PROFICIENCY}>no proficiency</Radio.Button>
-                    <Radio.Button value={GroupAssessment.LOW_SKILLED}>low skills</Radio.Button>
-                    <Radio.Button value={GroupAssessment.SKILLED}>skilled</Radio.Button>
-                    <Radio.Button value={GroupAssessment.HIGHLY_SKILLED}>highly skilled</Radio.Button>
-                </Radio.Group>
+                />
             </Space>
         </div>}
-    </div>
+    </Card>
+}
+
+/**
+ *
+ * @param {string} assessment
+ * @param {boolean} disabled
+ * @param onGroupAssessmentChanged
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const GroupAssessmentButtons = ({ assessment, disabled, onGroupAssessmentChanged }) => {
+
+    const [activeAssessment, setActiveAssessment] = React.useState(assessment)
+
+    const onButtonClicked = (groupAssessment) => {
+        if (!disabled) {
+            if (activeAssessment === groupAssessment) {
+                setActiveAssessment(null)
+            } else {
+                setActiveAssessment(groupAssessment)
+            }
+            onGroupAssessmentChanged(groupAssessment)
+        }
+    }
+
+    const getAssessmentTextBlue = (assessment) => activeAssessment === assessment
+        ? styles.assessmentTextBlue : styles.assessmentText
+
+    const getAssessmentTextRed = (assessment) => activeAssessment === assessment
+        ? styles.assessmentTextRed : styles.assessmentText
+
+    const getAssessmentButtonBlue = (assessment) => activeAssessment === assessment
+        ? styles.assessmentButtonBlue : styles.assessmentButton
+
+    const getAssessmentButtonRed = (assessment) => activeAssessment === assessment
+        ? styles.assessmentButtonRed : styles.assessmentButton
+
+    const getAssessmentIconStyle = (assessment) => activeAssessment === assessment
+        ? styles.assessmentIconActive : styles.assessmentIcon
+
+    return <Space size={16}>
+        <div className={getAssessmentButtonRed(GroupAssessment.NO_PROFICIENCY)}
+             onClick={() => onButtonClicked(GroupAssessment.NO_PROFICIENCY)}>
+            <StarIcon className={getAssessmentIconStyle(GroupAssessment.NO_PROFICIENCY)} />
+            <Text className={getAssessmentTextRed(GroupAssessment.NO_PROFICIENCY)}>no proficiency</Text>
+        </div>
+        <div className={getAssessmentButtonRed(GroupAssessment.LOW_SKILLED)}
+             onClick={() => onButtonClicked(GroupAssessment.LOW_SKILLED)}>
+            <StarHalfIcon className={getAssessmentIconStyle(GroupAssessment.LOW_SKILLED)} />
+            <Text className={getAssessmentTextRed(GroupAssessment.LOW_SKILLED)}>low skills</Text>
+        </div>
+        <div className={getAssessmentButtonBlue(GroupAssessment.SKILLED)}
+             onClick={() => onButtonClicked(GroupAssessment.SKILLED)}>
+            <StarFilledIcon className={getAssessmentIconStyle(GroupAssessment.SKILLED)} />
+            <Text className={getAssessmentTextBlue(GroupAssessment.SKILLED)}>skilled</Text>
+        </div>
+        <div className={getAssessmentButtonBlue(GroupAssessment.HIGHLY_SKILLED)}
+             onClick={() => onButtonClicked(GroupAssessment.HIGHLY_SKILLED)}>
+            <StarEmphasisIcon className={getAssessmentIconStyle(GroupAssessment.HIGHLY_SKILLED)} />
+            <Text className={getAssessmentTextBlue(GroupAssessment.HIGHLY_SKILLED)}>highly skilled</Text>
+        </div>
+    </Space>
 }
 
 /**
@@ -398,7 +424,6 @@ const InterviewQuestionsCard = ({
  * @param {Interview} interview
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
- * @param onNotesChanged
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -407,21 +432,21 @@ export const InterviewGroupsSection = ({
     interview,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    onNotesChanged,
     hashStyle
 }) => {
 
     const isCompletedStatus = () => interview.status === Status.COMPLETED
+    const tagColors = createTagColors(interviewToTags(interview))
 
     return <>
         {interview.structure.groups.map((group, index) =>
             <InterviewQuestionsCard
                 index={index}
+                tagColors={tagColors}
                 group={group}
                 disabled={isCompletedStatus()}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                onNotesChanged={onNotesChanged}
                 hashStyle={hashStyle}
             />)
         }
@@ -433,7 +458,6 @@ export const InterviewGroupsSection = ({
  * @param {(Template)} template
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
- * @param onNotesChanged
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -442,19 +466,20 @@ export const TemplateGroupsSection = ({
     template,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    onNotesChanged,
     hashStyle
 }) => {
+
+    const tagColors = createTagColors(interviewToTags(template))
 
     return <>
         {template.structure.groups.map((group, index) =>
             <InterviewQuestionsCard
                 index={index}
+                tagColors={tagColors}
                 group={group}
                 disabled={false}
                 onGroupAssessmentChanged={onGroupAssessmentChanged}
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                onNotesChanged={onNotesChanged}
                 hashStyle={hashStyle}
             />)
         }

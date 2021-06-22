@@ -100,15 +100,17 @@ export function findInterviewGroupQuestions(group, categories) {
 
 /**
  *
- * @param {[*]} questions
+ * @param {(Interview|Template)} interview
  * @returns {[String]}
  */
-export function questionsToTags(questions) {
+export function interviewToTags(interview) {
     let tags = new Set()
-    questions.forEach(item => {
-        if (item.tags) {
-            item.tags.forEach(tag => tags.add(tag))
-        }
+    interview.structure.groups.forEach(group => {
+        group.questions.forEach(item => {
+            if (item.tags) {
+                item.tags.forEach(tag => tags.add(tag))
+            }
+        })
     })
     return [...tags]
 }
