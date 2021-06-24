@@ -10,6 +10,7 @@ import {
     routeNews,
     routeTemplateAdd,
     routeTemplates,
+    routeLibrary,
 } from "./components/utils/route";
 import Default from "./pages/default/default";
 import Interviews from "./pages/interviews/interviews";
@@ -25,6 +26,7 @@ import News from "./pages/news/news";
 import Candidates from "./pages/candidates/candidates";
 import InterviewCandidate from "./pages/interview-evaluation/interview-evaluation";
 import ReactGA from "react-ga";
+import Library from "./pages/library/library";
 
 function App({ history }) {
     useEffect(() => {
@@ -62,6 +64,7 @@ function App({ history }) {
             <PrivateRoute path="/templates/details/:id" exact component={Template} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
+            <PrivateRoute path={routeLibrary()} exact component={Library} />
         </Switch>
     );
 }

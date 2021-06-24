@@ -1,9 +1,11 @@
-.page {
-}
-
 .header {
     text-align: center;
     padding: 24px;
+}
+
+.subTitle {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.45);
 }
 
 .card {

@@ -13,16 +13,12 @@ import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import moment from "moment";
 import { DATE_FORMAT_DISPLAY } from "../../components/utils/constants";
-import TemplateCard from "../../components/template-card/template-card";
+import PreviewCard from "../../components/preview-card/preview-card";
 import {
     routeInterviewScorecard,
     routeInterviewAdd,
-    routeTemplates,
-    routeTemplateDetails,
-    routeInterviewAddFromLibrary,
-    routeInterviewAddFromTemplate,
+    routeLibrary,
 } from "../../components/utils/route";
-import { TemplatePreviewCard } from "../interview-scorecard/interview-sections";
 import { createEvent } from "../../analytics";
 import styles from "./default.module.css";
 
@@ -54,42 +50,7 @@ const Default = ({
     loadInterviews,
     loadTemplates,
 }) => {
-    const emptyTemplate = {
-        structure: {
-            groups: [],
-        },
-    };
-
     const history = useHistory();
-    const [previewModalVisible, setPreviewModalVisible] = React.useState(false);
-    const [template, setTemplate] = React.useState(emptyTemplate);
-
-    const onPreviewClosed = () => {
-        setPreviewModalVisible(false);
-    };
-
-    const onPreview = (template) => {
-        setTemplate(template);
-        setPreviewModalVisible(true);
-    };
-
-    const onEditClicked = (template) => {
-        setPreviewModalVisible(false);
-        onEdit(template.templateId);
-    };
-
-    const onEdit = (templateId) => {
-        history.push(routeTemplateDetails(templateId));
-    };
-
-    const onCreateInterviewClicked = (template) => {
-        setPreviewModalVisible(false);
-        if (template.templateId) {
-            history.push(routeInterviewAddFromTemplate(template.templateId));
-        } else if (template.libraryId) {
-            history.push(routeInterviewAddFromLibrary(template.libraryId));
-        }
-    };
 
     React.useEffect(() => {
         loadInterviews();
@@ -111,11 +72,11 @@ const Default = ({
     }
 
     return (
-        <Layout className={styles.page}>
+        <Layout>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                 <div className={styles.header}>
                     <Title level={2}>Create new interview</Title>
-                    <Text type="secondary">How would you like to start?</Text>
+                    <span className={styles.subTitle}>How would you like to start?</span>
                 </div>
                 <Row justify="space-between" gutter={[32, 32]}>
                     <Col span={24} lg={{ span: 8 }}>
@@ -139,7 +100,7 @@ const Default = ({
                         <Card
                             hoverable
                             bodyStyle={{ padding: 0 }}
-                            onClick={() => history.push(routeTemplates())}
+                            onClick={() => history.push(routeLibrary())}
                         >
                             <div className={styles.card}>
                                 <div className={styles.cardIcon}>
@@ -147,7 +108,7 @@ const Default = ({
                                 </div>
                                 <div className={styles.cardTitle}>
                                     <Title level={5}>From template</Title>
-                                    <Text type="secondary">Choose from our library</Text>
+                                    <Text type="secondary">Choose from our library of templates</Text>
                                     <div></div>
                                 </div>
                             </div>
@@ -187,38 +148,13 @@ const Default = ({
 
                 <Title level={5}>Recent templates</Title>
                 <Row gutter={[32, 32]}>
-                    {templates.map((t) => (
+                    {templates.map((template) => (
                         <Col span={24} lg={{ span: 8 }}>
-                            <TemplateCard
-                                key={t.template.id}
-                                name={t.template.title}
-                                image={t.template.image}
-                                totalQuestions={t.questions}
-                                onClick={() => onPreview(t.template)}
-                            />
+                            <PreviewCard key={template.templateId} template={template} />
                         </Col>
                     ))}
                 </Row>
             </Col>
-
-            <Modal
-                title={null}
-                footer={null}
-                closable={false}
-                destroyOnClose={true}
-                width={1000}
-                style={{ top: "5%" }}
-                bodyStyle={{ backgroundColor: "#EEF0F2F5" }}
-                onCancel={onPreviewClosed}
-                visible={previewModalVisible}
-            >
-                <TemplatePreviewCard
-                    template={template}
-                    onCloseClicked={onPreviewClosed}
-                    onEditClicked={() => onEditClicked(template)}
-                    onCreateInterviewClicked={() => onCreateInterviewClicked(template)}
-                />
-            </Modal>
         </Layout>
     );
 };
@@ -235,16 +171,7 @@ const mapState = (state) => {
     return {
         upcomingInterviews: interviews.filter((i) => Date.parse(i.interviewDateTime) > Date.now()),
         loadingInterviews: interviewsState.loading,
-        templates: templates.map((template) => {
-            var totalquestions = 0;
-
-            template.structure?.groups?.forEach((group) => (totalquestions += group.questions.length));
-
-            return {
-                template: template,
-                questions: totalquestions,
-            };
-        }),
+        templates: templates,
         loadingTemplates: templateState.loading,
     };
 };
