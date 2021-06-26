@@ -1,7 +1,20 @@
-import styles from "./interview.module.css";
+import styles from "./schedule-interview.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Popover, Row, Space } from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    DatePicker,
+    Divider,
+    Input,
+    message,
+    Modal,
+    Popover,
+    Row,
+    Select,
+    Space
+} from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -35,7 +48,7 @@ const { TextArea } = Input;
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewDetails = ({
+const ScheduleInterview = ({
     interviews,
     templates,
     library,
@@ -68,7 +81,11 @@ const InterviewDetails = ({
     const { id } = useParams();
     const location = useLocation();
 
+    const candidateComponent = React.createRef();
     const [interview, setInterview] = useState(emptyInterview);
+    const [selectedTemplateCollapsed, setSelectedTemplateCollapsed] = useState(true);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [templateOptions, setTemplateOptions] = useState([]);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [questionGroupModal, setQuestionGroupModal] = useState({
         visible: false,
@@ -82,6 +99,23 @@ const InterviewDetails = ({
         }
         // eslint-disable-next-line
     }, [interviews, id]);
+
+    React.useEffect(() => {
+        const templatesArr = [];
+        templates.forEach(template => {
+            templatesArr.push({
+                value: template.templateId,
+                label: template.title
+            })
+        })
+        library.forEach(template => {
+            templatesArr.push({
+                value: template.libraryId,
+                label: template.title + " (Library Template)"
+            })
+        })
+        setTemplateOptions(templatesArr)
+    }, [templates, library]);
 
     React.useEffect(() => {
         if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
@@ -112,12 +146,11 @@ const InterviewDetails = ({
     }, [library]);
 
     React.useEffect(() => {
-        if(isFromTemplateFlow()) {
-            loadTemplates()
-        } else if (isExistingInterviewFlow()) {
+        loadTemplates()
+        loadLibrary()
+
+        if (isExistingInterviewFlow()) {
             loadInterviews()
-        } else if (isFromLibraryFlow()) {
-            loadLibrary()
         }
         // eslint-disable-next-line
     }, []);
@@ -288,6 +321,60 @@ const InterviewDetails = ({
         setPreviewModalVisible(true)
     }
 
+    const onTemplateSelect = (value) => {
+        let personalTemplate = templates.find(template => template.templateId === value)
+        let libraryTemplate = library.find(template => template.libraryId === value)
+
+        if(personalTemplate) {
+            setInterview({
+                ...interview,
+                templateId: personalTemplate.templateId,
+                structure: cloneDeep(personalTemplate.structure)
+            })
+            setSelectedTemplate(personalTemplate)
+            setSelectedTemplateCollapsed(true)
+        } else if(libraryTemplate) {
+            setInterview({
+                ...interview,
+                libraryId: libraryTemplate.libraryId,
+                structure: cloneDeep(libraryTemplate.structure)
+            })
+            setSelectedTemplate(libraryTemplate)
+            setSelectedTemplateCollapsed(true)
+        } else {
+            setInterview({
+                ...interview,
+                libraryId: null,
+                templateId: null,
+                structure: []
+            })
+            setSelectedTemplate(null)
+            setSelectedTemplateCollapsed(true)
+        }
+    }
+
+    const onCollapseClicked = () => {
+        setSelectedTemplateCollapsed(!selectedTemplateCollapsed)
+    }
+
+    const onCreateTemplateClicked = () => {
+        candidateComponent.current.focus() // removes focus from Template select dropdown
+        setInterview({
+            ...interview,
+            libraryId: null,
+            templateId: null,
+            structure: {
+                header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
+                footer: "Allow 10 minutes at the end for the candidate to ask questions.",
+                groups: [],
+            }
+        })
+        setSelectedTemplate({
+            title: "New"
+        })
+        setSelectedTemplateCollapsed(false)
+    }
+
     const marginTop12 = { marginTop: 12 };
     const marginVertical12 = { marginTop: 12, marginBottom: 12 };
     const marginTop16 = { marginTop: 16 };
@@ -305,30 +392,56 @@ const InterviewDetails = ({
                 <Card style={marginTop12} key={interview.interviewId} loading={isInitialLoading()}>
                     <div className={styles.header} style={{marginBottom: 12}}>
                         <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                            <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>Interview Edit</Title>
+                            <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>Schedule Interview</Title>
                         </div>
                     </div>
                     <Text type="secondary">Enter interview details information so you can easily discover it among other interviews.</Text>
                     <div className={styles.divSpaceBetween}>
-                        <Space direction="vertical" className={styles.divFlexGrow} style={{ marginRight: 16 }}>
+                        <Space direction="vertical" className={styles.fillWidth} style={{ marginRight: 16 }}>
+                            <Text strong>Template</Text>
+                            <Select
+                                showSearch
+                                allowClear
+                                className={styles.fillWidth}
+                                placeholder="Select template"
+                                onChange={onTemplateSelect}
+                                options={templateOptions}
+                                filterOption={(inputValue, option) =>
+                                    option.label.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase()) || option.value === "NEW_TEMPLATE"
+                                }
+                                notFoundContent={
+                                    <Space direction="vertical">
+                                        <Text>No template found.</Text>
+                                        <Button
+                                            onClick={onCreateTemplateClicked}
+                                            style={{padding: 0}}
+                                            type="link">Create a template</Button>
+                                    </Space>
+                                }
+                            />
+                        </Space>
+                        <Space direction="vertical" className={styles.fillWidth}>
                             <Text strong>Candidate</Text>
                             <Input
+                                ref={candidateComponent}
                                 placeholder="e.g. Kristin Watson"
                                 onChange={onCandidateChange}
                                 defaultValue={interview.candidate}
                             />
                         </Space>
-                        <Space direction="vertical" className={styles.divFlexGrow} style={{ marginRight: 16 }}>
+                    </div>
+                    <div className={styles.divSpaceBetween}>
+                        <Space direction="vertical" className={styles.fillWidth} style={{ marginRight: 16 }}>
                             <Text strong>Interview Date</Text>
                             <DatePicker showTime
                                         allowClear={false}
                                         format={DATE_FORMAT_DISPLAY}
-                                        className={styles.date}
+                                        className={styles.fillWidth}
                                         defaultValue={interview.interviewDateTime ? moment(interview.interviewDateTime) : ''}
                                         onChange={onDateChange}
                             />
                         </Space>
-                        <Space direction="vertical" className={styles.divFlexGrow}>
+                        <Space direction="vertical" className={styles.fillWidth}>
                             <Text strong>Position</Text>
                             <Input
                                 placeholder="e.g. Junior Software Developer"
@@ -337,75 +450,98 @@ const InterviewDetails = ({
                             />
                         </Space>
                     </div>
-                </Card>
 
-                <Card style={marginTop12} loading={isInitialLoading()}>
-                    <Title level={4}>Intro</Title>
-                    <Text type="secondary">Intro section serves as a reminder for what interviewer must do at the
-                        beginning of the interview.</Text>
-                    <TextArea
-                        style={marginTop16}
-                        defaultValue={interview.structure.header}
-                        onChange={onHeaderChanged}
-                        autoSize={{ minRows: 3, maxRows: 5 }}
-                        placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
-                </Card>
-
-                <Card style={marginTop12} loading={isInitialLoading()}>
-                    <Space style={{ width: '100%' }}>
-                        <Title level={4}>Questions</Title>
-                        <Popover content={
-                            <img alt="Interviewer"
-                                 style={{ width: 400 }}
-                                 src={process.env.PUBLIC_URL + '/app/interview-groups.png'} />
-                        }>
-                            <InfoCircleOutlined style={{ marginBottom: 12, cursor: 'pointer' }} />
-                        </Popover>
-                    </Space>
-                    <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
-                        and make a more granular assessment.</Text>
-                    <div>
-                        {interview.structure.groups.map(group =>
-                            <TemplateQuestionsCard
-                                template={interview}
-                                group={group}
-                                onQuestionsSortChange={onQuestionsSortChange}
-                                onAddQuestionClicked={onAddQuestionClicked}
-                                onRemoveQuestionClicked={onRemoveQuestionClicked}
-                                onGroupTitleClicked={onGroupTitleClicked}
-                                onDeleteGroupClicked={onDeleteGroupClicked}
-                                onMoveGroupUpClicked={onMoveGroupUpClicked}
-                                onMoveGroupDownClicked={onMoveGroupDownClicked}
-                            />
-                        )}
-                    </div>
-                    <Button style={marginTop12}
-                            icon={<PlusOutlined />}
-                            type="primary"
-                            ghost
-                            onClick={onAddQuestionGroupClicked}>New question group</Button>
-                </Card>
-
-                <Card style={marginVertical12} loading={isInitialLoading()}>
-                    <Title level={4}>Summary</Title>
-                    <Text type="secondary">The summary section serves as a reminder for what interviewer must do at the
-                        end of the interview. It also contains fields to take notes and make a final assessment.</Text>
-                    <TextArea
-                        style={marginTop16}
-                        defaultValue={interview.structure.footer}
-                        onChange={onFooterChanged}
-                        autoSize={{ minRows: 3, maxRows: 5 }}
-                        placeholder="Allow 10 minutes at the end for the candidate to ask questions." />
                     <Divider />
-
                     <div className={styles.divSpaceBetween}>
                         <Text />
                         <Space>
                             <Button onClick={onPreviewClicked}>Interview experience</Button>
-                            <Button type="primary" onClick={onSaveClicked}>Save interview</Button>
+                            <Button
+                                type="primary"
+                                onClick={onSaveClicked}>Save</Button>
                         </Space>
                     </div>
                 </Card>
+
+                {selectedTemplate && <Card style={marginTop12} loading={isInitialLoading()}>
+                    <Space direction="vertical">
+                        <Title level={4} style={{margin: 0}}>Template - {selectedTemplate.title}</Title>
+                        <Text type="secondary">Customize an interview template to match any of your processes.</Text>
+
+                        {selectedTemplateCollapsed && <Button onClick={onCollapseClicked}>Show template details</Button>}
+                        {!selectedTemplateCollapsed && <Button onClick={onCollapseClicked}>Hide template details</Button>}
+                    </Space>
+                </Card>}
+
+                {!selectedTemplateCollapsed && <div>
+                    <Card style={marginTop12} loading={isInitialLoading()}>
+                        <Title level={4}>Intro</Title>
+                        <Text type="secondary">Intro section serves as a reminder for what interviewer must do at the
+                            beginning of the interview.</Text>
+                        <TextArea
+                            style={marginTop16}
+                            defaultValue={interview.structure.header}
+                            onChange={onHeaderChanged}
+                            autoSize={{ minRows: 3, maxRows: 5 }}
+                            placeholder="Take 10 minutes to introduce yourself and make the candidate comfortable." />
+                    </Card>
+
+                    <Card style={marginTop12} loading={isInitialLoading()}>
+                        <Space style={{ width: '100%' }}>
+                            <Title level={4}>Questions</Title>
+                            <Popover content={
+                                <img alt="Interviewer"
+                                     style={{ width: 400 }}
+                                     src={process.env.PUBLIC_URL + '/app/interview-groups.png'} />
+                            }>
+                                <InfoCircleOutlined style={{ marginBottom: 12, cursor: 'pointer' }} />
+                            </Popover>
+                        </Space>
+                        <Text type="secondary">Grouping questions helps to evaluate skills in a particular competence area
+                            and make a more granular assessment.</Text>
+                        <div>
+                            {interview.structure.groups.map(group =>
+                                <TemplateQuestionsCard
+                                    template={interview}
+                                    group={group}
+                                    onQuestionsSortChange={onQuestionsSortChange}
+                                    onAddQuestionClicked={onAddQuestionClicked}
+                                    onRemoveQuestionClicked={onRemoveQuestionClicked}
+                                    onGroupTitleClicked={onGroupTitleClicked}
+                                    onDeleteGroupClicked={onDeleteGroupClicked}
+                                    onMoveGroupUpClicked={onMoveGroupUpClicked}
+                                    onMoveGroupDownClicked={onMoveGroupDownClicked}
+                                />
+                            )}
+                        </div>
+                        <Button style={marginTop12}
+                                icon={<PlusOutlined />}
+                                type="primary"
+                                ghost
+                                onClick={onAddQuestionGroupClicked}>New question group</Button>
+                    </Card>
+
+                    <Card style={marginVertical12} loading={isInitialLoading()}>
+                        <Title level={4}>Summary</Title>
+                        <Text type="secondary">The summary section serves as a reminder for what interviewer must do at the
+                            end of the interview. It also contains fields to take notes and make a final assessment.</Text>
+                        <TextArea
+                            style={marginTop16}
+                            defaultValue={interview.structure.footer}
+                            onChange={onFooterChanged}
+                            autoSize={{ minRows: 3, maxRows: 5 }}
+                            placeholder="Allow 10 minutes at the end for the candidate to ask questions." />
+                        <Divider />
+
+                        <div className={styles.divSpaceBetween}>
+                            <Text />
+                            <Space>
+                                <Button onClick={onPreviewClicked}>Interview experience</Button>
+                                <Button type="primary" onClick={onSaveClicked}>Save interview</Button>
+                            </Space>
+                        </div>
+                    </Card>
+                </div>}
             </Col>
         </Row>
 
@@ -445,4 +581,4 @@ const mapState = (state) => {
     }
 }
 
-export default connect(mapState, mapDispatch)(InterviewDetails)
+export default connect(mapState, mapDispatch)(ScheduleInterview)
