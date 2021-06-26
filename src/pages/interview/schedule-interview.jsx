@@ -94,30 +94,6 @@ const ScheduleInterview = ({
     });
 
     React.useEffect(() => {
-        if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            setInterview(cloneDeep(findInterview(id, interviews)))
-        }
-        // eslint-disable-next-line
-    }, [interviews, id]);
-
-    React.useEffect(() => {
-        const templatesArr = [];
-        templates.forEach(template => {
-            templatesArr.push({
-                value: template.templateId,
-                label: template.title
-            })
-        })
-        library.forEach(template => {
-            templatesArr.push({
-                value: template.libraryId,
-                label: template.title + " (Library Template)"
-            })
-        })
-        setTemplateOptions(templatesArr)
-    }, [templates, library]);
-
-    React.useEffect(() => {
         if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
             const template = cloneDeep(findTemplate(fromTemplateId(), templates))
             setInterview({
@@ -127,12 +103,7 @@ const ScheduleInterview = ({
                 title: "",
                 structure: template.structure
             })
-        }
-        // eslint-disable-next-line
-    }, [templates]);
-
-    React.useEffect(() => {
-        if (isFromLibraryFlow() && !interview.libraryId && library.length !== 0) {
+        } else if (isFromLibraryFlow() && !interview.libraryId && library.length !== 0) {
             const template = cloneDeep(findLibraryTemplate(fromLibraryId(), library))
             setInterview({
                 interviewId: undefined,
@@ -141,9 +112,39 @@ const ScheduleInterview = ({
                 title: "",
                 structure: template.structure
             })
+        } else if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
+            setInterview(cloneDeep(findInterview(id, interviews)))
         }
+
+        // selected template
+        if(interview.templateId && templates.length !== 0) {
+            const template = cloneDeep(findTemplate(interview.templateId, templates))
+            setSelectedTemplate(template)
+        } else if(interview.libraryId && library.length !== 0) {
+            const template = cloneDeep(findLibraryTemplate(interview.libraryId, library))
+            setSelectedTemplate(template)
+        }
+
+        // templates selector
+        if(templates.length !== 0 || library.length !== 0) {
+            const templatesArr = [];
+            templates.forEach(template => {
+                templatesArr.push({
+                    value: template.templateId,
+                    label: template.title
+                })
+            })
+            library.forEach(template => {
+                templatesArr.push({
+                    value: template.libraryId,
+                    label: template.title + " (Library Template)"
+                })
+            })
+            setTemplateOptions(templatesArr)
+        }
+
         // eslint-disable-next-line
-    }, [library]);
+    }, [interviews, id, templates, library, interview]);
 
     React.useEffect(() => {
         loadTemplates()
@@ -406,8 +407,9 @@ const ScheduleInterview = ({
                                 placeholder="Select template"
                                 onChange={onTemplateSelect}
                                 options={templateOptions}
+                                defaultValue={interview.templateId || interview.libraryId}
                                 filterOption={(inputValue, option) =>
-                                    option.label.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase()) || option.value === "NEW_TEMPLATE"
+                                    option.label.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase())
                                 }
                                 notFoundContent={
                                     <Space direction="vertical">
