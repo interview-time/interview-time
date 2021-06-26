@@ -10,6 +10,7 @@ import {
     routeInterviewAddFromLibrary,
     routeInterviewAddFromTemplate,
     routeTemplateDetails,
+    routeInterviewAdd,
 } from "../utils/route";
 import { getTemplateCategoryIcon, TemplateCategories } from "../utils/constants";
 import { TemplatePreviewCard } from "../../pages/interview-scorecard/interview-sections";
@@ -144,8 +145,17 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
                 </div>
                 <div className={styles.cardActions}>
                     <div className={styles.cardButtons}>
-                        <Button className={styles.cardButtonSecondary} onClick={() => setPreviewModalVisible(true)}>Preview</Button>
-                        <Button className={styles.cardButton} type="primary" onClick={() => setPreviewModalVisible(true)}>
+                        <Button
+                            className={styles.cardButtonSecondary}
+                            onClick={() => setPreviewModalVisible(true)}
+                        >
+                            Preview
+                        </Button>
+                        <Button
+                            className={styles.cardButton}
+                            type="primary"
+                            onClick={() => history.push(routeInterviewAdd())}
+                        >
                             Schedule Interview
                         </Button>
                     </div>

@@ -3,12 +3,13 @@ import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadLibrary, loadTemplates } from "../../store/templates/actions";
-import { Skeleton, Col, Row } from "antd";
+import { Skeleton, Col, Row, Card } from "antd";
 import { sortBy } from "lodash/collection";
 import PreviewCard from "../../components/preview-card/preview-card";
 import TemplateCard from "../../components/template-card/template-card";
 import Title from "antd/lib/typography/Title";
 import { routeTemplateAdd } from "../../components/utils/route";
+import plusIcon from "../../assets/blank.png";
 import styles from "./templates.module.css";
 
 /**
@@ -42,10 +43,6 @@ const Templates = ({
         // eslint-disable-next-line
     }, []);
 
-    const onAddTemplateClicked = () => {
-        history.push(routeTemplateAdd());
-    };
-
     return (
         <Layout>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
@@ -76,12 +73,23 @@ const Templates = ({
                         {templates.map((template) => (
                             <Col span={24} lg={{ span: 8 }}>
                                 <TemplateCard
+                                    key={template.templateId}
                                     template={template}
                                     onDeleteTemplate={deleteTemplate}
                                     onCloneTemplate={addTemplate}
                                 />
                             </Col>
                         ))}
+                        <Col span={24} lg={{ span: 8 }}>
+                            <Card
+                                hoverable
+                                bodyStyle={{ padding: 0 }}
+                                className={styles.addTemplateCard}
+                                onClick={() => history.push(routeTemplateAdd())}
+                            >
+                                <img alt="Add Template" src={plusIcon} width={50} />
+                            </Card>
+                        </Col>
                     </Row>
                 )}
 

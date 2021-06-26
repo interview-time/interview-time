@@ -13,12 +13,8 @@ import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import moment from "moment";
 import { DATE_FORMAT_DISPLAY } from "../../components/utils/constants";
-import PreviewCard from "../../components/preview-card/preview-card";
-import {
-    routeInterviewScorecard,
-    routeInterviewAdd,
-    routeLibrary,
-} from "../../components/utils/route";
+import TemplateCard from "../../components/template-card/template-card";
+import { routeInterviewScorecard, routeInterviewAdd, routeLibrary } from "../../components/utils/route";
 import { createEvent } from "../../analytics";
 import styles from "./default.module.css";
 
@@ -150,7 +146,7 @@ const Default = ({
                 <Row gutter={[32, 32]}>
                     {templates.map((template) => (
                         <Col span={24} lg={{ span: 8 }}>
-                            <PreviewCard key={template.templateId} template={template} />
+                            <TemplateCard key={template.templateId} template={template} />
                         </Col>
                     ))}
                 </Row>

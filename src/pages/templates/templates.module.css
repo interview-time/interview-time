@@ -17,3 +17,11 @@
     font-size: 18px;
     color: rgba(0, 0, 0, 0.45);
 }
+
+.addTemplateCard {
+    padding: 16px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
