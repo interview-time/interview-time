@@ -20,12 +20,6 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
     const history = useHistory();
     const [previewModalVisible, setPreviewModalVisible] = React.useState(false);
 
-    const emptyTemplate = {
-        structure: {
-            groups: [],
-        },
-    };
-
     const getCategory = (template) => TemplateCategories.find((category) => category.key === template.type);
 
     const createMenu = (template) => (
