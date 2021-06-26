@@ -121,7 +121,7 @@ const Interviews = ({ interviews, loading, loadInterviews, loadTemplates }) => {
                             onSearch={onSearchClicked} onChange={onSearchTextChanged} />
                     <Button type="primary" key="add-interview-button">
                         <Link to={routeInterviewAdd()}>
-                            <span className="nav-text">Add interview</span>
+                            <span className="nav-text">Schedule interview</span>
                         </Link>
                     </Button>
                 </Space>
