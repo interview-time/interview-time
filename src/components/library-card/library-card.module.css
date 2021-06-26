@@ -1,0 +1,18 @@
+.card {
+    padding: 24px
+}
+
+.cardTitle {
+    font-weight:  700;
+    font-size: 18px;
+    margin-top: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cardMetaTitle {
+    color: #8C8C8C;
+    font-weight:  600;
+    font-size: 11px
+}

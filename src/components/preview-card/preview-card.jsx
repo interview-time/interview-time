@@ -2,7 +2,7 @@ import React from "react";
 import { Modal } from "antd";
 import { useHistory } from "react-router-dom";
 import { TemplatePreviewCard } from "../../pages/interview-scorecard/interview-sections";
-import TemplateCard from "../template-card/template-card";
+import LibraryCard from "../library-card/library-card";
 import {
     routeTemplateDetails,
     routeInterviewAddFromLibrary,
@@ -45,7 +45,7 @@ const PreviewCard = ({ template }) => {
 
     return (
         <>
-            <TemplateCard
+            <LibraryCard
                 key={template.id}
                 name={template.title}
                 image={template.image}

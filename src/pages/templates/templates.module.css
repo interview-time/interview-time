@@ -4,46 +4,16 @@
     margin-right: 24px;
 }
 
+.header {
+    text-align: center;
+    padding: 24px;
+}
+
 .search {
-    width: 400px
+    width: 400px;
 }
 
-.card {
-    padding: 16px
-}
-
-.cardTitle {
-    font-weight:  700;
+.subTitle {
     font-size: 18px;
-    margin-top: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.cardMetaTitle {
-    color: #8C8C8C;
-    font-weight:  600;
-    font-size: 11px
-}
-
-.cardMetaValue {
-    font-weight:  700;
-    font-size: 18px
-}
-
-.author {
-    color: #8C8C8C;
-    font-size: 14px;
-}
-
-.category {
-    font-weight: 600;
-    font-size: 12px;
-    margin-left: 4px;
-}
-
-.infoAlert {
-    font-size: 16px;
-    margin-bottom: 24px;
+    color: rgba(0, 0, 0, 0.45);
 }
