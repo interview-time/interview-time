@@ -10,8 +10,8 @@
     margin-top: 16px;
 }
 
-.divFlexGrow {
-    flex-grow: 1;
+.fillWidth {
+    width: 100%;
 }
 
 .test {
@@ -93,10 +93,6 @@
 .modalFooter {
     display: flex;
     justify-content: flex-end;
-}
-
-.date {
-    width: 100%;
 }
 
 .header {
