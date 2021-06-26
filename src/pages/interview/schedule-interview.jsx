@@ -1,20 +1,7 @@
 import styles from "./schedule-interview.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-    Button,
-    Card,
-    Col,
-    DatePicker,
-    Divider,
-    Input,
-    message,
-    Modal,
-    Popover,
-    Row,
-    Select,
-    Space
-} from "antd";
+import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Popover, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -25,7 +12,7 @@ import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import { loadLibrary, loadTemplates } from "../../store/templates/actions";
+import { addTemplate, loadLibrary, loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template/template-group-modal";
 import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
@@ -41,6 +28,7 @@ const { TextArea } = Input;
  * @param {Template[]} templates
  * @param {Template[]} library
  * @param addInterview
+ * @param addTemplate
  * @param loadInterviews
  * @param updateInterview
  * @param loadTemplates
@@ -53,6 +41,7 @@ const ScheduleInterview = ({
     templates,
     library,
     addInterview,
+    addTemplate,
     loadInterviews,
     updateInterview,
     loadTemplates,
@@ -67,6 +56,7 @@ const ScheduleInterview = ({
         interviewId: undefined,
         templateId: undefined,
         libraryId: undefined,
+        interviewDateTime: moment().utc().format(DATE_FORMAT_SERVER),
         status: Status.NEW,
         title: "",
         structure: {
@@ -97,19 +87,15 @@ const ScheduleInterview = ({
         if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
             const template = cloneDeep(findTemplate(fromTemplateId(), templates))
             setInterview({
-                interviewId: undefined,
+                ...interview,
                 templateId: template.templateId,
-                status: Status.NEW,
-                title: "",
                 structure: template.structure
             })
         } else if (isFromLibraryFlow() && !interview.libraryId && library.length !== 0) {
             const template = cloneDeep(findLibraryTemplate(fromLibraryId(), library))
             setInterview({
-                interviewId: undefined,
+                ...interview,
                 libraryId: template.libraryId,
-                status: Status.NEW,
-                title: "",
                 structure: template.structure
             })
         } else if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
@@ -257,6 +243,14 @@ const ScheduleInterview = ({
         } else {
             personalEvent('Interview created');
             addInterview(interview);
+
+            if (selectedTemplate.libraryId) {
+                addTemplate({
+                    ...selectedTemplate,
+                    structure: interview.structure
+                })
+            }
+
             message.success(`Interview '${interview.candidate}' created.`);
         }
         history.push(routeInterviews())
@@ -439,7 +433,7 @@ const ScheduleInterview = ({
                                         allowClear={false}
                                         format={DATE_FORMAT_DISPLAY}
                                         className={styles.fillWidth}
-                                        defaultValue={interview.interviewDateTime ? moment(interview.interviewDateTime) : ''}
+                                        defaultValue={interview.interviewDateTime ? moment(interview.interviewDateTime) : moment()}
                                         onChange={onDateChange}
                             />
                         </Space>
@@ -562,7 +556,7 @@ const ScheduleInterview = ({
     </Layout>
 }
 
-const mapDispatch = { addInterview, loadInterviews, updateInterview, loadTemplates, loadLibrary };
+const mapDispatch = { addInterview, addTemplate, loadInterviews, updateInterview, loadTemplates, loadLibrary };
 const mapState = (state) => {
     const interviewState = state.interviews || {};
     const templateState = state.templates || {};
