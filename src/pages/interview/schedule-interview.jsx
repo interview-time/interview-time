@@ -455,7 +455,7 @@ const ScheduleInterview = ({
                     <div className={styles.divSpaceBetween}>
                         <Text />
                         <Space>
-                            <Button onClick={onPreviewClicked}>Interview experience</Button>
+                            <Button onClick={onPreviewClicked}>Preview</Button>
                             <Button
                                 type="primary"
                                 onClick={onSaveClicked}>Save</Button>
@@ -531,15 +531,6 @@ const ScheduleInterview = ({
                             onChange={onFooterChanged}
                             autoSize={{ minRows: 3, maxRows: 5 }}
                             placeholder="Allow 10 minutes at the end for the candidate to ask questions." />
-                        <Divider />
-
-                        <div className={styles.divSpaceBetween}>
-                            <Text />
-                            <Space>
-                                <Button onClick={onPreviewClicked}>Interview experience</Button>
-                                <Button type="primary" onClick={onSaveClicked}>Save interview</Button>
-                            </Space>
-                        </div>
                     </Card>
                 </div>}
             </Col>
