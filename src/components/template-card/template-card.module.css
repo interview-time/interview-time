@@ -1,9 +1,10 @@
 .card {
-    padding: 24px
+    padding: 16px;
+    height: 150px;
 }
 
 .cardTitle {
-    font-weight:  700;
+    font-weight: 700;
     font-size: 18px;
     margin-top: 12px;
     white-space: nowrap;
@@ -12,7 +13,73 @@
 }
 
 .cardMetaTitle {
-    color: #8C8C8C;
-    font-weight:  600;
-    font-size: 11px
+    color: #8c8c8c;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.cardMetaValue {
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.author {
+    color: #8c8c8c;
+    font-size: 14px;
+}
+
+.category {
+    font-weight: 600;
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.cardActions {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    padding: 16px;
+    transition: opacity 0.45s ease;
+    backdrop-filter: blur(10px);
+}
+
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+    .cardActions {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        padding: 16px;
+        transition: opacity 0.45s ease;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+    }
+}
+
+.cardActions:hover {
+    opacity: 1;
+}
+
+.cardButtons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.cardButton {
+    width: 180px;
+}
+
+.cardButtonSecondary {
+    border-color: #1890ff;
+    color: #1890ff;
+    width: 180px;
 }
