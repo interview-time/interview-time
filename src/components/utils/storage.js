@@ -50,10 +50,10 @@ export function updateAddTemplateClicked() {
 }
 
 export function isStickyNotesEnabled() {
-    const value = localStorage.getItem(KEY_QUICKSTART_TEMPLATES);
+    const value = localStorage.getItem(KEY_STICKY_NOTES_ENABLED);
     return value === null || value === "true"
 }
 
 export function setStickyNotesEnabled(enabled) {
-    localStorage.setItem(KEY_QUICKSTART_TEMPLATES, enabled)
+    localStorage.setItem(KEY_STICKY_NOTES_ENABLED, enabled)
 }
