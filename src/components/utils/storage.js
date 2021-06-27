@@ -6,6 +6,7 @@ const KEY_QUICKSTART_DISPLAYED = 'quickstart-displayed'
 const KEY_QUICKSTART_QUESTION_BANK = 'quickstart-question-bank'
 const KEY_QUICKSTART_INTERVIEWS = 'quickstart-interviews'
 const KEY_QUICKSTART_TEMPLATES = 'quickstart-templates'
+const KEY_STICKY_NOTES_ENABLED = 'sticky-notes-enabled'
 
 export function isUpdateAvailable() {
     const newsVisitTime = localStorage.getItem(KEY_NEWS_VISIT_TIME);
@@ -46,4 +47,13 @@ export function isAddTemplateClicked() {
 
 export function updateAddTemplateClicked() {
     localStorage.setItem(KEY_QUICKSTART_TEMPLATES, "true")
+}
+
+export function isStickyNotesEnabled() {
+    const value = localStorage.getItem(KEY_QUICKSTART_TEMPLATES);
+    return value === null || value === "true"
+}
+
+export function setStickyNotesEnabled(enabled) {
+    localStorage.setItem(KEY_QUICKSTART_TEMPLATES, enabled)
 }
