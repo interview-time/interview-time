@@ -20,6 +20,7 @@ import {
     StarIcon
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
+import { isStickyNotesEnabled } from "../../components/utils/storage";
 
 const { TextArea } = Input;
 
@@ -238,7 +239,7 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
         <Title id="summary" level={4}
                className={hashStyle ? hashStyle : null}>Summary</Title>
         <div className={styles.multiLineText}>{getFooter()}</div>
-        <Space className={styles.space} direction="vertical">
+        {!isStickyNotesEnabled() && <Space className={styles.space} direction="vertical">
             <Text strong>Notes</Text>
             <TextArea
                 {...(isCompletedStatus() ? { readonly: "true" } : {})}
@@ -246,7 +247,49 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
                 autoSize={{ minRows: 3, maxRows: 5 }}
                 onChange={onNoteChanges}
                 defaultValue={interview.notes} />
-        </Space>
+        </Space>}
+    </>
+}
+
+/**
+ *
+ * @param {Interview} interview
+ * @param onNoteExpand
+ * @param onNoteCollapse
+ * @param onNoteChanges
+ * @param {boolean} visible
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const NotesSection = ({ interview, onNoteExpand, onNoteCollapse, onNoteChanges, visible }) => {
+
+    const isCompletedStatus = () => interview.status === Status.COMPLETED
+
+    return <>
+        {!visible && <div className={styles.stickyFooter}>
+            <div className={styles.notes} onClick={() => onNoteExpand()}>
+                <Tooltip title="Expand notes">
+                    <Text strong>Notes</Text> <CollapseIcon />
+                </Tooltip>
+            </div>
+        </div>}
+
+        {visible && <div className={styles.stickyFooter}>
+            <div className={styles.notesExpanded}>
+                <div onClick={() => onNoteCollapse()}>
+                    <Tooltip title="Collapse notes">
+                        <Text strong>Notes</Text> <ExpandIcon />
+                    </Tooltip>
+                </div>
+                <TextArea
+                    {...(isCompletedStatus() ? { readonly: "true" } : {})}
+                    className={styles.notesTextArea}
+                    placeholder="Capture any key moments that happened during the interview."
+                    autoSize={{ minRows: 6, maxRows: 6 }}
+                    onChange={onNoteChanges}
+                    defaultValue={interview.notes} />
+            </div>
+        </div>}
     </>
 }
 

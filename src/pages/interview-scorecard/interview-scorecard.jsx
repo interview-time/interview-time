@@ -13,7 +13,8 @@ import Text from "antd/lib/typography/Text";
 import { useAuth0 } from "../../react-auth0-spa";
 import InterviewDecisionAlert from "../interview-evaluation/interview-decision-alert";
 import { loadTemplates } from "../../store/templates/actions";
-import { InterviewGroupsSection, IntroSection, SummarySection, InterviewInformationSection } from "./interview-sections";
+import { InterviewGroupsSection, IntroSection, SummarySection, InterviewInformationSection, NotesSection } from "./interview-sections";
+import { isStickyNotesEnabled } from "../../components/utils/storage";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000 // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000 // 30 sec
@@ -61,6 +62,7 @@ const InterviewScorecard = ({
     const [template, setTemplate] = useState(emptyTemplate);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
+    const [notesExpanded, setNotesExpanded] = useState(true);
 
     const { id } = useParams();
     const { user } = useAuth0();
@@ -209,6 +211,14 @@ const InterviewScorecard = ({
                             </Space>
                         </div>
                     </Card>
+
+                    {isStickyNotesEnabled() && <NotesSection
+                        interview={interview}
+                        onNoteChanges={onNoteChanges}
+                        visible={notesExpanded}
+                        onNoteExpand={() => setNotesExpanded(true)}
+                        onNoteCollapse={() => setNotesExpanded(false)}
+                    />}
                 </Col>
                 <Col key={interview.interviewId}
                      xxl={{ span: 4}}
