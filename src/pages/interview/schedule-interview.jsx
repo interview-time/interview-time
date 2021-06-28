@@ -11,8 +11,13 @@ import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../component
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
-import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
-import { addTemplate, loadLibrary, loadTemplates } from "../../store/templates/actions";
+import {
+    addInterview,
+    addInterviewWithTemplate,
+    loadInterviews,
+    updateInterview
+} from "../../store/interviews/actions";
+import { loadLibrary, loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template/template-group-modal";
 import TemplateQuestionsCard from "../template/template-questions-card";
 import moment from "moment";
@@ -28,7 +33,7 @@ const { TextArea } = Input;
  * @param {Template[]} templates
  * @param {Template[]} library
  * @param addInterview
- * @param addTemplate
+ * @param addInterviewWithTemplate
  * @param loadInterviews
  * @param updateInterview
  * @param loadTemplates
@@ -41,7 +46,7 @@ const ScheduleInterview = ({
     templates,
     library,
     addInterview,
-    addTemplate,
+    addInterviewWithTemplate,
     loadInterviews,
     updateInterview,
     loadTemplates,
@@ -240,17 +245,17 @@ const ScheduleInterview = ({
         if (isExistingInterviewFlow()) {
             updateInterview(interview);
             message.success(`Interview '${interview.candidate}' updated.`);
-        } else {
+        } else if (selectedTemplate.libraryId) {
+            const template = {
+                ...selectedTemplate,
+                structure: interview.structure
+            };
+            addInterviewWithTemplate(interview, template);
             personalEvent('Interview created');
+            message.success(`Interview '${interview.candidate}' created.`);
+        } else {
             addInterview(interview);
-
-            if (selectedTemplate.libraryId) {
-                addTemplate({
-                    ...selectedTemplate,
-                    structure: interview.structure
-                })
-            }
-
+            personalEvent('Interview created');
             message.success(`Interview '${interview.candidate}' created.`);
         }
         history.push(routeInterviews())
@@ -556,7 +561,7 @@ const ScheduleInterview = ({
     </Layout>
 }
 
-const mapDispatch = { addInterview, addTemplate, loadInterviews, updateInterview, loadTemplates, loadLibrary };
+const mapDispatch = { addInterview, addInterviewWithTemplate, loadInterviews, updateInterview, loadTemplates, loadLibrary };
 const mapState = (state) => {
     const interviewState = state.interviews || {};
     const templateState = state.templates || {};

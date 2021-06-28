@@ -72,6 +72,7 @@
  * @property {string} type
  * @property {string} description
  * @property {string} totalInterviews
+ * @property {string} createdDate
  * @property {TemplateStructure} structure
  */
 
