@@ -1,5 +1,5 @@
 import {
-    ADD_INTERVIEW,
+    ADD_INTERVIEW, ADD_INTERVIEW_WITH_TEMPLATE,
     DELETE_INTERVIEW,
     LOAD_INTERVIEWS,
     loadInterviews,
@@ -13,6 +13,7 @@ import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
+import { loadTemplates } from "../templates/actions";
 
 const initialState = {
     interviews: [],
@@ -70,6 +71,39 @@ const interviewsReducer = (state = initialState, action) => {
                 .then(token => axios.post(URL, interview, config(token)))
                 .then(() => console.log(`Interview added: ${JSON.stringify(interview)}`))
                 .then(() => store.dispatch(loadInterviews(true)))
+                .catch(reason => console.error(reason));
+
+            return {
+                ...state,
+                interviews: [...state.interviews, interview]
+            };
+        }
+
+        case ADD_INTERVIEW_WITH_TEMPLATE: {
+            console.log(action.type)
+            const template = action.payload.template;
+            const interview = action.payload.interview;
+
+            template.templateId = Date.now().toString();
+            interview.interviewId = Date.now().toString()
+
+            const templateURL = `${process.env.REACT_APP_API_URL}/template`;
+
+            getAccessTokenSilently()
+                .then(token => {
+                    let tokenPromise = Promise.resolve(token)
+                    let templatePromise = axios.post(templateURL, template, config(token))
+                    return Promise.all([tokenPromise, templatePromise])
+                })
+                .then(res => {
+                    let token = res[0]
+                    let template = res[1].data
+                    interview.templateId = template.templateId
+                    return axios.post(URL, interview, config(token))
+                })
+                .then(() => console.log(`Interview added: ${JSON.stringify(interview)}`))
+                .then(() => store.dispatch(loadInterviews(true)))
+                .then(() => store.dispatch(loadTemplates(true)))
                 .catch(reason => console.error(reason));
 
             return {

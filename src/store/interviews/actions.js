@@ -2,6 +2,7 @@ export const LOAD_INTERVIEWS = "LOAD_INTERVIEWS";
 export const SET_INTERVIEWS = "SET_INTERVIEWS";
 export const SET_UPLOADING = "SET_UPLOADING";
 export const ADD_INTERVIEW = "ADD_INTERVIEW";
+export const ADD_INTERVIEW_WITH_TEMPLATE = "ADD_INTERVIEW_WITH_TEMPLATE";
 export const UPDATE_INTERVIEW = "UPDATE_INTERVIEW";
 export const DELETE_INTERVIEW = "DELETE_INTERVIEW";
 
@@ -31,6 +32,14 @@ export const addInterview = (interview) => ({
     type: ADD_INTERVIEW,
     payload: {
         interview
+    }
+});
+
+export const addInterviewWithTemplate = (interview, template) => ({
+    type: ADD_INTERVIEW_WITH_TEMPLATE,
+    payload: {
+        interview: interview,
+        template: template
     }
 });
 
