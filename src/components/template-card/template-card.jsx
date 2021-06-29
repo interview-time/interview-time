@@ -1,8 +1,6 @@
 import React from "react";
-import { Card, Col, Dropdown, Menu, message, Modal, Row, Button } from "antd";
-import confirm from "antd/lib/modal/confirm";
+import { Card, Col, message, Modal, Row, Button } from "antd";
 import { useHistory } from "react-router-dom";
-import { EllipsisOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 
@@ -10,7 +8,6 @@ import {
     routeInterviewAddFromLibrary,
     routeInterviewAddFromTemplate,
     routeTemplateDetails,
-    routeInterviewAdd,
 } from "../utils/route";
 import { getTemplateCategoryIcon, TemplateCategories } from "../utils/constants";
 import { TemplatePreviewCard } from "../../pages/interview-scorecard/interview-sections";
@@ -22,67 +19,6 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
 
     const getCategory = (template) => TemplateCategories.find((category) => category.key === template.type);
 
-    const createMenu = (template) => (
-        <Menu>
-            <Menu.Item
-                onClick={(e) => {
-                    e.domEvent.stopPropagation();
-                    onEdit(template.templateId);
-                }}
-            >
-                Edit template
-            </Menu.Item>
-            <Menu.Item
-                onClick={(e) => {
-                    e.domEvent.stopPropagation();
-                    onCopy(template);
-                }}
-            >
-                Copy template
-            </Menu.Item>
-            <Menu.Item
-                danger
-                onClick={(e) => {
-                    e.domEvent.stopPropagation();
-                    showDeleteConfirm(template);
-                }}
-            >
-                Delete template
-            </Menu.Item>
-        </Menu>
-    );
-
-    const showDeleteConfirm = (template) => {
-        confirm({
-            title: `Delete '${template.title}' Template`,
-            icon: <ExclamationCircleOutlined />,
-            content: "Are you sure you want to delete this template?",
-            okText: "Yes",
-            okType: "danger",
-            cancelText: "No",
-            onOk() {
-                onDelete(template);
-            },
-        });
-    };
-
-    const onCopy = (template) => {
-        if (onCloneTemplate != null) {
-            const copy = cloneDeep(template);
-            copy.templateId = null;
-            copy.title = `Copy of ${template.title}`;
-            onCloneTemplate(copy);
-            message.success(`Template '${copy.title}' created.`);
-        }
-    };
-
-    const onDelete = (template) => {
-        if (onDeleteTemplate != null) {
-            onDeleteTemplate(template.templateId);
-            message.success(`Template '${template.title}' removed.`);
-        }
-    };
-
     const getTotalQuestions = (groups) =>
         sumBy(groups, (group) => (group.questions ? group.questions.length : 0));
 
@@ -92,7 +28,26 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
 
     const onEditClicked = (template) => {
         setPreviewModalVisible(false);
-        onEdit(template.templateId);
+        history.push(routeTemplateDetails(template.templateId));
+    };
+
+    const onCopyClicked = (template) => {
+        setPreviewModalVisible(false);
+        if (onCloneTemplate != null) {
+            const copy = cloneDeep(template);
+            copy.templateId = null;
+            copy.title = `Copy of ${template.title}`;
+            onCloneTemplate(copy);
+            message.success(`Template '${copy.title}' created.`);
+        }
+    };
+
+    const onDeleteClicked = (template) => {
+        setPreviewModalVisible(false);
+        if (onDeleteTemplate != null) {
+            onDeleteTemplate(template.templateId);
+            message.success(`Template '${template.title}' removed.`);
+        }
     };
 
     const onCreateInterviewClicked = (template) => {
@@ -104,10 +59,6 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
         }
     };
 
-    const onEdit = (templateId) => {
-        history.push(routeTemplateDetails(templateId));
-    };
-
     return (
         <>
             <Card hoverable bodyStyle={{ padding: 0 }}>
@@ -117,10 +68,6 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
                         <div style={{ color: getCategory(template).color }} className={styles.category}>
                             {getCategory(template).titleShort}
                         </div>
-                        <div style={{ flexGrow: 1 }} />
-                        <Dropdown overlay={createMenu(template)}>
-                            <EllipsisOutlined style={{ fontSize: 20 }} onClick={(e) => e.stopPropagation()} />
-                        </Dropdown>
                     </div>
                     <div className={styles.cardTitle}>{template.title}</div>
 
@@ -148,7 +95,7 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
                         <Button
                             className={styles.cardButton}
                             type="primary"
-                            onClick={() => history.push(routeInterviewAdd())}
+                            onClick={() => history.push(routeInterviewAddFromTemplate(template.templateId))}
                         >
                             Schedule Interview
                         </Button>
@@ -171,6 +118,8 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
                     template={template}
                     onCloseClicked={onPreviewClosed}
                     onEditClicked={() => onEditClicked(template)}
+                    onCopyClicked={() => onCopyClicked(template)}
+                    onDeleteClicked={() => onDeleteClicked(template)}
                     onCreateInterviewClicked={() => onCreateInterviewClicked(template)}
                 />
             </Modal>

@@ -7,7 +7,7 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { ArrowLeftOutlined, CloseOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, CloseOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
@@ -21,6 +21,7 @@ import {
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
 import { isStickyNotesEnabled } from "../../components/utils/storage";
+import confirm from "antd/lib/modal/confirm";
 
 const { TextArea } = Input;
 
@@ -53,32 +54,64 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
  * @param {Template} template
  * @param onCloseClicked
  * @param onEditClicked
+ * @param onCopyClicked
+ * @param onDeleteClicked
  * @param onCreateInterviewClicked
  * @returns {JSX.Element}
  * @constructor
  */
-export const TemplatePreviewCard = ({ template, onCloseClicked, onEditClicked, onCreateInterviewClicked }) => {
+export const TemplatePreviewCard = ({
+    template,
+    onCloseClicked,
+    onEditClicked,
+    onCopyClicked,
+    onDeleteClicked,
+    onCreateInterviewClicked
+}) => {
     const marginTop12 = { marginTop: 12 };
+
+    const showDeleteConfirm = () => {
+        confirm({
+            title: `Delete '${template.title}' Template`,
+            icon: <ExclamationCircleOutlined />,
+            content: "Are you sure you want to delete this template?",
+            okText: "Yes",
+            okType: "danger",
+            cancelText: "No",
+            onOk() {
+                onDeleteClicked(template);
+            },
+        });
+    };
+
     return <div>
-        <div className={styles.divSpaceBetween}>
-            <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
-            <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
-        </div>
-        <Card style={{marginTop: 12, marginBottom: 12}}>
+        <Card>
+            <div className={styles.header} style={{ marginBottom: 24 }}>
+                <div className={styles.headerTitleContainer} onClick={onCloseClicked}>
+                    <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>Interview Template
+                    - {template.title}</Title>
+                </div>
+            </div>
+
+            <Text>Use this template to schedule new interview and customize as you go.</Text>
+
+            <div className={styles.divSpaceBetween} style={marginTop12}>
+                <Button type="primary" onClick={onCreateInterviewClicked}>Schedule interview</Button>
+                {template.templateId && <Space>
+                    <Button type="link" danger onClick={() => {
+                        showDeleteConfirm()
+                    }}>Delete</Button>
+                    <Button type="link" onClick={onCopyClicked}>Copy</Button>
+                    <Button type="link" onClick={onEditClicked}>Edit</Button>
+                </Space>}
+            </div>
+        </Card>
+        <Card style={{ marginTop: 12, marginBottom: 12 }}>
             <IntroSection interview={template} />
         </Card>
         <TemplateGroupsSection template={template} />
         <Card style={marginTop12}>
             <SummarySection interview={template} />
-        </Card>
-        <Card style={marginTop12}>
-            <div className={styles.divSpaceBetween}>
-                <Text strong>Use this template to create new interview and customize as you go.</Text>
-                <Space>
-                    {template.templateId && <Button onClick={onEditClicked}>Edit template</Button>}
-                    <Button type="primary" onClick={onCreateInterviewClicked}>Use template</Button>
-                </Space>
-            </div>
         </Card>
     </div>;
 }
