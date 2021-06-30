@@ -26,5 +26,7 @@ namespace CafApi.Services
         Task<Library> UpdateLibraryTemplate(string userId, TemplateRequest updatedTemplate);
 
         Task DeleteLibraryTemplate(string userId, string libraryId);
+
+        Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId);
     }
 }
