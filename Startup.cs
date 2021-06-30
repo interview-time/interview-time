@@ -33,7 +33,7 @@ namespace CafApi
             {
                 options.Authority = Configuration["Auth0:Authority"];
                 options.Audience = Configuration["Auth0:Audience"];
-                options.RequireHttpsMetadata = false;             
+                options.RequireHttpsMetadata = false;
             });
             services.AddAuthorization(options =>
             {
@@ -69,6 +69,7 @@ namespace CafApi
                 }
             );
 
+            services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ITemplateService, TemplateService>();
             services.AddSingleton<IInterviewService, InterviewService>();
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
