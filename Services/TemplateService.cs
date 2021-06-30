@@ -166,5 +166,28 @@ namespace CafApi.Services
         {
             await _context.DeleteAsync<Library>(userId, libraryId);
         }
+
+        public async Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId)
+        {
+            var fromTemplate = await GetTemplate(fromUserId, fromTemplateId);
+
+            fromTemplate.UserId = toUserId;
+            fromTemplate.TemplateId = Guid.NewGuid().ToString();
+            fromTemplate.CreatedDate = DateTime.UtcNow;
+            fromTemplate.ModifiedDate = DateTime.UtcNow;
+
+            // assign new ids to groups
+            if (fromTemplate.Structure != null && fromTemplate.Structure.Groups != null)
+            {
+                foreach (var group in fromTemplate.Structure.Groups)
+                {
+                    group.GroupId = Guid.NewGuid().ToString();
+                }
+            }
+
+            await _context.SaveAsync(fromTemplate);
+
+            return fromTemplate;
+        }
     }
 }

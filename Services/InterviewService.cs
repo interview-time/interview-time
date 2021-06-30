@@ -19,7 +19,7 @@ namespace CafApi.Services
         }
 
         public async Task<Interview> GetInterview(string userId, string interviewId)
-        {        
+        {
             return await _context.LoadAsync<Interview>(userId, interviewId);
         }
 
@@ -110,6 +110,19 @@ namespace CafApi.Services
             }
 
             await UpdateInterview(interview);
+        }
+
+        public async Task<Interview> CloneInterviewAsDemo(string fromUserId, string fromInterviewId, string toUserId)
+        {
+            var fromInterview = await GetInterview(fromUserId, fromInterviewId);
+
+            var interviewDate = DateTime.UtcNow.AddDays(14);
+
+            fromInterview.UserId = toUserId;
+            fromInterview.Status = InterviewStatus.NEW.ToString();
+            fromInterview.InterviewDateTime = new DateTime(interviewDate.Year, interviewDate.Month, interviewDate.Day, 10, 00, 00);
+
+            return await AddInterview(fromInterview);
         }
     }
 }

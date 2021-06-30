@@ -20,5 +20,7 @@ namespace CafApi.Services
         Task DeleteInterview(string userId, string interviewId);
 
         Task SubmitScorecard(string userId, ScoreCardRequest scoreCard);
+
+        Task<Interview> CloneInterviewAsDemo(string fromUserId, string fromInterviewId, string toUserId);
     }
 }
