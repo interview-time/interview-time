@@ -110,7 +110,7 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                     <Menu.Item key={routeCandidates()} className={styles.menuItem}
                                icon={<CandidatesIcon style={menuIconStyle} />}>
                         <Link to={routeCandidates()}>
-                            <span className="nav-text">Candidates</span>
+                            <span className="nav-text">Reports</span>
                         </Link>
                     </Menu.Item>
                     <div className={styles.space} />
