@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import styles from "./candidates.module.css";
-import { Alert, Card, Col, Input, Popover, Row, Select, Space, Table, Tag } from 'antd';
+import { Card, Col, Input, Popover, Row, Select, Space, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
@@ -153,7 +153,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
 
     return (
         <Layout pageHeader={
-            <StickyHeader title="Candidates">
+            <StickyHeader title="Reports">
                 <Space>
                     <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear
                             onSearch={onSearchClicked} onChange={onSearchTextChanged} />
@@ -180,10 +180,6 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
                 </Space>
             </StickyHeader>
         } contentStyle={styles.pageContent}>
-            <Alert message="Candidates let you to compare several candidates and find the best performer."
-                   type="info"
-                   className={styles.infoAlert}
-                   closable />
 
             <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 24 }}>
                 <Table
