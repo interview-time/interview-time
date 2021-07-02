@@ -1,13 +1,13 @@
 import styles from "./template.module.css";
 import React, { useState } from "react";
-import { addTemplate, loadTemplates, updateTemplate } from "../../store/templates/actions";
+import { addTemplate, loadLibrary, loadTemplates, updateTemplate } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { Button, Card, Col, Divider, Input, message, Modal, Popover, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import { findTemplate } from "../../components/utils/converters";
+import { findLibraryTemplate, findTemplate } from "../../components/utils/converters";
 import { TemplateCategories } from "../../components/utils/constants";
 import TemplateQuestionsCard from "./template-questions-card";
 import Layout from "../../components/layout/layout";
@@ -23,16 +23,20 @@ const { TextArea } = Input;
 /**
  *
  * @param {Template[]} templates
+ * @param {Template[]} library
  * @param addTemplate
  * @param loadTemplates
+ * @param loadLibrary
  * @param updateTemplate
  * @returns {JSX.Element}
  * @constructor
  */
 const TemplateDetails = ({
     templates,
+    library,
     addTemplate,
     loadTemplates,
+    loadLibrary,
     updateTemplate
 }) => {
 
@@ -56,7 +60,8 @@ const TemplateDetails = ({
     }))
     const history = useHistory();
 
-    const { id} = useParams();
+    const { id } = useParams();
+    const location = useLocation();
 
     const [template, setTemplate] = useState(emptyTemplate);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -67,23 +72,44 @@ const TemplateDetails = ({
     });
 
     React.useEffect(() => {
-        if (!isNewTemplateFlow() && !template.templateId && templates.length !== 0) {
+        if (isExistingTemplateFlow() && !template.templateId && templates.length !== 0) {
             setTemplate(cloneDeep(findTemplate(id, templates)))
+        } else if (isFromLibraryFlow() && !template.parentId && library.length !== 0) {
+            let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library))
+            setTemplate({
+                ...template,
+                parentId: parent.templateId,
+                title: parent.title,
+                structure: parent.structure,
+            })
         }
         // eslint-disable-next-line
-    }, [templates, id]);
+    }, [templates, library, id]);
 
     React.useEffect(() => {
-        if (!isNewTemplateFlow()) {
+        if (isExistingTemplateFlow()) {
             loadTemplates()
+        } else if(isFromLibraryFlow()) {
+            loadLibrary()
         }
 
         // eslint-disable-next-line
     }, []);
 
-    const isNewTemplateFlow = () => !id;
+    const isExistingTemplateFlow = () => id;
 
-    const isInitialLoading = () => !isNewTemplateFlow() && !template.templateId
+    const isFromLibraryFlow = () => fromLibraryId() !== null;
+
+    const isInitialLoading = () => false
+
+    /**
+     *
+     * @returns {string|null}
+     */
+    const fromLibraryId = () => {
+        const params = new URLSearchParams(location.search);
+        return params.get('fromLibrary');
+    }
 
     const onBackClicked = () => {
         history.goBack()
@@ -148,13 +174,13 @@ const TemplateDetails = ({
     }
 
     const onSaveClicked = () => {
-        if (isNewTemplateFlow()) {
+        if (isExistingTemplateFlow()) {
+            updateTemplate(template);
+            message.success(`Template '${template.title}' updated.`);
+        } else {
             personalEvent('Template created');
             addTemplate(template);
             message.success(`Template '${template.title}' created.`);
-        } else {
-            updateTemplate(template);
-            message.success(`Template '${template.title}' updated.`);
         }
         history.push(routeTemplates())
     }
@@ -362,12 +388,13 @@ const TemplateDetails = ({
     </Layout>
 }
 
-const mapDispatch = { addTemplate, loadTemplates, updateTemplate };
+const mapDispatch = { addTemplate, loadTemplates, loadLibrary, updateTemplate };
 const mapState = (state) => {
     const templateState = state.templates || {};
 
     return {
-        templates: templateState.templates
+        templates: templateState.templates,
+        library: templateState.library
     }
 }
 

@@ -6,7 +6,7 @@ import LibraryCard from "../library-card/library-card";
 import {
     routeTemplateDetails,
     routeInterviewAddFromLibrary,
-    routeInterviewAddFromTemplate,
+    routeInterviewAddFromTemplate, routeTemplateAddFromLibrary,
 } from "../utils/route";
 
 const PreviewCard = ({ template }) => {
@@ -39,6 +39,10 @@ const PreviewCard = ({ template }) => {
         }
     };
 
+    const onCreateTemplateClicked = (template) => {
+        history.push(routeTemplateAddFromLibrary(template.libraryId));
+    }
+
     var totalquestions = 0;
 
     template.structure?.groups?.forEach((group) => (totalquestions += group.questions.length));
@@ -69,6 +73,7 @@ const PreviewCard = ({ template }) => {
                     onCloseClicked={onPreviewClosed}
                     onEditClicked={() => onEditClicked(template)}
                     onCreateInterviewClicked={() => onCreateInterviewClicked(template)}
+                    onCreateTemplateClicked={() => onCreateTemplateClicked(template)}
                 />
             </Modal>
         </>
