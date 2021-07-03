@@ -57,6 +57,7 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
  * @param onCopyClicked
  * @param onDeleteClicked
  * @param onCreateInterviewClicked
+ * @param onCreateTemplateClicked
  * @returns {JSX.Element}
  * @constructor
  */
@@ -66,7 +67,8 @@ export const TemplatePreviewCard = ({
     onEditClicked,
     onCopyClicked,
     onDeleteClicked,
-    onCreateInterviewClicked
+    onCreateInterviewClicked,
+    onCreateTemplateClicked
 }) => {
     const marginTop12 = { marginTop: 12 };
 
@@ -96,7 +98,10 @@ export const TemplatePreviewCard = ({
             <Text>Use this template to schedule new interview and customize as you go.</Text>
 
             <div className={styles.divSpaceBetween} style={marginTop12}>
-                <Button type="primary" onClick={onCreateInterviewClicked}>Schedule interview</Button>
+                {template.libraryId && <Button type="primary"
+                                                onClick={onCreateTemplateClicked}>Use template</Button>}
+                {template.templateId && <Button type="primary"
+                                                onClick={onCreateInterviewClicked}>Schedule interview</Button>}
                 {template.templateId && <Space>
                     <Button type="link" danger onClick={() => {
                         showDeleteConfirm()

@@ -22,6 +22,8 @@ export const routeTemplates = () => "/templates"
 
 export const routeTemplateAdd = () => "/templates/add/"
 
+export const routeTemplateAddFromLibrary = (id) => `/templates/add?fromLibrary=${id}`
+
 export const routeTemplateDetails = (id) => `/templates/details/${id}`
 
 export const routeQuestionBank = () => "/question-bank"
