@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CafApi.Models;
 using CafApi.Services;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -35,7 +36,13 @@ namespace CafApi.Controllers
             _userService = userService;
         }
 
-        [HttpPost("setup")]
+        [HttpGet]
+        public async Task<Profile> GetUserProfile()
+        {
+            return await _userService.GetProfile(UserId);
+        }
+
+        [HttpPost]
         public async Task SetupUser(SetupUserRequest request)
         {
             var profile = await _userService.GetProfile(UserId);
