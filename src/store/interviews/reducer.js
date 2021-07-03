@@ -15,6 +15,10 @@ import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { loadTemplates } from "../templates/actions";
 
+/**
+ *
+ * @type {{uploading: boolean, loading: boolean, interviews: Interview[]}}
+ */
 const initialState = {
     interviews: [],
     loading: false,
