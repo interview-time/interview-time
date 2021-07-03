@@ -43,6 +43,10 @@ const Templates = ({
         // eslint-disable-next-line
     }, []);
 
+    const initialTemplatesLoading = () => templates.length === 0 && loadingTemplates
+
+    const initialLibraryLoading = () => library.length === 0 && loadingLibrary
+
     return (
         <Layout>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
@@ -54,7 +58,7 @@ const Templates = ({
                 </div>
 
                 <Title level={5}>My Templates</Title>
-                {loadingTemplates && (
+                {initialTemplatesLoading() && (
                     <Row gutter={[32, 32]}>
                         <Col span={24} lg={{ span: 8 }}>
                             <Skeleton active />
@@ -68,7 +72,7 @@ const Templates = ({
                     </Row>
                 )}
 
-                {!loadingTemplates && (
+                {!initialTemplatesLoading() && (
                     <Row gutter={[32, 32]}>
                         {templates.map((template) => (
                             <Col span={24} lg={{ span: 8 }}>
@@ -94,7 +98,7 @@ const Templates = ({
                 )}
 
                 <Title level={5}>Library Templates</Title>
-                {loadingLibrary && (
+                {initialLibraryLoading() && (
                     <Row gutter={[32, 32]}>
                         <Col span={24} lg={{ span: 8 }}>
                             <Skeleton active />
@@ -108,7 +112,7 @@ const Templates = ({
                     </Row>
                 )}
 
-                {!loadingLibrary && (
+                {!initialLibraryLoading() && (
                     <Row gutter={[32, 32]}>
                         {library.map((template) => (
                             <Col span={24} lg={{ span: 8 }}>
