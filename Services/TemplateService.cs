@@ -60,6 +60,14 @@ namespace CafApi.Services
                 foreach (var group in template.Structure.Groups)
                 {
                     group.GroupId = Guid.NewGuid().ToString();
+
+                    if (group.Questions != null)
+                    {
+                        foreach (var question in group.Questions)
+                        {
+                            question.QuestionId = Guid.NewGuid().ToString();
+                        }
+                    }
                 }
             }
 
@@ -85,6 +93,17 @@ namespace CafApi.Services
                     if (string.IsNullOrWhiteSpace(group.GroupId))
                     {
                         group.GroupId = Guid.NewGuid().ToString();
+                    }
+
+                    if (group.Questions != null)
+                    {
+                        foreach (var question in group.Questions)
+                        {
+                            if (string.IsNullOrWhiteSpace(question.QuestionId))
+                            {
+                                question.QuestionId = Guid.NewGuid().ToString();
+                            }
+                        }
                     }
                 }
             }
@@ -130,6 +149,13 @@ namespace CafApi.Services
                 foreach (var group in libraryTemplate.Structure.Groups)
                 {
                     group.GroupId = Guid.NewGuid().ToString();
+                    if (group.Questions != null)
+                    {
+                        foreach (var question in group.Questions)
+                        {
+                            question.QuestionId = Guid.NewGuid().ToString();
+                        }
+                    }
                 }
             }
 
@@ -153,7 +179,21 @@ namespace CafApi.Services
             {
                 foreach (var group in libraryTemplate.Structure.Groups)
                 {
-                    group.GroupId = Guid.NewGuid().ToString();
+                    if (string.IsNullOrWhiteSpace(group.GroupId))
+                    {
+                        group.GroupId = Guid.NewGuid().ToString();
+                    }
+
+                    if (group.Questions != null)
+                    {
+                        foreach (var question in group.Questions)
+                        {
+                            if (string.IsNullOrWhiteSpace(question.QuestionId))
+                            {
+                                question.QuestionId = Guid.NewGuid().ToString();
+                            }
+                        }
+                    }
                 }
             }
 
