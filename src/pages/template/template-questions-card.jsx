@@ -1,16 +1,16 @@
 import styles from "./template.module.css";
-import { Button, Dropdown, Input, Menu, Select, Space, Table, Tag, Tooltip } from "antd";
+import { Button, Dropdown, Input, Menu, Space, Table, Tooltip } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
-import { cloneDeep } from "lodash/lang";
+import { cloneDeep, isEqual } from "lodash/lang";
 import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
-import { defaultTo } from "lodash/util";
 import { isEmpty } from "../../components/utils/utils";
 import { flatten, sortedUniq } from "lodash/array";
 import { createTagColors } from "../../components/utils/constants";
+import { TemplateTags } from "./template-tags";
 
 /**
  *
@@ -41,9 +41,7 @@ const TemplateQuestionsCard = ({
     const [questions, setQuestions] = React.useState([])
     const [tagColors, setTagsColors] = React.useState(new Map())
     const [questionsTags, setQuestionsTags] = React.useState([])
-    const [selectedTag, setSelectedTag] = React.useState()
     const [collapsed, setCollapsed] = React.useState(false)
-    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
     React.useEffect(() => {
         if (group.questions) {
@@ -59,17 +57,25 @@ const TemplateQuestionsCard = ({
         // eslint-disable-next-line
     }, [group]);
 
-    function updateQuestionsTags() {
+    const updateQuestionsTags = () => {
         const tags = []
         template.structure.groups.forEach(group => {
             group.questions.forEach(question => {
                 tags.push(question.tags)
             })
         })
-        const tagsFlat = flatten(tags);
-        setTagsColors(createTagColors(tagsFlat))
-        setQuestionsTags(sortedUniq(tagsFlat.sort()).map(tag => ({ value: tag })))
-    }
+        const tagsFlat = flatten(tags).filter(tag => !isEmpty(tag));
+        const tagColorsNew = createTagColors(tagsFlat);
+        const questionsTagsNew = sortedUniq(tagsFlat.sort()).map(tag => ({ value: tag }));
+
+        if (!isEqual(tagColors, tagColorsNew)) {
+            setTagsColors(tagColorsNew)
+        }
+
+        if (!isEqual(questionsTags, questionsTagsNew)) {
+            setQuestionsTags(questionsTagsNew)
+        }
+    };
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
         if (oldIndex !== newIndex) {
@@ -101,15 +107,6 @@ const TemplateQuestionsCard = ({
     const DragHandle = SortableHandle(() => (
         <ReorderIcon className={styles.reorderIcon} />
     ));
-
-    const onTagClicked = (questionId) => {
-        setSelectedTag(questionId)
-    }
-
-    const onTagLooseFocus = () => {
-        setSelectedTag(null)
-        forceUpdate()
-    }
 
     const onQuestionChange = (questionId, question) => {
         // no need to propagate to parent to re-render
@@ -153,37 +150,21 @@ const TemplateQuestionsCard = ({
             key: 'tags',
             width: 250,
             className: styles.tagsVisible,
-            render: question => (
-                <>
-                    {question.questionId !== selectedTag && defaultTo(question.tags, []).map(tag =>
-                        (<Tag key={tag}
-                              className={styles.clickableTag}
-                              color={tagColors.get(tag)}
-                              onClick={() => onTagClicked(question.questionId)}>
-                            {tag.toLowerCase()}
-                        </Tag>)
-                    )}
-                    {(question.questionId === selectedTag || isEmpty(question.tags)) &&
-                    <Select mode="tags"
-                            style={{ width: '100%' }}
-                            onChange={tags => onTagsChange(question.questionId, tags)}
-                            size="small"
-                            autoFocus={!isEmpty(question.question) && question.questionId === selectedTag}
-                            onBlur={onTagLooseFocus}
-                            defaultValue={defaultTo(question.tags, [])}
-                            placeholder="Tags"
-                            options={questionsTags}
-                    />}
-                </>
-            ),
+            render: question => <TemplateTags
+                question={question}
+                tagColors={tagColors}
+                questionsTags={questionsTags}
+                onTagsChange={onTagsChange}
+            />
         },
         {
             key: 'action',
             width: 24,
             className: styles.removeVisible,
-            render: record => <DeleteTwoTone twoToneColor="red"
-                                             className={styles.removeIcon}
-                                             onClick={() => onRemoveQuestionClicked(record.questionId)} />
+            render: record => <DeleteTwoTone
+                twoToneColor="red"
+                className={styles.removeIcon}
+                onClick={() => onRemoveQuestionClicked(record.questionId)} />
         }
     ];
 

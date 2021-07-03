@@ -78,7 +78,7 @@ const TemplateDetails = ({
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library))
             setTemplate({
                 ...template,
-                parentId: parent.templateId,
+                parentId: fromLibraryId(),
                 title: parent.title,
                 structure: parent.structure,
             })
@@ -100,7 +100,8 @@ const TemplateDetails = ({
 
     const isFromLibraryFlow = () => fromLibraryId() !== null;
 
-    const isInitialLoading = () => false
+    const isInitialLoading = () => (isExistingTemplateFlow() && !template.templateId)
+        || (isFromLibraryFlow() && !template.parentId)
 
     /**
      *
@@ -124,10 +125,9 @@ const TemplateDetails = ({
     }
 
     const onQuestionsSortChange = (groupId, questions) => {
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups
+        // no need to update state
+        template.structure.groups
             .find(group => group.groupId === groupId).questions = questions
-        setTemplate(updatedTemplate)
     }
 
     const onAddQuestionClicked = (groupId) => {

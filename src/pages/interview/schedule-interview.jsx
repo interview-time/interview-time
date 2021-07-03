@@ -192,10 +192,9 @@ const ScheduleInterview = ({
     };
 
     const onQuestionsSortChange = (groupId, questions) => {
-        const updatedInterview = cloneDeep(interview)
-        updatedInterview.structure.groups
+        // no need to update state
+        interview.structure.groups
             .find(group => group.groupId === groupId).questions = questions
-        setInterview(updatedInterview)
     }
 
     const onAddQuestionClicked = (groupId) => {
