@@ -43,12 +43,12 @@ namespace CafApi.Controllers
         }
 
         [HttpPost]
-        public async Task SetupUser(SetupUserRequest request)
+        public async Task<Profile> SetupUser(SetupUserRequest request)
         {
             var profile = await _userService.GetProfile(UserId);
             if (profile == null)
             {
-                await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset);
+                profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset);
 
                 // populate demo data
                 string demoUserId = "auth0|60dbf4211c8534006acaf3f1";
@@ -70,6 +70,8 @@ namespace CafApi.Controllers
                     }
                 }
             }
+
+            return profile;
         }
     }
 }
