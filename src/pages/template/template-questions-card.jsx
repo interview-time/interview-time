@@ -2,7 +2,7 @@ import styles from "./template.module.css";
 import { Button, Dropdown, Input, Menu, Space, Table, Tooltip } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
-import { cloneDeep } from "lodash/lang";
+import { cloneDeep, isEqual } from "lodash/lang";
 import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
@@ -65,8 +65,16 @@ const TemplateQuestionsCard = ({
             })
         })
         const tagsFlat = flatten(tags).filter(tag => !isEmpty(tag));
-        setTagsColors(createTagColors(tagsFlat))
-        setQuestionsTags(sortedUniq(tagsFlat.sort()).map(tag => ({ value: tag })))
+        const tagColorsNew = createTagColors(tagsFlat);
+        const questionsTagsNew = sortedUniq(tagsFlat.sort()).map(tag => ({ value: tag }));
+
+        if (!isEqual(tagColors, tagColorsNew)) {
+            setTagsColors(tagColorsNew)
+        }
+
+        if (!isEqual(questionsTags, questionsTagsNew)) {
+            setQuestionsTags(questionsTagsNew)
+        }
     };
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
