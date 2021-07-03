@@ -124,10 +124,9 @@ const TemplateDetails = ({
     }
 
     const onQuestionsSortChange = (groupId, questions) => {
-        const updatedTemplate = cloneDeep(template)
-        updatedTemplate.structure.groups
+        // no need to update state
+        template.structure.groups
             .find(group => group.groupId === groupId).questions = questions
-        setTemplate(updatedTemplate)
     }
 
     const onAddQuestionClicked = (groupId) => {

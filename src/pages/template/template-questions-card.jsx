@@ -136,18 +136,15 @@ const TemplateQuestionsCard = ({
         {
             key: 'question',
             className: styles.questionVisible,
-            render: question => {
-                console.log(question)
-                return <Input
-                    placeholder="Question"
-                    size="small"
-                    bordered={false}
-                    autoFocus={isEmpty(question.question)}
-                    defaultValue={question.question}
-                    onChange={e => onQuestionChange(question.questionId, e.target.value)}
-                    onPressEnter={e => e.target.blur()}
-                />
-            }
+            render: question => <Input
+                placeholder="Question"
+                size="small"
+                bordered={false}
+                autoFocus={isEmpty(question.question)}
+                defaultValue={question.question}
+                onChange={e => onQuestionChange(question.questionId, e.target.value)}
+                onPressEnter={e => e.target.blur()}
+            />
         },
         {
             key: 'tags',
