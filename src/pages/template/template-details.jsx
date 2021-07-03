@@ -78,7 +78,7 @@ const TemplateDetails = ({
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library))
             setTemplate({
                 ...template,
-                parentId: parent.templateId,
+                parentId: fromLibraryId(),
                 title: parent.title,
                 structure: parent.structure,
             })
@@ -100,7 +100,8 @@ const TemplateDetails = ({
 
     const isFromLibraryFlow = () => fromLibraryId() !== null;
 
-    const isInitialLoading = () => false
+    const isInitialLoading = () => (isExistingTemplateFlow() && !template.templateId)
+        || (isFromLibraryFlow() && !template.parentId)
 
     /**
      *
