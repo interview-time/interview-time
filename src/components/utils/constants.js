@@ -31,9 +31,9 @@ export const GroupAssessment = {
 }
 
 export const QuestionAssessment = {
-    YES: 1,
-    NO: 2,
-    MAYBE: 3,
+    NO: 1,
+    MAYBE: 2,
+    YES: 3,
 }
 
 export const TemplateCategories = [
@@ -150,7 +150,7 @@ export const getAssessmentText = (assessment) => {
  */
 export const getQuestionsWithAssessment = (groups) => {
     return flatMap(groups, (item) => item.questions)
-        .filter(question => question.assessment != null)
+        .filter(question => question.assessment !== 0)
 }
 
 /**
@@ -159,7 +159,7 @@ export const getQuestionsWithAssessment = (groups) => {
  * @returns {number}
  */
 export const getQuestionsPerformance = (group) => {
-    let questions = group.questions.filter(question => question.assessment != null)
+    let questions = group.questions.filter(question => question.assessment !== 0)
     let total = 0;
     questions.forEach(question => {
         total += getQuestionAssessmentNumber(question.assessment)
