@@ -13,14 +13,16 @@ import {
     getDecisionColor,
     getDecisionText,
     getOverallPerformance,
-    getStatusText
+    getStatusText,
+    Status
 } from "../../components/utils/constants";
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse, sortedUniq } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import { routeInterviewScorecard } from "../../components/utils/route";
 import { TrophyTwoTone } from "@ant-design/icons";
-import StickyHeader from "../../components/layout/header-sticky";
+import Title from "antd/lib/typography/Title";
+import Text from "antd/lib/typography/Text";
 
 const { Search } = Input;
 
@@ -96,7 +98,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
             sorter: (a, b) => localeCompare(a.position, b.position),
         },
         {
-            title: 'Overall Performance',
+            title: 'Performance',
             key: 'position',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => getOverallPerformance(a.structure.groups) - getOverallPerformance(b.structure.groups),
@@ -152,47 +154,56 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
     ];
 
     return (
-        <Layout pageHeader={
-            <StickyHeader title="Reports">
-                <Space>
+        <Layout>
+            <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
+
+                <div className={styles.header}>
+                    <Title level={2}>Reports</Title>
+                    <span className={styles.subTitle}>
+                        Compare multiple candidates and focus on the best person for the role
+                    </span>
+                </div>
+
+                <div className={styles.divSpaceBetween}>
                     <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear
                             onSearch={onSearchClicked} onChange={onSearchTextChanged} />
+                    <Space>
+                        <Text>Filter</Text>
+                        <Select
+                            className={styles.select}
+                            placeholder="Position"
+                            onSelect={onPositionChange}
+                            onClear={onPositionClear}
+                            options={
+                                sortedUniq(interviews.map(interview => interview.position)).map(position => {
+                                    return {
+                                        label: position,
+                                        value: position,
+                                    }
+                                })
+                            }
+                            showSearch
+                            allowClear
+                            filterOption={(inputValue, option) =>
+                                option.value.toLocaleLowerCase().includes(inputValue)
+                            }
+                        />
+                    </Space>
+                </div>
 
-                    <Select
-                        className={styles.select}
-                        placeholder="Position"
-                        onSelect={onPositionChange}
-                        onClear={onPositionClear}
-                        options={
-                            sortedUniq(interviews.map(interview => interview.position)).map(position => {
-                                return {
-                                    label: position,
-                                    value: position,
-                                }
-                            })
-                        }
-                        showSearch
-                        allowClear
-                        filterOption={(inputValue, option) =>
-                            option.value.toLocaleLowerCase().includes(inputValue)
-                        }
+                <Card bodyStyle={{ padding: 0 }}>
+                    <Table
+                        pagination={false}
+                        columns={columns}
+                        dataSource={interviewsData}
+                        loading={loading}
+                        rowClassName={styles.row}
+                        onRow={(record) => ({
+                            onClick: () => onRowClicked(record),
+                        })}
                     />
-                </Space>
-            </StickyHeader>
-        } contentStyle={styles.pageContent}>
-
-            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 24 }}>
-                <Table
-                    pagination={false}
-                    columns={columns}
-                    dataSource={interviewsData}
-                    loading={loading}
-                    rowClassName={styles.row}
-                    onRow={(record) => ({
-                        onClick: () => onRowClicked(record),
-                    })}
-                />
-            </Card>
+                </Card>
+            </Col>
         </Layout>
     )
 }
@@ -201,7 +212,9 @@ const mapDispatch = { loadInterviews };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
 
-    const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ['interviewDateTime']))
+    const interviews = reverse(sortBy(cloneDeep(
+        interviewsState.interviews.filter(interview => interview.status === Status.COMPLETED)
+    ), ['interviewDateTime']))
 
     return {
         interviews: interviews,
