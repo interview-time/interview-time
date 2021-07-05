@@ -389,6 +389,7 @@ const InterviewQuestionsCard = ({
                 defaultValue={question.assessment}
                 disabled={disabled}
                 onChange={value => {
+                    console.log("value " + value)
                     if (onQuestionAssessmentChanged) {
                         onQuestionAssessmentChanged(question, value)
                     }
