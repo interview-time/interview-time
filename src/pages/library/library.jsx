@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Row, Col, Skeleton, Typography } from "antd";
 import Layout from "../../components/layout/layout";
-import PreviewCard from "../../components/preview-card/preview-card";
+import LibraryCard from "../../components/library-card/library-card";
 import { loadLibrary } from "../../store/templates/actions";
 import styles from "./library.module.css";
 
@@ -40,7 +40,7 @@ const Library = ({ loadLibrary, library, loading }) => {
                     <Row gutter={[32, 32]}>
                         {library.map((template) => (
                             <Col span={24} lg={{ span: 8 }}>
-                                <PreviewCard key={template.libraryId} template={template} />
+                                <LibraryCard template={template} />
                             </Col>
                         ))}
                     </Row>

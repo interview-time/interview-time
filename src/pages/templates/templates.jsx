@@ -5,7 +5,7 @@ import Layout from "../../components/layout/layout";
 import { addTemplate, deleteTemplate, loadLibrary, loadTemplates } from "../../store/templates/actions";
 import { Skeleton, Col, Row, Card } from "antd";
 import { sortBy } from "lodash/collection";
-import PreviewCard from "../../components/preview-card/preview-card";
+import LibraryCard from "../../components/library-card/library-card";
 import TemplateCard from "../../components/template-card/template-card";
 import Title from "antd/lib/typography/Title";
 import { routeTemplateAdd } from "../../components/utils/route";
@@ -116,7 +116,7 @@ const Templates = ({
                     <Row gutter={[32, 32]}>
                         {library.map((template) => (
                             <Col span={24} lg={{ span: 8 }}>
-                                <PreviewCard key={template.libraryId} template={template} />
+                                <LibraryCard template={template} />
                             </Col>
                         ))}
                     </Row>
