@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import { Badge, Button, Card, Col, Table } from 'antd';
+import { Badge, Button, Card, Col, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
@@ -51,6 +51,16 @@ const Interviews = ({ interviews, loading, loadInterviews }) => {
             dataIndex: 'candidate',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
+            render: (candidate, isDemo) => (
+                <>
+                    <span>{candidate}</span>
+                    {isDemo && (
+                        <Tag className={styles.demoTag} color="orange">
+                            Demo
+                        </Tag>
+                    )}
+                </>
+            ),
         },
         {
             title: 'Position',

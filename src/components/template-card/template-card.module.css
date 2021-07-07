@@ -4,6 +4,10 @@
 }
 
 .cardTitle {
+    margin-top: 10px;
+}
+
+.cardTitleText {
     font-weight: 700;
     font-size: 18px;
     margin-top: 12px;
@@ -82,4 +86,8 @@
     border-color: #1890ff;
     color: #1890ff;
     width: 180px;
+}
+
+.demoTag {
+    margin-left: 10px;
 }

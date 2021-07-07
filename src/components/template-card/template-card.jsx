@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, message, Modal, Row, Button } from "antd";
+import { Card, Col, message, Modal, Row, Button, Tag } from "antd";
 import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
@@ -69,7 +69,14 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
                             {getCategory(template).titleShort}
                         </div>
                     </div>
-                    <div className={styles.cardTitle}>{template.title}</div>
+                    <div className={styles.cardTitle}>
+                        <span className={styles.cardTitleText}>{template.title}</span>
+                        {template.isDemo && (
+                            <Tag className={styles.demoTag} color="orange">
+                                Demo
+                            </Tag>
+                        )}
+                    </div>
 
                     <Row style={{ marginTop: 12 }}>
                         <Col span={12}>
