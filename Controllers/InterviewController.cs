@@ -7,6 +7,7 @@ using CafApi.Services;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace CafApi.Controllers
@@ -18,6 +19,8 @@ namespace CafApi.Controllers
     {
         private readonly IInterviewService _interviewService;
         private readonly ILogger<InterviewController> _logger;
+        private readonly string _demoUserId;
+        
         private string UserId
         {
             get
@@ -26,10 +29,12 @@ namespace CafApi.Controllers
             }
         }
 
-        public InterviewController(ILogger<InterviewController> logger, IInterviewService interviewService)
+        public InterviewController(ILogger<InterviewController> logger, IInterviewService interviewService, IConfiguration configuration)
         {
             _logger = logger;
             _interviewService = interviewService;
+
+            _demoUserId = configuration["DemoUserId"];
         }
 
         [HttpGet()]
@@ -44,6 +49,11 @@ namespace CafApi.Controllers
         public async Task<Interview> AddInterview([FromBody] Interview interview)
         {
             interview.UserId = UserId;
+            if (UserId == _demoUserId)
+            {
+                interview.IsDemo = true;
+            }
+
             return await _interviewService.AddInterview(interview);
         }
 
@@ -51,6 +61,11 @@ namespace CafApi.Controllers
         public async Task UpdateInterview([FromBody] Interview interview)
         {
             interview.UserId = UserId;
+            if (UserId == _demoUserId)
+            {
+                interview.IsDemo = true;
+            }
+
             await _interviewService.UpdateInterview(interview);
         }
 
@@ -64,6 +79,6 @@ namespace CafApi.Controllers
         public async Task SubmitScoreCard([FromBody] ScoreCardRequest scoreCard)
         {
             await _interviewService.SubmitScorecard(UserId, scoreCard);
-        }        
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace CafApi.Services
             return await _context.LoadAsync<Template>(userId, templateId);
         }
 
-        public async Task<Template> CreateTemplate(string userId, TemplateRequest newTemplate)
+        public async Task<Template> CreateTemplate(string userId, TemplateRequest newTemplate, bool isDemo = false)
         {
             var template = new Template
             {
@@ -50,6 +50,7 @@ namespace CafApi.Services
                 Type = newTemplate.Type,
                 Description = newTemplate.Description,
                 Structure = newTemplate.Structure,
+                IsDemo = isDemo,
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
             };

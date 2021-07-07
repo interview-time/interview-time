@@ -25,7 +25,9 @@ namespace CafApi.Models
 
         public TemplateStructure Structure { get; set; }
 
-         public DateTime CreatedDate { get; set; }
+        public bool IsDemo { get; set; }
+
+        public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
     }

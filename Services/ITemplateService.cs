@@ -11,7 +11,7 @@ namespace CafApi.Services
 
         Task<Template> GetTemplate(string userId, string templateId);
 
-        Task<Template> CreateTemplate(string userId, TemplateRequest template);
+        Task<Template> CreateTemplate(string userId, TemplateRequest template, bool isDemo = false);
 
         Task UpdateTemplate(string userId, TemplateRequest template);
 

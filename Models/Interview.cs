@@ -34,6 +34,8 @@ namespace CafApi.Models
 
         public InterviewStructure Structure { get; set; }
 
+        public bool IsDemo { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
