@@ -19,3 +19,7 @@
     justify-content: center;
     cursor: pointer;
 }
+
+.demoTag {
+    margin-left: 10px;
+}

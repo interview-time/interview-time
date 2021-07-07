@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Card, Typography, Table, Modal } from "antd";
+import { Row, Col, Card, Typography, Table, Modal, Tag } from "antd";
 import Layout from "../../components/layout/layout";
 import { ReactComponent as PlusIcon } from "../../assets/plus.svg";
 import { ReactComponent as TemplateIcon } from "../../assets/template.svg";
@@ -24,6 +24,16 @@ const columns = [
     {
         key: "candidate",
         dataIndex: "candidate",
+        render: (candidate, isDemo) => (
+            <>
+                <span>{candidate}</span>
+                {isDemo && (
+                    <Tag className={styles.demoTag} color="orange">
+                        Demo
+                    </Tag>
+                )}
+            </>
+        ),
     },
     {
         key: "position",
