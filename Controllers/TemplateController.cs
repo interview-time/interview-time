@@ -7,6 +7,7 @@ using CafApi.Services;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace CafApi.Controllers
@@ -18,6 +19,8 @@ namespace CafApi.Controllers
     {
         private readonly ITemplateService _templateService;
         private readonly ILogger<TemplateController> _logger;
+        private readonly string _demoUserId;
+
         private string UserId
         {
             get
@@ -26,10 +29,12 @@ namespace CafApi.Controllers
             }
         }
 
-        public TemplateController(ILogger<TemplateController> logger, ITemplateService templateService)
+        public TemplateController(ILogger<TemplateController> logger, ITemplateService templateService, IConfiguration configuration)
         {
             _logger = logger;
             _templateService = templateService;
+
+            _demoUserId = configuration["DemoUserId"];
         }
 
         [HttpGet()]
@@ -43,7 +48,7 @@ namespace CafApi.Controllers
         [HttpPost()]
         public async Task<Template> CreateTemplate([FromBody] TemplateRequest request)
         {
-            return await _templateService.CreateTemplate(UserId, request);
+            return await _templateService.CreateTemplate(UserId, request, UserId == _demoUserId);
         }
 
         [HttpDelete("{templateId}")]
@@ -58,12 +63,12 @@ namespace CafApi.Controllers
             await _templateService.UpdateTemplate(UserId, request);
         }
 
-        [HttpGet("library")]        
+        [HttpGet("library")]
         public async Task<List<Library>> GetTemplatesLibrary()
         {
             var templates = await _templateService.GetTemplatesLibrary();
 
             return templates;
-        }        
+        }
     }
 }

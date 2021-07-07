@@ -6,6 +6,7 @@ using CafApi.Services;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace CafApi.Controllers
@@ -19,6 +20,7 @@ namespace CafApi.Controllers
         private readonly ITemplateService _templateService;
         private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
+        private readonly string _demoUserId;
 
         private string UserId
         {
@@ -28,12 +30,18 @@ namespace CafApi.Controllers
             }
         }
 
-        public UserController(ILogger<UserController> logger, IInterviewService interviewService, ITemplateService templateService, IUserService userService)
+        public UserController(ILogger<UserController> logger,
+            IInterviewService interviewService,
+            ITemplateService templateService,
+            IUserService userService,
+            IConfiguration configuration)
         {
             _logger = logger;
             _interviewService = interviewService;
             _templateService = templateService;
             _userService = userService;
+
+            _demoUserId = configuration["DemoUserId"];
         }
 
         [HttpGet]
@@ -50,23 +58,21 @@ namespace CafApi.Controllers
             {
                 profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset);
 
-                // populate demo data
-                string demoUserId = "auth0|60dbf4211c8534006acaf3f1";
-
-                var demoInterviews = await _interviewService.GetInterviews(demoUserId);
+                // populate demo data            
+                var demoInterviews = await _interviewService.GetInterviews(_demoUserId);
 
                 foreach (var interview in demoInterviews)
                 {
                     var toTemplate = await _templateService.GetTemplate(UserId, interview.TemplateId);
                     if (toTemplate == null)
                     {
-                        await _templateService.CloneTemplate(demoUserId, interview.TemplateId, UserId);
+                        await _templateService.CloneTemplate(_demoUserId, interview.TemplateId, UserId);
                     }
 
                     var toInterview = await _interviewService.GetInterview(UserId, interview.InterviewId);
                     if (toInterview == null)
                     {
-                        await _interviewService.CloneInterviewAsDemo(demoUserId, interview.InterviewId, UserId);
+                        await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId);
                     }
                 }
             }
