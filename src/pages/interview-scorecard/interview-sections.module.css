@@ -32,7 +32,7 @@
     color: rgba(0, 0, 0, 0.85);
 }
 
-.assessmentButton {
+.assessmentButtonBlue {
     width: 140px;
     height: 36px;
     display: flex;
@@ -42,7 +42,27 @@
     border: 1px solid #F0F0F0;
 }
 
-.assessmentButtonBlue {
+.assessmentButtonBlue:hover {
+    border: 1px solid #1890FF;
+    background-color: rgba(230, 247, 255, 0.4);
+}
+
+.assessmentButtonRed {
+    width: 140px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid #F0F0F0;
+}
+
+.assessmentButtonRed:hover {
+    border: 1px solid #FF4D4F;
+    background-color: rgba(255, 241, 240, 0.4);
+}
+
+.assessmentButtonBlueActive {
     width: 140px;
     height: 36px;
     display: flex;
@@ -53,7 +73,7 @@
     background-color: rgba(230, 247, 255, 0.4);
 }
 
-.assessmentButtonRed {
+.assessmentButtonRedActive {
     width: 140px;
     height: 36px;
     display: flex;

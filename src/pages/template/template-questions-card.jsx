@@ -12,6 +12,8 @@ import { flatten, sortedUniq } from "lodash/array";
 import { createTagColors } from "../../components/utils/constants";
 import { TemplateTags } from "./template-tags";
 
+const { TextArea } = Input;
+
 /**
  *
  * @param {Template} template
@@ -136,10 +138,11 @@ const TemplateQuestionsCard = ({
         {
             key: 'question',
             className: styles.questionVisible,
-            render: question => <Input
+            render: question => <TextArea
+                className={styles.questionTextArea}
                 placeholder="Question"
-                size="small"
                 bordered={false}
+                autoSize={true}
                 autoFocus={isEmpty(question.question)}
                 defaultValue={question.question}
                 onChange={e => onQuestionChange(question.questionId, e.target.value)}

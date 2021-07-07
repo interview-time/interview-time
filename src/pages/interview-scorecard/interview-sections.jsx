@@ -469,10 +469,10 @@ export const GroupAssessmentButtons = ({ assessment, disabled, onGroupAssessment
         ? styles.assessmentTextRed : styles.assessmentText
 
     const getAssessmentButtonBlue = (assessment) => activeAssessment === assessment
-        ? styles.assessmentButtonBlue : styles.assessmentButton
+        ? styles.assessmentButtonBlueActive : styles.assessmentButtonBlue
 
     const getAssessmentButtonRed = (assessment) => activeAssessment === assessment
-        ? styles.assessmentButtonRed : styles.assessmentButton
+        ? styles.assessmentButtonRedActive : styles.assessmentButtonRed
 
     const getAssessmentIconStyle = (assessment) => activeAssessment === assessment
         ? styles.assessmentIconActive : styles.assessmentIcon
