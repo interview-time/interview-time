@@ -1,5 +1,4 @@
 import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
-import { flatMap } from "lodash/collection";
 
 export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a"
 export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ"
@@ -21,13 +20,6 @@ export const InterviewAssessment = {
     NO: 2,
     STRONG_YES: 3,
     STRONG_NO: 4,
-}
-
-export const GroupAssessment = {
-    NO_PROFICIENCY: 1,
-    LOW_SKILLED: 2,
-    SKILLED: 3,
-    HIGHLY_SKILLED: 4,
 }
 
 export const QuestionAssessment = {
@@ -83,151 +75,6 @@ export const getTemplateCategoryIcon = (key) => {
     }
 
     return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 18 }} />
-}
-
-export const getDecisionText = (decision) => {
-    if (decision === InterviewAssessment.YES) {
-        return 'hire';
-    } else if (decision === InterviewAssessment.STRONG_YES) {
-        return 'strong hire';
-    } else if (decision === InterviewAssessment.NO) {
-        return 'no hire';
-    } else if (decision === InterviewAssessment.STRONG_NO) {
-        return 'strong no hire';
-    }
-
-    return 'none'
-}
-
-const COLOR_RED_5 = '#ff4d4f';
-const COLOR_ORANGE_5 = '#FFA940';
-const COLOR_GREEN_6 = '#52c41a';
-const COLOR_GREEN_8 = '#389E0D';
-const COLOR_NEUTRAL_6 = '#bfbfbf';
-
-export const getDecisionColor = (decision) => {
-    if (decision === InterviewAssessment.YES || decision === InterviewAssessment.STRONG_YES) {
-        return COLOR_GREEN_6;
-    } else if (decision === InterviewAssessment.NO || decision === InterviewAssessment.STRONG_NO) {
-        return COLOR_RED_5;
-    }
-
-    return COLOR_NEUTRAL_6
-}
-
-export const getAssessmentColor = (assessment) => {
-    if(assessment === GroupAssessment.HIGHLY_SKILLED) {
-        return COLOR_GREEN_8;
-    } else if (assessment === GroupAssessment.SKILLED) {
-        return COLOR_GREEN_6;
-    } else if (assessment === GroupAssessment.LOW_SKILLED) {
-        return COLOR_ORANGE_5;
-    } else if (assessment === GroupAssessment.NO_PROFICIENCY) {
-        return COLOR_RED_5;
-    }
-
-    return COLOR_NEUTRAL_6
-}
-
-export const getAssessmentText = (assessment) => {
-    if(assessment === GroupAssessment.HIGHLY_SKILLED) {
-        return "highly skilled";
-    } else if (assessment === GroupAssessment.SKILLED) {
-        return "skilled";
-    } else if (assessment === GroupAssessment.LOW_SKILLED) {
-        return "low skills";
-    } else if (assessment === GroupAssessment.NO_PROFICIENCY) {
-        return "no proficiency";
-    }
-
-    return "needs evaluation"
-}
-
-/**
- *
- * @param {InterviewGroup[]} groups
- * @returns {Question[]}
- */
-export const getQuestionsWithAssessment = (groups) => {
-    return flatMap(groups, (item) => item.questions)
-        .filter(question => question.assessment !== 0)
-}
-
-/**
- *
- * @param {InterviewGroup} group
- * @returns {number}
- */
-export const getQuestionsPerformance = (group) => {
-    let questions = group.questions.filter(question => question.assessment !== 0)
-    let total = 0;
-    questions.forEach(question => {
-        total += getQuestionAssessmentNumber(question.assessment)
-    })
-
-    if(questions.length > 0) {
-        return Math.round((total / questions.length) * 100)
-    } else {
-        return 0
-    }
-}
-
-export const getOverallPerformanceColor = (groups) => {
-    let performance = getOverallPerformance(groups)
-    if(performance >= 80) {
-        return COLOR_GREEN_6
-    } else if(performance <= 50) {
-        return COLOR_ORANGE_5
-    } else {
-        return COLOR_RED_5
-    }
-}
-
-export const getOverallPerformance = (groups) => {
-    let total = 0;
-    groups.forEach(group => {
-        total += getGroupAssessmentNumber(group.assessment)
-    })
-
-    return Math.round((total / groups.length) * 100)
-}
-
-const getGroupAssessmentNumber = (assessment) => {
-    if(assessment === GroupAssessment.HIGHLY_SKILLED) {
-        return 1.0;
-    } else if (assessment === GroupAssessment.SKILLED) {
-        return 0.85;
-    } else if (assessment === GroupAssessment.LOW_SKILLED) {
-        return 0.45;
-    } else if (assessment === GroupAssessment.NO_PROFICIENCY) {
-        return 0;
-    }
-
-    return 0;
-}
-
-const getQuestionAssessmentNumber = (assessment) => {
-    if(assessment === QuestionAssessment.YES) {
-        return 1.0;
-    } else if (assessment === QuestionAssessment.MAYBE) {
-        return 0.8;
-    } else if (assessment === QuestionAssessment.NO) {
-        return 0.2;
-    }
-
-    return 0;
-}
-
-export const getDifficultyColor = (difficulty) => {
-    if (difficulty === Difficulty.EASY) {
-        return 'green';
-    } else if (difficulty === Difficulty.HARD) {
-        return 'red';
-    }  else if (difficulty === Difficulty.MEDIUM) {
-        return 'orange';
-    }
-
-    return '#bfbfbf'
 }
 
 export const getStatusColor = (status) => {

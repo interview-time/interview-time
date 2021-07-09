@@ -8,14 +8,16 @@ import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
 import {
-    getAssessmentColor,
-    getAssessmentText,
-    getDecisionColor,
-    getDecisionText,
-    getOverallPerformance,
     getStatusText,
     Status
 } from "../../components/utils/constants";
+import {
+    getGroupAssessmentColor,
+    getDecisionColor,
+    getDecisionText,
+    getGroupAssessmentText,
+    getOverallPerformancePercent,
+} from "../../components/utils/assessment";
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse, sortedUniq } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
@@ -101,13 +103,13 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
             title: 'Performance',
             key: 'position',
             sortDirections: ['descend', 'ascend'],
-            sorter: (a, b) => getOverallPerformance(a.structure.groups) - getOverallPerformance(b.structure.groups),
+            sorter: (a, b) => getOverallPerformancePercent(a.structure.groups) - getOverallPerformancePercent(b.structure.groups),
             render: interview => {
-                const overallPerformanceColor = getOverallPerformance(interview.structure.groups);
+                const overallPerformance = getOverallPerformancePercent(interview.structure.groups);
 
                 return <Space>
-                    {overallPerformanceColor + '%'}
-                    {overallPerformanceColor >= TOP_PERFORMANCE &&
+                    {overallPerformance + '%'}
+                    {overallPerformance >= TOP_PERFORMANCE &&
                     <TrophyTwoTone style={{ fontSize: 16 }} twoToneColor='#faad14' />}
                 </Space>;
             }
@@ -118,12 +120,12 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
             render: interview => <Popover title="Competence Areas" content={
                 <Space direction="vertical" className={styles.assessmentPopup}>
                     {interview.structure.groups.map(group => {
-                        let color = getAssessmentColor(group.assessment)
+                        let color = getGroupAssessmentColor(group)
                         return <Row gutter={16}>
                             <Col span={12}>{group.name}</Col>
                             <Col span={12}>
                                 <span className={styles.dotSmall} style={{ backgroundColor: color }} />
-                                <span>{getAssessmentText(group.assessment)}</span>
+                                <span>{getGroupAssessmentText(group)}</span>
                             </Col>
                         </Row>
                     })}
@@ -131,7 +133,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
             }><Space>
                 {
                     interview.structure.groups.map(group => {
-                        let color = getAssessmentColor(group.assessment)
+                        let color = getGroupAssessmentColor(group)
                         return <span className={styles.dot} style={{ backgroundColor: color }} />
                     })
                 }
