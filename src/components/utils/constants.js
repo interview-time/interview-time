@@ -23,9 +23,9 @@ export const InterviewAssessment = {
 }
 
 export const QuestionAssessment = {
-    NO: 1,
-    MAYBE: 2,
-    YES: 3,
+    POOR: 1,
+    AVERAGE: 2,
+    GOOD: 3,
 }
 
 export const TemplateCategories = [

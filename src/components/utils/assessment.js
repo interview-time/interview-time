@@ -160,11 +160,11 @@ export const getGroupAssessmentNumber = (group) => {
  * @returns {number} - [0, 1.0]
  */
 const getQuestionAssessmentNumber = (assessment) => {
-    if(assessment === QuestionAssessment.YES) {
+    if(assessment === QuestionAssessment.GOOD) {
         return QUESTION_SCORE_GOOD;
-    } else if (assessment === QuestionAssessment.MAYBE) {
+    } else if (assessment === QuestionAssessment.AVERAGE) {
         return QUESTION_SCORE_AVERAGE;
-    } else if (assessment === QuestionAssessment.NO) {
+    } else if (assessment === QuestionAssessment.POOR) {
         return QUESTION_SCORE_POOR;
     }
 
