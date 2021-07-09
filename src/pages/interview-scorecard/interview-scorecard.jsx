@@ -11,7 +11,6 @@ import { routeInterviewCandidate, routeInterviewDetails, routeInterviews } from 
 import { findGroup, findInterview, findQuestionInGroups, findTemplate } from "../../components/utils/converters";
 import Text from "antd/lib/typography/Text";
 import { useAuth0 } from "../../react-auth0-spa";
-import InterviewDecisionAlert from "../interview-evaluation/interview-decision-alert";
 import { loadTemplates } from "../../store/templates/actions";
 import { InterviewGroupsSection, IntroSection, SummarySection, InterviewInformationSection, NotesSection } from "./interview-sections";
 import { isStickyNotesEnabled } from "../../components/utils/storage";
@@ -169,8 +168,6 @@ const InterviewScorecard = ({
                      md={{ span: 24 }}
                      sm={{ span: 24 }}
                      xs={{ span: 24 }}>
-
-                    {interview.interviewId && interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
 
                     <div style={{ marginBottom: 12 }}>
                         <InterviewInformationSection
