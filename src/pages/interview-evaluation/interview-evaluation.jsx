@@ -6,24 +6,22 @@ import { Button, Card, Col, Modal, Progress, Row, Space} from "antd";
 import React, { useState } from "react";
 import Text from "antd/lib/typography/Text";
 import {
-    getAssessmentColor,
-    getAssessmentText,
-    getDecisionText,
-    getOverallPerformance,
-    getOverallPerformanceColor,
-    getQuestionsPerformance,
-    getQuestionsWithAssessment,
-    InterviewAssessment,
     Status
 } from "../../components/utils/constants";
+import {
+    getGroupAssessmentColor,
+    getGroupAssessmentPercent,
+    getGroupAssessmentText,
+    getOverallPerformanceColor,
+    getOverallPerformancePercent,
+    getQuestionsWithAssessment,
+} from "../../components/utils/assessment";
 import { useHistory, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
 import { useAuth0 } from "../../react-auth0-spa";
-import Radio from "antd/es/radio/radio";
 import { loadTemplates } from "../../store/templates/actions";
-import { InterviewInformationSection } from "../interview-scorecard/interview-sections";
-import InterviewDecisionAlert from "./interview-decision-alert";
+import { InterviewAssessmentButtons, InterviewInformationSection } from "../interview-scorecard/interview-sections";
 import { personalEvent } from "../../analytics";
 import { routeCandidates, routeInterviewDetails } from "../../components/utils/route";
 
@@ -104,10 +102,10 @@ const InterviewEvaluation = ({
 
     const isCompletedStatus = () => interview.status === Status.COMPLETED
 
-    const onAssessmentChanged = e => {
+    const onAssessmentChanged = assessment => {
         setInterview({
             ...interview,
-            decision: e.target.value
+            decision: assessment
         })
     };
 
@@ -165,13 +163,13 @@ const InterviewEvaluation = ({
                         strokeColor='#69C0FF'
                         steps={10}
                         strokeWidth={16}
-                        percent={getQuestionsPerformance(group)}
+                        percent={getGroupAssessmentPercent(group)}
                     />
                 </Col>
                 <Col flex="1" className={styles.divHorizontalCenter}>
                                             <span className={styles.dotSmall}
-                                                  style={{ backgroundColor: getAssessmentColor(group.assessment) }} />
-                    <span>{getAssessmentText(group.assessment)}</span>
+                                                  style={{ backgroundColor: getGroupAssessmentColor(group) }} />
+                    <span>{getGroupAssessmentText(group)}</span>
                 </Col>
             </Row>
         )}
@@ -186,7 +184,7 @@ const InterviewEvaluation = ({
                 type='circle'
                 strokeLinecap='square'
                 strokeColor={getOverallPerformanceColor(interview.structure.groups)}
-                percent={getOverallPerformance(interview.structure.groups)}
+                percent={getOverallPerformancePercent(interview.structure.groups)}
             />
             <span>{getQuestionsWithAssessment(interview.structure.groups).length} questions</span>
         </div>
@@ -207,26 +205,15 @@ const InterviewEvaluation = ({
                     position.</Text>
 
                 <div className={styles.divSpaceBetween}>
-                    <Radio.Group
-                        value={interview.decision}
+                    <InterviewAssessmentButtons
+                        assessment={interview.decision}
                         disabled={isCompletedStatus()}
-                        buttonStyle="solid"
-                        onChange={onAssessmentChanged}
-                    >
-                        <Radio.Button value={InterviewAssessment.STRONG_NO}>
-                            {getDecisionText(InterviewAssessment.STRONG_NO)}
-                        </Radio.Button>
-                        <Radio.Button value={InterviewAssessment.NO}>
-                            {getDecisionText(InterviewAssessment.NO)}
-                        </Radio.Button>
-                        <Radio.Button value={InterviewAssessment.YES}>
-                            {getDecisionText(InterviewAssessment.YES)}
-                        </Radio.Button>
-                        <Radio.Button value={InterviewAssessment.STRONG_YES}>
-                            {getDecisionText(InterviewAssessment.STRONG_YES)}
-                        </Radio.Button>
-                    </Radio.Group>
-
+                        onAssessmentChanged={assessment => {
+                            if (onAssessmentChanged) {
+                                onAssessmentChanged(assessment)
+                            }
+                        }}
+                    />
                     <Button type="primary"
                             onClick={onSubmitClicked}
                             disabled={isCompletedStatus()}>
@@ -245,8 +232,6 @@ const InterviewEvaluation = ({
                      xxl={{ span: 16, offset: 4 }}
                      xl={{ span: 20, offset: 2 }}
                      lg={{ span: 24 }}>
-
-                    {interview.decision !== 0 && <InterviewDecisionAlert interview={interview} />}
 
                     <div style={{ marginBottom: 12 }}>
                         <InterviewInformationSection

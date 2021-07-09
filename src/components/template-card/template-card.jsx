@@ -17,7 +17,7 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
     const history = useHistory();
     const [previewModalVisible, setPreviewModalVisible] = React.useState(false);
 
-    const getCategory = (template) => TemplateCategories.find((category) => category.key === template.type);
+    const getCategory = (template) => TemplateCategories.find((category) => category.key === template.type) || {};
 
     const getTotalQuestions = (groups) =>
         sumBy(groups, (group) => (group.questions ? group.questions.length : 0));
