@@ -12,8 +12,10 @@ import { Link } from "react-router-dom";
 import { routeTemplateDetails } from "../../components/utils/route";
 import moment from "moment";
 import {
+    AddNoteIcon,
     CollapseIcon,
     ExpandIcon,
+    NoteIcon,
     StarEmphasisIcon,
     StarFilledIcon,
     StarHalfIcon,
@@ -22,6 +24,7 @@ import {
 import { interviewToTags } from "../../components/utils/converters";
 import { isStickyNotesEnabled } from "../../components/utils/storage";
 import confirm from "antd/lib/modal/confirm";
+import { isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
 
@@ -354,6 +357,7 @@ const InterviewQuestionsCard = ({
 }) => {
 
     const [collapsed, setCollapsed] = React.useState(false)
+    const [hoverIndex, setHoverIndex] = React.useState(-1)
 
     const columns = [
         {
@@ -362,6 +366,7 @@ const InterviewQuestionsCard = ({
             key: 'question',
             sortDirections: ['descend', 'ascend'],
             className: styles.multiLineText,
+            shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
         },
         {
@@ -369,6 +374,7 @@ const InterviewQuestionsCard = ({
             key: 'tags',
             dataIndex: 'tags',
             width: 250,
+            shouldCellUpdate: (record, prevRecord) => record.tags !== prevRecord.tags,
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
             render: tags => (
                 <>
@@ -385,18 +391,23 @@ const InterviewQuestionsCard = ({
         {
             title: 'Assessment',
             width: 140,
+            shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: (question) => <AssessmentCheckbox
                 defaultValue={question.assessment}
                 disabled={disabled}
                 onChange={value => {
-                    console.log("value " + value)
                     if (onQuestionAssessmentChanged) {
                         onQuestionAssessmentChanged(question, value)
                     }
                 }}
             />
         },
+        { title: "", dataIndex: "", key: "expand", width: 1 }
     ];
+
+    const blueIconStyle = { color: "#1890FF", fontSize: 18 }
+    const greyIconStyle = { color: "#000000d9", fontSize: 18 }
+    const whiteIconStyle = { color: "#FFFFFF", fontSize: 18 }
 
     const onCollapseClicked = () => {
         setCollapsed(!collapsed)
@@ -420,7 +431,51 @@ const InterviewQuestionsCard = ({
         </div>
         {!collapsed && <div>
             <Card bodyStyle={{ padding: 0 }}>
-                <Table columns={columns} dataSource={group.questions} pagination={false} />
+                <Table
+                    columns={columns}
+                    dataSource={group.questions.map((question, index) => {
+                        question.key = index
+                        return question
+                    })}
+                    pagination={false}
+                    expandable={{
+                        expandIconColumnIndex: 4,
+                        expandedRowRender: question => (
+                            <TextArea
+                                className={styles.questionTextArea}
+                                placeholder="Notes..."
+                                bordered={false}
+                                autoSize={true}
+                                autoFocus={true}
+                                defaultValue={question.notes}
+                                onChange={e => question.notes = e.target.value}
+                            />
+                        ),
+                        expandIcon: ({ expanded, onExpand, record }) => {
+                            if (expanded) {
+                                if (hoverIndex === record.key) {
+                                    return <NoteIcon style={blueIconStyle} onClick={e => onExpand(record, e)} />;
+                                } else {
+                                    return <NoteIcon style={greyIconStyle} onClick={e => onExpand(record, e)} />;
+                                }
+                            } else {
+                                if (hoverIndex === record.key) {
+                                    return <AddNoteIcon style={blueIconStyle} onClick={e => onExpand(record, e)} />;
+                                } else if (!isEmpty(record.notes)) {
+                                    return <NoteIcon style={greyIconStyle} onClick={e => onExpand(record, e)} />;
+                                } else {
+                                    return <AddNoteIcon style={whiteIconStyle} onClick={e => onExpand(record, e)} />;
+                                }
+                            }
+                        }
+                    }}
+                    onRow={(record, rowIndex) => {
+                        return {
+                            onMouseEnter: event => setHoverIndex(rowIndex),
+                            onMouseLeave: event => setHoverIndex(-1),
+                        };
+                    }}
+                />
             </Card>
 
             <Space className={styles.space} direction="vertical">

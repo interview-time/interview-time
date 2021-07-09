@@ -162,3 +162,7 @@
 .notesTextArea {
     margin-top: 12px;
 }
+
+.questionTextArea {
+    resize: none;
+}
