@@ -16,10 +16,8 @@ import {
     findGroup,
     findInterview,
     findQuestionInGroups,
-    findTemplate,
 } from "../../components/utils/converters";
 import Text from "antd/lib/typography/Text";
-import { loadTemplates } from "../../store/templates/actions";
 import {
     InterviewGroupsSection,
     IntroSection,
@@ -40,18 +38,15 @@ const DATA_CHANGE_DEBOUNCE = 30 * 1000; // 30 sec
  * @param deleteInterview
  * @param loadInterviews
  * @param updateInterview
- * @param loadTemplates
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewScorecard = ({
     interviews,
-    templates,
     interviewsUploading,
     deleteInterview,
     loadInterviews,
     updateInterview,
-    loadTemplates,
 }) => {
     /**
      * @type {InterviewScorecard}
@@ -68,10 +63,8 @@ const InterviewScorecard = ({
     /**
      * @type {Template}
      */
-    const emptyTemplate = {};
 
     const [interview, setInterview] = useState(emptyInterview);
-    const [template, setTemplate] = useState(emptyTemplate);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
 
@@ -88,19 +81,7 @@ const InterviewScorecard = ({
     }, [interviews, id]);
 
     React.useEffect(() => {
-        // initial data loading
-        if (!template.templateId && templates.length > 0 && interview.templateId) {
-            const interviewTemplate = findTemplate(interview.templateId, templates);
-            if (interviewTemplate) {
-                setTemplate(cloneDeep(interviewTemplate));
-            }
-        }
-        // eslint-disable-next-line
-    }, [interview, templates]);
-
-    React.useEffect(() => {
         loadInterviews();
-        loadTemplates();
 
         return () => {
             onInterviewChangeDebounce.cancel();
@@ -262,14 +243,12 @@ const InterviewScorecard = ({
     );
 };
 
-const mapDispatch = { deleteInterview, loadInterviews, updateInterview, loadTemplates };
+const mapDispatch = { deleteInterview, loadInterviews, updateInterview };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-    const templatesState = state.templates || {};
     return {
         interviews: interviewsState.interviews,
         interviewsUploading: interviewsState.uploading,
-        templates: templatesState.templates,
     };
 };
 

@@ -18,8 +18,7 @@ import {
 } from "../../components/utils/assessment";
 import { useHistory, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import { findInterview, findTemplate } from "../../components/utils/converters";
-import { loadTemplates } from "../../store/templates/actions";
+import { findInterview } from "../../components/utils/converters";
 import { InterviewAssessmentButtons, InterviewInformationSection } from "../interview-scorecard/interview-sections";
 import { personalEvent } from "../../analytics";
 import { routeCandidates, routeInterviewDetails } from "../../components/utils/route";
@@ -34,19 +33,15 @@ function bodyStyleCard() {
 /**
  *
  * @param {Interview[]} interviews
- * @param {Template[]} templates
  * @param loadInterviews
  * @param updateInterview
  * @param deleteInterview
- * @param loadTemplates
  */
 const InterviewEvaluation = ({
                                  interviews,
-                                 templates,
                                  loadInterviews,
                                  updateInterview,
-                                 deleteInterview,
-                                 loadTemplates }) => {
+                                 deleteInterview }) => {
 
     /**
      * @type {Interview}
@@ -60,14 +55,7 @@ const InterviewEvaluation = ({
         }
     }
 
-    /**
-     * @type {Template}
-     */
-    const emptyTemplate = {
-    }
-
     const [interview, setInterview] = useState(emptyInterview);
-    const [template, setTemplate] = useState(emptyTemplate);
 
     const { id } = useParams();
 
@@ -82,19 +70,7 @@ const InterviewEvaluation = ({
     }, [interviews, id]);
 
     React.useEffect(() => {
-        // initial data loading
-        if (!template.templateId && templates.length > 0 && interview.templateId) {
-            const interviewTemplate = findTemplate(interview.templateId, templates);
-            if(interviewTemplate) {
-                setTemplate(cloneDeep(interviewTemplate))
-            }
-        }
-        // eslint-disable-next-line
-    }, [interview, templates]);
-
-    React.useEffect(() => {
         loadInterviews();
-        loadTemplates();
         // eslint-disable-next-line
     }, []);
 
@@ -256,14 +232,12 @@ const InterviewEvaluation = ({
     )
 }
 
-const mapDispatch = { loadInterviews, updateInterview, deleteInterview, loadTemplates }
+const mapDispatch = { loadInterviews, updateInterview, deleteInterview }
 
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-    const templatesState = state.templates || {};
     return {
         interviews: interviewsState.interviews,
-        templates: templatesState.templates
     }
 }
 
