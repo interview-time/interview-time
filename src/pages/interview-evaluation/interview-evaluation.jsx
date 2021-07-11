@@ -191,7 +191,7 @@ const InterviewEvaluation = ({
                     <Button type="primary"
                             onClick={onSubmitClicked}
                             disabled={isCompletedStatus()}>
-                        Submit candidate evaluation
+                        Submit Evaluation
                     </Button>
                 </div>
             </Space>

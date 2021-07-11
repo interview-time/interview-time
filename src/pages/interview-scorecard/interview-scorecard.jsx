@@ -209,7 +209,7 @@ const InterviewScorecard = ({
                                     Save
                                 </Button>
                                 <Button type="primary" onClick={onCandidateEvaluationClicked}>
-                                    Open Candidate Evaluation
+                                    Next to Candidate Evaluation
                                 </Button>
                             </Space>
                         </div>
