@@ -250,17 +250,6 @@ export const InterviewInformationSection = ({
                     </Space>
                 </Col>
             </Row>
-
-            <div className={styles.interviewActionButtonContainer}>
-                <Space>
-                    <Button type="link" danger onClick={onDeleteClicked}>
-                        Delete
-                    </Button>
-                    <Button type="link" onClick={onEditInterview}>
-                        Edit
-                    </Button>
-                </Space>
-            </div>
         </Card>
     );
 };
