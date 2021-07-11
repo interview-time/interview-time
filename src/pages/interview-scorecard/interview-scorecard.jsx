@@ -74,7 +74,6 @@ const InterviewScorecard = ({
     const [template, setTemplate] = useState(emptyTemplate);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
-    const [notesExpanded, setNotesExpanded] = useState(true);
 
     const { id } = useParams();
     const { user } = useAuth0();

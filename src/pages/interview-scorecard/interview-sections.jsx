@@ -27,7 +27,6 @@ import {
     StarIcon,
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
-import { isStickyNotesEnabled } from "../../components/utils/storage";
 import confirm from "antd/lib/modal/confirm";
 import { isEmpty } from "../../components/utils/utils";
 
