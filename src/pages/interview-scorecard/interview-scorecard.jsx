@@ -19,7 +19,6 @@ import {
     findTemplate,
 } from "../../components/utils/converters";
 import Text from "antd/lib/typography/Text";
-import { useAuth0 } from "../../react-auth0-spa";
 import { loadTemplates } from "../../store/templates/actions";
 import {
     InterviewGroupsSection,
@@ -76,7 +75,6 @@ const InterviewScorecard = ({
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
 
     const { id } = useParams();
-    const { user } = useAuth0();
 
     const history = useHistory();
 
@@ -196,9 +194,7 @@ const InterviewScorecard = ({
                             onDeleteInterview={onDeleteInterview}
                             onEditInterview={onEditInterview}
                             loading={initialLoading()}
-                            userName={user.name}
                             interview={interview}
-                            template={template}
                         />
                     </div>
 

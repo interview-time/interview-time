@@ -1,6 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Button, Card, Col, Input, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
+import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
 import {
     createTagColors,
     DATE_FORMAT_DISPLAY,
@@ -12,9 +12,7 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { ArrowLeftOutlined, CloseOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { routeTemplateDetails } from "../../components/utils/route";
+import { ArrowLeftOutlined, CloseOutlined, DownOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import {
     AddNoteIcon,
@@ -186,9 +184,7 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
  *
  * @param {boolean} loading
  * @param {String} title
- * @param {String} userName
  * @param {Interview} interview
- * @param {Template} template
  * @param onDeleteInterview
  * @param onEditInterview
  * @param onBackClicked
@@ -198,9 +194,7 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
 export const InterviewInformationSection = ({
     loading,
     title,
-    userName,
     interview,
-    template,
     onDeleteInterview,
     onEditInterview,
     onBackClicked,
@@ -218,43 +212,41 @@ export const InterviewInformationSection = ({
         });
     };
 
+    const menu = (
+        <Menu>
+            <Menu.Item onClick={onEditInterview}>Edit Interview</Menu.Item>
+            <Menu.Item onClick={onDeleteClicked}>Delete Interview</Menu.Item>
+        </Menu>
+    );
+
     return (
         <Card loading={loading}>
-            <div className={styles.header}>
+            <div className={styles.divSpaceBetween}>
                 <div className={styles.headerTitleContainer} onClick={onBackClicked}>
                     <ArrowLeftOutlined />{" "}
                     <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
                         {title}
                     </Title>
                 </div>
+                <Dropdown overlay={menu}>
+                    <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                        Actions <DownOutlined />
+                    </a>
+                </Dropdown>
             </div>
             <Row style={{ marginTop: "24px" }}>
                 <Col flex="140px">
                     <Space direction="vertical">
                         <Text type="secondary">Candidate Name:</Text>
-                        <Text type="secondary">Interviewer Name:</Text>
+                        <Text type="secondary">Position:</Text>
                         <Text type="secondary">Interview Date:</Text>
                     </Space>
                 </Col>
                 <Col flex="1">
                     <Space direction="vertical">
                         <Text>{interview.candidate}</Text>
-                        <Text>{userName}</Text>
-                        <Text>{moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}</Text>
-                    </Space>
-                </Col>
-                <Col flex="100px">
-                    <Space direction="vertical">
-                        <Text type="secondary">Position:</Text>
-                        <Text type="secondary">Template:</Text>
-                    </Space>
-                </Col>
-                <Col flex="1">
-                    <Space direction="vertical">
                         <Text>{interview.position}</Text>
-                        <Link to={routeTemplateDetails(interview.templateId)} style={{ color: "#000000d9" }}>
-                            <span>{template.title ? template.title : null}</span>
-                        </Link>
+                        <Text>{moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}</Text>
                     </Space>
                 </Col>
             </Row>

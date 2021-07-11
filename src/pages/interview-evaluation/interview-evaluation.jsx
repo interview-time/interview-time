@@ -19,7 +19,6 @@ import {
 import { useHistory, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import { useAuth0 } from "../../react-auth0-spa";
 import { loadTemplates } from "../../store/templates/actions";
 import { InterviewAssessmentButtons, InterviewInformationSection } from "../interview-scorecard/interview-sections";
 import { personalEvent } from "../../analytics";
@@ -71,7 +70,6 @@ const InterviewEvaluation = ({
     const [template, setTemplate] = useState(emptyTemplate);
 
     const { id } = useParams();
-    const { user } = useAuth0();
 
     const history = useHistory();
 
@@ -240,9 +238,7 @@ const InterviewEvaluation = ({
                             onDeleteInterview={onDeleteInterview}
                             onEditInterview={onEditInterview}
                             loading={initialLoading()}
-                            userName={user.name}
-                            interview={interview}
-                            template={template} />
+                            interview={interview} />
                     </div>
 
                     <Row gutter={12} style={{ marginBottom: 12 }}>
