@@ -24,10 +24,10 @@ const columns = [
     {
         key: "candidate",
         dataIndex: "candidate",
-        render: (candidate, isDemo) => (
+        render: (candidate, interview) => (
             <>
                 <span>{candidate}</span>
-                {isDemo && (
+                {interview.isDemo && (
                     <Tag className={styles.demoTag} color="orange">
                         Demo
                     </Tag>

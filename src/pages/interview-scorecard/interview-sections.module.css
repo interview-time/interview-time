@@ -39,11 +39,11 @@
     align-items: center;
     cursor: pointer;
     border-radius: 2px;
-    border: 1px solid #F0F0F0;
+    border: 1px solid #f0f0f0;
 }
 
 .assessmentButtonGreen:hover {
-    border: 1px solid #52C41A;
+    border: 1px solid #52c41a;
     background-color: rgba(246, 255, 237, 0.4);
 }
 
@@ -54,11 +54,11 @@
     align-items: center;
     cursor: pointer;
     border-radius: 2px;
-    border: 1px solid #F0F0F0;
+    border: 1px solid #f0f0f0;
 }
 
 .assessmentButtonRed:hover {
-    border: 1px solid #FF4D4F;
+    border: 1px solid #ff4d4f;
     background-color: rgba(255, 241, 240, 0.4);
 }
 
@@ -69,7 +69,7 @@
     align-items: center;
     cursor: pointer;
     border-radius: 2px;
-    border: 1px solid #52C41A;
+    border: 1px solid #52c41a;
     background-color: rgba(246, 255, 237, 0.4);
 }
 
@@ -80,7 +80,7 @@
     align-items: center;
     cursor: pointer;
     border-radius: 2px;
-    border: 1px solid #FF4D4F;
+    border: 1px solid #ff4d4f;
     background-color: rgba(255, 241, 240, 0.4);
 }
 
@@ -89,11 +89,11 @@
 }
 
 .assessmentTextGreen {
-    color: #52C41A;
+    color: #52c41a;
 }
 
 .assessmentTextRed {
-    color: #FF4D4F;
+    color: #ff4d4f;
 }
 
 .assessmentIcon {
@@ -104,7 +104,7 @@
 }
 
 .assessmentIconActive {
-    color: #FADB14;
+    color: #fadb14;
     font-size: 20px;
     margin-left: 8px;
     margin-right: 8px;
@@ -125,42 +125,31 @@
     justify-content: flex-end;
 }
 
-.stickyFooter {
-    width: 100%;
-    position: sticky;
-    position: -webkit-sticky;
-    bottom: 0;
-    display: flex;
-    justify-content: flex-end;
-}
-
 .notes {
-    cursor: pointer;
-    width: 200px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.10), 0 16px 24px -4px rgba(0, 0, 0, 0.32);
-    padding-top: 8px;
-    padding-left: 12px;
-    padding-bottom: 8px;
-    margin-right: 24px;
-    background-color: white;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    background-color: #fbfbfb;
+    border: 1px solid #f0f0f0;
+    padding: 20px;
+    margin-top: 12px;
 }
 
-.notesExpanded {
-    cursor: pointer;
-    width: 400px;
-    height: 200px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.10), 0 16px 24px -4px rgba(0, 0, 0, 0.32);
-    padding: 8px 12px;
-    margin-right: 24px;
-    background-color: white;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+.notesHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.notesSwitch {
+    margin-left: 5px;
 }
 
 .notesTextArea {
-    margin-top: 12px;
+    resize: none;
+    padding: 0;
+}
+
+.stickyNotes {
+    position: -webkit-sticky; /* Required for Safari */
+    position: sticky;
+    bottom: 0;
 }
 
 .questionTextArea {
