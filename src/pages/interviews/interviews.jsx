@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import { Badge, Button, Card, Col, Table, Tag } from 'antd';
+import { Badge, Button, Card, Col, Table, Tag } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
@@ -16,7 +16,6 @@ import Title from "antd/lib/typography/Title";
 import { PlusOutlined } from "@ant-design/icons";
 
 const Interviews = ({ interviews, loading, loadInterviews }) => {
-
     const history = useHistory();
 
     React.useEffect(() => {
@@ -26,82 +25,83 @@ const Interviews = ({ interviews, loading, loadInterviews }) => {
 
     const onRowClicked = (record) => {
         history.push(routeInterviewScorecard(record.interviewId));
-    }
+    };
 
     const getStatusColor = (interview) => {
         if (moment() > moment(interview.interviewDateTime)) {
-            return "error"
+            return "error";
         } else {
-            return "processing"
+            return "processing";
         }
-    }
+    };
 
     const getStatusText = (interview) => {
         if (moment() > moment(interview.interviewDateTime)) {
-            return "not submitted"
+            return "not submitted";
         } else {
-            return "upcoming"
+            return "upcoming";
         }
-    }
+    };
 
     const columns = [
         {
-            title: 'Candidate Name',
-            key: 'candidate',
-            dataIndex: 'candidate',
-            sortDirections: ['descend', 'ascend'],
+            title: "Candidate Name",
+            key: "candidate",
+            dataIndex: "candidate",
+            sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
-            render: (candidate, isDemo) => (
-                <>
-                    <span>{candidate}</span>
-                    {isDemo && (
-                        <Tag className={styles.demoTag} color="orange">
-                            Demo
-                        </Tag>
-                    )}
-                </>
-            ),
+            render: (candidate, interview) => {
+                return (
+                    <>
+                        <span>{candidate}</span>
+                        {interview.isDemo && (
+                            <Tag className={styles.demoTag} color="orange">
+                                Demo
+                            </Tag>
+                        )}
+                    </>
+                );
+            },
         },
         {
-            title: 'Position',
-            key: 'position',
-            dataIndex: 'position',
-            sortDirections: ['descend', 'ascend'],
+            title: "Position",
+            key: "position",
+            dataIndex: "position",
+            sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
         },
         {
-            title: 'Date',
-            key: 'interviewDateTime',
-            dataIndex: 'interviewDateTime',
-            sortDirections: ['descend', 'ascend'],
+            title: "Date",
+            key: "interviewDateTime",
+            dataIndex: "interviewDateTime",
+            sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: interviewDateTime => <span
-                className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
+            render: (interviewDateTime) => (
+                <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
+            ),
         },
         {
-            title: 'Status',
-            key: 'status',
-            sortDirections: ['descend', 'ascend'],
+            title: "Status",
+            key: "status",
+            sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: interview => <Badge status={getStatusColor(interview)}
-                                        text={getStatusText(interview)} />,
+            render: (interview) => (
+                <Badge status={getStatusColor(interview)} text={getStatusText(interview)} />
+            ),
         },
     ];
 
     return (
         <Layout>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-
                 <div className={styles.header}>
                     <Title level={2}>Interviews</Title>
                     <span className={styles.subTitle}>
                         Schedule new interview or fill and submit existing interview scorecard
                     </span>
-
                 </div>
 
                 <Card bodyStyle={{ padding: 0 }}>
-
                     <Table
                         pagination={false}
                         columns={columns}
@@ -121,21 +121,26 @@ const Interviews = ({ interviews, loading, loadInterviews }) => {
                 </Card>
             </Col>
         </Layout>
-    )
-}
+    );
+};
 
 const mapDispatch = { loadInterviews };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
 
-    const interviews = reverse(sortBy(cloneDeep(
-        interviewsState.interviews.filter(interview => interview.status !== Status.COMPLETED)
-    ), ['interviewDateTime']))
+    const interviews = reverse(
+        sortBy(
+            cloneDeep(
+                interviewsState.interviews.filter((interview) => interview.status !== Status.COMPLETED)
+            ),
+            ["interviewDateTime"]
+        )
+    );
 
     return {
         interviews: interviews,
-        loading: interviewsState.loading
-    }
-}
+        loading: interviewsState.loading,
+    };
+};
 
-export default connect(mapState, mapDispatch)(Interviews)
+export default connect(mapState, mapDispatch)(Interviews);

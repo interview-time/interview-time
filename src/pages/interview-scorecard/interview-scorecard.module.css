@@ -62,10 +62,16 @@
 }
 
 .anchorLink {
-    color: #8C8C8C;
-    font-size: 13px
+    color: #8c8c8c;
+    font-size: 13px;
 }
 
 .hash {
     scroll-margin-top: var(--header-height-with-padding);
+}
+
+.stickyNotes {
+    position: -webkit-sticky; /* Required for Safari */
+    position: sticky;
+    bottom: 0;
 }

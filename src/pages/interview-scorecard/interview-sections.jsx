@@ -1,11 +1,11 @@
 import styles from "./interview-sections.module.css";
-import React from 'react';
+import React from "react";
 import { Button, Card, Col, Input, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
 import {
     createTagColors,
     DATE_FORMAT_DISPLAY,
     InterviewAssessment,
-    Status
+    Status,
 } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -24,7 +24,7 @@ import {
     StarEmphasisIcon,
     StarFilledIcon,
     StarHalfIcon,
-    StarIcon
+    StarIcon,
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
 import { isStickyNotesEnabled } from "../../components/utils/storage";
@@ -42,20 +42,24 @@ const { TextArea } = Input;
  */
 export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
     const marginTop12 = { marginTop: 12 };
-    return <div>
-        <div className={styles.divSpaceBetween}>
-            <Title level={4} style={{ marginBottom: 0 }}>Interview</Title>
-            <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
+    return (
+        <div>
+            <div className={styles.divSpaceBetween}>
+                <Title level={4} style={{ marginBottom: 0 }}>
+                    Interview
+                </Title>
+                <CloseOutlined onClick={onCloseClicked} style={{ cursor: "pointer" }} />
+            </div>
+            <Card style={{ marginTop: 12, marginBottom: 12 }}>
+                <IntroSection interview={interview} />
+            </Card>
+            <InterviewGroupsSection interview={interview} />
+            <Card style={marginTop12}>
+                <SummarySection interview={interview} />
+            </Card>
         </div>
-        <Card style={{marginTop: 12, marginBottom: 12}}>
-            <IntroSection interview={interview} />
-        </Card>
-        <InterviewGroupsSection interview={interview} />
-        <Card style={marginTop12}>
-            <SummarySection interview={interview} />
-        </Card>
-    </div>;
-}
+    );
+};
 
 /**
  *
@@ -76,7 +80,7 @@ export const TemplatePreviewCard = ({
     onCopyClicked,
     onDeleteClicked,
     onCreateInterviewClicked,
-    onCreateTemplateClicked
+    onCreateTemplateClicked,
 }) => {
     const marginTop12 = { marginTop: 12 };
 
@@ -94,40 +98,62 @@ export const TemplatePreviewCard = ({
         });
     };
 
-    return <div>
-        <Card>
-            <div className={styles.header} style={{ marginBottom: 24 }}>
-                <div className={styles.headerTitleContainer} onClick={onCloseClicked}>
-                    <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>Interview Template
-                    - {template.title}</Title>
+    return (
+        <div>
+            <Card>
+                <div className={styles.header} style={{ marginBottom: 24 }}>
+                    <div className={styles.headerTitleContainer} onClick={onCloseClicked}>
+                        <ArrowLeftOutlined />{" "}
+                        <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
+                            Interview Template - {template.title}
+                        </Title>
+                    </div>
                 </div>
-            </div>
 
-            <Text>Use this template to schedule new interview and customize as you go.</Text>
+                <Text>Use this template to schedule new interview and customize as you go.</Text>
 
-            <div className={styles.divSpaceBetween} style={marginTop12}>
-                {template.libraryId && <Button type="primary"
-                                                onClick={onCreateTemplateClicked}>Use template</Button>}
-                {template.templateId && <Button type="primary"
-                                                onClick={onCreateInterviewClicked}>Schedule interview</Button>}
-                {template.templateId && <Space>
-                    <Button type="link" danger onClick={() => {
-                        showDeleteConfirm()
-                    }}>Delete</Button>
-                    <Button type="link" onClick={onCopyClicked}>Copy</Button>
-                    <Button type="link" onClick={onEditClicked}>Edit</Button>
-                </Space>}
-            </div>
-        </Card>
-        <Card style={{ marginTop: 12, marginBottom: 12 }}>
-            <IntroSection interview={template} />
-        </Card>
-        <TemplateGroupsSection template={template} />
-        <Card style={marginTop12}>
-            <SummarySection interview={template} />
-        </Card>
-    </div>;
-}
+                <div className={styles.divSpaceBetween} style={marginTop12}>
+                    {template.libraryId && (
+                        <Button type="primary" onClick={onCreateTemplateClicked}>
+                            Use template
+                        </Button>
+                    )}
+                    {template.templateId && (
+                        <Button type="primary" onClick={onCreateInterviewClicked}>
+                            Schedule interview
+                        </Button>
+                    )}
+                    {template.templateId && (
+                        <Space>
+                            <Button
+                                type="link"
+                                danger
+                                onClick={() => {
+                                    showDeleteConfirm();
+                                }}
+                            >
+                                Delete
+                            </Button>
+                            <Button type="link" onClick={onCopyClicked}>
+                                Copy
+                            </Button>
+                            <Button type="link" onClick={onEditClicked}>
+                                Edit
+                            </Button>
+                        </Space>
+                    )}
+                </div>
+            </Card>
+            <Card style={{ marginTop: 12, marginBottom: 12 }}>
+                <IntroSection interview={template} />
+            </Card>
+            <TemplateGroupsSection template={template} />
+            <Card style={marginTop12}>
+                <SummarySection interview={template} />
+            </Card>
+        </div>
+    );
+};
 
 /**
  *
@@ -138,20 +164,24 @@ export const TemplatePreviewCard = ({
  */
 export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
     const marginTop12 = { marginTop: 12 };
-    return <div>
-        <div className={styles.divSpaceBetween}>
-            <Title level={4} style={{ marginBottom: 0 }}>Interview Template - {template.title}</Title>
-            <CloseOutlined onClick={onCloseClicked} style={{ cursor: 'pointer' }} />
+    return (
+        <div>
+            <div className={styles.divSpaceBetween}>
+                <Title level={4} style={{ marginBottom: 0 }}>
+                    Interview Template - {template.title}
+                </Title>
+                <CloseOutlined onClick={onCloseClicked} style={{ cursor: "pointer" }} />
+            </div>
+            <Card style={{ marginTop: 12, marginBottom: 12 }}>
+                <IntroSection interview={template} />
+            </Card>
+            <TemplateGroupsSection template={template} />
+            <Card style={marginTop12}>
+                <SummarySection interview={template} />
+            </Card>
         </div>
-        <Card style={{marginTop: 12, marginBottom: 12}}>
-            <IntroSection interview={template} />
-        </Card>
-        <TemplateGroupsSection template={template} />
-        <Card style={marginTop12}>
-            <SummarySection interview={template} />
-        </Card>
-    </div>;
-}
+    );
+};
 
 /**
  *
@@ -174,9 +204,8 @@ export const InterviewInformationSection = ({
     template,
     onDeleteInterview,
     onEditInterview,
-    onBackClicked
+    onBackClicked,
 }) => {
-
     const onDeleteClicked = () => {
         Modal.confirm({
             title: "Delete Interview",
@@ -186,42 +215,45 @@ export const InterviewInformationSection = ({
             onOk() {
                 onDeleteInterview();
                 message.success(`Interview '${interview.candidate}' removed.`);
-            }
-        })
-    }
+            },
+        });
+    };
 
     return (
         <Card loading={loading}>
             <div className={styles.header}>
                 <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                    <ArrowLeftOutlined /> <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>{title}</Title>
+                    <ArrowLeftOutlined />{" "}
+                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
+                        {title}
+                    </Title>
                 </div>
             </div>
-            <Row style={{marginTop: "24px"}}>
+            <Row style={{ marginTop: "24px" }}>
                 <Col flex="140px">
-                    <Space direction='vertical'>
+                    <Space direction="vertical">
                         <Text type="secondary">Candidate Name:</Text>
                         <Text type="secondary">Interviewer Name:</Text>
                         <Text type="secondary">Interview Date:</Text>
                     </Space>
                 </Col>
                 <Col flex="1">
-                    <Space direction='vertical'>
+                    <Space direction="vertical">
                         <Text>{interview.candidate}</Text>
                         <Text>{userName}</Text>
                         <Text>{moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}</Text>
                     </Space>
                 </Col>
                 <Col flex="100px">
-                    <Space direction='vertical'>
+                    <Space direction="vertical">
                         <Text type="secondary">Position:</Text>
                         <Text type="secondary">Template:</Text>
                     </Space>
                 </Col>
                 <Col flex="1">
-                    <Space direction='vertical'>
+                    <Space direction="vertical">
                         <Text>{interview.position}</Text>
-                        <Link to={routeTemplateDetails(interview.templateId)} style={{ color: '#000000d9' }}>
+                        <Link to={routeTemplateDetails(interview.templateId)} style={{ color: "#000000d9" }}>
                             <span>{template.title ? template.title : null}</span>
                         </Link>
                     </Space>
@@ -230,13 +262,17 @@ export const InterviewInformationSection = ({
 
             <div className={styles.interviewActionButtonContainer}>
                 <Space>
-                    <Button type="link" danger onClick={onDeleteClicked}>Delete</Button>
-                    <Button type="link" onClick={onEditInterview}>Edit</Button>
+                    <Button type="link" danger onClick={onDeleteClicked}>
+                        Delete
+                    </Button>
+                    <Button type="link" onClick={onEditInterview}>
+                        Edit
+                    </Button>
                 </Space>
             </div>
         </Card>
-    )
-}
+    );
+};
 
 /**
  *
@@ -246,20 +282,23 @@ export const InterviewInformationSection = ({
  * @constructor
  */
 export const IntroSection = ({ interview, hashStyle }) => {
-
     const getHeader = () => {
         if (interview && interview.structure && interview.structure.header) {
-            return interview.structure.header
+            return interview.structure.header;
         } else {
-            return "Intro text is empty."
+            return "Intro text is empty.";
         }
-    }
+    };
 
-    return <>
-        <Title id="intro" level={4} className={hashStyle ? hashStyle : null}>Intro</Title>
-        <div className={styles.multiLineText}>{getHeader()}</div>
-    </>
-}
+    return (
+        <>
+            <Title id="intro" level={4} className={hashStyle ? hashStyle : null}>
+                Intro
+            </Title>
+            <div className={styles.multiLineText}>{getHeader()}</div>
+        </>
+    );
+};
 
 /**
  *
@@ -270,74 +309,23 @@ export const IntroSection = ({ interview, hashStyle }) => {
  * @constructor
  */
 export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
-
     const getFooter = () => {
         if (interview && interview.structure && interview.structure.footer) {
-            return interview.structure.footer
+            return interview.structure.footer;
         } else {
-            return "Summary text is empty."
+            return "Summary text is empty.";
         }
-    }
+    };
 
-    const isCompletedStatus = () => interview.status === Status.COMPLETED
-
-    return <>
-        <Title id="summary" level={4}
-               className={hashStyle ? hashStyle : null}>Summary</Title>
-        <div className={styles.multiLineText}>{getFooter()}</div>
-        {!isStickyNotesEnabled() && <Space className={styles.space} direction="vertical">
-            <Text strong>Notes</Text>
-            <TextArea
-                {...(isCompletedStatus() ? { readonly: "true" } : {})}
-                placeholder="Capture any key moments that happened during the interview."
-                autoSize={{ minRows: 3, maxRows: 5 }}
-                onChange={onNoteChanges}
-                defaultValue={interview.notes} />
-        </Space>}
-    </>
-}
-
-/**
- *
- * @param {Interview} interview
- * @param onNoteExpand
- * @param onNoteCollapse
- * @param onNoteChanges
- * @param {boolean} visible
- * @returns {JSX.Element}
- * @constructor
- */
-export const NotesSection = ({ interview, onNoteExpand, onNoteCollapse, onNoteChanges, visible }) => {
-
-    const isCompletedStatus = () => interview.status === Status.COMPLETED
-
-    return <>
-        {!visible && <div className={styles.stickyFooter}>
-            <div className={styles.notes} onClick={() => onNoteExpand()}>
-                <Tooltip title="Expand notes">
-                    <Text strong>Notes</Text> <CollapseIcon />
-                </Tooltip>
-            </div>
-        </div>}
-
-        {visible && <div className={styles.stickyFooter}>
-            <div className={styles.notesExpanded}>
-                <div onClick={() => onNoteCollapse()}>
-                    <Tooltip title="Collapse notes">
-                        <Text strong>Notes</Text> <ExpandIcon />
-                    </Tooltip>
-                </div>
-                <TextArea
-                    {...(isCompletedStatus() ? { readonly: "true" } : {})}
-                    className={styles.notesTextArea}
-                    placeholder="Capture any key moments that happened during the interview."
-                    autoSize={{ minRows: 6, maxRows: 6 }}
-                    onChange={onNoteChanges}
-                    defaultValue={interview.notes} />
-            </div>
-        </div>}
-    </>
-}
+    return (
+        <>
+            <Title id="summary" level={4} className={hashStyle ? hashStyle : null}>
+                Summary
+            </Title>
+            <div className={styles.multiLineText}>{getFooter()}</div>
+        </>
+    );
+};
 
 /**
  *
@@ -358,32 +346,31 @@ const InterviewQuestionsCard = ({
     disabled,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    hashStyle
+    hashStyle,
 }) => {
-
-    const [collapsed, setCollapsed] = React.useState(false)
-    const [hoverIndex, setHoverIndex] = React.useState(-1)
+    const [collapsed, setCollapsed] = React.useState(false);
+    const [hoverIndex, setHoverIndex] = React.useState(-1);
 
     const columns = [
         {
-            title: 'Question',
-            dataIndex: 'question',
-            key: 'question',
-            sortDirections: ['descend', 'ascend'],
+            title: "Question",
+            dataIndex: "question",
+            key: "question",
+            sortDirections: ["descend", "ascend"],
             className: styles.multiLineText,
             shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
         },
         {
-            title: 'Tags',
-            key: 'tags',
-            dataIndex: 'tags',
+            title: "Tags",
+            key: "tags",
+            dataIndex: "tags",
             width: 250,
             shouldCellUpdate: (record, prevRecord) => record.tags !== prevRecord.tags,
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
-            render: tags => (
+            render: (tags) => (
                 <>
-                    {defaultTo(tags, []).map(tag => {
+                    {defaultTo(tags, []).map((tag) => {
                         return (
                             <Tag key={tag} className={styles.tag} color={tagColors.get(tag)}>
                                 {tag.toLowerCase()}
@@ -394,97 +381,136 @@ const InterviewQuestionsCard = ({
             ),
         },
         {
-            title: 'Assessment',
+            title: "Assessment",
             width: 140,
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
-            render: (question) => <AssessmentCheckbox
-                defaultValue={question.assessment}
-                disabled={disabled}
-                onChange={value => {
-                    if (onQuestionAssessmentChanged) {
-                        onQuestionAssessmentChanged(question, value)
-                    }
-                }}
-            />
-        },
-        { title: "", dataIndex: "", key: "expand", width: 1 }
-    ];
-
-    const blueIconStyle = { color: "#1890FF", fontSize: 18 }
-    const greyIconStyle = { color: "#000000d9", fontSize: 18 }
-    const whiteIconStyle = { color: "#FFFFFF", fontSize: 18 }
-
-    const onCollapseClicked = () => {
-        setCollapsed(!collapsed)
-    }
-    return <Card style={ index === 0 ? { marginTop: 0 } : { marginTop: 12 }}>
-        <div className={styles.divSpaceBetween}>
-            <Space style={{ marginBottom: 8 }}>
-                <Title id={group.name} level={4} onClick={onCollapseClicked}
-                       style={{ cursor: 'pointer', marginBottom: 0 }}
-                       className={hashStyle ? hashStyle : null}>
-                    {group.name}
-                </Title>
-                <Text type="secondary">{group.questions.length} questions</Text>
-            </Space>
-            {collapsed && <Tooltip title="Expand group">
-                <ExpandIcon onClick={onCollapseClicked} style={{ paddingRight: 8 }} />
-            </Tooltip>}
-            {!collapsed && <Tooltip title="Collapse group">
-                <CollapseIcon onClick={onCollapseClicked} style={{ paddingRight: 8 }} />
-            </Tooltip>}
-        </div>
-        {!collapsed && <div>
-            <Card bodyStyle={{ padding: 0 }}>
-                <Table
-                    columns={columns}
-                    dataSource={group.questions.map((question, index) => {
-                        question.key = index
-                        return question
-                    })}
-                    pagination={false}
-                    expandable={{
-                        expandIconColumnIndex: 4,
-                        expandedRowRender: question => (
-                            <TextArea
-                                className={styles.questionTextArea}
-                                placeholder="Notes..."
-                                bordered={false}
-                                autoSize={true}
-                                autoFocus={true}
-                                defaultValue={question.notes}
-                                onChange={e => question.notes = e.target.value}
-                            />
-                        ),
-                        expandIcon: ({ expanded, onExpand, record }) => {
-                            if (expanded) {
-                                if (hoverIndex === record.key) {
-                                    return <NoteIcon style={blueIconStyle} onClick={e => onExpand(record, e)} />;
-                                } else {
-                                    return <NoteIcon style={greyIconStyle} onClick={e => onExpand(record, e)} />;
-                                }
-                            } else {
-                                if (hoverIndex === record.key) {
-                                    return <AddNoteIcon style={blueIconStyle} onClick={e => onExpand(record, e)} />;
-                                } else if (!isEmpty(record.notes)) {
-                                    return <NoteIcon style={greyIconStyle} onClick={e => onExpand(record, e)} />;
-                                } else {
-                                    return <AddNoteIcon style={whiteIconStyle} onClick={e => onExpand(record, e)} />;
-                                }
-                            }
+            render: (question) => (
+                <AssessmentCheckbox
+                    defaultValue={question.assessment}
+                    disabled={disabled}
+                    onChange={(value) => {
+                        if (onQuestionAssessmentChanged) {
+                            onQuestionAssessmentChanged(question, value);
                         }
                     }}
-                    onRow={(record, rowIndex) => {
-                        return {
-                            onMouseEnter: event => setHoverIndex(rowIndex),
-                            onMouseLeave: event => setHoverIndex(-1),
-                        };
-                    }}
                 />
-            </Card>
-        </div>}
-    </Card>
-}
+            ),
+        },
+        { title: "", dataIndex: "", key: "expand", width: 1 },
+    ];
+
+    const blueIconStyle = { color: "#1890FF", fontSize: 18 };
+    const greyIconStyle = { color: "#000000d9", fontSize: 18 };
+    const whiteIconStyle = { color: "#FFFFFF", fontSize: 18 };
+
+    const onCollapseClicked = () => {
+        setCollapsed(!collapsed);
+    };
+    return (
+        <Card style={index === 0 ? { marginTop: 0 } : { marginTop: 12 }}>
+            <div className={styles.divSpaceBetween}>
+                <Space style={{ marginBottom: 8 }}>
+                    <Title
+                        id={group.name}
+                        level={4}
+                        onClick={onCollapseClicked}
+                        style={{ cursor: "pointer", marginBottom: 0 }}
+                        className={hashStyle ? hashStyle : null}
+                    >
+                        {group.name}
+                    </Title>
+                    <Text type="secondary">{group.questions.length} questions</Text>
+                </Space>
+                {collapsed && (
+                    <Tooltip title="Expand group">
+                        <ExpandIcon onClick={onCollapseClicked} style={{ paddingRight: 8 }} />
+                    </Tooltip>
+                )}
+                {!collapsed && (
+                    <Tooltip title="Collapse group">
+                        <CollapseIcon onClick={onCollapseClicked} style={{ paddingRight: 8 }} />
+                    </Tooltip>
+                )}
+            </div>
+            {!collapsed && (
+                <div>
+                    <Card bodyStyle={{ padding: 0 }}>
+                        <Table
+                            columns={columns}
+                            dataSource={group.questions.map((question, index) => {
+                                question.key = index;
+                                return question;
+                            })}
+                            pagination={false}
+                            expandable={{
+                                expandIconColumnIndex: 4,
+                                expandedRowRender: (question) => (
+                                    <TextArea
+                                        className={styles.questionTextArea}
+                                        placeholder="Notes..."
+                                        bordered={false}
+                                        autoSize={true}
+                                        autoFocus={true}
+                                        defaultValue={question.notes}
+                                        onChange={(e) => (question.notes = e.target.value)}
+                                    />
+                                ),
+                                expandIcon: ({ expanded, onExpand, record }) => {
+                                    if (expanded) {
+                                        if (hoverIndex === record.key) {
+                                            return (
+                                                <NoteIcon
+                                                    style={blueIconStyle}
+                                                    onClick={(e) => onExpand(record, e)}
+                                                />
+                                            );
+                                        } else {
+                                            return (
+                                                <NoteIcon
+                                                    style={greyIconStyle}
+                                                    onClick={(e) => onExpand(record, e)}
+                                                />
+                                            );
+                                        }
+                                    } else {
+                                        if (hoverIndex === record.key) {
+                                            return (
+                                                <AddNoteIcon
+                                                    style={blueIconStyle}
+                                                    onClick={(e) => onExpand(record, e)}
+                                                />
+                                            );
+                                        } else if (!isEmpty(record.notes)) {
+                                            return (
+                                                <NoteIcon
+                                                    style={greyIconStyle}
+                                                    onClick={(e) => onExpand(record, e)}
+                                                />
+                                            );
+                                        } else {
+                                            return (
+                                                <AddNoteIcon
+                                                    style={whiteIconStyle}
+                                                    onClick={(e) => onExpand(record, e)}
+                                                />
+                                            );
+                                        }
+                                    }
+                                },
+                            }}
+                            onRow={(record, rowIndex) => {
+                                return {
+                                    onMouseEnter: (event) => setHoverIndex(rowIndex),
+                                    onMouseLeave: (event) => setHoverIndex(-1),
+                                };
+                            }}
+                        />
+                    </Card>
+                </div>
+            )}
+        </Card>
+    );
+};
 
 /**
  *
@@ -495,58 +521,67 @@ const InterviewQuestionsCard = ({
  * @constructor
  */
 export const InterviewAssessmentButtons = ({ assessment, disabled, onAssessmentChanged }) => {
-
-    const [activeAssessment, setActiveAssessment] = React.useState(assessment)
+    const [activeAssessment, setActiveAssessment] = React.useState(assessment);
 
     const onButtonClicked = (groupAssessment) => {
         if (!disabled) {
             if (activeAssessment === groupAssessment) {
-                setActiveAssessment(null)
+                setActiveAssessment(null);
             } else {
-                setActiveAssessment(groupAssessment)
+                setActiveAssessment(groupAssessment);
             }
-            onAssessmentChanged(groupAssessment)
+            onAssessmentChanged(groupAssessment);
         }
-    }
+    };
 
-    const getAssessmentTextBlue = (assessment) => activeAssessment === assessment
-        ? styles.assessmentTextGreen : styles.assessmentText
+    const getAssessmentTextBlue = (assessment) =>
+        activeAssessment === assessment ? styles.assessmentTextGreen : styles.assessmentText;
 
-    const getAssessmentTextRed = (assessment) => activeAssessment === assessment
-        ? styles.assessmentTextRed : styles.assessmentText
+    const getAssessmentTextRed = (assessment) =>
+        activeAssessment === assessment ? styles.assessmentTextRed : styles.assessmentText;
 
-    const getAssessmentButtonBlue = (assessment) => activeAssessment === assessment
-        ? styles.assessmentButtonGreenActive : styles.assessmentButtonGreen
+    const getAssessmentButtonBlue = (assessment) =>
+        activeAssessment === assessment ? styles.assessmentButtonGreenActive : styles.assessmentButtonGreen;
 
-    const getAssessmentButtonRed = (assessment) => activeAssessment === assessment
-        ? styles.assessmentButtonRedActive : styles.assessmentButtonRed
+    const getAssessmentButtonRed = (assessment) =>
+        activeAssessment === assessment ? styles.assessmentButtonRedActive : styles.assessmentButtonRed;
 
-    const getAssessmentIconStyle = (assessment) => activeAssessment === assessment
-        ? styles.assessmentIconActive : styles.assessmentIcon
+    const getAssessmentIconStyle = (assessment) =>
+        activeAssessment === assessment ? styles.assessmentIconActive : styles.assessmentIcon;
 
-    return <Space size={16}>
-        <div className={getAssessmentButtonRed(InterviewAssessment.STRONG_NO)}
-             onClick={() => onButtonClicked(InterviewAssessment.STRONG_NO)}>
-            <StarIcon className={getAssessmentIconStyle(InterviewAssessment.STRONG_NO)} />
-            <Text className={getAssessmentTextRed(InterviewAssessment.STRONG_NO)}>strong no</Text>
-        </div>
-        <div className={getAssessmentButtonRed(InterviewAssessment.NO)}
-             onClick={() => onButtonClicked(InterviewAssessment.NO)}>
-            <StarHalfIcon className={getAssessmentIconStyle(InterviewAssessment.NO)} />
-            <Text className={getAssessmentTextRed(InterviewAssessment.NO)}>no</Text>
-        </div>
-        <div className={getAssessmentButtonBlue(InterviewAssessment.YES)}
-             onClick={() => onButtonClicked(InterviewAssessment.YES)}>
-            <StarFilledIcon className={getAssessmentIconStyle(InterviewAssessment.YES)} />
-            <Text className={getAssessmentTextBlue(InterviewAssessment.YES)}>yes</Text>
-        </div>
-        <div className={getAssessmentButtonBlue(InterviewAssessment.STRONG_YES)}
-             onClick={() => onButtonClicked(InterviewAssessment.STRONG_YES)}>
-            <StarEmphasisIcon className={getAssessmentIconStyle(InterviewAssessment.STRONG_YES)} />
-            <Text className={getAssessmentTextBlue(InterviewAssessment.STRONG_YES)}>strong yes</Text>
-        </div>
-    </Space>
-}
+    return (
+        <Space size={16}>
+            <div
+                className={getAssessmentButtonRed(InterviewAssessment.STRONG_NO)}
+                onClick={() => onButtonClicked(InterviewAssessment.STRONG_NO)}
+            >
+                <StarIcon className={getAssessmentIconStyle(InterviewAssessment.STRONG_NO)} />
+                <Text className={getAssessmentTextRed(InterviewAssessment.STRONG_NO)}>strong no</Text>
+            </div>
+            <div
+                className={getAssessmentButtonRed(InterviewAssessment.NO)}
+                onClick={() => onButtonClicked(InterviewAssessment.NO)}
+            >
+                <StarHalfIcon className={getAssessmentIconStyle(InterviewAssessment.NO)} />
+                <Text className={getAssessmentTextRed(InterviewAssessment.NO)}>no</Text>
+            </div>
+            <div
+                className={getAssessmentButtonBlue(InterviewAssessment.YES)}
+                onClick={() => onButtonClicked(InterviewAssessment.YES)}
+            >
+                <StarFilledIcon className={getAssessmentIconStyle(InterviewAssessment.YES)} />
+                <Text className={getAssessmentTextBlue(InterviewAssessment.YES)}>yes</Text>
+            </div>
+            <div
+                className={getAssessmentButtonBlue(InterviewAssessment.STRONG_YES)}
+                onClick={() => onButtonClicked(InterviewAssessment.STRONG_YES)}
+            >
+                <StarEmphasisIcon className={getAssessmentIconStyle(InterviewAssessment.STRONG_YES)} />
+                <Text className={getAssessmentTextBlue(InterviewAssessment.STRONG_YES)}>strong yes</Text>
+            </div>
+        </Space>
+    );
+};
 
 /**
  *
@@ -561,26 +596,27 @@ export const InterviewGroupsSection = ({
     interview,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    hashStyle
+    hashStyle,
 }) => {
+    const isCompletedStatus = () => interview.status === Status.COMPLETED;
+    const tagColors = createTagColors(interviewToTags(interview));
 
-    const isCompletedStatus = () => interview.status === Status.COMPLETED
-    const tagColors = createTagColors(interviewToTags(interview))
-
-    return <>
-        {interview.structure.groups.map((group, index) =>
-            <InterviewQuestionsCard
-                index={index}
-                tagColors={tagColors}
-                group={group}
-                disabled={isCompletedStatus()}
-                onGroupAssessmentChanged={onGroupAssessmentChanged}
-                onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                hashStyle={hashStyle}
-            />)
-        }
-    </>
-}
+    return (
+        <>
+            {interview.structure.groups.map((group, index) => (
+                <InterviewQuestionsCard
+                    index={index}
+                    tagColors={tagColors}
+                    group={group}
+                    disabled={isCompletedStatus()}
+                    onGroupAssessmentChanged={onGroupAssessmentChanged}
+                    onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                    hashStyle={hashStyle}
+                />
+            ))}
+        </>
+    );
+};
 
 /**
  *
@@ -595,22 +631,23 @@ export const TemplateGroupsSection = ({
     template,
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
-    hashStyle
+    hashStyle,
 }) => {
+    const tagColors = createTagColors(interviewToTags(template));
 
-    const tagColors = createTagColors(interviewToTags(template))
-
-    return <>
-        {template.structure.groups.map((group, index) =>
-            <InterviewQuestionsCard
-                index={index}
-                tagColors={tagColors}
-                group={group}
-                disabled={false}
-                onGroupAssessmentChanged={onGroupAssessmentChanged}
-                onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                hashStyle={hashStyle}
-            />)
-        }
-    </>
-}
+    return (
+        <>
+            {template.structure.groups.map((group, index) => (
+                <InterviewQuestionsCard
+                    index={index}
+                    tagColors={tagColors}
+                    group={group}
+                    disabled={false}
+                    onGroupAssessmentChanged={onGroupAssessmentChanged}
+                    onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                    hashStyle={hashStyle}
+                />
+            ))}
+        </>
+    );
+};
