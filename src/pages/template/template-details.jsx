@@ -296,7 +296,7 @@ const TemplateDetails = ({
 
                 <Card style={marginTop12} loading={isInitialLoading()}>
                     <Title level={4}>Intro</Title>
-                    <Text type="secondary">This section serves as a reminder for what interviewer must do at the
+                    <Text type="secondary">Intro section serves as a reminder for what interviewer must do at the
                         beginning of the interview.</Text>
                     <TextArea
                         style={marginTop16}

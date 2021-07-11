@@ -252,7 +252,7 @@ const InterviewScorecard = ({
                             </a>
                         ))}
                         <a href={"#summary"} className={styles.anchorLink}>
-                            Summary
+                            End of interview
                         </a>
                     </div>
                 </Col>

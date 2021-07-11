@@ -304,14 +304,14 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
         if (interview && interview.structure && interview.structure.footer) {
             return interview.structure.footer;
         } else {
-            return "Summary text is empty.";
+            return "End of interview text is empty.";
         }
     };
 
     return (
         <>
             <Title id="summary" level={4} className={hashStyle ? hashStyle : null}>
-                Summary
+                End of interview
             </Title>
             <div className={styles.multiLineText}>{getFooter()}</div>
         </>
