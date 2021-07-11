@@ -27,6 +27,7 @@ import {
 import { interviewToTags } from "../../components/utils/converters";
 import confirm from "antd/lib/modal/confirm";
 import { isEmpty } from "../../components/utils/utils";
+import { Link } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -229,9 +230,7 @@ export const InterviewInformationSection = ({
                     </Title>
                 </div>
                 <Dropdown overlay={menu}>
-                    <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                        Actions <DownOutlined />
-                    </a>
+                    <Link>Actions <DownOutlined /></Link>
                 </Dropdown>
             </div>
             <Row style={{ marginTop: "24px" }}>
