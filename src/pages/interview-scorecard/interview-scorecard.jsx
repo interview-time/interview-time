@@ -27,6 +27,7 @@ import {
     InterviewInformationSection,
 } from "./interview-sections";
 import NotesSection from "./notes-section";
+import moment from "moment";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000; // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000; // 30 sec
@@ -80,7 +81,7 @@ const InterviewScorecard = ({
 
     React.useEffect(() => {
         // initial data loading
-        if (!interview.interviewId && interviews.length > 0) {
+        if (interviews.length > 0) {
             setInterview(cloneDeep(findInterview(id, interviews)));
         }
         // eslint-disable-next-line
@@ -221,7 +222,7 @@ const InterviewScorecard = ({
 
                     <Card style={{ marginTop: 12, marginBottom: 12 }}>
                         <div className={styles.divSpaceBetween}>
-                            <Text strong>Ready to make hiring recommendation?</Text>
+                            <Text>Last saved {moment(interview.modifiedDate).fromNow()}</Text>
                             <Space>
                                 <Button loading={interviewsUploading} onClick={onSaveClicked}>
                                     Save
