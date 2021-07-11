@@ -69,9 +69,3 @@
 .hash {
     scroll-margin-top: var(--header-height-with-padding);
 }
-
-.stickyNotes {
-    position: -webkit-sticky; /* Required for Safari */
-    position: sticky;
-    bottom: 0;
-}

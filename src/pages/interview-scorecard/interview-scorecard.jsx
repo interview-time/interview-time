@@ -28,7 +28,6 @@ import {
     InterviewInformationSection,
 } from "./interview-sections";
 import NotesSection from "./notes-section";
-import { isStickyNotesEnabled } from "../../components/utils/storage";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000; // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000; // 30 sec
@@ -220,7 +219,6 @@ const InterviewScorecard = ({
                     </Card>
 
                     <NotesSection
-                        className={isStickyNotesEnabled() ? styles.stickyNotes : ""}
                         notes={interview.notes}
                         status={interview.status}
                         onChange={onNoteChanges}

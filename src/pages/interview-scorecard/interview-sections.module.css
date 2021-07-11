@@ -132,9 +132,24 @@
     margin-top: 12px;
 }
 
+.notesHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.notesSwitch {
+    margin-left: 5px;
+}
+
 .notesTextArea {
     resize: none;
     padding: 0;
+}
+
+.stickyNotes {
+    position: -webkit-sticky; /* Required for Safari */
+    position: sticky;
+    bottom: 0;
 }
 
 .questionTextArea {
