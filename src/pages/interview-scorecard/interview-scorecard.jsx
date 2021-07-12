@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Button, Card, Col, message, Row, Space } from "antd";
 import Layout from "../../components/layout/layout";
@@ -12,11 +12,7 @@ import {
     routeInterviewDetails,
     routeInterviews,
 } from "../../components/utils/route";
-import {
-    findGroup,
-    findInterview,
-    findQuestionInGroups,
-} from "../../components/utils/converters";
+import { findGroup, findInterview, findQuestionInGroups } from "../../components/utils/converters";
 import Text from "antd/lib/typography/Text";
 import {
     InterviewGroupsSection,
@@ -67,12 +63,24 @@ const InterviewScorecard = ({
     const [interview, setInterview] = useState(emptyInterview);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
+    const [lastSaved, setLastSaved] = useState(null);
 
     const { id } = useParams();
 
     const history = useHistory();
 
-    React.useEffect(() => {
+    useEffect(() => {
+        let interval = null;
+        interval = setInterval(() => {
+            if (interview.modifiedDate && interviewChangedCounter > 0) {
+                setLastSaved(moment(interview.modifiedDate).fromNow());
+            }
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [interview.modifiedDate, interviewChangedCounter]);
+
+    useEffect(() => {
         // initial data loading
         if (interviews.length > 0) {
             setInterview(cloneDeep(findInterview(id, interviews)));
@@ -80,7 +88,7 @@ const InterviewScorecard = ({
         // eslint-disable-next-line
     }, [interviews, id]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         loadInterviews();
 
         return () => {
@@ -203,7 +211,7 @@ const InterviewScorecard = ({
 
                     <Card style={{ marginTop: 12, marginBottom: 12 }}>
                         <div className={styles.divSpaceBetween}>
-                            <Text>Last saved {moment(interview.modifiedDate).fromNow()}</Text>
+                            <Text>{lastSaved ? `Last saved ${lastSaved}` : ""}</Text>
                             <Space>
                                 <Button loading={interviewsUploading} onClick={onSaveClicked}>
                                     Save
