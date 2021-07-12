@@ -342,8 +342,8 @@ const TemplateDetails = ({
                 </Card>
 
                 <Card style={marginVertical12} loading={isInitialLoading()}>
-                    <Title level={4}>Summary</Title>
-                    <Text type="secondary">The summary section serves as a reminder for what interviewer must do at the
+                    <Title level={4}>End of interview</Title>
+                    <Text type="secondary">This section serves as a reminder for what interviewer must do at the
                         end of the interview. It also contains fields to take notes and make a final assessment.</Text>
                     <TextArea
                         style={marginTop16}

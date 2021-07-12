@@ -16,11 +16,8 @@ import {
     findGroup,
     findInterview,
     findQuestionInGroups,
-    findTemplate,
 } from "../../components/utils/converters";
 import Text from "antd/lib/typography/Text";
-import { useAuth0 } from "../../react-auth0-spa";
-import { loadTemplates } from "../../store/templates/actions";
 import {
     InterviewGroupsSection,
     IntroSection,
@@ -28,6 +25,7 @@ import {
     InterviewInformationSection,
 } from "./interview-sections";
 import NotesSection from "./notes-section";
+import moment from "moment";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000; // 60 sec
 const DATA_CHANGE_DEBOUNCE = 30 * 1000; // 30 sec
@@ -40,18 +38,15 @@ const DATA_CHANGE_DEBOUNCE = 30 * 1000; // 30 sec
  * @param deleteInterview
  * @param loadInterviews
  * @param updateInterview
- * @param loadTemplates
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewScorecard = ({
     interviews,
-    templates,
     interviewsUploading,
     deleteInterview,
     loadInterviews,
     updateInterview,
-    loadTemplates,
 }) => {
     /**
      * @type {InterviewScorecard}
@@ -68,40 +63,25 @@ const InterviewScorecard = ({
     /**
      * @type {Template}
      */
-    const emptyTemplate = {};
 
     const [interview, setInterview] = useState(emptyInterview);
-    const [template, setTemplate] = useState(emptyTemplate);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
 
     const { id } = useParams();
-    const { user } = useAuth0();
 
     const history = useHistory();
 
     React.useEffect(() => {
         // initial data loading
-        if (!interview.interviewId && interviews.length > 0) {
+        if (interviews.length > 0) {
             setInterview(cloneDeep(findInterview(id, interviews)));
         }
         // eslint-disable-next-line
     }, [interviews, id]);
 
     React.useEffect(() => {
-        // initial data loading
-        if (!template.templateId && templates.length > 0 && interview.templateId) {
-            const interviewTemplate = findTemplate(interview.templateId, templates);
-            if (interviewTemplate) {
-                setTemplate(cloneDeep(interviewTemplate));
-            }
-        }
-        // eslint-disable-next-line
-    }, [interview, templates]);
-
-    React.useEffect(() => {
         loadInterviews();
-        loadTemplates();
 
         return () => {
             onInterviewChangeDebounce.cancel();
@@ -196,9 +176,7 @@ const InterviewScorecard = ({
                             onDeleteInterview={onDeleteInterview}
                             onEditInterview={onEditInterview}
                             loading={initialLoading()}
-                            userName={user.name}
                             interview={interview}
-                            template={template}
                         />
                     </div>
 
@@ -225,13 +203,13 @@ const InterviewScorecard = ({
 
                     <Card style={{ marginTop: 12, marginBottom: 12 }}>
                         <div className={styles.divSpaceBetween}>
-                            <Text strong>Ready to make hiring recommendation?</Text>
+                            <Text>Last saved {moment(interview.modifiedDate).fromNow()}</Text>
                             <Space>
                                 <Button loading={interviewsUploading} onClick={onSaveClicked}>
                                     Save
                                 </Button>
                                 <Button type="primary" onClick={onCandidateEvaluationClicked}>
-                                    Open Candidate Evaluation
+                                    Next to Candidate Evaluation
                                 </Button>
                             </Space>
                         </div>
@@ -256,7 +234,7 @@ const InterviewScorecard = ({
                             </a>
                         ))}
                         <a href={"#summary"} className={styles.anchorLink}>
-                            Summary
+                            End of interview
                         </a>
                     </div>
                 </Col>
@@ -265,14 +243,12 @@ const InterviewScorecard = ({
     );
 };
 
-const mapDispatch = { deleteInterview, loadInterviews, updateInterview, loadTemplates };
+const mapDispatch = { deleteInterview, loadInterviews, updateInterview };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-    const templatesState = state.templates || {};
     return {
         interviews: interviewsState.interviews,
         interviewsUploading: interviewsState.uploading,
-        templates: templatesState.templates,
     };
 };
 
