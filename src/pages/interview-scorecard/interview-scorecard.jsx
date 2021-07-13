@@ -13,7 +13,6 @@ import {
     routeInterviews,
 } from "../../components/utils/route";
 import { findGroup, findInterview, findQuestionInGroups } from "../../components/utils/converters";
-import Text from "antd/lib/typography/Text";
 import {
     InterviewGroupsSection,
     IntroSection,
@@ -21,10 +20,10 @@ import {
     InterviewInformationSection,
 } from "./interview-sections";
 import NotesSection from "./notes-section";
-import moment from "moment";
+import TimeAgo from "../../components/time-ago/time-ago";
 
-const DATA_CHANGE_DEBOUNCE_MAX = 60 * 1000; // 60 sec
-const DATA_CHANGE_DEBOUNCE = 30 * 1000; // 30 sec
+const DATA_CHANGE_DEBOUNCE_MAX = 30 * 1000; // 30 sec
+const DATA_CHANGE_DEBOUNCE = 10 * 1000; // 10 sec
 
 /**
  *
@@ -63,22 +62,10 @@ const InterviewScorecard = ({
     const [interview, setInterview] = useState(emptyInterview);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
-    const [lastSaved, setLastSaved] = useState(null);
 
     const { id } = useParams();
 
     const history = useHistory();
-
-    useEffect(() => {
-        let interval = null;
-        interval = setInterval(() => {
-            if (interview.modifiedDate && interviewChangedCounter > 0) {
-                setLastSaved(moment(interview.modifiedDate).fromNow());
-            }
-        }, 5000);
-
-        return () => clearInterval(interval);
-    }, [interview.modifiedDate, interviewChangedCounter]);
 
     useEffect(() => {
         // initial data loading
@@ -112,6 +99,7 @@ const InterviewScorecard = ({
 
     React.useEffect(() => {
         if (interviewChangedCounter > 0) {
+            console.log(interviewChangedCounter);
             onInterviewChangeDebounce(interview);
         }
         // eslint-disable-next-line
@@ -211,7 +199,7 @@ const InterviewScorecard = ({
 
                     <Card style={{ marginTop: 12, marginBottom: 12 }}>
                         <div className={styles.divSpaceBetween}>
-                            <Text>{lastSaved ? `Last saved ${lastSaved}` : ""}</Text>
+                            <TimeAgo timestamp={interview.modifiedDate} />
                             <Space>
                                 <Button loading={interviewsUploading} onClick={onSaveClicked}>
                                     Save
