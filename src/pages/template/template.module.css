@@ -55,11 +55,6 @@
     flex-grow: 1;
 }
 
-.questionVisible {
-    padding-left: 8px;
-    padding-right: 24px;
-}
-
 .reorderIcon {
     cursor: grab;
     font-size: 20px;
