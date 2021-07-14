@@ -143,6 +143,7 @@ const TemplateQuestionsCard = ({
                 placeholder="Question"
                 bordered={false}
                 autoSize={true}
+                
                 autoFocus={isEmpty(question.question)}
                 defaultValue={question.question}
                 onChange={e => onQuestionChange(question.questionId, e.target.value)}
@@ -151,7 +152,7 @@ const TemplateQuestionsCard = ({
         },
         {
             key: 'tags',
-            width: 250,
+            width: 200,
             className: styles.tagsVisible,
             render: question => <TemplateTags
                 question={question}
