@@ -21,7 +21,7 @@ import { cloneDeep } from "lodash/lang";
 import { findInterview } from "../../components/utils/converters";
 import { InterviewAssessmentButtons, InterviewInformationSection } from "../interview-scorecard/interview-sections";
 import { personalEvent } from "../../analytics";
-import { routeCandidates, routeInterviewDetails } from "../../components/utils/route";
+import { routeReports, routeInterviewDetails } from "../../components/utils/route";
 
 function bodyStyleCard() {
     return {
@@ -95,7 +95,7 @@ const InterviewEvaluation = ({
                         ...interview,
                         status: Status.COMPLETED
                     });
-                    history.push(routeCandidates())
+                    history.push(routeReports())
                     personalEvent('Interview completed');
                 }
             })
@@ -109,7 +109,7 @@ const InterviewEvaluation = ({
 
     const onDeleteInterview = () => {
         deleteInterview(interview.interviewId);
-        history.push(routeCandidates());
+        history.push(routeReports());
     }
 
     const onEditInterview = () => {
@@ -133,6 +133,7 @@ const InterviewEvaluation = ({
                 <Col flex="1" className={styles.divHorizontalCenter}>
                     <Progress
                         type='line'
+                        status="active"
                         strokeLinecap='square'
                         strokeColor='#69C0FF'
                         steps={10}
