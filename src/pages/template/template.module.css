@@ -50,8 +50,8 @@
 .questionDragging .questionVisible {
     visibility: visible;
     z-index: 1000;
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 32px;
+    padding-right: 16px;
     flex-grow: 1;
 }
 
@@ -107,5 +107,6 @@
 }
 
 .questionTextArea {
+    padding-left: 0;
     resize: none;
 }
