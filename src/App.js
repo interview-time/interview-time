@@ -4,7 +4,7 @@ import { Switch, withRouter } from "react-router-dom";
 import {
     routeHome,
     routeAccount,
-    routeCandidates,
+    routeReports,
     routeInterviewAdd,
     routeInterviews,
     routeNews,
@@ -24,7 +24,8 @@ import PrivateRoute from "./components/private-route/private-route";
 import ScheduleInterview from "./pages/interview/schedule-interview";
 import News from "./pages/news/news";
 import Candidates from "./pages/candidates/candidates";
-import InterviewCandidate from "./pages/interview-evaluation/interview-evaluation";
+import InterviewEvaluation from "./pages/interview-evaluation/interview-evaluation";
+import InterviewReport from "./pages/interview-report/interview-report";
 import ReactGA from "react-ga";
 import Library from "./pages/library/library";
 
@@ -54,11 +55,12 @@ function App({ history }) {
         <Switch>
             <PrivateRoute path={routeHome()} exact component={Default} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
-            <PrivateRoute path={routeCandidates()} exact component={Candidates} />
+            <PrivateRoute path={routeReports()} exact component={Candidates} />
             <PrivateRoute path={routeInterviewAdd()} exact component={ScheduleInterview} />
             <PrivateRoute path="/interviews/details/:id" exact component={ScheduleInterview} />
             <PrivateRoute path="/interviews/scorecard/:id" exact component={Interview} />
-            <PrivateRoute path="/interviews/candidate/:id" exact component={InterviewCandidate} />
+            <PrivateRoute path="/interviews/evaluation/:id" exact component={InterviewEvaluation} />
+            <PrivateRoute path="/reports/:id" exact component={InterviewReport} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
             <PrivateRoute path={routeTemplateAdd()} exact component={Template} />
             <PrivateRoute path="/templates/details/:id" exact component={Template} />

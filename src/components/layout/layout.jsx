@@ -14,7 +14,7 @@ import {
 } from "../utils/icons";
 import {
     routeAccount,
-    routeCandidates,
+    routeReports,
     routeHome,
     routeInterviews,
     routeLibrary,
@@ -55,8 +55,8 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
             return routeNews()
         } else if (location.pathname.includes(routeLibrary())) {
             return routeLibrary()
-        }  else if (location.pathname.includes(routeCandidates())) {
-            return routeCandidates()
+        }  else if (location.pathname.includes(routeReports())) {
+            return routeReports()
         } else if (location.pathname.includes(routeHome())) {
             return routeHome()
         }
@@ -107,9 +107,9 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                             <span className="nav-text">Interviews</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={routeCandidates()} className={styles.menuItem}
+                    <Menu.Item key={routeReports()} className={styles.menuItem}
                                icon={<CandidatesIcon style={menuIconStyle} />}>
-                        <Link to={routeCandidates()}>
+                        <Link to={routeReports()}>
                             <span className="nav-text">Reports</span>
                         </Link>
                     </Menu.Item>

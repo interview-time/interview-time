@@ -1,0 +1,57 @@
+.headerTitleContainer {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.rootContainer {
+    margin-top: 24px;
+}
+
+.divSpaceBetween {
+    display: flex;
+}
+
+.divHorizontalCenter {
+    display: flex;
+    align-items: center;
+}
+
+.divVerticalCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dotSmall {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.assessmentIcon {
+    color: #fadb14;
+    font-size: 22px;
+}
+
+.assessmentGreen {
+    border-radius: 2px;
+    padding: 4px 8px;
+    background-color: #D9F7BE;
+}
+
+.assessmentRed {
+    border-radius: 2px;
+    padding: 4px 8px;
+    background-color: #FFCCC7;
+}
+
+.moreContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 48px;
+}

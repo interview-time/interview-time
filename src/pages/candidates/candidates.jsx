@@ -21,7 +21,7 @@ import {
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse, sortedUniq } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
-import { routeInterviewScorecard } from "../../components/utils/route";
+import { routeInterviewReport } from "../../components/utils/route";
 import { TrophyTwoTone } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
@@ -58,7 +58,7 @@ const Candidates = ({ interviews, loading, loadInterviews }) => {
     }, [position]);
 
     const onRowClicked = (record) => {
-        history.push(routeInterviewScorecard(record.interviewId));
+        history.push(routeInterviewReport(record.interviewId));
     }
 
     const onSearchTextChanged = e => {
