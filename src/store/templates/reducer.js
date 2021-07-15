@@ -17,7 +17,7 @@ import { config } from "../common";
 
 /**
  *
- * @type {{templates: Template[], template-new: Template[], loading: boolean, loadingLibrary: boolean}}
+ * @type {{templates: Template[], library: Template[], loading: boolean, loadingLibrary: boolean}}
  */
 const initialState = {
     templates: [],
