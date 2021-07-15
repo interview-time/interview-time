@@ -17,7 +17,7 @@ import {
     routeReports,
     routeHome,
     routeInterviews,
-    routeLibrary,
+    routeTemplateNew,
     routeNews,
     routeQuestionBank,
     routeTemplates
@@ -53,8 +53,8 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
             return routeAccount()
         } else if (location.pathname.includes(routeNews())) {
             return routeNews()
-        } else if (location.pathname.includes(routeLibrary())) {
-            return routeLibrary()
+        } else if (location.pathname.includes(routeTemplateNew())) {
+            return routeTemplateNew()
         }  else if (location.pathname.includes(routeReports())) {
             return routeReports()
         } else if (location.pathname.includes(routeHome())) {

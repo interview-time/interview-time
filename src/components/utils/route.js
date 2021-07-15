@@ -30,7 +30,7 @@ export const routeTemplateDetails = (id) => `/templates/details/${id}`
 
 export const routeQuestionBank = () => "/question-bank"
 
-export const routeLibrary = () => "/templates/new/"
+export const routeTemplateNew = () => "/templates/new/"
 
 export const routeQuestionBankCategory = (id) => `/question-bank/${id}`
 

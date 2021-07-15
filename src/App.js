@@ -10,7 +10,7 @@ import {
     routeNews,
     routeTemplateAdd,
     routeTemplates,
-    routeLibrary,
+    routeTemplateNew,
 } from "./components/utils/route";
 import Default from "./pages/default/default";
 import Interviews from "./pages/interviews/interviews";
@@ -66,7 +66,7 @@ function App({ history }) {
             <PrivateRoute path="/templates/details/:id" exact component={TemplateDetails} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
-            <PrivateRoute path={routeLibrary()} exact component={TemplateNew} />
+            <PrivateRoute path={routeTemplateNew()} exact component={TemplateNew} />
         </Switch>
     );
 }
