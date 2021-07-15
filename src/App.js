@@ -26,7 +26,7 @@ import Account from "./pages/account/account";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import ReactGA from "react-ga";
-import Library from "./pages/library/library";
+import TemplateNew from "./pages/template-new/tempalte-new";
 import { useAuth0 } from "./react-auth0-spa";
 
 function App({ history }) {
@@ -66,7 +66,7 @@ function App({ history }) {
             <PrivateRoute path="/templates/details/:id" exact component={TemplateDetails} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
-            <PrivateRoute path={routeLibrary()} exact component={Library} />
+            <PrivateRoute path={routeLibrary()} exact component={TemplateNew} />
         </Switch>
     );
 }
