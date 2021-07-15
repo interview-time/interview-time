@@ -21,7 +21,7 @@ export const updatesData = [
     {
         version: "v0.4.2",
         date: moment("2021/04/27", "YYYY/MM/DD").valueOf(),
-        description: "Candidates section let you to compare several candidates and find the best performer.",
+        description: "Candidates section let you to compare several reports and find the best performer.",
     },
     {
         version: "v0.4.1",

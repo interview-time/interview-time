@@ -86,7 +86,7 @@ export const TemplatePreviewCard = ({
         confirm({
             title: `Delete '${template.title}' Template`,
             icon: <ExclamationCircleOutlined />,
-            content: "Are you sure you want to delete this template?",
+            content: "Are you sure you want to delete this template-details?",
             okText: "Yes",
             okType: "danger",
             cancelText: "No",
@@ -203,7 +203,7 @@ export const InterviewInformationSection = ({
     const onDeleteClicked = () => {
         Modal.confirm({
             title: "Delete Interview",
-            content: "Are you sure that you want to delete this interview?",
+            content: "Are you sure that you want to delete this interview-schedule?",
             okText: "Yes",
             cancelText: "No",
             onOk() {
@@ -292,7 +292,7 @@ export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
         if (interview && interview.structure && interview.structure.footer) {
             return interview.structure.footer;
         } else {
-            return "End of interview text is empty.";
+            return "End of interview-schedule text is empty.";
         }
     };
 

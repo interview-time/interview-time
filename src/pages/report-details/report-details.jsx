@@ -1,7 +1,7 @@
 import { loadInterviews } from "../../store/interviews/actions";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
-import styles from "./interviews-report.module.css";
+import styles from "./report-details.module.css";
 import { Button, Card, Col, Divider, Progress, Row, Space } from "antd";
 import React, { useState } from "react";
 import Text from "antd/lib/typography/Text";
@@ -28,7 +28,7 @@ import { routeInterviewScorecard } from "../../components/utils/route";
  * @param {Interview[]} interviews
  * @param loadInterviews
  */
-const InterviewReport = ({ interviews, loadInterviews }) => {
+const ReportDetails = ({ interviews, loadInterviews }) => {
 
     /**
      * @type {Interview}
@@ -193,4 +193,4 @@ const mapState = (state) => {
     }
 }
 
-export default connect(mapState, mapDispatch)(InterviewReport);
+export default connect(mapState, mapDispatch)(ReportDetails);

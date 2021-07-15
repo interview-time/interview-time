@@ -1,4 +1,4 @@
-import styles from "./schedule-interview.module.css";
+import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Button, Card, Col, DatePicker, Divider, Input, message, Modal, Popover, Row, Select, Space } from "antd";
@@ -18,8 +18,8 @@ import {
     updateInterview
 } from "../../store/interviews/actions";
 import { loadLibrary, loadTemplates } from "../../store/templates/actions";
-import TemplateGroupModal from "../template/template-group-modal";
-import TemplateQuestionsCard from "../template/template-questions-card";
+import TemplateGroupModal from "../template-details/template-group-modal";
+import TemplateQuestionsCard from "../template-details/template-questions-card";
 import moment from "moment";
 import { personalEvent } from "../../analytics";
 import { routeInterviews } from "../../components/utils/route";
@@ -41,7 +41,7 @@ const { TextArea } = Input;
  * @returns {JSX.Element}
  * @constructor
  */
-const ScheduleInterview = ({
+const InterviewSchedule = ({
     interviews,
     templates,
     library,
@@ -107,7 +107,7 @@ const ScheduleInterview = ({
             setInterview(cloneDeep(findInterview(id, interviews)))
         }
 
-        // selected template
+        // selected template-details
         if(interview.templateId && templates.length !== 0) {
             const template = cloneDeep(findTemplate(interview.templateId, templates))
             setSelectedTemplate(template)
@@ -492,7 +492,7 @@ const ScheduleInterview = ({
                             <Popover content={
                                 <img alt="Interviewer"
                                      style={{ width: 400 }}
-                                     src={process.env.PUBLIC_URL + '/app/interview-groups.png'} />
+                                     src={process.env.PUBLIC_URL + '/app/interview-schedule-groups.png'} />
                             }>
                                 <InfoCircleOutlined style={{ marginBottom: 12, cursor: 'pointer' }} />
                             </Popover>
@@ -572,4 +572,4 @@ const mapState = (state) => {
     }
 }
 
-export default connect(mapState, mapDispatch)(ScheduleInterview)
+export default connect(mapState, mapDispatch)(InterviewSchedule)

@@ -87,7 +87,7 @@ const InterviewEvaluation = ({
         if (interview.decision) {
             Modal.confirm({
                 title: "Submit Candidate Evaluation",
-                content: "You will not be able to make changes to this interview anymore. Are you sure that you want to continue?",
+                content: "You will not be able to make changes to this interview-schedule anymore. Are you sure that you want to continue?",
                 okText: "Yes",
                 cancelText: "No",
                 onOk() {

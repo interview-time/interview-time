@@ -275,7 +275,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         rules={[
                                             {
                                                 required: true,
-                                                message: "Please enter template title",
+                                                message: "Please enter template-details title",
                                             },
                                         ]}
                                     >
@@ -293,7 +293,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         rules={[
                                             {
                                                 required: true,
-                                                message: "Please choose template category",
+                                                message: "Please choose template-details category",
                                             },
                                         ]}
                                     >
@@ -336,7 +336,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         <img
                                             alt="Interviewer"
                                             style={{ width: 400 }}
-                                            src={process.env.PUBLIC_URL + "/app/interview-groups.png"}
+                                            src={process.env.PUBLIC_URL + "/app/interview-schedule-groups.png"}
                                         />
                                     }
                                 >

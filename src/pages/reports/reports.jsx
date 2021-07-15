@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
-import styles from "./candidates.module.css";
+import styles from "./reports.module.css";
 import { Card, Col, Input, Popover, Row, Select, Space, Table, Tag } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
@@ -29,7 +29,7 @@ import Text from "antd/lib/typography/Text";
 const { Search } = Input;
 
 const TOP_PERFORMANCE = 80;
-const Candidates = ({ interviews, loading, loadInterviews }) => {
+const Reports = ({ interviews, loading, loadInterviews }) => {
 
     const history = useHistory();
     const [interviewsData, setInterviews] = useState([])
@@ -224,4 +224,4 @@ const mapState = (state) => {
     }
 }
 
-export default connect(mapState, mapDispatch)(Candidates)
+export default connect(mapState, mapDispatch)(Reports)
