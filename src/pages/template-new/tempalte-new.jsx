@@ -11,6 +11,7 @@ import Text from "antd/lib/typography/Text";
 import { routeTemplateAdd } from "../../components/utils/route";
 import { ReactComponent as PlusIcon } from "../../assets/plus.svg";
 import { useHistory } from "react-router-dom";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -39,11 +40,18 @@ const TempalteNew = ({ loadLibrary, library, loading }) => {
         });
     };
 
+    const onBackClicked = () => {
+        history.goBack();
+    }
+
     return (
         <Layout>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                <div className={styles.header}>
-                    <Title level={2}>Create new template</Title>
+                <div className={styles.headerTitleContainer}>
+                    <div className={styles.header} onClick={onBackClicked}>
+                        <ArrowLeftOutlined style={{ fontSize: 24, marginRight: 12 }} />
+                        <Title level={2} style={{ marginBottom: 0 }}>New Interview Template</Title>
+                    </div>
                 </div>
 
                 <Row span={24} gutter={[32, 32]}>
@@ -79,7 +87,7 @@ const TempalteNew = ({ loadLibrary, library, loading }) => {
                     </Col>
                 </Row>
 
-                <div className={styles.header}>
+                <div className={styles.headerTitleContainer}>
                     <Title level={4}>Find & customize a template from the public library</Title>
                 </div>
 
