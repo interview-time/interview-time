@@ -17,7 +17,7 @@ import {
     loadInterviews,
     updateInterview
 } from "../../store/interviews/actions";
-import { loadLibrary, loadTemplates } from "../../store/templates/actions";
+import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template-details/template-group-modal";
 import TemplateQuestionsCard from "../template-details/template-questions-card";
 import moment from "moment";
@@ -31,26 +31,22 @@ const { TextArea } = Input;
  *
  * @param {Interview[]} interviews
  * @param {Template[]} templates
- * @param {Template[]} library
  * @param addInterview
  * @param addInterviewWithTemplate
  * @param loadInterviews
  * @param updateInterview
  * @param loadTemplates
- * @param loadLibrary
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewSchedule = ({
     interviews,
     templates,
-    library,
     addInterview,
     addInterviewWithTemplate,
     loadInterviews,
     updateInterview,
     loadTemplates,
-    loadLibrary,
 }) => {
 
     /**
@@ -96,13 +92,6 @@ const InterviewSchedule = ({
                 templateId: template.templateId,
                 structure: template.structure
             })
-        } else if (isFromLibraryFlow() && !interview.libraryId && library.length !== 0) {
-            const template = cloneDeep(findLibraryTemplate(fromLibraryId(), library))
-            setInterview({
-                ...interview,
-                libraryId: template.libraryId,
-                structure: template.structure
-            })
         } else if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
             setInterview(cloneDeep(findInterview(id, interviews)))
         }
@@ -111,35 +100,21 @@ const InterviewSchedule = ({
         if(interview.templateId && templates.length !== 0) {
             const template = cloneDeep(findTemplate(interview.templateId, templates))
             setSelectedTemplate(template)
-        } else if(interview.libraryId && library.length !== 0) {
-            const template = cloneDeep(findLibraryTemplate(interview.libraryId, library))
-            setSelectedTemplate(template)
         }
 
         // templates selector
-        if(templates.length !== 0 || library.length !== 0) {
-            const templatesArr = [];
-            templates.forEach(template => {
-                templatesArr.push({
-                    value: template.templateId,
-                    label: template.title
-                })
-            })
-            library.forEach(template => {
-                templatesArr.push({
-                    value: template.libraryId,
-                    label: template.title + " (Library Template)"
-                })
-            })
-            setTemplateOptions(templatesArr)
+        if(templates.length !== 0) {
+            setTemplateOptions(templates.map(template => ({
+                value: template.templateId,
+                label: template.title
+            })))
         }
 
         // eslint-disable-next-line
-    }, [interviews, id, templates, library, interview]);
+    }, [interviews, id, templates, interview]);
 
     React.useEffect(() => {
         loadTemplates()
-        loadLibrary()
 
         if (isExistingInterviewFlow()) {
             loadInterviews()
@@ -151,11 +126,8 @@ const InterviewSchedule = ({
 
     const isFromTemplateFlow = () => fromTemplateId() !== null;
 
-    const isFromLibraryFlow = () => fromLibraryId() !== null;
-
     const isInitialLoading = () => (isExistingInterviewFlow() && !interview.interviewId)
         || (isFromTemplateFlow() && !interview.templateId)
-        || (isFromLibraryFlow() && !interview.libraryId)
 
     /**
      *
@@ -164,15 +136,6 @@ const InterviewSchedule = ({
     const fromTemplateId = () => {
         const params = new URLSearchParams(location.search);
         return params.get('fromTemplate');
-    }
-
-    /**
-     *
-     * @returns {string|null}
-     */
-    const fromLibraryId = () => {
-        const params = new URLSearchParams(location.search);
-        return params.get('fromLibrary');
     }
 
     const onBackClicked = () => {
@@ -322,7 +285,6 @@ const InterviewSchedule = ({
 
     const onTemplateSelect = (value) => {
         let personalTemplate = templates.find(template => template.templateId === value)
-        let libraryTemplate = library.find(template => template.libraryId === value)
 
         if(personalTemplate) {
             setInterview({
@@ -331,14 +293,6 @@ const InterviewSchedule = ({
                 structure: cloneDeep(personalTemplate.structure)
             })
             setSelectedTemplate(personalTemplate)
-            setSelectedTemplateCollapsed(true)
-        } else if(libraryTemplate) {
-            setInterview({
-                ...interview,
-                libraryId: libraryTemplate.libraryId,
-                structure: cloneDeep(libraryTemplate.structure)
-            })
-            setSelectedTemplate(libraryTemplate)
             setSelectedTemplateCollapsed(true)
         } else {
             setInterview({
@@ -463,7 +417,7 @@ const InterviewSchedule = ({
                     </div>
                 </Card>
 
-                {selectedTemplate && <Card style={marginTop12} loading={isInitialLoading()}>
+                {selectedTemplate && isExistingInterviewFlow() && <Card style={marginTop12} loading={isInitialLoading()}>
                     <Space direction="vertical">
                         <Title level={4} style={{margin: 0}}>Template - {selectedTemplate.title}</Title>
                         <Text type="secondary">Customize an interview template to match any of your processes.</Text>
@@ -560,7 +514,7 @@ const InterviewSchedule = ({
     </Layout>
 }
 
-const mapDispatch = { addInterview, addInterviewWithTemplate, loadInterviews, updateInterview, loadTemplates, loadLibrary };
+const mapDispatch = { addInterview, addInterviewWithTemplate, loadInterviews, updateInterview, loadTemplates };
 const mapState = (state) => {
     const interviewState = state.interviews || {};
     const templateState = state.templates || {};
@@ -568,7 +522,6 @@ const mapState = (state) => {
     return {
         interviews: interviewState.interviews,
         templates: templateState.templates,
-        library: templateState.library,
     }
 }
 
