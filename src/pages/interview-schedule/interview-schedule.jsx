@@ -21,7 +21,7 @@ import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template-details/template-group-modal";
 import TemplateQuestionsCard from "../template-details/template-questions-card";
 import { personalEvent } from "../../analytics";
-import { routeInterviews } from "../../components/utils/route";
+import { routeInterviews, routeTemplateNew } from "../../components/utils/route";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 
@@ -71,7 +71,6 @@ const InterviewSchedule = ({
     const { id } = useParams();
     const location = useLocation();
 
-    const candidateComponent = React.createRef();
     const [interview, setInterview] = useState(emptyInterview);
     const [selectedTemplateCollapsed, setSelectedTemplateCollapsed] = useState(true);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -310,21 +309,7 @@ const InterviewSchedule = ({
     }
 
     const onCreateTemplateClicked = () => {
-        candidateComponent.current.focus() // removes focus from Template select dropdown
-        setInterview({
-            ...interview,
-            libraryId: null,
-            templateId: null,
-            structure: {
-                header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
-                footer: "Allow 10 minutes at the end for the candidate to ask questions.",
-                groups: [],
-            }
-        })
-        setSelectedTemplate({
-            title: "New"
-        })
-        setSelectedTemplateCollapsed(false)
+        history.push(routeTemplateNew())
     }
 
     const marginTop12 = { marginTop: 12 };
@@ -447,14 +432,18 @@ const InterviewSchedule = ({
                                 option.label.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase())
                             }
                             notFoundContent={
-                                <Space direction="vertical">
-                                    <Text>No template found.</Text>
-                                    <Button
-                                        onClick={onCreateTemplateClicked}
-                                        style={{ padding: 0 }}
-                                        type="link">Create a template</Button>
-                                </Space>
+                                <Text>No template found.</Text>
                             }
+                            dropdownRender={menu => (
+                                <div>
+                                    {menu}
+                                    <Divider style={{ margin: '4px 0' }} />
+                                    <Button
+                                        style={{ paddingLeft: 12 }}
+                                        onClick={onCreateTemplateClicked}
+                                        type="link">Create new template</Button>
+                                </div>
+                            )}
                         />
                     </Form.Item>
                 </Space>
@@ -470,7 +459,6 @@ const InterviewSchedule = ({
                         ]}
                     >
                         <Input
-                            ref={candidateComponent}
                             placeholder="e.g. Kristin Watson"
                             onChange={onCandidateChange}
                             defaultValue={interview.candidate}
