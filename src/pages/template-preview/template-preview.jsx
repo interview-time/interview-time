@@ -16,10 +16,11 @@ import { routeTemplateBlankFromLibrary } from "../../components/utils/route";
 /**
  *
  * @param {Template[]} library
+ * @param loadLibrary
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplatePreview = ({ library }) => {
+const TemplatePreview = ({ library , loadLibrary}) => {
 
     /**
      *
@@ -61,11 +62,13 @@ const TemplatePreview = ({ library }) => {
         history.push(routeTemplateBlankFromLibrary(template.libraryId))
     }
 
+    const isInitialLoading = () => !template.libraryId;
+
     return (
         <Layout>
             <Row className={styles.rootContainer}>
                 <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                    <Card className={styles.row}>
+                    <Card className={styles.row} loading={isInitialLoading()}>
                         <div className={styles.headerContainer}>
                             <Space size={16} direction='vertical' className={styles.headerDescriptionContainer}>
                                 <div className={styles.headerTextContainer} onClick={onBackClicked}>
@@ -89,13 +92,13 @@ const TemplatePreview = ({ library }) => {
                             <Button type="primary" onClick={onUseTemplateClicked}>Use template</Button>
                         </div>
                     </Card>
-                    <Card className={styles.row}>
+                    <Card className={styles.row} loading={isInitialLoading()}>
                         <IntroSection interview={template} />
                     </Card>
                     <div className={styles.row}>
                         <TemplateGroupsSection template={template} />
                     </div>
-                    <Card className={styles.rowEnd}>
+                    <Card className={styles.rowEnd} loading={isInitialLoading()}>
                         <SummarySection interview={template} />
                     </Card>
                 </Col>
