@@ -1,5 +1,13 @@
 .header {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
     text-align: center;
+}
+
+.headerTitleContainer {
+    display: flex;
+    justify-content: center;
     padding: 24px;
 }
 

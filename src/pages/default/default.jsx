@@ -14,7 +14,7 @@ import { cloneDeep } from "lodash/lang";
 import moment from "moment";
 import { DATE_FORMAT_DISPLAY } from "../../components/utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
-import { routeInterviewScorecard, routeTemplateAdd, routeLibrary } from "../../components/utils/route";
+import { routeInterviewScorecard, routeTemplateAdd, routeTemplateNew } from "../../components/utils/route";
 import { createEvent } from "../../analytics";
 import styles from "./default.module.css";
 
@@ -106,7 +106,7 @@ const Default = ({
                         <Card
                             hoverable
                             bodyStyle={{ padding: 0 }}
-                            onClick={() => history.push(routeLibrary())}
+                            onClick={() => history.push(routeTemplateNew())}
                         >
                             <div className={styles.card}>
                                 <div className={styles.cardIcon}>
