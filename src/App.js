@@ -27,6 +27,7 @@ import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import ReactGA from "react-ga";
 import TemplateNew from "./pages/template-new/tempalte-new";
+import TemplatePreview from "./pages/template-preview/template-preview";
 import { useAuth0 } from "./react-auth0-spa";
 
 function App({ history }) {
@@ -63,7 +64,8 @@ function App({ history }) {
             <PrivateRoute path="/reports/:id" exact component={ReportDetails} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
             <PrivateRoute path={routeTemplateBlank()} exact component={TemplateDetails} />
-            <PrivateRoute path="/templates/details/:id" exact component={TemplateDetails} />
+            <PrivateRoute path="/templates/edit/:id" exact component={TemplateDetails} />
+            <PrivateRoute path="/templates/preview/:id" exact component={TemplatePreview} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
             <PrivateRoute path={routeTemplateNew()} exact component={TemplateNew} />
