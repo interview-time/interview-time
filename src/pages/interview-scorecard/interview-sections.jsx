@@ -450,6 +450,8 @@ const InterviewQuestionsCard = ({
                                 expandRowByClick: true,
                                 defaultExpandedRowKeys: group.questions.map((question, index) => {
                                     if (question.notes) return index;
+
+                                    return null;
                                 }),
                                 expandedRowRender: (question) => (
                                     <TextArea

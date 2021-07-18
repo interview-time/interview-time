@@ -1,4 +1,4 @@
-import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
+import { loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { connect } from "react-redux";
 import Layout from "../../components/layout/layout";
 import styles from "./interviews-evaluation.module.css";
@@ -36,7 +36,6 @@ function bodyStyleCard() {
  * @param {Interview[]} interviews
  * @param loadInterviews
  * @param updateInterview
- * @param deleteInterview
  */
 const InterviewEvaluation = ({ interviews, loadInterviews, updateInterview }) => {
     /**
