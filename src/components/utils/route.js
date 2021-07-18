@@ -22,9 +22,9 @@ export const routeInterviewCandidate = (id) => `/interviews/evaluation/${id}`
 
 export const routeTemplates = () => "/templates"
 
-export const routeTemplateAdd = () => "/templates/add/"
+export const routeTemplateBlank = () => "/templates/add/"
 
-export const routeTemplateAddFromLibrary = (id) => `/templates/add?fromLibrary=${id}`
+export const routeTemplateBlankFromLibrary = (id) => `/templates/add?fromLibrary=${id}`
 
 export const routeTemplateDetails = (id) => `/templates/details/${id}`
 

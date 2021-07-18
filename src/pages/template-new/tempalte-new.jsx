@@ -8,7 +8,7 @@ import styles from "./template-new.module.css";
 import { ReactComponent as CsvIcon } from "../../assets/csv.svg";
 import { createEvent } from "../../analytics";
 import Text from "antd/lib/typography/Text";
-import { routeTemplateAdd } from "../../components/utils/route";
+import { routeTemplateBlank } from "../../components/utils/route";
 import { ReactComponent as PlusIcon } from "../../assets/plus.svg";
 import { useHistory } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -24,7 +24,7 @@ const TempalteNew = ({ loadLibrary, library, loading }) => {
         // eslint-disable-next-line
     }, []);
 
-    const onBlankTemplateClicked = () => history.push(routeTemplateAdd());
+    const onBlankTemplateClicked = () => history.push(routeTemplateBlank());
 
     const onFromCSVClicked = () => {
         createEvent("Import from CSV", "Clicked");

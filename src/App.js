@@ -8,7 +8,7 @@ import {
     routeInterviewAdd,
     routeInterviews,
     routeNews,
-    routeTemplateAdd,
+    routeTemplateBlank,
     routeTemplates,
     routeTemplateNew,
 } from "./components/utils/route";
@@ -62,7 +62,7 @@ function App({ history }) {
             <PrivateRoute path="/interviews/evaluation/:id" exact component={InterviewEvaluation} />
             <PrivateRoute path="/reports/:id" exact component={ReportDetails} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
-            <PrivateRoute path={routeTemplateAdd()} exact component={TemplateDetails} />
+            <PrivateRoute path={routeTemplateBlank()} exact component={TemplateDetails} />
             <PrivateRoute path="/templates/details/:id" exact component={TemplateDetails} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />

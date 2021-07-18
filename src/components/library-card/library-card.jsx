@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, Modal } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import { routeTemplateAddFromLibrary } from "../utils/route";
+import { routeTemplateBlankFromLibrary } from "../utils/route";
 import LibraryPreview from "../library-preview/library-preview";
 import defaultIcon from "../../assets/layout.png";
 import styles from "./library-card.module.css";
@@ -49,7 +49,7 @@ const LibraryCard = ({ template }) => {
             >
                 <LibraryPreview
                     template={template}
-                    onUseTemplate={() => history.push(routeTemplateAddFromLibrary(template.libraryId))}
+                    onUseTemplate={() => history.push(routeTemplateBlankFromLibrary(template.libraryId))}
                 />
             </Modal>
         </>
