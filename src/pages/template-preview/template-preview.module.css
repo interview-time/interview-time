@@ -1,0 +1,38 @@
+.rootContainer {
+    background-color: var(--color-background);
+    height: 100%;
+}
+
+.headerContainer {
+    display: flex;
+    align-items: center;
+}
+
+.headerDescriptionContainer {
+    flex-grow: 1;
+}
+
+.headerTextContainer {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.headerImage {
+    margin-left: 24px;
+}
+
+.row {
+    margin-top: 12px;
+}
+
+.rowEnd {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
