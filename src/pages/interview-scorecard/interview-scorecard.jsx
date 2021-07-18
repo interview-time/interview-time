@@ -4,7 +4,7 @@ import { Button, Card, Col, message, Row, Space } from "antd";
 import Layout from "../../components/layout/layout";
 import styles from "./interview-scorecard.module.css";
 import { connect } from "react-redux";
-import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
+import { deleteInterview, loadInterviews, updateScorecard } from "../../store/interviews/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
 import {
@@ -12,7 +12,7 @@ import {
     routeInterviewDetails,
     routeInterviews,
 } from "../../components/utils/route";
-import { findGroup, findInterview, findQuestionInGroups } from "../../components/utils/converters";
+import { findInterview, findQuestionInGroups } from "../../components/utils/converters";
 import {
     InterviewGroupsSection,
     IntroSection,
@@ -21,9 +21,10 @@ import {
 } from "./interview-sections";
 import NotesSection from "./notes-section";
 import TimeAgo from "../../components/time-ago/time-ago";
+import Spinner from "../../components/spinner/spinner";
 
-const DATA_CHANGE_DEBOUNCE_MAX = 30 * 1000; // 30 sec
-const DATA_CHANGE_DEBOUNCE = 10 * 1000; // 10 sec
+const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
+const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
 
 /**
  *
@@ -32,7 +33,7 @@ const DATA_CHANGE_DEBOUNCE = 10 * 1000; // 10 sec
  * @param {boolean} interviewsUploading
  * @param deleteInterview
  * @param loadInterviews
- * @param updateInterview
+ * @param updateScorecard
  * @returns {JSX.Element}
  * @constructor
  */
@@ -41,27 +42,13 @@ const InterviewScorecard = ({
     interviewsUploading,
     deleteInterview,
     loadInterviews,
-    updateInterview,
+    updateScorecard,
 }) => {
-    /**
-     * @type {InterviewScorecard}
-     */
-    const emptyInterview = {
-        candidate: "",
-        position: "",
-        interviewDateTime: "",
-        structure: {
-            groups: [],
-        },
-    };
-
     /**
      * @type {Template}
      */
 
-    const [interview, setInterview] = useState(emptyInterview);
-    const [unsavedChanges, setUnsavedChanges] = useState(false);
-    const [interviewChangedCounter, setInterviewChangedCounter] = useState(0);
+    const [interview, setInterview] = useState();
 
     const { id } = useParams();
 
@@ -69,11 +56,11 @@ const InterviewScorecard = ({
 
     useEffect(() => {
         // initial data loading
-        if (interviews.length > 0) {
+        if (interviews.length > 0 && !interview) {
             setInterview(cloneDeep(findInterview(id, interviews)));
         }
         // eslint-disable-next-line
-    }, [interviews, id]);
+    }, [interviews]);
 
     useEffect(() => {
         loadInterviews();
@@ -88,8 +75,7 @@ const InterviewScorecard = ({
     const onInterviewChangeDebounce = React.useCallback(
         debounce(
             function (interview) {
-                updateInterview(interview);
-                setUnsavedChanges(false);
+                updateScorecard(interview);
             },
             DATA_CHANGE_DEBOUNCE,
             { maxWait: DATA_CHANGE_DEBOUNCE_MAX }
@@ -98,18 +84,13 @@ const InterviewScorecard = ({
     );
 
     React.useEffect(() => {
-        if (interviewChangedCounter > 0) {
-            console.log(interviewChangedCounter);
+        if (interview) {
             onInterviewChangeDebounce(interview);
         }
         // eslint-disable-next-line
-    }, [interviewChangedCounter]);
-    const initialLoading = () => !interview.interviewId;
+    }, [interview]);
 
-    const onInterviewChange = () => {
-        setUnsavedChanges(true);
-        setInterviewChangedCounter(interviewChangedCounter + 1);
-    };
+    const initialLoading = () => !interview.interviewId;
 
     const onDeleteInterview = () => {
         deleteInterview(interview.interviewId);
@@ -126,38 +107,40 @@ const InterviewScorecard = ({
     };
 
     const onSaveClicked = () => {
-        updateInterview(interview);
-        setUnsavedChanges(false);
+        updateScorecard(interview);
+
         message.success(`Interview '${interview.candidate}' updated.`);
     };
 
+    const onQuestionNotesChanged = (questionId, notes) => {
+        setInterview((prevInterview) => {
+            findQuestionInGroups(questionId, prevInterview.structure.groups).notes = notes;
+
+            return { ...prevInterview };
+        });
+    };
+
+    const onQuestionAssessmentChanged = (questionId, assessment) => {
+        setInterview((prevInterview) => {
+            findQuestionInGroups(questionId, prevInterview.structure.groups).assessment = assessment;
+
+            return { ...prevInterview };
+        });
+    };
+
     const onNoteChanges = (e) => {
-        interview.notes = e.target.value;
-        onInterviewChange();
-    };
-
-    const onGroupAssessmentChanged = (group, assessment) => {
-        findGroup(group.groupId, interview.structure.groups).assessment = assessment;
-        onInterviewChange();
-    };
-
-    const onQuestionAssessmentChanged = (question, assessment) => {
-        findQuestionInGroups(question.questionId, interview.structure.groups).assessment = assessment;
-        onInterviewChange();
+        setInterview({ ...interview, notes: e.target.value });
     };
 
     const onCandidateEvaluationClicked = () => {
-        if (unsavedChanges) {
-            onSaveClicked();
-        }
+        onSaveClicked();
         history.push(routeInterviewCandidate(interview.interviewId));
     };
 
-    return (
+    return interview ? (
         <Layout>
             <Row className={styles.rootContainer}>
                 <Col
-                    key={interview.interviewId}
                     xxl={{ span: 16, offset: 4 }}
                     xl={{ span: 20 }}
                     lg={{ span: 24 }}
@@ -182,13 +165,13 @@ const InterviewScorecard = ({
 
                     <InterviewGroupsSection
                         interview={interview}
-                        onGroupAssessmentChanged={onGroupAssessmentChanged}
+                        onQuestionNotesChanged={onQuestionNotesChanged}
                         onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                         hashStyle={styles.hash}
                     />
 
                     <Card style={{ marginTop: 12 }}>
-                        <SummarySection interview={interview} onNoteChanges={onNoteChanges} />
+                        <SummarySection interview={interview} />
                     </Card>
 
                     <NotesSection
@@ -199,7 +182,7 @@ const InterviewScorecard = ({
 
                     <Card style={{ marginTop: 12, marginBottom: 12 }}>
                         <div className={styles.divSpaceBetween}>
-                            <TimeAgo timestamp={interview.modifiedDate} />
+                            <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
                             <Space>
                                 <Button loading={interviewsUploading} onClick={onSaveClicked}>
                                     Save
@@ -212,7 +195,6 @@ const InterviewScorecard = ({
                     </Card>
                 </Col>
                 <Col
-                    key={interview.interviewId}
                     xxl={{ span: 4 }}
                     xl={{ span: 4 }}
                     lg={{ span: 0 }}
@@ -225,7 +207,7 @@ const InterviewScorecard = ({
                             Intro
                         </a>
                         {interview.structure.groups.map((group) => (
-                            <a href={`#${group.name}`} className={styles.anchorLink}>
+                            <a key={group.groupId} href={`#${group.name}`} className={styles.anchorLink}>
                                 {group.name}
                             </a>
                         ))}
@@ -236,10 +218,12 @@ const InterviewScorecard = ({
                 </Col>
             </Row>
         </Layout>
+    ) : (
+        <Spinner />
     );
 };
 
-const mapDispatch = { deleteInterview, loadInterviews, updateInterview };
+const mapDispatch = { deleteInterview, loadInterviews, updateScorecard };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
     return {
