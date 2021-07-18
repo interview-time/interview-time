@@ -1,6 +1,20 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Button, Card, Col, Dropdown, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    Dropdown,
+    Input,
+    Menu,
+    message,
+    Modal,
+    Row,
+    Space,
+    Table,
+    Tag,
+    Tooltip,
+} from "antd";
 import {
     createTagColors,
     DATE_FORMAT_DISPLAY,
@@ -230,7 +244,9 @@ export const InterviewInformationSection = ({
                     </Title>
                 </div>
                 <Dropdown overlay={menu}>
-                    <Link>Actions <DownOutlined /></Link>
+                    <Link to="#">
+                        Actions <DownOutlined />
+                    </Link>
                 </Dropdown>
             </div>
             <Row style={{ marginTop: "24px" }}>
@@ -287,7 +303,7 @@ export const IntroSection = ({ interview, hashStyle }) => {
  * @returns {JSX.Element}
  * @constructor
  */
-export const SummarySection = ({ interview, onNoteChanges, hashStyle }) => {
+export const SummarySection = ({ interview, hashStyle }) => {
     const getFooter = () => {
         if (interview && interview.structure && interview.structure.footer) {
             return interview.structure.footer;
@@ -323,7 +339,7 @@ const InterviewQuestionsCard = ({
     tagColors,
     group,
     disabled,
-    onGroupAssessmentChanged,
+    onQuestionNotesChanged,
     onQuestionAssessmentChanged,
     hashStyle,
 }) => {
@@ -365,11 +381,12 @@ const InterviewQuestionsCard = ({
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: (question) => (
                 <AssessmentCheckbox
+                    key={question.questionId}
                     defaultValue={question.assessment}
                     disabled={disabled}
                     onChange={(value) => {
                         if (onQuestionAssessmentChanged) {
-                            onQuestionAssessmentChanged(question, value);
+                            onQuestionAssessmentChanged(question.questionId, value);
                         }
                     }}
                 />
@@ -431,7 +448,11 @@ const InterviewQuestionsCard = ({
                                         autoSize={true}
                                         autoFocus={true}
                                         defaultValue={question.notes}
-                                        onChange={(e) => (question.notes = e.target.value)}
+                                        onChange={(e) => {
+                                            if (onQuestionNotesChanged) {
+                                                onQuestionNotesChanged(question.questionId, e.target.value);
+                                            }
+                                        }}
                                     />
                                 ),
                                 expandIcon: ({ expanded, onExpand, record }) => {
@@ -573,7 +594,7 @@ export const InterviewAssessmentButtons = ({ assessment, disabled, onAssessmentC
  */
 export const InterviewGroupsSection = ({
     interview,
-    onGroupAssessmentChanged,
+    onQuestionNotesChanged,
     onQuestionAssessmentChanged,
     hashStyle,
 }) => {
@@ -584,11 +605,12 @@ export const InterviewGroupsSection = ({
         <>
             {interview.structure.groups.map((group, index) => (
                 <InterviewQuestionsCard
+                    key={group.groupId}
                     index={index}
                     tagColors={tagColors}
                     group={group}
                     disabled={isCompletedStatus()}
-                    onGroupAssessmentChanged={onGroupAssessmentChanged}
+                    onQuestionNotesChanged={onQuestionNotesChanged}
                     onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                     hashStyle={hashStyle}
                 />

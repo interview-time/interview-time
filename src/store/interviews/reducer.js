@@ -7,6 +7,7 @@ import {
     SET_UPLOADING,
     setInterviews,
     setUploading,
+    UPDATE_SCORECARD,
     UPDATE_INTERVIEW,
 } from "./actions";
 import axios from "axios";
@@ -113,6 +114,40 @@ const interviewsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 interviews: [...state.interviews, interview]
+            };
+        }
+
+        case UPDATE_SCORECARD: {
+            console.log(action.type)
+            const { interview } = action.payload;
+
+            interview.modifiedDate = new Date();
+            
+            getAccessTokenSilently()
+                .then(token => axios.put(URL, interview, config(token)))
+                .then(() => console.log(`SCORECARD updated: ${JSON.stringify(interview)}`))
+                .then(() => {
+                    store.dispatch(setUploading(false))
+                })
+                .catch(reason => {
+                    store.dispatch(setUploading(false))
+                    console.error(reason)
+                });
+
+            const interviews = state.interviews.map(item => {
+                if (item.interviewId !== interview.interviewId) {
+                    return item;
+                }
+
+                return {
+                    ...item, ...interview
+                }
+            });
+
+            return {
+                ...state,
+                interviews: interviews,
+                uploading: true
             };
         }
 

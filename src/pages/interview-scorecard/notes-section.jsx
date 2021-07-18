@@ -33,9 +33,8 @@ const NotesSection = ({ notes, status, onChange }) => {
                 {...(status === Status.COMPLETED ? { readonly: "true" } : {})}
                 className={styles.notesTextArea}
                 placeholder="Interview notes..."
-                bordered={false}
+                bordered={false}            
                 autoSize={{ minRows: 6, maxRows: 6 }}
-                autoFocus={true}
                 onChange={onChange}
                 defaultValue={notes}
             />

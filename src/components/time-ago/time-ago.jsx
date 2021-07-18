@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Text from "antd/lib/typography/Text";
 import moment from "moment";
 
-const TimeAgo = ({ timestamp }) => {
+const TimeAgo = ({ timestamp, saving }) => {
     const [lastSaved, setLastSaved] = useState(null);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ const TimeAgo = ({ timestamp }) => {
         return () => clearInterval(interval);
     }, [timestamp]);
 
-    return <Text>{lastSaved ? `Last saved ${lastSaved}` : ""}</Text>;
+    return saving ? <Text>Saving...</Text> : <Text>{lastSaved ? `Last saved ${lastSaved}` : ""}</Text>;
 };
 
 export default TimeAgo;

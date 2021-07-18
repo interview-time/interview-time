@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Rate } from "antd";
 import { defaultTo } from "lodash/util";
 
@@ -10,17 +10,16 @@ import { defaultTo } from "lodash/util";
  * @returns {JSX.Element}
  * @constructor
  */
-const AssessmentCheckbox = ({ defaultValue, disabled , onChange}) => {
-
+const AssessmentCheckbox = ({ defaultValue, disabled, onChange }) => {
     return (
         <Rate
             count={3}
-            defaultValue={defaultTo(defaultValue, 0)}
+            defaultValue={defaultTo(defaultValue, 0)}            
             disabled={disabled}
             onChange={onChange}
             tooltips={["Poor answer", "Average answer", "Good answer"]}
         />
-    )
-}
+    );
+};
 
-export default AssessmentCheckbox
+export default AssessmentCheckbox;
