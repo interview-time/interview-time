@@ -243,11 +243,13 @@ export const InterviewInformationSection = ({
                         {title}
                     </Title>
                 </div>
-                <Dropdown overlay={menu}>
-                    <Link to="#">
-                        Actions <DownOutlined />
-                    </Link>
-                </Dropdown>
+                {(onDeleteInterview || onEditInterview) && (
+                    <Dropdown overlay={menu}>
+                        <Link to="#">
+                            Actions <DownOutlined />
+                        </Link>
+                    </Dropdown>
+                )}
             </div>
             <Row style={{ marginTop: "24px" }}>
                 <Col flex="140px">
@@ -352,7 +354,7 @@ const InterviewQuestionsCard = ({
             dataIndex: "question",
             key: "question",
             sortDirections: ["descend", "ascend"],
-            className: styles.multiLineText,
+            className: styles.questionCell,
             shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
         },
@@ -391,6 +393,11 @@ const InterviewQuestionsCard = ({
                     }}
                 />
             ),
+            onCell: (record, rowIndex) => {
+                return {
+                    onClick: (event) => event.stopPropagation(),
+                };
+            },
         },
         { title: "", dataIndex: "", key: "expand", width: 1 },
     ];
@@ -440,6 +447,12 @@ const InterviewQuestionsCard = ({
                             pagination={false}
                             expandable={{
                                 expandIconColumnIndex: 4,
+                                expandRowByClick: true,
+                                defaultExpandedRowKeys: group.questions.map((question, index) => {
+                                    if (question.notes) return index;
+
+                                    return null;
+                                }),
                                 expandedRowRender: (question) => (
                                     <TextArea
                                         className={styles.questionTextArea}

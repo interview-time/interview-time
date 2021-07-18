@@ -2,6 +2,11 @@
     white-space: pre-wrap;
 }
 
+.questionCell {
+    white-space: pre-wrap;
+    cursor: pointer;
+}
+
 .mainCol {
     background-color: white;
     padding: 24px;
