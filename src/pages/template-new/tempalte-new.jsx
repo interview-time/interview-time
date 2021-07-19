@@ -5,13 +5,13 @@ import Layout from "../../components/layout/layout";
 import LibraryCard from "../../components/library-card/library-card";
 import { loadLibrary } from "../../store/templates/actions";
 import styles from "./template-new.module.css";
-import { ReactComponent as CsvIcon } from "../../assets/csv.svg";
 import { createEvent } from "../../analytics";
 import Text from "antd/lib/typography/Text";
 import { routeTemplateBlank } from "../../components/utils/route";
-import { ReactComponent as PlusIcon } from "../../assets/plus.svg";
 import { useHistory } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import blankIcon from "../../assets/blank.svg";
+import importIcon from "../../assets/import.svg";
 
 const { Title } = Typography;
 
@@ -63,7 +63,7 @@ const TempalteNew = ({ loadLibrary, library, loading }) => {
                         >
                             <div className={styles.card}>
                                 <div className={styles.cardIcon}>
-                                    <PlusIcon width={50} height={50} />
+                                    <img alt="Schedule interview" src={blankIcon} width={50} />
                                 </div>
                                 <div className={styles.cardTitle}>
                                     <Title level={5}>Blank template</Title>
@@ -73,10 +73,12 @@ const TempalteNew = ({ loadLibrary, library, loading }) => {
                         </Card>
                     </Col>
                     <Col span={24} lg={{ span: 8 }}>
-                        <Card hoverable bodyStyle={{ padding: 0 }} onClick={onFromCSVClicked}>
+                        <Card hoverable
+                              bodyStyle={{ padding: 0 }}
+                              onClick={onFromCSVClicked}>
                             <div className={styles.card}>
                                 <div className={styles.cardIcon}>
-                                    <CsvIcon width={50} height={50} />
+                                    <img alt="Schedule interview" src={importIcon} width={50} />
                                 </div>
                                 <div className={styles.cardTitle}>
                                     <Title level={5}>From CSV file</Title>
