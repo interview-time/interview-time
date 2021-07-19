@@ -1,9 +1,6 @@
 import React from "react";
-import { Row, Col, Card, Typography, Table, Modal, Tag } from "antd";
+import { Card, Col, Row, Table, Tag, Typography } from "antd";
 import Layout from "../../components/layout/layout";
-import { ReactComponent as PlusIcon } from "../../assets/plus.svg";
-import { ReactComponent as TemplateIcon } from "../../assets/template.svg";
-import { ReactComponent as CsvIcon } from "../../assets/csv.svg";
 import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
@@ -14,9 +11,10 @@ import { cloneDeep } from "lodash/lang";
 import moment from "moment";
 import { DATE_FORMAT_DISPLAY } from "../../components/utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
-import { routeInterviewScorecard, routeTemplateBlank, routeTemplateNew } from "../../components/utils/route";
-import { createEvent } from "../../analytics";
+import { routeInterviewAdd, routeInterviewScorecard, routeTemplateNew } from "../../components/utils/route";
 import styles from "./default.module.css";
+import scheduleIcon from "../../assets/schedule.svg";
+import templateIcon from "../../assets/template.svg";
 
 const { Title, Text } = Typography;
 
@@ -48,6 +46,17 @@ const columns = [
     },
 ];
 
+/**
+ *
+ * @param {Interview[]} upcomingInterviews
+ * @param {boolean} loadingInterviews
+ * @param {Template[]} templates
+ * @param {boolean} loadingTemplates
+ * @param loadInterviews
+ * @param loadTemplates
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Default = ({
     upcomingInterviews,
     loadingInterviews,
@@ -64,40 +73,30 @@ const Default = ({
         // eslint-disable-next-line
     }, []);
 
-    function info() {
-        createEvent("Import from CSV", "Clicked");
-        Modal.info({
-            title: "Import from CSV",
-            content: (
-                <div>
-                    <p>Coming soon...</p>
-                </div>
-            ),
-            onOk() {},
-        });
-    }
+    const onNewInterviewClicked = () => history.push(routeTemplateNew());
+
+    const onScheduleInterviewClicked = () => history.push(routeInterviewAdd());
 
     return (
         <Layout>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                 <div className={styles.header}>
-                    <Title level={2}>Create new interview</Title>
-                    <span className={styles.subTitle}>How would you like to start?</span>
+                    <Title level={2} style={{ margin: 0 }}>How would you like to start?</Title>
                 </div>
-                <Row justify="space-between" gutter={[32, 32]}>
-                    <Col span={24} lg={{ span: 8 }}>
+                <Row gutter={[32, 32]}>
+                    <Col span={24} lg={{ span: 8, offset: 4 }}>
                         <Card
                             hoverable
                             bodyStyle={{ padding: 0 }}
-                            onClick={() => history.push(routeTemplateBlank())}
+                            onClick={onScheduleInterviewClicked}
                         >
                             <div className={styles.card}>
                                 <div className={styles.cardIcon}>
-                                    <PlusIcon width={50} height={50} />
+                                    <img alt="Schedule interview" src={scheduleIcon} width={50} />
                                 </div>
                                 <div className={styles.cardTitle}>
-                                    <Title level={5}>Blank interview</Title>
-                                    <Text type="secondary">Start from scratch</Text>
+                                    <Title level={5}>Schedule interview</Title>
+                                    <Text type="secondary">Use one of your interview templates</Text>
                                 </div>
                             </div>
                         </Card>
@@ -106,29 +105,15 @@ const Default = ({
                         <Card
                             hoverable
                             bodyStyle={{ padding: 0 }}
-                            onClick={() => history.push(routeTemplateNew())}
+                            onClick={onNewInterviewClicked}
                         >
                             <div className={styles.card}>
                                 <div className={styles.cardIcon}>
-                                    <TemplateIcon width={50} height={50} />
+                                    <img alt="Create template" src={templateIcon} width={50} />
                                 </div>
                                 <div className={styles.cardTitle}>
-                                    <Title level={5}>From template</Title>
-                                    <Text type="secondary">Choose from our library of templates</Text>
-                                    <div></div>
-                                </div>
-                            </div>
-                        </Card>
-                    </Col>
-                    <Col span={24} lg={{ span: 8 }}>
-                        <Card hoverable bodyStyle={{ padding: 0 }} onClick={() => info()}>
-                            <div className={styles.card}>
-                                <div className={styles.cardIcon}>
-                                    <CsvIcon width={50} height={50} />
-                                </div>
-                                <div className={styles.cardTitle}>
-                                    <Title level={5}>From CSV file</Title>
-                                    <Text type="secondary">Import your existing questions</Text>
+                                    <Title level={5}>Create template</Title>
+                                    <Text type="secondary">Blank or from public library of templates</Text>
                                 </div>
                             </div>
                         </Card>

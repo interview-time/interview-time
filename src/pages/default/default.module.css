@@ -9,7 +9,7 @@
 }
 
 .card {
-    padding: 24px;
+    padding: 24px 12px 24px 24px;
     height: 150px;
     width: 100%;
     display: flex;
