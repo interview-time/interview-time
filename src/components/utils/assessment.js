@@ -4,17 +4,15 @@ import { InterviewAssessment, QuestionAssessment } from "./constants";
 const COLOR_RED_5 = '#ff4d4f';
 const COLOR_ORANGE_5 = '#FFA940';
 const COLOR_GREEN_6 = '#52c41a';
-const COLOR_GREEN_8 = '#389E0D';
 const COLOR_NEUTRAL_6 = '#bfbfbf';
 
 const QUESTION_SCORE_GOOD = 1.0
-const QUESTION_SCORE_AVERAGE = 0.8
-const QUESTION_SCORE_POOR = 0.2
+const QUESTION_SCORE_AVERAGE = 0.80
+const QUESTION_SCORE_POOR = 0.4
 
-const PERFORMANCE_SCORE_HIGHLY_SKILLED = 0.8
+const PERFORMANCE_SCORE_HIGHLY_SKILLED = 0.9
 const PERFORMANCE_SCORE_SKILLED = 0.6
 const PERFORMANCE_SCORE_LOW_SKILLS = 0.4
-const PERFORMANCE_SCORE_NO_PROFICIENCY = 0.2
 
 export const getDecisionText = (decision) => {
     if (decision === InterviewAssessment.YES) {
@@ -58,12 +56,10 @@ export const getQuestionsWithAssessment = (groups) => {
 export const getOverallPerformanceColor = (groups) => {
     let performance = getOverallPerformanceNumber(groups)
     if (performance >= PERFORMANCE_SCORE_HIGHLY_SKILLED) {
-        return COLOR_GREEN_8;
-    } else if (performance >= PERFORMANCE_SCORE_SKILLED) {
         return COLOR_GREEN_6;
-    } else if (performance >= PERFORMANCE_SCORE_LOW_SKILLS) {
+    } else if (performance >= PERFORMANCE_SCORE_SKILLED) {
         return COLOR_ORANGE_5;
-    } else if (performance >= PERFORMANCE_SCORE_NO_PROFICIENCY) {
+    } else if (performance >= PERFORMANCE_SCORE_LOW_SKILLS) {
         return COLOR_RED_5;
     }
     return COLOR_NEUTRAL_6
@@ -100,12 +96,10 @@ export const getOverallPerformanceNumber = (groups) => {
 export const getGroupAssessmentColor = (group) => {
     let assessment = getGroupAssessmentNumber(group)
     if (assessment >= PERFORMANCE_SCORE_HIGHLY_SKILLED) {
-        return COLOR_GREEN_8;
-    } else if (assessment >= PERFORMANCE_SCORE_SKILLED) {
         return COLOR_GREEN_6;
-    } else if (assessment >= PERFORMANCE_SCORE_LOW_SKILLS) {
+    } else if (assessment >= PERFORMANCE_SCORE_SKILLED) {
         return COLOR_ORANGE_5;
-    } else if (assessment >= PERFORMANCE_SCORE_NO_PROFICIENCY) {
+    } else if (assessment >= PERFORMANCE_SCORE_LOW_SKILLS) {
         return COLOR_RED_5;
     }
     return COLOR_NEUTRAL_6
@@ -124,8 +118,6 @@ export const getGroupAssessmentText = (group) => {
         return "skilled";
     } else if (assessment >= PERFORMANCE_SCORE_LOW_SKILLS) {
         return "low skills";
-    } else if (assessment >= PERFORMANCE_SCORE_NO_PROFICIENCY) {
-        return "no proficiency";
     }
     return "no data"
 }
