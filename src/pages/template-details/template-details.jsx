@@ -17,6 +17,7 @@ import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import Spinner from "../../components/spinner/spinner";
 
 const { TextArea } = Input;
 
@@ -32,20 +33,6 @@ const { TextArea } = Input;
  * @constructor
  */
 const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadLibrary, updateTemplate }) => {
-    /**
-     *
-     * @type {Template}
-     */
-    const emptyTemplate = {
-        templateId: undefined,
-        title: "",
-        structure: {
-            header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
-            footer: "Allow 10 minutes at the end for the candidate to ask questions.",
-            groups: [],
-        },
-    };
-
     const templateCategories = TemplateCategories.map((category) => ({
         value: category.key,
         label: category.title,
@@ -55,7 +42,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
     const { id } = useParams();
     const location = useLocation();
 
-    const [template, setTemplate] = useState(emptyTemplate);
+    const [template, setTemplate] = useState();
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [questionGroupModal, setQuestionGroupModal] = useState({
         visible: false,
@@ -64,14 +51,15 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
     });
 
     React.useEffect(() => {
-        if (isExistingTemplateFlow() && !template.templateId && templates.length !== 0) {
+        if (isExistingTemplateFlow() && templates.length !== 0) {
             setTemplate(cloneDeep(findTemplate(id, templates)));
-        } else if (isFromLibraryFlow() && !template.parentId && library.length !== 0) {
+        } else if (isFromLibraryFlow() && library.length !== 0) {
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library));
             setTemplate({
                 ...template,
                 parentId: fromLibraryId(),
                 title: parent.title,
+                type: parent.type,
                 structure: parent.structure,
             });
         }
@@ -83,6 +71,15 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
             loadTemplates();
         } else if (isFromLibraryFlow()) {
             loadLibrary();
+        } // blank template
+        else {
+            setTemplate({
+                templateId: undefined,
+                title: "",
+                structure: {
+                    groups: [],
+                },
+            });
         }
 
         // eslint-disable-next-line
@@ -91,9 +88,6 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
     const isExistingTemplateFlow = () => id;
 
     const isFromLibraryFlow = () => fromLibraryId() !== null;
-
-    const isInitialLoading = () =>
-        (isExistingTemplateFlow() && !template.templateId) || (isFromLibraryFlow() && !template.parentId);
 
     /**
      *
@@ -238,7 +232,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
     const marginVertical12 = { marginTop: 12, marginBottom: 12 };
     const marginTop16 = { marginTop: 16 };
 
-    return (
+    return template ? (
         <Layout>
             <Row className={styles.rootContainer}>
                 <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
@@ -246,11 +240,12 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                         name="basic"
                         layout="vertical"
                         initialValues={{
-                            remember: true,
+                            title: template.title,
+                            category: template.type,
                         }}
                         onFinish={onSaveClicked}
                     >
-                        <Card style={marginTop12} key={template.templateId} loading={isInitialLoading()}>
+                        <Card style={marginTop12}>
                             <div className={styles.header} style={{ marginBottom: 12 }}>
                                 <div className={styles.headerTitleContainer} onClick={onBackClicked}>
                                     <ArrowLeftOutlined />{" "}
@@ -282,7 +277,6 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         <Input
                                             placeholder="e.g. Software Developer"
                                             onChange={onTitleChange}
-                                            defaultValue={template.title}
                                         />
                                     </Form.Item>
                                 </Space>
@@ -300,7 +294,6 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         <Select
                                             style={{ width: "100%" }}
                                             placeholder="Select category"
-                                            defaultValue={template.type}
                                             onSelect={onCategoryChange}
                                             options={templateCategories}
                                             showSearch
@@ -313,7 +306,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                             </div>
                         </Card>
 
-                        <Card style={marginTop12} loading={isInitialLoading()}>
+                        <Card style={marginTop12}>
                             <Title level={4}>Intro</Title>
                             <Text type="secondary">
                                 Intro section serves as a reminder for what interviewer should do at the
@@ -328,7 +321,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                             />
                         </Card>
 
-                        <Card style={marginTop12} loading={isInitialLoading()}>
+                        <Card style={marginTop12}>
                             <Space style={{ width: "100%" }}>
                                 <Title level={4}>Questions</Title>
                                 <Popover
@@ -336,7 +329,9 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         <img
                                             alt="Interviewer"
                                             style={{ width: 400 }}
-                                            src={process.env.PUBLIC_URL + "/app/interview-schedule-groups.png"}
+                                            src={
+                                                process.env.PUBLIC_URL + "/app/interview-schedule-groups.png"
+                                            }
                                         />
                                     }
                                 >
@@ -373,7 +368,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                             </Button>
                         </Card>
 
-                        <Card style={marginVertical12} loading={isInitialLoading()}>
+                        <Card style={marginVertical12}>
                             <Title level={4}>End of interview</Title>
                             <Text type="secondary">
                                 This section serves as a reminder for what interviewer should do at the end of
@@ -425,6 +420,8 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                 <TemplateDetailsPreviewCard template={template} onCloseClicked={onPreviewClosed} />
             </Modal>
         </Layout>
+    ) : (
+        <Spinner />
     );
 };
 
