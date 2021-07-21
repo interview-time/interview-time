@@ -105,6 +105,7 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
         <Progress
             style={{ marginBottom: 16 }}
             type='circle'
+            status="active"
             strokeLinecap='square'
             strokeColor={getOverallPerformanceColor(interview.structure.groups)}
             percent={getOverallPerformancePercent(interview.structure.groups)}

@@ -121,7 +121,7 @@ const InterviewEvaluation = ({ interviews, loadInterviews, updateInterview }) =>
                             type="line"
                             status="active"
                             strokeLinecap="square"
-                            strokeColor="#69C0FF"
+                            strokeColor={getGroupAssessmentColor(group)}
                             steps={10}
                             strokeWidth={16}
                             percent={getGroupAssessmentPercent(group)}
@@ -145,6 +145,7 @@ const InterviewEvaluation = ({ interviews, loadInterviews, updateInterview }) =>
                 <Progress
                     style={{ marginBottom: 16 }}
                     type="circle"
+                    status="active"
                     strokeLinecap="square"
                     strokeColor={getOverallPerformanceColor(interview.structure.groups)}
                     percent={getOverallPerformancePercent(interview.structure.groups)}
