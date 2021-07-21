@@ -2,13 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Input, Button } from "antd";
 import { CopyOutlined, CheckOutlined } from "@ant-design/icons";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import {
+    getGroupAssessmentPercent,
+    getGroupAssessmentText,
+    getOverallPerformancePercent,
+} from "../../components/utils/assessment";
 import styles from "./export-notes.module.css";
 
 const { TextArea } = Input;
 
 const ExportNotes = ({ interview }) => {
     const [notes, setNotes] = useState(() => {
-        var questionNotes = "";
+        var questionNotes = `${interview.candidate}\n`;
+        questionNotes += "---------------------------------\n";
+        questionNotes += `Overall Performance Score: ${getOverallPerformancePercent(
+            interview.structure.groups
+        )}%\n`;
+        questionNotes += "---------------------------------\n";
+
+        if (interview.structure.groups && interview.structure.groups.length > 1) {
+            interview.structure.groups.map((group) => {
+                questionNotes += `${group.name}: ${getGroupAssessmentPercent(
+                    group
+                )}% (${getGroupAssessmentText(group)})\n`;
+            });
+
+            questionNotes += "---------------------------------\n\n";
+        }
 
         interview.structure.groups.map((group) => {
             group.questions.map((q) => {
