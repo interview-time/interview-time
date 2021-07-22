@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, Row, Table, Tag, Typography } from "antd";
+import { Card, Col, Row, Table, Typography } from "antd";
 import Layout from "../../components/layout/layout";
 import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
@@ -15,6 +15,7 @@ import { routeInterviewAdd, routeInterviewScorecard, routeTemplateNew } from "..
 import styles from "./default.module.css";
 import scheduleIcon from "../../assets/schedule.svg";
 import templateIcon from "../../assets/template.svg";
+import DemoTag from "../../components/demo/demo-tag";
 
 const { Title, Text } = Typography;
 
@@ -25,11 +26,7 @@ const columns = [
         render: (candidate, interview) => (
             <>
                 <span>{candidate}</span>
-                {interview.isDemo && (
-                    <Tag className={styles.demoTag} color="orange">
-                        Demo
-                    </Tag>
-                )}
+                <DemoTag isDemo={interview.isDemo}/>
             </>
         ),
     },

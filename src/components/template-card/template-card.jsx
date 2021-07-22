@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, message, Modal, Row, Button, Tag } from "antd";
+import { Card, Col, message, Modal, Row, Button} from "antd";
 import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
@@ -12,6 +12,7 @@ import {
 import { getTemplateCategoryIcon, TemplateCategories } from "../utils/constants";
 import { TemplatePreviewCard } from "../../pages/interview-scorecard/interview-sections";
 import styles from "./template-card.module.css";
+import DemoTag from "../demo/demo-tag";
 
 const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
     const history = useHistory();
@@ -71,11 +72,7 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
                     </div>
                     <div className={styles.cardTitle}>
                         <span className={styles.cardTitleText}>{template.title}</span>
-                        {template.isDemo && (
-                            <Tag className={styles.demoTag} color="orange">
-                                Demo
-                            </Tag>
-                        )}
+                        <DemoTag isDemo={template.isDemo}/>
                     </div>
 
                     <Row style={{ marginTop: 12 }}>
