@@ -1,14 +1,12 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Badge, Layout as AntLayout, Menu} from "antd";
+import { Layout as AntLayout, Menu} from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
-    FakeIcon,
     FeedbackIcon,
     GuideIcon,
     InterviewIcon,
-    NewsIcon,
     ProfileIcon,
     HomeIcon
 } from "../utils/icons";
@@ -24,17 +22,11 @@ import {
 } from "../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
-import {
-    isUpdateAvailable
-} from "../utils/storage";
 import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
 
 const menuIconStyle = { fontSize: '24px' }
-const menuIconWithBadgeStyle = { fontSize: '24px', position: "absolute" }
-const menuIconBadgeStyle = { position: "absolute" }
-
 const Layout = ({ children, pageHeader, contentStyle }) => {
 
     const location = useLocation();
@@ -118,20 +110,6 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
                                icon={<FeedbackIcon style={menuIconStyle} />}
                                onClick={onFeedbackClicked}>
                         <span className="nav-text">Feedback</span>
-                    </Menu.Item>
-                    <Menu.Item key={routeNews()} className={styles.menuItem}
-                               icon={
-                                   <div className={styles.menuIconContainer}>
-                                       {/*Badge with icon cause icon to be black, that's why we use fake icon*/}
-                                       <NewsIcon style={menuIconWithBadgeStyle} />
-                                       <Badge style={menuIconBadgeStyle} offset={[-8, 0]} dot={isUpdateAvailable()}>
-                                           <FakeIcon style={menuIconStyle} />
-                                       </Badge>
-                                   </div>
-                               }>
-                        <Link to={routeNews()}>
-                            <span className="nav-text">What's new</span>
-                        </Link>
                     </Menu.Item>
                     <Menu.Item key={routeAccount()} className={styles.menuItem}
                                icon={
