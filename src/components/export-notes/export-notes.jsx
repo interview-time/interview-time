@@ -21,7 +21,7 @@ const ExportNotes = ({ interview }) => {
         questionNotes += "---------------------------------\n";
 
         if (interview.structure.groups && interview.structure.groups.length > 1) {
-            interview.structure.groups.map((group) => {
+            interview.structure.groups.forEach((group) => {
                 questionNotes += `${group.name}: ${getGroupAssessmentPercent(
                     group
                 )}% (${getGroupAssessmentText(group)})\n`;
@@ -30,8 +30,8 @@ const ExportNotes = ({ interview }) => {
             questionNotes += "---------------------------------\n\n";
         }
 
-        interview.structure.groups.map((group) => {
-            group.questions.map((q) => {
+        interview.structure.groups.forEach((group) => {
+            group.questions.forEach((q) => {
                 if (q.notes) {
                     questionNotes += `- ${q.question}\n${q.notes}\n\n`;
                 }
