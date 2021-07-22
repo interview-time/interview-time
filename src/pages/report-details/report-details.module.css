@@ -52,6 +52,10 @@
 .moreContainer {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     margin-top: 48px;
+}
+
+.export {
+    margin-left: 16px;
 }
