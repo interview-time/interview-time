@@ -1,15 +1,11 @@
 import React from "react";
-import { Card, Col, message, Modal, Row, Button} from "antd";
+import { Button, Card, message, Modal } from "antd";
 import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 
-import {
-    routeInterviewAddFromLibrary,
-    routeInterviewAddFromTemplate,
-    routeTemplateDetails,
-} from "../utils/route";
-import { getTemplateCategoryIcon, TemplateCategories } from "../utils/constants";
+import { routeInterviewAddFromLibrary, routeInterviewAddFromTemplate, routeTemplateDetails, } from "../utils/route";
+import { getTemplateCategoryBackground, getTemplateCategoryIcon } from "../utils/constants";
 import { TemplatePreviewCard } from "../../pages/interview-scorecard/interview-sections";
 import styles from "./template-card.module.css";
 import DemoTag from "../demo/demo-tag";
@@ -17,8 +13,6 @@ import DemoTag from "../demo/demo-tag";
 const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
     const history = useHistory();
     const [previewModalVisible, setPreviewModalVisible] = React.useState(false);
-
-    const getCategory = (template) => TemplateCategories.find((category) => category.key === template.type) || {};
 
     const getTotalQuestions = (groups) =>
         sumBy(groups, (group) => (group.questions ? group.questions.length : 0));
@@ -64,29 +58,17 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
         <>
             <Card hoverable bodyStyle={{ padding: 0 }}>
                 <div className={styles.card}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        {getTemplateCategoryIcon(template.type)}
-                        <div style={{ color: getCategory(template).color }} className={styles.category}>
-                            {getCategory(template).titleShort}
+                    <div className={styles.cardHeaderContainer}>
+                        <div className={styles.iconContainer}>
+                            <div className={styles.iconBackground}
+                                 style={{ backgroundColor: getTemplateCategoryBackground(template.type) }} />
+                            <div className={styles.icon}>{getTemplateCategoryIcon(template.type)}</div>
                         </div>
-                    </div>
-                    <div className={styles.cardTitle}>
-                        <span className={styles.cardTitleText}>{template.title}</span>
-                        <DemoTag isDemo={template.isDemo}/>
+                        <DemoTag isDemo={template.isDemo} />
                     </div>
 
-                    <Row style={{ marginTop: 12 }}>
-                        <Col span={12}>
-                            <div className={styles.cardMetaTitle}>QUESTIONS</div>
-                            <div className={styles.cardMetaValue}>
-                                {getTotalQuestions(template.structure.groups)}
-                            </div>
-                        </Col>
-                        <Col span={12}>
-                            <div className={styles.cardMetaTitle}>INTERVIEWS</div>
-                            <div className={styles.cardMetaValue}>{template.totalInterviews}</div>
-                        </Col>
-                    </Row>
+                    <div className={styles.cardTitleText}>{template.title}</div>
+                    <div className={styles.cardQuestions}>{getTotalQuestions(template.structure.groups)} QUESTIONS</div>
                 </div>
                 <div className={styles.cardActions}>
                     <div className={styles.cardButtons}>

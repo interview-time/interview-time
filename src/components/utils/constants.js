@@ -34,47 +34,58 @@ export const TemplateCategories = [
         title: 'Software Development',
         titleShort: 'DEVELOPMENT',
         color: '#1890FF',
+        backgroundColor: '#BAE7FF',
     },
     {
         key: 'MANAGEMENT',
         title: 'Management',
         titleShort: 'MANAGEMENT',
-        color: '#722ED1'
+        color: '#722ED1',
+        backgroundColor: '#EFDBFF',
     },
     {
         key: 'DESIGN',
         title: 'Design',
         titleShort: 'DESIGN',
-        color: '#F5222D'
+        color: '#F5222D',
+        backgroundColor: '#FFCCC7',
     },
     {
         key: 'CUSTOMER SERVICE',
         title: 'Customer Service',
         titleShort: 'CUSTOMER SERVICE',
-        color: '#13C2C2'
+        color: '#13C2C2',
+        backgroundColor: '#B5F5EC',
     },
     {
         key: 'OTHER',
         title: 'Other',
         titleShort: 'OTHER',
-        color: '#1F1F1F'
+        color: '#1F1F1F',
+        backgroundColor: '#FAFAFA',
     },
 ]
 
+export const getTemplateCategoryBackground = (key) => {
+    let category = TemplateCategories.find(category => category.key === key);
+    return category ? category.backgroundColor : "#FAFAFA";
+
+}
+
 export const getTemplateCategoryIcon = (key) => {
     if(key === TemplateCategories[0].key) {
-        return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 18 }} />
+        return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 20 }} />
     } else if(key === TemplateCategories[1].key) {
-        return <ManagementIcon style={{ color: TemplateCategories[1].color, fontSize: 18 }} />
+        return <ManagementIcon style={{ color: TemplateCategories[1].color, fontSize: 20 }} />
     } else if(key === TemplateCategories[2].key) {
-        return <DesignIcon style={{ color: TemplateCategories[2].color, fontSize: 18 }} />
+        return <DesignIcon style={{ color: TemplateCategories[2].color, fontSize: 20 }} />
     } else if(key === TemplateCategories[3].key) {
-        return <CustomerServiceIcon style={{ color: TemplateCategories[3].color, fontSize: 18 }} />
+        return <CustomerServiceIcon style={{ color: TemplateCategories[3].color, fontSize: 20 }} />
     } else if(key === TemplateCategories[4].key) {
-        return <OtherIcon style={{ color: TemplateCategories[4].color, fontSize: 18 }} />
+        return <OtherIcon style={{ color: TemplateCategories[4].color, fontSize: 20 }} />
     }
 
-    return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 18 }} />
+    return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 20 }} />
 }
 
 export const getStatusColor = (status) => {
