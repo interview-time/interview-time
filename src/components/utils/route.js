@@ -43,6 +43,11 @@ export const routeTemplateEdit = (id) => {
     return id ? url.replace(":id", id) : url;
 }
 
+export const routeTemplatePreview = (id) => {
+    const url = "/templates/user/preview/:id";
+    return id ? url.replace(":id", id) : url;
+}
+
 export const routeLibraryTemplatePreview = (id) => {
     const url = "/templates/library/preview/:id";
     return id ? url.replace(":id", id) : url;

@@ -1,7 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
 import {
-    Button,
     Card,
     Col,
     Dropdown,
@@ -26,7 +25,7 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { ArrowLeftOutlined, CloseOutlined, DownOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, CloseOutlined, DownOutlined} from "@ant-design/icons";
 import moment from "moment";
 import {
     AddNoteIcon,
@@ -39,7 +38,6 @@ import {
     StarIcon,
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
-import confirm from "antd/lib/modal/confirm";
 import { isEmpty } from "../../components/utils/utils";
 import { Link } from "react-router-dom";
 
@@ -68,100 +66,6 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
             <InterviewGroupsSection interview={interview} />
             <Card style={marginTop12}>
                 <SummarySection interview={interview} />
-            </Card>
-        </div>
-    );
-};
-
-/**
- *
- * @param {Template} template
- * @param onCloseClicked
- * @param onEditClicked
- * @param onCopyClicked
- * @param onDeleteClicked
- * @param onCreateInterviewClicked
- * @param onCreateTemplateClicked
- * @returns {JSX.Element}
- * @constructor
- */
-export const TemplatePreviewCard = ({
-    template,
-    onCloseClicked,
-    onEditClicked,
-    onCopyClicked,
-    onDeleteClicked,
-    onCreateInterviewClicked,
-    onCreateTemplateClicked,
-}) => {
-    const marginTop12 = { marginTop: 12 };
-
-    const showDeleteConfirm = () => {
-        confirm({
-            title: `Delete '${template.title}' Template`,
-            icon: <ExclamationCircleOutlined />,
-            content: "Are you sure you want to delete this template-edit?",
-            okText: "Yes",
-            okType: "danger",
-            cancelText: "No",
-            onOk() {
-                onDeleteClicked(template);
-            },
-        });
-    };
-
-    return (
-        <div>
-            <Card>
-                <div className={styles.header} style={{ marginBottom: 24 }}>
-                    <div className={styles.headerTitleContainer} onClick={onCloseClicked}>
-                        <ArrowLeftOutlined />{" "}
-                        <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                            Interview Template - {template.title}
-                        </Title>
-                    </div>
-                </div>
-
-                <Text>Use this template to schedule new interview and customize as you go.</Text>
-
-                <div className={styles.divSpaceBetween} style={marginTop12}>
-                    {template.libraryId && (
-                        <Button type="primary" onClick={onCreateTemplateClicked}>
-                            Use template
-                        </Button>
-                    )}
-                    {template.templateId && (
-                        <Button type="primary" onClick={onCreateInterviewClicked}>
-                            Schedule interview
-                        </Button>
-                    )}
-                    {template.templateId && (
-                        <Space>
-                            <Button
-                                type="link"
-                                danger
-                                onClick={() => {
-                                    showDeleteConfirm();
-                                }}
-                            >
-                                Delete
-                            </Button>
-                            <Button type="link" onClick={onCopyClicked}>
-                                Copy
-                            </Button>
-                            <Button type="link" onClick={onEditClicked}>
-                                Edit
-                            </Button>
-                        </Space>
-                    )}
-                </div>
-            </Card>
-            <Card style={{ marginTop: 12, marginBottom: 12 }}>
-                <IntroSection interview={template} />
-            </Card>
-            <TemplateGroupsSection template={template} />
-            <Card style={marginTop12}>
-                <SummarySection interview={template} />
             </Card>
         </div>
     );

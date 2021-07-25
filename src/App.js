@@ -16,6 +16,7 @@ import {
     routeTemplateBlank,
     routeTemplateEdit,
     routeTemplateNew,
+    routeTemplatePreview,
     routeTemplates,
 } from "./components/utils/route";
 import Default from "./pages/default/default";
@@ -35,6 +36,7 @@ import ReactGA from "react-ga";
 import TemplateNew from "./pages/template-new/tempalte-new";
 import LibraryTemplatePreview from "./pages/template-preview-library/library-template-preview";
 import { useAuth0 } from "./react-auth0-spa";
+import TemplatePreview from "./pages/template-preview/template-preview";
 
 function App({ history }) {
     useEffect(() => {
@@ -72,6 +74,7 @@ function App({ history }) {
             <PrivateRoute path={routeTemplateBlank()} exact component={TemplateEdit} />
             <PrivateRoute path={routeTemplateNew()} exact component={TemplateNew} />
             <PrivateRoute path={routeTemplateEdit()} exact component={TemplateEdit} />
+            <PrivateRoute path={routeTemplatePreview()} exact component={TemplatePreview} />
             <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
