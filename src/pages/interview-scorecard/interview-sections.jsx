@@ -100,7 +100,7 @@ export const TemplatePreviewCard = ({
         confirm({
             title: `Delete '${template.title}' Template`,
             icon: <ExclamationCircleOutlined />,
-            content: "Are you sure you want to delete this template-details?",
+            content: "Are you sure you want to delete this template-edit?",
             okText: "Yes",
             okType: "danger",
             cancelText: "No",

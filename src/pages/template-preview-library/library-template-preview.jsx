@@ -1,5 +1,5 @@
 import { Button, Card, Col, Divider, Row, Space } from "antd";
-import styles from "./template-preview.module.css";
+import styles from "./library-template-preview.module.css";
 import defaultIcon from "../../assets/layout.png";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
@@ -20,7 +20,7 @@ import { routeTemplateBlankFromLibrary } from "../../components/utils/route";
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplatePreview = ({ library , loadLibrary}) => {
+const LibraryTemplatePreview = ({ library , loadLibrary}) => {
 
     /**
      *
@@ -116,4 +116,4 @@ const mapState = (state) => {
     };
 };
 
-export default connect(mapState, mapDispatch)(TemplatePreview);
+export default connect(mapState, mapDispatch)(LibraryTemplatePreview);

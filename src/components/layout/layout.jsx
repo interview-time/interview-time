@@ -17,7 +17,6 @@ import {
     routeInterviews,
     routeTemplateNew,
     routeNews,
-    routeQuestionBank,
     routeTemplates
 } from "../utils/route";
 
@@ -35,9 +34,7 @@ const Layout = ({ children, pageHeader, contentStyle }) => {
     const [feedbackVisible, setFeedbackVisible] = React.useState(false)
 
     const getSelectedKey = () => {
-        if (location.pathname.includes(routeQuestionBank())) {
-            return routeQuestionBank()
-        } else if (location.pathname.includes(routeTemplates())) {
+        if (location.pathname.includes(routeTemplates())) {
             return routeTemplates()
         } else if (location.pathname.includes(routeInterviews())) {
             return routeInterviews()

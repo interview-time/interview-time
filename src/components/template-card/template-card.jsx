@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
 import { cloneDeep } from "lodash/lang";
 
-import { routeInterviewAddFromLibrary, routeInterviewAddFromTemplate, routeTemplateDetails, } from "../utils/route";
+import { routeInterviewAddFromLibrary, routeInterviewAddFromTemplate, routeTemplateEdit, } from "../utils/route";
 import { getTemplateCategoryBackground, getTemplateCategoryIcon } from "../utils/constants";
 import { TemplatePreviewCard } from "../../pages/interview-scorecard/interview-sections";
 import styles from "./template-card.module.css";
@@ -23,7 +23,7 @@ const TemplateCard = ({ template, onDeleteTemplate, onCloneTemplate }) => {
 
     const onEditClicked = (template) => {
         setPreviewModalVisible(false);
-        history.push(routeTemplateDetails(template.templateId));
+        history.push(routeTemplateEdit(template.templateId));
     };
 
     const onCopyClicked = (template) => {

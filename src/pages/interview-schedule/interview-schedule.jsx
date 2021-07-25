@@ -32,8 +32,8 @@ import {
     updateInterview,
 } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
-import TemplateGroupModal from "../template-details/template-group-modal";
-import TemplateQuestionsCard from "../template-details/template-questions-card";
+import TemplateGroupModal from "../template-edit/template-group-modal";
+import TemplateQuestionsCard from "../template-edit/template-questions-card";
 import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateNew } from "../../components/utils/route";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
@@ -107,7 +107,7 @@ const InterviewSchedule = ({
             setInterview(cloneDeep(findInterview(id, interviews)));
         }
 
-        // selected template-details
+        // selected template-edit
         if (interview.templateId && templates.length !== 0) {
             const template = cloneDeep(findTemplate(interview.templateId, templates));
             setSelectedTemplate(template);
