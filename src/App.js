@@ -2,15 +2,22 @@ import "./App.css";
 import React, { useEffect } from "react";
 import { Switch, withRouter } from "react-router-dom";
 import {
-    routeHome,
     routeAccount,
-    routeReports,
+    routeHome,
     routeInterviewAdd,
+    routeInterviewCandidate,
+    routeInterviewDetails,
+    routeInterviewReport,
     routeInterviews,
+    routeInterviewScorecard,
+    routeLibraryTemplatePreview,
     routeNews,
+    routeReports,
     routeTemplateBlank,
-    routeTemplates,
+    routeTemplateEdit,
     routeTemplateNew,
+    routeTemplatePreview,
+    routeTemplates,
 } from "./components/utils/route";
 import Default from "./pages/default/default";
 import Interviews from "./pages/interviews/interviews";
@@ -18,7 +25,7 @@ import InterviewScorecard from "./pages/interview-scorecard/interview-scorecard"
 import InterviewSchedule from "./pages/interview-schedule/interview-schedule";
 import InterviewEvaluation from "./pages/interview-evaluation/interview-evaluation";
 import Templates from "./pages/templates/templates";
-import TemplateDetails from "./pages/template-details/template-details";
+import TemplateEdit from "./pages/template-edit/template-edit";
 import Reports from "./pages/reports/reports";
 import ReportDetails from "./pages/report-details/report-details";
 import News from "./pages/news/news";
@@ -27,8 +34,9 @@ import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import ReactGA from "react-ga";
 import TemplateNew from "./pages/template-new/tempalte-new";
-import TemplatePreview from "./pages/template-preview/template-preview";
+import LibraryTemplatePreview from "./pages/template-preview-library/library-template-preview";
 import { useAuth0 } from "./react-auth0-spa";
+import TemplatePreview from "./pages/template-preview/template-preview";
 
 function App({ history }) {
     useEffect(() => {
@@ -58,17 +66,18 @@ function App({ history }) {
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeReports()} exact component={Reports} />
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewSchedule} />
-            <PrivateRoute path="/interviews/details/:id" exact component={InterviewSchedule} />
-            <PrivateRoute path="/interviews/scorecard/:id" exact component={InterviewScorecard} />
-            <PrivateRoute path="/interviews/evaluation/:id" exact component={InterviewEvaluation} />
-            <PrivateRoute path="/reports/:id" exact component={ReportDetails} />
+            <PrivateRoute path={routeInterviewDetails()} exact component={InterviewSchedule} />
+            <PrivateRoute path={routeInterviewScorecard()} exact component={InterviewScorecard} />
+            <PrivateRoute path={routeInterviewCandidate()} exact component={InterviewEvaluation} />
+            <PrivateRoute path={routeInterviewReport()} exact component={ReportDetails} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
-            <PrivateRoute path={routeTemplateBlank()} exact component={TemplateDetails} />
-            <PrivateRoute path="/templates/edit/:id" exact component={TemplateDetails} />
-            <PrivateRoute path="/templates/preview/:id" exact component={TemplatePreview} />
+            <PrivateRoute path={routeTemplateBlank()} exact component={TemplateEdit} />
+            <PrivateRoute path={routeTemplateNew()} exact component={TemplateNew} />
+            <PrivateRoute path={routeTemplateEdit()} exact component={TemplateEdit} />
+            <PrivateRoute path={routeTemplatePreview()} exact component={TemplatePreview} />
+            <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
-            <PrivateRoute path={routeTemplateNew()} exact component={TemplateNew} />
         </Switch>
     );
 }

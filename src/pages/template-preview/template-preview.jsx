@@ -1,56 +1,53 @@
-import { Button, Card, Col, Divider, Row, Space } from "antd";
+import { Button, Card, Col, Divider, Dropdown, Menu, message, Row } from "antd";
 import styles from "./template-preview.module.css";
-import defaultIcon from "../../assets/layout.png";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { IntroSection, SummarySection, TemplateGroupsSection } from "../interview-scorecard/interview-sections";
-import { loadLibrary } from "../../store/templates/actions";
+import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { findLibraryTemplate } from "../../components/utils/converters";
+import { findTemplate } from "../../components/utils/converters";
 import Layout from "../../components/layout/layout";
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import { routeTemplateBlankFromLibrary } from "../../components/utils/route";
+import {
+    ArrowLeftOutlined,
+    CopyOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+    ExclamationCircleOutlined
+} from "@ant-design/icons";
+import Spinner from "../../components/spinner/spinner";
+import confirm from "antd/lib/modal/confirm";
+import { routeInterviewAddFromTemplate, routeTemplateEdit, routeTemplates } from "../../components/utils/route";
+import { cloneDeep } from "lodash/lang";
 
 /**
  *
- * @param {Template[]} library
- * @param loadLibrary
+ * @param {Template[]} templates
+ * @param loadTemplates
+ * @param addTemplate
+ * @param deleteTemplate
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplatePreview = ({ library , loadLibrary}) => {
-
-    /**
-     *
-     * @type {Template}
-     */
-    const emptyTemplate = {
-        libraryId: undefined,
-        title: "",
-        structure: {
-            header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
-            footer: "Allow 10 minutes at the end for the candidate to ask questions.",
-            groups: [],
-        },
-    };
+const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate }) => {
 
     const history = useHistory();
 
     const { id } = useParams();
 
-    const [template, setTemplate] = useState(emptyTemplate);
+    const [template, setTemplate] = useState();
 
     useEffect(() => {
-        if (!template.libraryId && library.length !== 0) {
-            setTemplate(findLibraryTemplate(id, library))
+        if (templates.length > 0 && !template) {
+            setTemplate(findTemplate(id, templates))
         }
         // eslint-disable-next-line
-    }, [library, id]);
+    }, [templates, id]);
 
     useEffect(() => {
-        loadLibrary();
+        loadTemplates();
         // eslint-disable-next-line
     }, []);
 
@@ -58,61 +55,96 @@ const TemplatePreview = ({ library , loadLibrary}) => {
         history.goBack();
     }
 
-    const onUseTemplateClicked = () => {
-        history.push(routeTemplateBlankFromLibrary(template.libraryId))
-    }
+    const onEditClicked = () => {
+        history.push(routeTemplateEdit(template.templateId));
+    };
 
-    const isInitialLoading = () => !template.libraryId;
+    const onCopyClicked = () => {
+        const copy = cloneDeep(template);
+        copy.templateId = null;
+        copy.title = `Copy of ${template.title}`;
+        addTemplate(copy);
+        history.push(routeTemplates());
+        message.success(`Template '${copy.title}' created.`);
+    };
 
-    return (
+    const onScheduleInterviewClicked = () => {
+        history.push(routeInterviewAddFromTemplate(template.templateId));
+    };
+
+    const onDeleteClicked = () => {
+        confirm({
+            title: `Delete '${template.title}' Template`,
+            icon: <ExclamationCircleOutlined />,
+            content: "Are you sure you want to delete this template-edit?",
+            okText: "Yes",
+            okType: "danger",
+            cancelText: "No",
+            onOk() {
+                deleteTemplate(template.templateId);
+                history.push(routeTemplates());
+                message.success(`Template '${template.title}' removed.`);
+            },
+        });
+    };
+
+    const menu = (
+        <Menu>
+            <Menu.Item onClick={onEditClicked}><EditOutlined /> Edit</Menu.Item>
+            <Menu.Item onClick={onCopyClicked}><CopyOutlined /> Copy</Menu.Item>
+            <Menu.Item onClick={onDeleteClicked}><DeleteOutlined /> Delete</Menu.Item>
+        </Menu>
+    );
+
+    return template ? (
         <Layout>
             <Row className={styles.rootContainer}>
                 <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                    <Card className={styles.row} loading={isInitialLoading()}>
-                        <div className={styles.headerContainer}>
-                            <Space size={16} direction='vertical' className={styles.headerDescriptionContainer}>
-                                <div className={styles.headerTextContainer} onClick={onBackClicked}>
-                                    <ArrowLeftOutlined />
-                                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                                        {template.title}
-                                    </Title>
-                                </div>
-                                <Text>{template.description}</Text>
-                            </Space>
-
-                            <img
-                                className={styles.headerImage}
-                                alt={template.title}
-                                src={template.image ? template.image : defaultIcon}
-                                height={50}
-                            />
+                    <Card className={styles.row}>
+                        <div className={styles.header} style={{ marginBottom: 24 }}>
+                            <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                                <ArrowLeftOutlined />
+                                <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
+                                    Interview Template - {template.title}
+                                </Title>
+                            </div>
                         </div>
-                        <Divider/>
-                        <div className={styles.buttonContainer}>
-                            <Button type="primary" onClick={onUseTemplateClicked}>Use template</Button>
+
+                        <Text>Use this template to schedule new interview and customize as you go.</Text>
+
+                        <Divider />
+
+                        <div className={styles.divSpaceBetween}>
+                            <Button type="primary" onClick={onScheduleInterviewClicked}>Schedule interview</Button>
+
+                            <Dropdown overlay={menu}>
+                                <Button>Actions <DownOutlined /></Button>
+                            </Dropdown>
                         </div>
                     </Card>
-                    <Card className={styles.row} loading={isInitialLoading()}>
+                    <Card className={styles.row}>
                         <IntroSection interview={template} />
                     </Card>
                     <div className={styles.row}>
                         <TemplateGroupsSection template={template} />
                     </div>
-                    <Card className={styles.rowEnd} loading={isInitialLoading()}>
+                    <Card className={styles.rowEnd}>
                         <SummarySection interview={template} />
                     </Card>
                 </Col>
             </Row>
         </Layout>
+    ) : (
+        <Spinner />
     );
 };
 
-const mapDispatch = { loadLibrary };
+const mapDispatch = { loadTemplates, deleteTemplate, addTemplate };
 const mapState = (state) => {
     const templateState = state.templates || {};
 
     return {
-        library: templateState.library,
+        templates: templateState.templates,
     };
 };
 

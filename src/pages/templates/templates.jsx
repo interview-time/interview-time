@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
-import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
+import { loadTemplates } from "../../store/templates/actions";
 import { Skeleton, Col, Row, Card } from "antd";
 import { sortBy } from "lodash/collection";
 import TemplateCard from "../../components/template-card/template-card";
@@ -17,8 +17,6 @@ import styles from "./templates.module.css";
  * @param {boolean} loadingTemplates
  * @param loadTemplates
  * @param loadLibrary
- * @param deleteTemplate
- * @param addTemplate
  * @returns {JSX.Element}
  * @constructor
  */
@@ -26,8 +24,6 @@ const Templates = ({
     templates,
     loadingTemplates,
     loadTemplates,
-    deleteTemplate,
-    addTemplate,
 }) => {
     const history = useHistory();
 
@@ -74,8 +70,6 @@ const Templates = ({
                                 <TemplateCard
                                     key={template.templateId}
                                     template={template}
-                                    onDeleteTemplate={deleteTemplate}
-                                    onCloneTemplate={addTemplate}
                                 />
                             </Col>
                         ))}
@@ -96,7 +90,7 @@ const Templates = ({
         </Layout>
     );
 };
-const mapDispatch = { loadTemplates, deleteTemplate, addTemplate };
+const mapDispatch = { loadTemplates };
 const mapState = (state) => {
     const templateState = state.templates || {};
     const templates = sortBy(templateState.templates, ["title"]);

@@ -6,7 +6,10 @@ export const routeInterviews = () => "/interviews"
 
 export const routeReports = () => "/reports"
 
-export const routeInterviewDetails = (id) => `/interviews/details/${id}`
+export const routeInterviewDetails = (id) => {
+    const url = "/interviews/details/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
 export const routeInterviewAdd = () => `/interviews/add`
 
@@ -14,23 +17,41 @@ export const routeInterviewAddFromTemplate = (id) => `/interviews/add?fromTempla
 
 export const routeInterviewAddFromLibrary = (id) => `/interviews/add?fromLibrary=${id}`
 
-export const routeInterviewReport = (id) => `/reports/${id}`
+export const routeInterviewReport = (id) => {
+    const url = "/reports/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
-export const routeInterviewScorecard = (id) => `/interviews/scorecard/${id}`
+export const routeInterviewScorecard = (id) => {
+    const url = "/interviews/scorecard/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
-export const routeInterviewCandidate = (id) => `/interviews/evaluation/${id}`
+export const routeInterviewCandidate = (id) => {
+    const url = "/interviews/evaluation/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
 export const routeTemplates = () => "/templates"
 
-export const routeTemplateBlank = () => "/templates/add/"
+export const routeTemplateBlank = () => "/templates/user/blank/"
 
-export const routeTemplateBlankFromLibrary = (id) => `/templates/add?fromLibrary=${id}`
+export const routeTemplateBlankFromLibrary = (id) => `/templates/user/blank?fromLibrary=${id}`
 
-export const routeTemplateDetails = (id) => `/templates/edit/${id}`
+export const routeTemplateEdit = (id) => {
+    const url = "/templates/user/edit/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
-export const routeTemplatePreview = (id) => `/templates/preview/${id}`
+export const routeTemplatePreview = (id) => {
+    const url = "/templates/user/preview/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
-export const routeQuestionBank = () => "/question-bank"
+export const routeLibraryTemplatePreview = (id) => {
+    const url = "/templates/library/preview/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
 export const routeTemplateNew = () => "/templates/new/"
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Card} from "antd";
 import { useHistory } from "react-router-dom";
-import { routeTemplatePreview } from "../utils/route";
+import { routeLibraryTemplatePreview } from "../utils/route";
 import defaultIcon from "../../assets/layout.png";
 import styles from "./library-card.module.css";
 
@@ -13,7 +13,7 @@ const LibraryCard = ({ template }) => {
     template.structure?.groups?.forEach((group) => (totalQuestions += group.questions.length));
 
     const onCardClicked = () => {
-        history.push(routeTemplatePreview(template.libraryId))
+        history.push(routeLibraryTemplatePreview(template.libraryId))
     }
 
     return (

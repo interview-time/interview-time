@@ -32,7 +32,7 @@ const { TextArea } = Input;
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadLibrary, updateTemplate }) => {
+const TemplateEdit = ({ templates, library, addTemplate, loadTemplates, loadLibrary, updateTemplate }) => {
     const templateCategories = TemplateCategories.map((category) => ({
         value: category.key,
         label: category.title,
@@ -270,7 +270,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         rules={[
                                             {
                                                 required: true,
-                                                message: "Please enter template-details title",
+                                                message: "Please enter template-edit title",
                                             },
                                         ]}
                                     >
@@ -287,7 +287,7 @@ const TemplateDetails = ({ templates, library, addTemplate, loadTemplates, loadL
                                         rules={[
                                             {
                                                 required: true,
-                                                message: "Please choose template-details category",
+                                                message: "Please choose template-edit category",
                                             },
                                         ]}
                                     >
@@ -435,4 +435,4 @@ const mapState = (state) => {
     };
 };
 
-export default connect(mapState, mapDispatch)(TemplateDetails);
+export default connect(mapState, mapDispatch)(TemplateEdit);
