@@ -131,7 +131,7 @@
 }
 
 .notes {
-    background-color: #fbfbfb;
+    background-color: #ffffff;
     border: 1px solid #f0f0f0;
     padding: 20px;
     margin-top: 12px;
@@ -152,6 +152,7 @@
 }
 
 .stickyNotes {
+    background-color: #fbfbfb;
     position: -webkit-sticky; /* Required for Safari */
     position: sticky;
     bottom: 0;
