@@ -66,13 +66,13 @@ namespace CafApi.Controllers
                     var toTemplate = await _templateService.GetTemplate(UserId, interview.TemplateId);
                     if (toTemplate == null)
                     {
-                        await _templateService.CloneTemplate(_demoUserId, interview.TemplateId, UserId);
+                        toTemplate = await _templateService.CloneTemplate(_demoUserId, interview.TemplateId, UserId);
                     }
 
                     var toInterview = await _interviewService.GetInterview(UserId, interview.InterviewId);
                     if (toInterview == null)
                     {
-                        await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId);
+                        await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId, toTemplate.TemplateId);
                     }
                 }
             }

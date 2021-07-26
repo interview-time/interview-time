@@ -112,13 +112,14 @@ namespace CafApi.Services
             await UpdateInterview(interview);
         }
 
-        public async Task<Interview> CloneInterviewAsDemo(string fromUserId, string fromInterviewId, string toUserId)
+        public async Task<Interview> CloneInterviewAsDemo(string fromUserId, string fromInterviewId, string toUserId, string toTemplateId)
         {
             var fromInterview = await GetInterview(fromUserId, fromInterviewId);
 
             var interviewDate = DateTime.UtcNow.AddDays(14);
 
             fromInterview.UserId = toUserId;
+            fromInterview.TemplateId = toTemplateId;
             fromInterview.Status = InterviewStatus.NEW.ToString();
             fromInterview.InterviewDateTime = new DateTime(interviewDate.Year, interviewDate.Month, interviewDate.Day, 10, 00, 00);
 
