@@ -522,11 +522,12 @@ const InterviewSchedule = ({
                             ]}
                         >
                             <DatePicker
-                                showTime
+                                showTime={{
+                                    minuteStep: 5
+                                }}
                                 allowClear={false}
                                 format={DATE_FORMAT_DISPLAY}
                                 className={styles.fillWidth}
-                                //defaultValue={interview.interviewDateTime ? moment(interview.interviewDateTime) : undefined}
                                 onChange={onDateChange}
                             />
                         </Form.Item>
