@@ -81,11 +81,16 @@ export const getOverallPerformancePercent = (groups) => {
  * @returns number} - [0, 1.0]
  */
 export const getOverallPerformanceNumber = (groups) => {
-    let total = 0;
+    let totalScore = 0;
+    let totalGroupsWithAssessment = 0;
     groups.forEach(group => {
-        total += getGroupAssessmentNumber(group)
+        const groupAssessmentNumber = getGroupAssessmentNumber(group);
+        if (groupAssessmentNumber > 0) {
+            totalScore += groupAssessmentNumber;
+            totalGroupsWithAssessment++;
+        }
     })
-    return groups.length > 0 ? total / groups.length : 0;
+    return totalGroupsWithAssessment > 0 ? totalScore / totalGroupsWithAssessment : 0;
 }
 
 /**
