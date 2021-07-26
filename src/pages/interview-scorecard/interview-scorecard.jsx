@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Card, Col, message, Row, Space } from "antd";
+import { Button, Card, Col, message, Row} from "antd";
 import Layout from "../../components/layout/layout";
 import styles from "./interview-scorecard.module.css";
 import { connect } from "react-redux";
