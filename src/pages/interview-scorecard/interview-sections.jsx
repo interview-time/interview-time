@@ -1,6 +1,7 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
 import {
+    Button,
     Card,
     Col,
     Dropdown,
@@ -25,7 +26,7 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { ArrowLeftOutlined, CloseOutlined, DownOutlined} from "@ant-design/icons";
+import { ArrowLeftOutlined, CloseOutlined, DeleteOutlined, DownOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import {
     AddNoteIcon,
@@ -39,7 +40,6 @@ import {
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
 import { isEmpty } from "../../components/utils/utils";
-import { Link } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -133,8 +133,8 @@ export const InterviewInformationSection = ({
 
     const menu = (
         <Menu>
-            <Menu.Item onClick={onEditInterview}>Edit Interview</Menu.Item>
-            <Menu.Item onClick={onDeleteClicked}>Delete Interview</Menu.Item>
+            <Menu.Item onClick={onEditInterview}><EditOutlined /> Edit</Menu.Item>
+            <Menu.Item onClick={onDeleteClicked}><DeleteOutlined /> Delete</Menu.Item>
         </Menu>
     );
 
@@ -149,9 +149,7 @@ export const InterviewInformationSection = ({
                 </div>
                 {(onDeleteInterview || onEditInterview) && (
                     <Dropdown overlay={menu}>
-                        <Link to="#">
-                            Actions <DownOutlined />
-                        </Link>
+                        <Button>Actions <DownOutlined /></Button>
                     </Dropdown>
                 )}
             </div>

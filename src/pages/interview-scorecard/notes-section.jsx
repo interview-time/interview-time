@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Switch, Input } from "antd";
+import { Input, Switch, Tooltip } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { Status } from "../../components/utils/constants";
@@ -15,26 +15,28 @@ const NotesSection = ({ notes, status, onChange }) => {
         <div className={`${styles.notes} ${isSticky ? styles.stickyNotes : ""}`}>
             <div className={styles.notesHeader}>
                 <Title level={4}>Notes</Title>
+                <Tooltip title="Notes always visible during scroll">
                 <span>
-                    <Text type="secondary">Sticky notes</Text>
+                    <Text type="secondary">Always visible</Text>
                     <Switch
                         className={styles.notesSwitch}
+                        defaultChecked={isSticky}
                         size="small"
-                        defaultChecked
                         onChange={(checked) => {
                             setStickyNotesEnabled(checked);
                             setIsSticky(checked);
                         }}
                     />
                 </span>
+                </Tooltip>
             </div>
 
             <TextArea
                 {...(status === Status.COMPLETED ? { readonly: "true" } : {})}
                 className={styles.notesTextArea}
                 placeholder="Interview notes..."
-                bordered={false}            
-                autoSize={{ minRows: 6, maxRows: 6 }}
+                bordered={false}
+                autoSize={{ minRows: 3, maxRows: 6 }}
                 onChange={onChange}
                 defaultValue={notes}
             />

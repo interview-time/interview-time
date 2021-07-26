@@ -106,12 +106,6 @@ const InterviewScorecard = ({
         history.push(routeInterviews());
     };
 
-    const onSaveClicked = () => {
-        updateScorecard(interview);
-
-        message.success(`Interview '${interview.candidate}' updated.`);
-    };
-
     const onQuestionNotesChanged = (questionId, notes) => {
         setInterview((prevInterview) => {
             findQuestionInGroups(questionId, prevInterview.structure.groups).notes = notes;
@@ -133,7 +127,8 @@ const InterviewScorecard = ({
     };
 
     const onCandidateEvaluationClicked = () => {
-        onSaveClicked();
+        updateScorecard(interview);
+        message.success(`Interview '${interview.candidate}' updated.`);
         history.push(routeInterviewCandidate(interview.interviewId));
     };
 
@@ -183,14 +178,9 @@ const InterviewScorecard = ({
                     <Card style={{ marginTop: 12, marginBottom: 12 }}>
                         <div className={styles.divSpaceBetween}>
                             <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
-                            <Space>
-                                <Button loading={interviewsUploading} onClick={onSaveClicked}>
-                                    Save
-                                </Button>
-                                <Button type="primary" onClick={onCandidateEvaluationClicked}>
-                                    Next to Candidate Evaluation
-                                </Button>
-                            </Space>
+                            <Button type="primary" onClick={onCandidateEvaluationClicked}>
+                                Next to Candidate Evaluation
+                            </Button>
                         </div>
                     </Card>
                 </Col>
