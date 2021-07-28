@@ -91,6 +91,11 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             dataIndex: 'candidate',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
+            render: (candidate) => {
+                return (
+                    <span className="fs-mask">{candidate}</span>
+                );
+            },
         },
         {
             title: 'Position',
@@ -98,6 +103,11 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             dataIndex: 'position',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => localeCompare(a.position, b.position),
+            render: (position) => {
+                return (
+                    <span className="fs-mask">{position}</span>
+                );
+            },
         },
         {
             title: 'Performance',

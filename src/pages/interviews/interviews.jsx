@@ -54,7 +54,7 @@ const Interviews = ({ interviews, loading, loadInterviews }) => {
             render: (candidate, interview) => {
                 return (
                     <>
-                        <span>{candidate}</span>
+                        <span className="fs-mask">{candidate}</span>
                         <DemoTag isDemo={interview.isDemo}/>
                     </>
                 );
@@ -66,6 +66,11 @@ const Interviews = ({ interviews, loading, loadInterviews }) => {
             dataIndex: "position",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
+            render: (position) => {
+                return (
+                    <span className="fs-mask">{position}</span>
+                );
+            },
         },
         {
             title: "Date",

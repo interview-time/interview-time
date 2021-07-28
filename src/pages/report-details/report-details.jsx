@@ -128,7 +128,7 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
             <Title level={4} style={{ marginBottom: "24px" }}>
                 Notes
             </Title>
-            <span>
+            <span className="fs-mask">
                 {interview.notes && interview.notes.length > 0 ? interview.notes : "There are no notes."}
             </span>
         </div>
@@ -147,8 +147,8 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
                 </Col>
                 <Col flex="1">
                     <Space direction="vertical" size={16}>
-                        <Text>{interview.candidate}</Text>
-                        <Text>{interview.position}</Text>
+                        <Text className="fs-mask">{interview.candidate}</Text>
+                        <Text className="fs-mask">{interview.position}</Text>
                         <Text>{moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}</Text>
                         {isCandidateQualified && (
                             <Space>
