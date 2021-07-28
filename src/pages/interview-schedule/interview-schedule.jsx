@@ -502,6 +502,7 @@ const InterviewSchedule = ({
                             ]}
                         >
                             <Input
+                                className="fs-mask"
                                 placeholder="e.g. Kristin Watson"
                                 onChange={onCandidateChange}
                                 //defaultValue={interview.candidate}
@@ -544,6 +545,7 @@ const InterviewSchedule = ({
                             ]}
                         >
                             <Input
+                                className="fs-mask"
                                 placeholder="e.g. Junior Software Developer"
                                 //defaultValue={interview.position}
                                 onChange={onPositionChange}

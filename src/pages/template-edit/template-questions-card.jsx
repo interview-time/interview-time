@@ -139,7 +139,7 @@ const TemplateQuestionsCard = ({
             key: 'question',
             className: styles.questionVisible,
             render: question => <TextArea
-                className={styles.questionTextArea}
+                className={styles.questionTextArea + " fs-mask"}
                 placeholder="Question"
                 bordered={false}
                 autoSize={true}

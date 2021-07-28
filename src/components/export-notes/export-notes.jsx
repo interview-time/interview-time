@@ -64,6 +64,7 @@ const ExportNotes = ({ interview }) => {
     return (
         <div>
             <TextArea
+                className="fs-mask"
                 autoSize={{ minRows: 10, maxRows: 20 }}
                 onChange={(e) => setNotes(e.target.value)}
                 defaultValue={notes}

@@ -163,8 +163,8 @@ export const InterviewInformationSection = ({
                 </Col>
                 <Col flex="1">
                     <Space direction="vertical">
-                        <Text>{interview.candidate}</Text>
-                        <Text>{interview.position}</Text>
+                        <Text className="fs-mask">{interview.candidate}</Text>
+                        <Text className="fs-mask">{interview.position}</Text>
                         <Text>{moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}</Text>
                     </Space>
                 </Col>
@@ -259,6 +259,11 @@ const InterviewQuestionsCard = ({
             className: styles.questionCell,
             shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
+            render: (question) => {
+                return (
+                    <span className="fs-mask">{question}</span>
+                );
+            },
         },
         {
             title: "Tags",
@@ -357,7 +362,7 @@ const InterviewQuestionsCard = ({
                                 }),
                                 expandedRowRender: (question) => (
                                     <TextArea
-                                        className={styles.questionTextArea}
+                                        className={styles.questionTextArea + " fs-mask"}
                                         placeholder="Notes..."
                                         bordered={false}
                                         autoSize={true}
