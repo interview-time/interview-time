@@ -70,5 +70,11 @@ namespace CafApi.Controllers
 
             return templates;
         }
+
+         [HttpPatch("share")]
+        public async Task ShareTemplate([FromBody] ShareTemplateRequest request)
+        {
+            await _templateService.ShareTemplate(UserId, request.TemplateId, request.Share);
+        }
     }
 }

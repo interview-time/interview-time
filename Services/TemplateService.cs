@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using CafApi.Models;
+using CafApi.Utils;
 using CafApi.ViewModel;
 
 namespace CafApi.Services
@@ -30,6 +31,12 @@ namespace CafApi.Services
             {
                 var interviews = await _interviewService.GetInterviewsByTemplate(template.TemplateId);
                 template.TotalInterviews = interviews.Count();
+
+                if (string.IsNullOrWhiteSpace(template.Token))
+                {
+                    template.Token = StringHelper.GenerateToken();
+                    await _context.SaveAsync(template);
+                }
             }
 
             return templates;
@@ -53,6 +60,7 @@ namespace CafApi.Services
                 IsDemo = isDemo,
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
+                Token = StringHelper.GenerateToken()
             };
 
             // assign ids to groups if missing
@@ -77,6 +85,13 @@ namespace CafApi.Services
             return template;
         }
 
+        public async Task ShareTemplate(string userId, string templateId, bool share)
+        {
+            var template = await GetTemplate(userId, templateId);
+            template.IsShared = share;
+            await _context.SaveAsync(template);
+        }
+
         public async Task UpdateTemplate(string userId, TemplateRequest updatedTemplate)
         {
             var template = await GetTemplate(userId, updatedTemplate.TemplateId);
@@ -85,6 +100,11 @@ namespace CafApi.Services
             template.Description = updatedTemplate.Description;
             template.Structure = updatedTemplate.Structure;
             template.ModifiedDate = DateTime.UtcNow;
+
+            if (string.IsNullOrWhiteSpace(template.Token))
+            {
+                template.Token = StringHelper.GenerateToken();
+            }
 
             // assign ids to groups if missing
             if (template.Structure != null && template.Structure.Groups != null)
@@ -216,6 +236,7 @@ namespace CafApi.Services
             fromTemplate.TemplateId = Guid.NewGuid().ToString();
             fromTemplate.CreatedDate = DateTime.UtcNow;
             fromTemplate.ModifiedDate = DateTime.UtcNow;
+            fromTemplate.Token = StringHelper.GenerateToken();
 
             // assign new ids to groups
             if (fromTemplate.Structure != null && fromTemplate.Structure.Groups != null)

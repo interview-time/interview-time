@@ -13,6 +13,8 @@ namespace CafApi.Services
 
         Task<Template> CreateTemplate(string userId, TemplateRequest template, bool isDemo = false);
 
+        Task ShareTemplate(string userId, string templateId, bool share);
+
         Task UpdateTemplate(string userId, TemplateRequest template);
 
         Task DeleteTemplate(string userId, string templateId);

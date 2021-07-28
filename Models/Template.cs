@@ -27,6 +27,10 @@ namespace CafApi.Models
 
         public bool IsDemo { get; set; }
 
+        public bool IsShared { get; set; }
+
+        public string Token { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
