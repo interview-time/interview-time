@@ -23,6 +23,9 @@ namespace CafApi.Models
         [DynamoDBIgnore]
         public int TotalInterviews { get; set; }
 
+        [DynamoDBIgnore]
+        public string Owner { get; set; }
+
         public TemplateStructure Structure { get; set; }
 
         public bool IsDemo { get; set; }

@@ -274,6 +274,9 @@ namespace CafApi.Services
                     CreatedDate = DateTime.UtcNow,
                 };
                 await _context.SaveAsync(sharedWithMe);
+
+                var templateOwner = await _context.LoadAsync<Profile>(sharedTemplate.UserId);
+                sharedTemplate.Owner = templateOwner.Name;
             }
 
             return sharedTemplate;
@@ -291,6 +294,9 @@ namespace CafApi.Services
                 var template = await GetTemplate(sharedTemplate.TemplateOwnerId, sharedTemplate.TemplateId);
                 if (template != null && template.IsShared)
                 {
+                    var templateOwner = await _context.LoadAsync<Profile>(sharedTemplate.TemplateOwnerId);
+                    template.Owner = templateOwner.Name;
+
                     sharedWithMe.Add(template);
                 }
             }
