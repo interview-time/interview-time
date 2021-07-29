@@ -23,9 +23,16 @@ namespace CafApi.Models
         [DynamoDBIgnore]
         public int TotalInterviews { get; set; }
 
+        [DynamoDBIgnore]
+        public string Owner { get; set; }
+
         public TemplateStructure Structure { get; set; }
 
         public bool IsDemo { get; set; }
+
+        public bool IsShared { get; set; }
+
+        public string Token { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
