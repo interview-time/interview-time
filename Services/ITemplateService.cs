@@ -30,5 +30,9 @@ namespace CafApi.Services
         Task DeleteLibraryTemplate(string userId, string libraryId);
 
         Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId);
+
+        Task<Template> AddToShared(string userId, string token);
+
+        Task<List<Template>> GetSharedWithMe(string userId);
     }
 }
