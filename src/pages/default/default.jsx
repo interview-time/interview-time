@@ -25,7 +25,7 @@ const columns = [
         dataIndex: "candidate",
         render: (candidate, interview) => (
             <>
-                <span>{candidate}</span>
+                <span className="fs-mask">{candidate}</span>
                 <DemoTag isDemo={interview.isDemo}/>
             </>
         ),
@@ -38,7 +38,7 @@ const columns = [
         key: "interviewDateTime",
         dataIndex: "interviewDateTime",
         render: (interviewDateTime) => (
-            <span className="nav-text">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
+            <span className="fs-mask">{moment(interviewDateTime).format(DATE_FORMAT_DISPLAY)}</span>
         ),
     },
 ];
