@@ -157,7 +157,7 @@ const InterviewEvaluation = ({ interviews, loadInterviews, updateInterview }) =>
 
     const NotesCard = () => (
         <Card title="Notes" style={{ marginBottom: 12 }} loading={initialLoading()}>
-            <span>
+            <span className="fs-mask">
                 {interview.notes && interview.notes.length > 0 ? interview.notes : "There are no notes."}
             </span>
         </Card>
