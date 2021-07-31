@@ -74,6 +74,8 @@
  * @property {string} description
  * @property {string} totalInterviews
  * @property {string} createdDate
+ * @property {string} token
+ * @property {boolean} isShared
  * @property {TemplateStructure} structure
  */
 

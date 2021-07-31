@@ -1,14 +1,15 @@
 import {
     ADD_TEMPLATE,
     DELETE_TEMPLATE,
-    LOAD_TEMPLATES,
     LOAD_LIBRARY,
+    LOAD_TEMPLATES,
     loadTemplates,
-    SET_TEMPLATES,
     SET_LIBRARY,
-    setTemplates,
+    SET_TEMPLATES,
     setLibrary,
-    UPDATE_TEMPLATE,
+    setTemplates,
+    SHARE_TEMPLATE,
+    UPDATE_TEMPLATE
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -158,6 +159,35 @@ const templatesReducer = (state = initialState, action) => {
                     );
                 })
                 .catch((reason) => console.error(reason));
+
+            return { ...state, loading: true };
+        }
+
+        case SHARE_TEMPLATE: {
+            console.log(action.type);
+            const { templateId, share } = action.payload;
+
+            const data = {
+                templateId: templateId,
+                share: share
+            }
+
+            getAccessTokenSilently()
+                .then(token => axios.patch(`${URL}/share`, data, config(token)))
+                .then(() => {
+                    console.log(`Template shared: ${share}`);
+                    store.dispatch(
+                        setTemplates(
+                            state.templates.map(template => {
+                                if(template.templateId === templateId) {
+                                    template.isShared = share
+                                }
+                                return template
+                            })
+                        )
+                    );
+                })
+                .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }

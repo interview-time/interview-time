@@ -5,6 +5,7 @@ export const SET_LIBRARY = "SET_LIBRARY";
 export const ADD_TEMPLATE = "ADD_TEMPLATE";
 export const UPDATE_TEMPLATE = "UPDATE_TEMPLATE";
 export const DELETE_TEMPLATE = "DELETE_TEMPLATE";
+export const SHARE_TEMPLATE = "SHARE_TEMPLATE";
 
 export const loadTemplates = (forceFetch = false) => ({
     type: LOAD_TEMPLATES,
@@ -52,5 +53,13 @@ export const deleteTemplate = (templateId) => ({
     type: DELETE_TEMPLATE,
     payload: {
         templateId
+    }
+});
+
+export const shareTemplate = (templateId, share) => ({
+    type: SHARE_TEMPLATE,
+    payload: {
+        templateId,
+        share
     }
 });
