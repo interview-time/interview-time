@@ -19,6 +19,8 @@ namespace CafApi.Services
 
         Task DeleteTemplate(string userId, string templateId);
 
+        Task<Library> GetLibraryTemplate(string libraryId);
+
         Task<List<Library>> GetTemplatesLibrary();
 
         Task<Library> GetLibraryTemplate(string userId, string templateId);
@@ -31,7 +33,9 @@ namespace CafApi.Services
 
         Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId);
 
-        Task<Template> AddToShared(string userId, string token);
+        Task<Template> GetSharedTemplate(string token);
+
+        Task<Template> AddToSharedWithMe(string userId, string token);
 
         Task<List<Template>> GetSharedWithMe(string userId);
     }

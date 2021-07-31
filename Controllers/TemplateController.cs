@@ -77,14 +77,6 @@ namespace CafApi.Controllers
             await _templateService.ShareTemplate(UserId, request.TemplateId, request.Share);
         }
 
-        [HttpGet("shared/{token}")]
-        public async Task<Template> GetSharedTemplate(string token)
-        {
-            var template = await _templateService.AddToShared(UserId, token);
-
-            return template;
-        }
-
         [HttpGet("shared")]
         public async Task<List<Template>> GetSharedWithMeTemplates()
         {
