@@ -3,7 +3,7 @@ import styles from "./template-preview.module.css";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { IntroSection, SummarySection, TemplateGroupsSection } from "../interview-scorecard/interview-sections";
-import { addTemplate, deleteTemplate, loadTemplates } from "../../store/templates/actions";
+import { addTemplate, deleteTemplate, loadTemplates, shareTemplate } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -15,12 +15,14 @@ import {
     DeleteOutlined,
     DownOutlined,
     EditOutlined,
-    ExclamationCircleOutlined
+    ExclamationCircleOutlined,
+    ShareAltOutlined
 } from "@ant-design/icons";
 import Spinner from "../../components/spinner/spinner";
 import confirm from "antd/lib/modal/confirm";
 import { routeInterviewAddFromTemplate, routeTemplateEdit, routeTemplates } from "../../components/utils/route";
 import { cloneDeep } from "lodash/lang";
+import TemplateShareModal from "./template-share-modal";
 
 /**
  *
@@ -28,16 +30,18 @@ import { cloneDeep } from "lodash/lang";
  * @param loadTemplates
  * @param addTemplate
  * @param deleteTemplate
+ * @param shareTemplate
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate }) => {
+const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate, shareTemplate }) => {
 
     const history = useHistory();
 
     const { id } = useParams();
 
     const [template, setTemplate] = useState();
+    const [shareModalVisible, setShareModalVisible] = useState(false);
 
     useEffect(() => {
         if (templates.length > 0 && !template) {
@@ -88,11 +92,29 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
         });
     };
 
+    const onShareClicked = () => {
+        setShareModalVisible(true)
+    }
+
+    const onShareClosed = () => {
+        setShareModalVisible(false)
+    }
+
+    const onShareChange = (shared) => {
+        setTemplate({
+            ...template,
+            isShared: shared
+        })
+        shareTemplate(template.templateId, shared)
+    }
+
     const menu = (
         <Menu>
             <Menu.Item onClick={onEditClicked}><EditOutlined /> Edit</Menu.Item>
             <Menu.Item onClick={onCopyClicked}><CopyOutlined /> Copy</Menu.Item>
             <Menu.Item onClick={onDeleteClicked}><DeleteOutlined /> Delete</Menu.Item>
+            <Menu.Divider />
+            <Menu.Item onClick={onShareClicked}><ShareAltOutlined /> Share</Menu.Item>
         </Menu>
     );
 
@@ -133,18 +155,25 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
                     </Card>
                 </Col>
             </Row>
+            <TemplateShareModal
+                shared={template.isShared}
+                token={template.token}
+                visible={shareModalVisible}
+                onShareChange={onShareChange}
+                onClose={onShareClosed}
+            />
         </Layout>
     ) : (
         <Spinner />
     );
 };
 
-const mapDispatch = { loadTemplates, deleteTemplate, addTemplate };
+const mapDispatch = { loadTemplates, deleteTemplate, addTemplate, shareTemplate };
 const mapState = (state) => {
     const templateState = state.templates || {};
 
     return {
-        templates: templateState.templates,
+        templates: templateState.templates
     };
 };
 
