@@ -143,6 +143,18 @@ namespace CafApi.Services
             return await _context.LoadAsync<Library>(userId, libraryId);
         }
 
+        public async Task<Library> GetLibraryTemplate(string libraryId)
+        {
+            var search = _context.FromQueryAsync<Library>(new QueryOperationConfig()
+            {
+                IndexName = "LibraryId-Index",
+                Filter = new QueryFilter(nameof(Library.LibraryId), QueryOperator.Equal, libraryId)
+            });
+            var templates = await search.GetRemainingAsync();
+
+            return templates.FirstOrDefault();
+        }
+
         public async Task<Library> CreateLibraryTemplate(string userId, TemplateRequest newTemplate)
         {
             var libraryTemplate = new Library
@@ -253,7 +265,7 @@ namespace CafApi.Services
             await _context.SaveAsync(template);
         }
 
-        public async Task<Template> AddToShared(string userId, string token)
+        public async Task<Template> GetSharedTemplate(string token)
         {
             var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
             {
@@ -265,6 +277,19 @@ namespace CafApi.Services
 
             if (sharedTemplate != null)
             {
+                var templateOwner = await _context.LoadAsync<Profile>(sharedTemplate.UserId);
+                sharedTemplate.Owner = templateOwner.Name;
+            }
+
+            return sharedTemplate;
+        }
+
+        public async Task<Template> AddToSharedWithMe(string userId, string token)
+        {
+            var sharedTemplate = await GetSharedTemplate(token);
+
+            if (sharedTemplate != null)
+            {
                 var sharedWithMe = new SharedWithMe
                 {
                     UserId = userId,
@@ -273,10 +298,8 @@ namespace CafApi.Services
                     ModifiedDate = DateTime.UtcNow,
                     CreatedDate = DateTime.UtcNow,
                 };
-                await _context.SaveAsync(sharedWithMe);
 
-                var templateOwner = await _context.LoadAsync<Profile>(sharedTemplate.UserId);
-                sharedTemplate.Owner = templateOwner.Name;
+                await _context.SaveAsync(sharedWithMe);
             }
 
             return sharedTemplate;
