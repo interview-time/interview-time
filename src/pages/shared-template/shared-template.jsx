@@ -1,5 +1,4 @@
-import { Button, Card, Col, Divider, Dropdown, Row } from "antd";
-import Title from "antd/lib/typography/Title";
+import { Button, Card, Col, Divider, Row } from "antd";
 import Text from "antd/lib/typography/Text";
 import {
     IntroSection,
@@ -7,7 +6,7 @@ import {
     TemplateGroupsSection,
 } from "../interview-scorecard/interview-sections";
 import { connect } from "react-redux";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { routeTemplateBlankFromSharedTemplate } from "../../components/utils/route";
 import Spinner from "../../components/spinner/spinner";
