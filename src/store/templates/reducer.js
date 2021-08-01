@@ -9,6 +9,9 @@ import {
     setTemplates,
     setLibrary,
     UPDATE_TEMPLATE,
+    LOAD_SHARED_TEMPLATE,
+    SET_SHARED_TEMPLATE,
+    setSharedTemplate,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -24,6 +27,7 @@ const initialState = {
     library: [],
     loading: false,
     loadingLibrary: false,
+    sharedTemplate: null,
 };
 
 const URL = `${process.env.REACT_APP_API_URL}/template`;
@@ -152,14 +156,39 @@ const templatesReducer = (state = initialState, action) => {
                 .then(() => {
                     console.log("Template removed.");
                     store.dispatch(
-                        setTemplates(
-                            state.templates.filter((item) => item.templateId !== templateId)
-                        )
+                        setTemplates(state.templates.filter((item) => item.templateId !== templateId))
                     );
                 })
                 .catch((reason) => console.error(reason));
 
             return { ...state, loading: true };
+        }
+
+        case LOAD_SHARED_TEMPLATE: {
+            console.log(action.type);
+            const { token } = action.payload;
+
+            if (!state.loading) {
+                axios
+                    .get(`${URL}/shared/${token}`)
+                    .then((res) => store.dispatch(setSharedTemplate(res.data || [])))
+                    .catch((reason) => console.error(reason));
+
+                return { ...state, loading: true };
+            }
+
+            return { ...state };
+        }
+
+        case SET_SHARED_TEMPLATE: {
+            console.log(action.type);
+            const { template } = action.payload;
+
+            return {
+                ...state,
+                sharedTemplate: template,
+                loading: false,
+            };
         }
 
         default:

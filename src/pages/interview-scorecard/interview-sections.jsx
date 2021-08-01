@@ -26,7 +26,13 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { ArrowLeftOutlined, CloseOutlined, DeleteOutlined, DownOutlined, EditOutlined } from "@ant-design/icons";
+import {
+    ArrowLeftOutlined,
+    CloseOutlined,
+    DeleteOutlined,
+    DownOutlined,
+    EditOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 import {
     AddNoteIcon,
@@ -133,8 +139,12 @@ export const InterviewInformationSection = ({
 
     const menu = (
         <Menu>
-            <Menu.Item onClick={onEditInterview}><EditOutlined /> Edit</Menu.Item>
-            <Menu.Item onClick={onDeleteClicked}><DeleteOutlined /> Delete</Menu.Item>
+            <Menu.Item onClick={onEditInterview}>
+                <EditOutlined /> Edit
+            </Menu.Item>
+            <Menu.Item onClick={onDeleteClicked}>
+                <DeleteOutlined /> Delete
+            </Menu.Item>
         </Menu>
     );
 
@@ -149,7 +159,9 @@ export const InterviewInformationSection = ({
                 </div>
                 {(onDeleteInterview || onEditInterview) && (
                     <Dropdown overlay={menu}>
-                        <Button>Actions <DownOutlined /></Button>
+                        <Button>
+                            Actions <DownOutlined />
+                        </Button>
                     </Dropdown>
                 )}
             </div>
@@ -260,9 +272,7 @@ const InterviewQuestionsCard = ({
             shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
             render: (question) => {
-                return (
-                    <span className="fs-mask">{question}</span>
-                );
+                return <span className="fs-mask">{question}</span>;
             },
         },
         {
@@ -352,72 +362,79 @@ const InterviewQuestionsCard = ({
                                 return question;
                             })}
                             pagination={false}
-                            expandable={{
-                                expandIconColumnIndex: 4,
-                                expandRowByClick: true,
-                                defaultExpandedRowKeys: group.questions.map((question, index) => {
-                                    if (question.notes) return index;
+                            expandable={
+                                !disabled
+                                    ? {
+                                          expandIconColumnIndex: 4,
+                                          expandRowByClick: true,
+                                          defaultExpandedRowKeys: group.questions.map((question, index) => {
+                                              if (question.notes) return index;
 
-                                    return null;
-                                }),
-                                expandedRowRender: (question) => (
-                                    <TextArea
-                                        className={styles.questionTextArea + " fs-mask"}
-                                        placeholder="Notes..."
-                                        bordered={false}
-                                        autoSize={true}
-                                        autoFocus={true}
-                                        defaultValue={question.notes}
-                                        onChange={(e) => {
-                                            if (onQuestionNotesChanged) {
-                                                onQuestionNotesChanged(question.questionId, e.target.value);
-                                            }
-                                        }}
-                                    />
-                                ),
-                                expandIcon: ({ expanded, onExpand, record }) => {
-                                    if (expanded) {
-                                        if (hoverIndex === record.key) {
-                                            return (
-                                                <NoteIcon
-                                                    style={blueIconStyle}
-                                                    onClick={(e) => onExpand(record, e)}
-                                                />
-                                            );
-                                        } else {
-                                            return (
-                                                <NoteIcon
-                                                    style={greyIconStyle}
-                                                    onClick={(e) => onExpand(record, e)}
-                                                />
-                                            );
-                                        }
-                                    } else {
-                                        if (hoverIndex === record.key) {
-                                            return (
-                                                <AddNoteIcon
-                                                    style={blueIconStyle}
-                                                    onClick={(e) => onExpand(record, e)}
-                                                />
-                                            );
-                                        } else if (!isEmpty(record.notes)) {
-                                            return (
-                                                <NoteIcon
-                                                    style={greyIconStyle}
-                                                    onClick={(e) => onExpand(record, e)}
-                                                />
-                                            );
-                                        } else {
-                                            return (
-                                                <AddNoteIcon
-                                                    style={whiteIconStyle}
-                                                    onClick={(e) => onExpand(record, e)}
-                                                />
-                                            );
-                                        }
-                                    }
-                                },
-                            }}
+                                              return null;
+                                          }),
+                                          expandedRowRender: (question) => (
+                                              <TextArea
+                                                  className={styles.questionTextArea + " fs-mask"}
+                                                  placeholder="Notes..."
+                                                  bordered={false}
+                                                  autoSize={true}
+                                                  autoFocus={true}
+                                                  defaultValue={question.notes}
+                                                  onChange={(e) => {
+                                                      if (onQuestionNotesChanged) {
+                                                          onQuestionNotesChanged(
+                                                              question.questionId,
+                                                              e.target.value
+                                                          );
+                                                      }
+                                                  }}
+                                              />
+                                          ),
+                                          expandIcon: ({ expanded, onExpand, record }) => {
+                                              if (expanded) {
+                                                  if (hoverIndex === record.key) {
+                                                      return (
+                                                          <NoteIcon
+                                                              style={blueIconStyle}
+                                                              onClick={(e) => onExpand(record, e)}
+                                                          />
+                                                      );
+                                                  } else {
+                                                      return (
+                                                          <NoteIcon
+                                                              style={greyIconStyle}
+                                                              onClick={(e) => onExpand(record, e)}
+                                                          />
+                                                      );
+                                                  }
+                                              } else {
+                                                  if (hoverIndex === record.key) {
+                                                      return (
+                                                          <AddNoteIcon
+                                                              style={blueIconStyle}
+                                                              onClick={(e) => onExpand(record, e)}
+                                                          />
+                                                      );
+                                                  } else if (!isEmpty(record.notes)) {
+                                                      return (
+                                                          <NoteIcon
+                                                              style={greyIconStyle}
+                                                              onClick={(e) => onExpand(record, e)}
+                                                          />
+                                                      );
+                                                  } else {
+                                                      return (
+                                                          <AddNoteIcon
+                                                              style={whiteIconStyle}
+                                                              onClick={(e) => onExpand(record, e)}
+                                                          />
+                                                      );
+                                                  }
+                                              }
+                                          },
+                                      }
+                                    : null
+                            }
                             onRow={(record, rowIndex) => {
                                 return {
                                     onMouseEnter: (event) => setHoverIndex(rowIndex),
@@ -553,6 +570,7 @@ export const TemplateGroupsSection = ({
     onGroupAssessmentChanged,
     onQuestionAssessmentChanged,
     hashStyle,
+    disabled,
 }) => {
     const tagColors = createTagColors(interviewToTags(template));
 
@@ -560,10 +578,11 @@ export const TemplateGroupsSection = ({
         <>
             {template.structure.groups.map((group, index) => (
                 <InterviewQuestionsCard
+                    key={group.groupId}
                     index={index}
                     tagColors={tagColors}
                     group={group}
-                    disabled={false}
+                    disabled={disabled}
                     onGroupAssessmentChanged={onGroupAssessmentChanged}
                     onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                     hashStyle={hashStyle}

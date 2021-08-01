@@ -38,6 +38,8 @@ export const routeTemplateBlank = () => "/templates/user/blank/"
 
 export const routeTemplateBlankFromLibrary = (id) => `/templates/user/blank?fromLibrary=${id}`
 
+export const routeTemplateBlankFromSharedTemplate = (token) => `/templates/user/blank?sharedTemplateToken=${token}`
+
 export const routeTemplateEdit = (id) => {
     const url = "/templates/user/edit/:id";
     return id ? url.replace(":id", id) : url;
@@ -58,3 +60,5 @@ export const routeTemplateNew = () => "/templates/new/"
 export const routeQuestionBankCategory = (id) => `/question-bank/${id}`
 
 export const routeAccount = () => "/account"
+
+export const routeSharedTemplate = () => "/template/shared/:token"

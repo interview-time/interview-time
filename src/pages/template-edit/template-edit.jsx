@@ -1,6 +1,12 @@
 import styles from "./template.module.css";
 import React, { useState } from "react";
-import { addTemplate, loadLibrary, loadTemplates, updateTemplate } from "../../store/templates/actions";
+import {
+    addTemplate,
+    loadLibrary,
+    loadTemplates,
+    updateTemplate,
+    loadSharedTemplate,
+} from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { Button, Card, Col, Divider, Input, message, Modal, Popover, Row, Select, Space, Form } from "antd";
 import Title from "antd/lib/typography/Title";
@@ -32,7 +38,16 @@ const { TextArea } = Input;
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplateEdit = ({ templates, library, addTemplate, loadTemplates, loadLibrary, updateTemplate }) => {
+const TemplateEdit = ({
+    templates,
+    library,
+    sharedTemplate,
+    addTemplate,
+    loadTemplates,
+    loadLibrary,
+    updateTemplate,
+    loadSharedTemplate,
+}) => {
     const templateCategories = TemplateCategories.map((category) => ({
         value: category.key,
         label: category.title,
@@ -62,9 +77,11 @@ const TemplateEdit = ({ templates, library, addTemplate, loadTemplates, loadLibr
                 type: parent.type,
                 structure: parent.structure,
             });
+        } else if (sharedTemplateToken() && sharedTemplate) {
+            setTemplate(cloneDeep(sharedTemplate));
         }
         // eslint-disable-next-line
-    }, [templates, library, id]);
+    }, [templates, library, id, sharedTemplate]);
 
     React.useEffect(() => {
         if (isExistingTemplateFlow()) {
@@ -72,7 +89,9 @@ const TemplateEdit = ({ templates, library, addTemplate, loadTemplates, loadLibr
         } else if (isFromLibraryFlow()) {
             loadLibrary();
         } // blank template
-        else {
+        else if (sharedTemplateToken()) {
+            loadSharedTemplate(sharedTemplateToken());
+        } else {
             setTemplate({
                 templateId: undefined,
                 title: "",
@@ -96,6 +115,11 @@ const TemplateEdit = ({ templates, library, addTemplate, loadTemplates, loadLibr
     const fromLibraryId = () => {
         const params = new URLSearchParams(location.search);
         return params.get("fromLibrary");
+    };
+
+    const sharedTemplateToken = () => {
+        const params = new URLSearchParams(location.search);
+        return params.get("sharedTemplateToken");
     };
 
     const onBackClicked = () => {
@@ -425,13 +449,14 @@ const TemplateEdit = ({ templates, library, addTemplate, loadTemplates, loadLibr
     );
 };
 
-const mapDispatch = { addTemplate, loadTemplates, loadLibrary, updateTemplate };
+const mapDispatch = { addTemplate, loadTemplates, loadLibrary, updateTemplate, loadSharedTemplate };
 const mapState = (state) => {
     const templateState = state.templates || {};
 
     return {
         templates: templateState.templates,
         library: templateState.library,
+        sharedTemplate: templateState.sharedTemplate,
     };
 };
 
