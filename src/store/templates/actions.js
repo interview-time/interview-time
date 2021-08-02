@@ -7,6 +7,7 @@ export const UPDATE_TEMPLATE = "UPDATE_TEMPLATE";
 export const DELETE_TEMPLATE = "DELETE_TEMPLATE";
 export const LOAD_SHARED_TEMPLATE = "LOAD_SHARED_TEMPLATE";
 export const SET_SHARED_TEMPLATE = "SET_SHARED_TEMPLATE";
+export const SHARE_TEMPLATE = "SHARE_TEMPLATE";
 
 export const loadTemplates = (forceFetch = false) => ({
     type: LOAD_TEMPLATES,
@@ -68,5 +69,13 @@ export const setSharedTemplate = (template) => ({
     type: SET_SHARED_TEMPLATE,
     payload: {
         template
+    }
+});
+
+export const shareTemplate = (templateId, share) => ({
+    type: SHARE_TEMPLATE,
+    payload: {
+        templateId,
+        share
     }
 });
