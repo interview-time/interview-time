@@ -19,7 +19,7 @@ const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
 
     useEffect(() => {
         loadSharedTemplate(token);
-    }, [token]);
+    }, [token, loadSharedTemplate]);
 
     return !loading && template ? (
         <Row className={styles.rootContainer}>
