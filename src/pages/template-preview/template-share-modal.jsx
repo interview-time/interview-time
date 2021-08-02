@@ -47,7 +47,7 @@ const TemplateShareModal = ({ visible, shared, token, onShareChange, onClose }) 
         setCopied(true)
     }
 
-    const getSharedURL = () => token ? `https://interviewer.space/template/shared/${token}` : null
+    const getSharedURL = () => token ? `https://app.interviewer.space/template/shared/${token}` : null
 
     const copyButton = <CopyToClipboard text={getSharedURL()} onCopy={onCopyClicked}>
         <Button type="text"
