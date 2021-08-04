@@ -1,4 +1,4 @@
-import { Button, Card, Col, Divider, Row } from "antd";
+import { Button, Card, Col, Divider, Row, Result } from "antd";
 import Text from "antd/lib/typography/Text";
 import {
     IntroSection,
@@ -21,7 +21,39 @@ const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
         loadSharedTemplate(token);
     }, [token, loadSharedTemplate]);
 
-    return !loading && template ? (
+    if (loading) {
+        return <Spinner />;
+    }
+
+    if (!loading && !template) {
+        return (
+            <div className={styles.emptyState}>
+                <img
+                    alt="Interviewer"
+                    src={process.env.PUBLIC_URL + "/logo+text.png"}
+                    className={styles.logo}
+                />
+                <Result
+                className={styles.notFound}
+                    status="404"
+                    title="Looks like this interview template is no longer available"
+                    subTitle="Author might have stopped sharing the template"
+                    extra={
+                        <Button
+                            onClick={() => {
+                                history.push("/");
+                            }}
+                            type="primary"
+                        >
+                            Goto App
+                        </Button>
+                    }
+                />
+            </div>
+        );
+    }
+
+    return (
         <Row className={styles.rootContainer}>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                 <Card className={styles.row}>
@@ -60,8 +92,6 @@ const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
                 </Card>
             </Col>
         </Row>
-    ) : (
-        <Spinner />
     );
 };
 
