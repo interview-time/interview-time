@@ -173,7 +173,10 @@ const templatesReducer = (state = initialState, action) => {
                 axios
                     .get(`${URL}/shared/${token}`)
                     .then((res) => store.dispatch(setSharedTemplate(res.data || [])))
-                    .catch((reason) => console.error(reason));
+                    .catch((reason) => {
+                        console.error(reason);
+                        store.dispatch(setSharedTemplate(null));
+                    });
 
                 return { ...state, loading: true };
             }
@@ -198,25 +201,25 @@ const templatesReducer = (state = initialState, action) => {
 
             const data = {
                 templateId: templateId,
-                share: share
-            }
+                share: share,
+            };
 
             getAccessTokenSilently()
-                .then(token => axios.patch(`${URL}/share`, data, config(token)))
+                .then((token) => axios.patch(`${URL}/share`, data, config(token)))
                 .then(() => {
                     console.log(`Template shared: ${share}`);
                     store.dispatch(
                         setTemplates(
-                            state.templates.map(template => {
-                                if(template.templateId === templateId) {
-                                    template.isShared = share
+                            state.templates.map((template) => {
+                                if (template.templateId === templateId) {
+                                    template.isShared = share;
                                 }
-                                return template
+                                return template;
                             })
                         )
                     );
                 })
-                .catch(reason => console.error(reason));
+                .catch((reason) => console.error(reason));
 
             return { ...state, loading: true };
         }

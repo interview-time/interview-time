@@ -26,5 +26,14 @@
 }
 
 .logo {
-    height: var(--logo-height);  
+    height: var(--logo-height);
+}
+
+.emptyState {
+    text-align: center;
+    padding-top: 24px;
+}
+
+.notFound {
+    margin-top: 24px;
 }
