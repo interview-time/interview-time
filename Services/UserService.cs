@@ -36,5 +36,12 @@ namespace CafApi.Services
 
             return profile;
         }
+
+        public async Task<bool> IsBelongInTeam(string userId, string teamId)
+        {
+            var profile = await _context.LoadAsync<Profile>(userId);
+
+            return (profile != null && profile.Teams != null && profile.Teams.Contains(teamId));
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace CafApi.Controllers
         private readonly IInterviewService _interviewService;
         private readonly ITemplateService _templateService;
         private readonly IUserService _userService;
+        private readonly ITeamService _teamService;
         private readonly ILogger<UserController> _logger;
         private readonly string _demoUserId;
 
@@ -34,20 +35,40 @@ namespace CafApi.Controllers
             IInterviewService interviewService,
             ITemplateService templateService,
             IUserService userService,
+            ITeamService teamService,
             IConfiguration configuration)
         {
             _logger = logger;
             _interviewService = interviewService;
             _templateService = templateService;
             _userService = userService;
+            _teamService = teamService;
 
             _demoUserId = configuration["DemoUserId"];
         }
 
         [HttpGet]
-        public async Task<Profile> GetUserProfile()
+        public async Task<ActionResult<ProfileResponse>> GetUserProfile()
         {
-            return await _userService.GetProfile(UserId);
+            var profile = await _userService.GetProfile(UserId);
+            if (profile == null)
+            {
+                return NotFound();
+            }
+
+            var teams = await _teamService.GetTeams(profile.Teams);
+
+            return new ProfileResponse
+            {
+                Name = profile.Name,
+                Email = profile.Email,
+                TimezoneOffset = profile.TimezoneOffset,
+                Teams = teams.Select(t => new TeamResponse
+                {
+                    TeamId = t.TeamId,
+                    TeamName = t.Name
+                }).ToList()
+            };
         }
 
         [HttpPost]

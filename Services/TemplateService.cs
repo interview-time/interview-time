@@ -14,13 +14,14 @@ namespace CafApi.Services
     public class TemplateService : ITemplateService
     {
         private readonly DynamoDBContext _context;
-
         private readonly IInterviewService _interviewService;
+        private readonly IUserService _userService;
 
-        public TemplateService(IAmazonDynamoDB dynamoDbClient, IInterviewService interviewService)
+        public TemplateService(IAmazonDynamoDB dynamoDbClient, IInterviewService interviewService, IUserService userService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _interviewService = interviewService;
+            _userService = userService;
         }
 
         public async Task<List<Template>> GetMyTemplates(string userId)
@@ -43,10 +44,28 @@ namespace CafApi.Services
             return templates;
         }
 
+        public async Task<List<Template>> GetTeamTemplates(string userId, string teamId)
+        {
+            var isBelongInTeam = await _userService.IsBelongInTeam(userId, teamId);
+            if (isBelongInTeam)
+            {
+                var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
+                {
+                    IndexName = "TeamId-Index",
+                    Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
+                });
+                var templates = await search.GetRemainingAsync();
+
+                return templates;
+            }
+
+            return new List<Template>();
+        }
+
         public async Task<Template> GetTemplate(string userId, string templateId)
         {
             return await _context.LoadAsync<Template>(userId, templateId);
-        }
+        }       
 
         public async Task<Template> CreateTemplate(string userId, TemplateRequest newTemplate, bool isDemo = false)
         {
@@ -59,6 +78,7 @@ namespace CafApi.Services
                 Description = newTemplate.Description,
                 Structure = newTemplate.Structure,
                 IsDemo = isDemo,
+                TeamId = newTemplate.TeamId,
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
                 Token = StringHelper.GenerateToken()

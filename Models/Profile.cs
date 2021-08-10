@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 
 namespace CafApi.Models
@@ -14,6 +15,8 @@ namespace CafApi.Models
         public string Email { get; set; }
 
         public int TimezoneOffset { get; set; }
+
+        public List<string> Teams { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

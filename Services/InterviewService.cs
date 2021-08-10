@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Models;
 using CafApi.ViewModel;
 
@@ -11,11 +12,13 @@ namespace CafApi.Services
 {
     public class InterviewService : IInterviewService
     {
+        private readonly IUserService _userService;
         private readonly DynamoDBContext _context;
 
-        public InterviewService(IAmazonDynamoDB dynamoDbClient)
+        public InterviewService(IAmazonDynamoDB dynamoDbClient, IUserService userService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
+            _userService = userService;
         }
 
         public async Task<Interview> GetInterview(string userId, string interviewId)
@@ -23,11 +26,33 @@ namespace CafApi.Services
             return await _context.LoadAsync<Interview>(userId, interviewId);
         }
 
-        public async Task<List<Interview>> GetInterviews(string userId)
+        public async Task<List<Interview>> GetInterviews(string userId, string teamId = null)
         {
+            if (teamId != null)
+            {
+                var team = await _context.LoadAsync<Team>(teamId);
+                if (team != null && team.OwnerId == userId) // Team admin gets to see all the interviews
+                {
+                    var search = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
+                    {
+                        IndexName = "TeamId-Index",
+                        Filter = new QueryFilter(nameof(Interview.TeamId), QueryOperator.Equal, teamId)
+                    });
+                    var interviews = await search.GetRemainingAsync();
+
+                    return interviews;
+                }
+            }
+
             var config = new DynamoDBOperationConfig();
 
-            return await _context.QueryAsync<Interview>(userId, config).GetRemainingAsync();
+            var myInterviews = await _context.QueryAsync<Interview>(userId, config).GetRemainingAsync();
+            if (teamId != null)
+            {
+                myInterviews = myInterviews.Where(i => i.TeamId == teamId).ToList();
+            }
+
+            return myInterviews;
         }
 
         public async Task<List<Interview>> GetInterviewsByTemplate(string templateId)

@@ -37,10 +37,10 @@ namespace CafApi.Controllers
             _demoUserId = configuration["DemoUserId"];
         }
 
-        [HttpGet()]
-        public async Task<List<Interview>> Get()
+        [HttpGet("{teamId?}")]
+        public async Task<List<Interview>> Get(string teamId = null)
         {
-            var interviews = await _interviewService.GetInterviews(UserId);
+            var interviews = await _interviewService.GetInterviews(UserId, teamId);
 
             return interviews;
         }

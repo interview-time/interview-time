@@ -9,6 +9,8 @@ namespace CafApi.Services
     {
         Task<List<Template>> GetMyTemplates(string userId);
 
+        Task<List<Template>> GetTeamTemplates(string userId, string teamId);
+
         Task<Template> GetTemplate(string userId, string templateId);
 
         Task<Template> CreateTemplate(string userId, TemplateRequest template, bool isDemo = false);

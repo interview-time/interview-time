@@ -34,6 +34,8 @@ namespace CafApi.Models
 
         public string Token { get; set; }
 
+        public string TeamId { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }

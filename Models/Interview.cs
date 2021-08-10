@@ -36,6 +36,11 @@ namespace CafApi.Models
 
         public bool IsDemo { get; set; }
 
+        public string TeamId { get; set; }
+
+        [DynamoDBIgnore]
+        public string CreatedBy { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
