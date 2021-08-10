@@ -62,3 +62,5 @@ export const routeQuestionBankCategory = (id) => `/question-bank/${id}`
 export const routeAccount = () => "/account"
 
 export const routeSharedTemplate = () => "/template/shared/:token"
+
+export const routeTeamNew = () => "/teams/new/"
