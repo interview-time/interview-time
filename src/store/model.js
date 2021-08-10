@@ -92,3 +92,8 @@
  * @property {string} name
  * @property {Question[]} questions
  */
+
+/**
+ * @typedef {Object} Team
+ * @property {string} teamName
+ */
