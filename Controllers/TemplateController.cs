@@ -37,12 +37,15 @@ namespace CafApi.Controllers
             _demoUserId = configuration["DemoUserId"];
         }
 
-        [HttpGet()]
-        public async Task<List<Template>> GetTemplates()
+        [HttpGet("{teamId?}")]
+        public async Task<List<Template>> GetTemplates(string teamId = null)
         {
-            var templates = await _templateService.GetMyTemplates(UserId);
+            if (teamId != null)
+            {
+                return await _templateService.GetTeamTemplates(UserId, teamId);
+            }
 
-            return templates;
+            return await _templateService.GetMyTemplates(UserId);
         }
 
         [HttpPost()]

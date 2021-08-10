@@ -72,6 +72,7 @@ namespace CafApi
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ITemplateService, TemplateService>();
             services.AddSingleton<IInterviewService, InterviewService>();
+            services.AddSingleton<ITeamService, TeamService>();
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
         }
 

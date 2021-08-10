@@ -5,8 +5,10 @@ namespace CafApi.Services
 {
     public interface IUserService
     {
-         Task<Profile> GetProfile(string userId);
+        Task<Profile> GetProfile(string userId);
 
-         Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset);
+        Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset);
+
+        Task<bool> IsBelongInTeam(string userId, string teamId);
     }
 }

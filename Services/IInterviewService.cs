@@ -9,7 +9,7 @@ namespace CafApi.Services
     {
         Task<Interview> GetInterview(string userId, string interviewId);
 
-        Task<List<Interview>> GetInterviews(string userId);
+        Task<List<Interview>> GetInterviews(string userId, string teamId = null);
 
         Task<List<Interview>> GetInterviewsByTemplate(string templateId);
 

@@ -16,6 +16,8 @@ namespace CafApi.ViewModel
 
         public string Image { get; set; }
 
+        public string TeamId { get; set; }
+
         public TemplateStructure Structure { get; set; }
     }
 }
