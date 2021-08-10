@@ -51,7 +51,7 @@ namespace CafApi.Services
             {
                 var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
                 {
-                    IndexName = "TeamId-Index",
+                    IndexName = "TeamId-index",
                     Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
                 });
                 var templates = await search.GetRemainingAsync();
