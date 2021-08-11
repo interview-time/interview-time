@@ -18,5 +18,7 @@ namespace CafApi.ViewModel
         public string TeamId { get; set; }
 
         public string TeamName { get; set; }
+
+        public string Token { get; set; }
     }
 }

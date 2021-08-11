@@ -66,7 +66,8 @@ namespace CafApi.Controllers
                 Teams = teams.Select(t => new TeamResponse
                 {
                     TeamId = t.TeamId,
-                    TeamName = t.Name
+                    TeamName = t.Name,
+                    Token = t.Token
                 }).ToList()
             };
         }
