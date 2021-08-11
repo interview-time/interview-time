@@ -48,12 +48,12 @@ namespace CafApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ProfileResponse>> GetUserProfile()
+        public async Task<ProfileResponse> GetUserProfile()
         {
             var profile = await _userService.GetProfile(UserId);
             if (profile == null)
             {
-                return NotFound();
+                return null;
             }
 
             var teams = await _teamService.GetTeams(profile.Teams);
