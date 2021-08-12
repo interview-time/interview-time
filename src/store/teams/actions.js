@@ -1,10 +1,12 @@
 export const CREATE_TEAM = "CREATE_TEAM";
-export const SET_LOADING = "SET_LOADING";
+export const SET_CREATE_TEAM = "SET_CREATE_TEAM";
+export const UPDATE_TEAM = "UPDATE_TEAM";
+export const SET_UPDATE_TEAM = "SET_UPDATE_TEAM";
 
 /**
  *
  * @param {Team} team
- * @returns {{payload: {team}, type: string}}
+ * @returns {{payload: {team}, type: Team}}
  */
 export const createTeam = (team) => ({
     type: CREATE_TEAM,
@@ -15,12 +17,38 @@ export const createTeam = (team) => ({
 
 /**
  *
- * @param {boolean} loading
- * @returns {{payload: {loading}, type: boolean}}
+ * @param {Team|null} team
+ * @param {String} status
+ * @returns {{payload: {createTeam, status}, type: string}}
  */
-export const setLoading = (loading) => ({
-    type: SET_LOADING,
+export const setCreateTeam = (team, status) => ({
+    type: SET_CREATE_TEAM,
     payload: {
-        loading
+        status,
+        team
+    }
+});
+
+/**
+ *
+ * @param {Team} team
+ * @returns {{payload: {team}, type: Team}}
+ */
+export const updateTeam = (team) => ({
+    type: UPDATE_TEAM,
+    payload: {
+        team
+    }
+});
+
+/**
+ *
+ * @param {String} status
+ * @returns {{payload: {status}, type: String}}
+ */
+export const setUpdateTeam = (status) => ({
+    type: SET_UPDATE_TEAM,
+    payload: {
+        status
     }
 });

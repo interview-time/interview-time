@@ -20,6 +20,7 @@ import {
     routeTemplates,
     routeSharedTemplate,
     routeTeamNew,
+    routeTeamSettings,
 } from "./components/utils/route";
 import Default from "./pages/default/default";
 import Interviews from "./pages/interviews/interviews";
@@ -41,6 +42,7 @@ import { useAuth0 } from "./react-auth0-spa";
 import TemplatePreview from "./pages/template-preview/template-preview";
 import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
+import TeamSettings from "./pages/team-settings/team-settings";
 
 function App({ history }) {
     useEffect(() => {
@@ -83,6 +85,7 @@ function App({ history }) {
             <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
+            <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
         </Switch>
     );
