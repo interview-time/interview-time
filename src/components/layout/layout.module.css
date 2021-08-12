@@ -53,9 +53,39 @@
     align-items: center
 }
 
-.menuIconContainer {
+.menuTeam {
     display: flex;
-    align-items: center
+    align-items: center;
+}
+
+.selectedTeam {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 16px 12px;
+}
+
+.menuTeamText {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.menuTeamCreate {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-left: 16px;
+    margin-right: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.selectedTeamText {
+    flex-grow: 1;
+    margin-left: 8px;
 }
 
 .progressContainer {
@@ -84,6 +114,4 @@
 
 .avatar {
     background-color: var(--color-primary);
-    margin-left: -4px;
-    margin-right: 8px;
 }
