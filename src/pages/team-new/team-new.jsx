@@ -1,19 +1,43 @@
 import Layout from "../../components/layout/layout";
-import { Button, Card, Col, Form, Input, Spin } from "antd";
+import { Button, Card, Col, Form, Input, message, Spin } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import styles from "../team-new/team-new.module.css";
 import { createTeam } from "../../store/teams/actions";
 import { connect } from "react-redux";
+import { useEffect, useState } from "react";
+import { STATUS_ERROR, STATUS_FINISHED, STATUS_STARTED } from "../../store/common";
+import { useHistory } from "react-router-dom";
+import { routeTeamSettings } from "../../components/utils/route";
 
 /**
  *
- * @param {boolean} loading
+ * @param {String} createTeamStatus
+ * @param {Team} createTeamResult
  * @param createTeam
  * @returns {JSX.Element}
  * @constructor
  */
-const NewTeam = ({ loading, createTeam }) => {
+const NewTeam = ({ createTeamStatus, createTeamResult, createTeam }) => {
+
+    const [createStatus, setCreateStatus] = useState();
+
+    const history = useHistory();
+
+    useEffect(() => {
+        const newStatus = createTeamStatus;
+        const prevStatus = createStatus;
+
+        if (prevStatus === STATUS_STARTED && newStatus === STATUS_FINISHED && createTeamResult) {
+            message.success("Team has been create.")
+            history.push(routeTeamSettings(createTeamResult.teamId))
+        } else if (prevStatus === STATUS_STARTED && newStatus === STATUS_ERROR) {
+            message.error("Team creation failed.")
+        }
+        setCreateStatus(newStatus)
+
+        // eslint-disable-next-line
+    }, [createTeamStatus]);
 
     const team = {
         teamName: ''
@@ -30,7 +54,7 @@ const NewTeam = ({ loading, createTeam }) => {
     return (
         <Layout>
             <Col span={24} xl={{ span: 12, offset: 6 }} xxl={{ span: 12, offset: 6 }}>
-                <Spin spinning={loading} tip="Creating team...">
+                <Spin spinning={createStatus === STATUS_STARTED} tip="Creating team...">
                     <Card style={{ marginTop: 12 }}>
                         <Title level={4}>Create Team</Title>
                         <Text type="secondary" style={{ marginTop: 12 }}>
@@ -78,7 +102,8 @@ const mapState = (state) => {
     const teamState = state.team || {};
 
     return {
-        loading: teamState.loading,
+        createTeamStatus: teamState.createTeamStatus,
+        createTeamResult: teamState.createTeamResult,
     };
 };
 

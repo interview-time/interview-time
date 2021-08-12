@@ -95,5 +95,14 @@
 
 /**
  * @typedef {Object} Team
+ * @property {string} teamId
  * @property {string} teamName
+ * @property {string} token
+ */
+
+/**
+ * @typedef {Object} UserProfile
+ * @property {string} name
+ * @property {string} email
+ * @property {Team[]} teams
  */

@@ -6,7 +6,7 @@ import { config } from "../common";
 
 /**
  *
- * @type {{profile: Profile, loading: boolean}}
+ * @type {{profile: UserProfile, loading: boolean}}
  */
 const initialState = {
     profile: null,
@@ -18,7 +18,6 @@ const URL = `${process.env.REACT_APP_API_URL}/user`;
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_PROFILE: {
-            console.log(action.type);
             const { name, email, forceFetch } = action.payload;
 
             if (forceFetch || (!state.profile && !state.loading)) {
