@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Divider, Dropdown, Layout as AntLayout, Menu } from "antd";
 import styles from "./layout.module.css";
@@ -32,10 +32,9 @@ import { useAuth0 } from "../../react-auth0-spa";
 import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
-import { loadProfile } from "../../store/user/actions";
+import { setActiveTeam } from "../../store/user/actions";
 import { connect } from "react-redux";
 import Text from "antd/lib/typography/Text";
-import { getCachedSelectedTeam, setCachedSelectedTeam } from "../utils/storage";
 
 const menuIconStyle = { fontSize: '24px' }
 
@@ -45,40 +44,32 @@ const menuIconStyle = { fontSize: '24px' }
  * @param pageHeader
  * @param contentStyle
  * @param {UserProfile} profile
- * @param loadProfile
+ * @param activeTeam
+ * @param setActiveTeam
  * @returns {JSX.Element}
  * @constructor
  */
-const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) => {
+const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setActiveTeam }) => {
 
     const location = useLocation();
     const history = useHistory();
     const { user } = useAuth0();
 
-    const getInitialSelectedTeam = () => {
-        const selectedTeam = getCachedSelectedTeam()
-        return selectedTeam ? selectedTeam : {
+    const [feedbackVisible, setFeedbackVisible] = React.useState(false)
+
+    const getActiveTeam = () => {
+        return activeTeam ? activeTeam : {
             name: user.name,
             picture: user.picture
         };
     }
-
-    const [selectedTeam, setSelectedTeam] = React.useState(getInitialSelectedTeam())
-    const [feedbackVisible, setFeedbackVisible] = React.useState(false)
-
-    useEffect(() => {
-        if (!profile) {
-            loadProfile()
-        }
-        // eslint-disable-next-line
-    }, [profile]);
 
     const getSelectedKey = () => {
         if (location.pathname.includes(routeTemplates())) {
             return routeTemplates()
         } else if (location.pathname.includes(routeInterviews())) {
             return routeInterviews()
-        }else if (location.pathname.includes(routeNews())) {
+        } else if (location.pathname.includes(routeNews())) {
             return routeNews()
         } else if (location.pathname.includes(routeTemplateNew())) {
             return routeTemplateNew()
@@ -91,7 +82,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) =>
         }
     }
 
-    const getSelectedTeamName = () => truncate(selectedTeam.name, {
+    const getSelectedTeamName = () => truncate(getActiveTeam().name, {
         'length': 14
     })
 
@@ -108,8 +99,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) =>
             teamId: team.teamId,
             name: team.teamName
         };
-        setSelectedTeam(selected)
-        setCachedSelectedTeam(selected)
+        setActiveTeam(selected)
     }
 
     const onUserSelected = () => {
@@ -117,8 +107,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) =>
             name: user.name,
             picture: user.picture
         };
-        setSelectedTeam(selected)
-        setCachedSelectedTeam(selected)
+        setActiveTeam(selected)
     }
 
     const onCreateTeam = () => {
@@ -138,7 +127,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) =>
                         <Text>{profile.name}</Text>
                         <Text type="secondary">Personal</Text>
                     </div>
-                    {!selectedTeam.teamId && <TeamSelectedIcon />}
+                    {!getActiveTeam().teamId && <TeamSelectedIcon />}
                 </div>
             </Menu.Item>
             <Menu.Divider />
@@ -150,7 +139,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) =>
                             <Text>{team.teamName}</Text>
                             <Text type="secondary">Team</Text>
                         </div>
-                        {selectedTeam.teamId === team.teamId && <TeamSelectedIcon />}
+                        {getActiveTeam().teamId === team.teamId && <TeamSelectedIcon />}
                     </div>
                 </Menu.Item>
                 <Menu.Divider />
@@ -206,22 +195,23 @@ const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) =>
                                onClick={onFeedbackClicked}>
                         <span className="nav-text">Feedback</span>
                     </Menu.Item>
-                    <Divider style={{margin: 8}} />
+                    <Divider style={{ margin: 8 }} />
                     <Menu.Item key="settings" className={styles.menuItem}
                                icon={<SettingsIcon style={menuIconStyle} />}>
-                        <Link to={selectedTeam.teamId ? routeTeamSettings(selectedTeam.teamId) : routeAccount()}>
-                            <span className="nav-text">{selectedTeam.teamId ? "Team Settings" : "User Settings"}</span>
+                        <Link to={getActiveTeam().teamId ? routeTeamSettings(getActiveTeam().teamId) : routeAccount()}>
+                            <span
+                                className="nav-text">{getActiveTeam().teamId ? "Team Settings" : "User Settings"}</span>
                         </Link>
                     </Menu.Item>
                     <div>
                         <Dropdown overlay={teamMenu}>
                             <div className={styles.selectedTeam}>
-                                {!selectedTeam.teamId && <Avatar
-                                    src={user ? selectedTeam.picture : null}
+                                {!getActiveTeam().teamId && <Avatar
+                                    src={user ? getActiveTeam().picture : null}
                                     className={styles.avatar}
                                     size={28}
                                     icon={<ProfileIcon />} />}
-                                {selectedTeam.teamId && <TeamCircleIcon />}
+                                {getActiveTeam().teamId && <TeamCircleIcon />}
                                 <Text className={styles.selectedTeamText}>{getSelectedTeamName()}</Text>
                                 <TeamSwitcherIcon />
                             </div>
@@ -243,13 +233,14 @@ const Layout = ({ children, pageHeader, contentStyle, profile, loadProfile }) =>
     )
 };
 
-const mapDispatch = { loadProfile };
+const mapDispatch = { setActiveTeam };
 
 const mapState = (state) => {
     const userState = state.user || {};
 
     return {
-        profile: userState.profile
+        profile: userState.profile,
+        activeTeam: userState.activeTeam
     };
 };
 

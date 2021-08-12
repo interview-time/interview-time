@@ -7,7 +7,7 @@ const KEY_QUICKSTART_QUESTION_BANK = 'quickstart-question-bank'
 const KEY_QUICKSTART_INTERVIEWS = 'quickstart-interviews'
 const KEY_QUICKSTART_TEMPLATES = 'quickstart-templates'
 const KEY_STICKY_NOTES_ENABLED = 'sticky-notes-enabled-v1'
-const KEY_SELECTED_TEAM = 'selected-team-v2'
+const KEY_ACTIVE_TEAM = 'selected-team-v1'
 
 export function isUpdateAvailable() {
     const newsVisitTime = localStorage.getItem(KEY_NEWS_VISIT_TIME);
@@ -59,11 +59,11 @@ export function setStickyNotesEnabled(enabled) {
     localStorage.setItem(KEY_STICKY_NOTES_ENABLED, enabled)
 }
 
-export function getCachedSelectedTeam() {
-    const value = localStorage.getItem(KEY_SELECTED_TEAM);
+export function getCachedActiveTeam() {
+    const value = localStorage.getItem(KEY_ACTIVE_TEAM);
     return value ? JSON.parse(value) : undefined
 }
 
-export function setCachedSelectedTeam(team) {
-    localStorage.setItem(KEY_SELECTED_TEAM, JSON.stringify(team))
+export function setCachedActiveTeam(team) {
+    localStorage.setItem(KEY_ACTIVE_TEAM, JSON.stringify(team))
 }

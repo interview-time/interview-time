@@ -1,14 +1,16 @@
-import { LOAD_PROFILE, setProfile, setupUser, SETUP_USER, SET_PROFILE } from "./actions";
+import { LOAD_PROFILE, setProfile, setupUser, SETUP_USER, SET_PROFILE, SET_ACTIVE_TEAM } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
+import { getCachedActiveTeam, setCachedActiveTeam } from "../../components/utils/storage";
 
 /**
  *
  * @type {{profile: UserProfile, loading: boolean}}
  */
 const initialState = {
+    activeTeam: getCachedActiveTeam(),
     profile: null,
     loading: false,
 };
@@ -66,6 +68,17 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 profile: profile,
                 loading: false,
+            };
+        }
+
+        case SET_ACTIVE_TEAM: {
+            console.log(action.type);
+            const { team } = action.payload;
+            setCachedActiveTeam(team)
+
+            return {
+                ...state,
+                activeTeam: team
             };
         }
 
