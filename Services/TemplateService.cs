@@ -29,6 +29,8 @@ namespace CafApi.Services
             var config = new DynamoDBOperationConfig();
 
             var templates = await _context.QueryAsync<Template>(userId, config).GetRemainingAsync();
+            templates = templates.Where(t => string.IsNullOrWhiteSpace(t.TeamId)).ToList();
+
             foreach (var template in templates)
             {
                 var interviews = await _interviewService.GetInterviewsByTemplate(template.TemplateId);
@@ -65,7 +67,7 @@ namespace CafApi.Services
         public async Task<Template> GetTemplate(string userId, string templateId)
         {
             return await _context.LoadAsync<Template>(userId, templateId);
-        }       
+        }
 
         public async Task<Template> CreateTemplate(string userId, TemplateRequest newTemplate, bool isDemo = false)
         {

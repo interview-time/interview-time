@@ -67,7 +67,8 @@ namespace CafApi.Controllers
                 {
                     TeamId = t.TeamId,
                     TeamName = t.Name,
-                    Token = t.Token
+                    Token = t.Token,
+                    Role = t.OwnerId == UserId ? "ADMIN" : "MEMBER"
                 }).ToList()
             };
         }

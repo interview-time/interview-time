@@ -7,7 +7,6 @@ using CafApi.Services;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace CafApi.Controllers
@@ -46,6 +45,12 @@ namespace CafApi.Controllers
         public async Task UpdateTeam(UpdateTeamRequest request)
         {
             await _teamService.Update(UserId, request.TeamId, request.TeamName);
+        }
+
+        [HttpDelete("{teamId}")]
+        public async Task DeleteTeam(string teamId)
+        {
+            await _teamService.Delete(UserId, teamId);
         }
 
         [HttpGet("members/{teamId}")]
