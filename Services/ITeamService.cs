@@ -12,6 +12,8 @@ namespace CafApi.Services
 
         Task Update(string userId, string teamId, string name);
 
+        Task Delete(string userId, string teamId);
+
         Task<List<Team>> GetTeams(List<string> teamIds);
 
         Task<List<Profile>> GetTeamMembers(string userId, string teamId);

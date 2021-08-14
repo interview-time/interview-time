@@ -58,6 +58,55 @@ namespace CafApi.Services
             }
         }
 
+        public async Task Delete(string userId, string teamId)
+        {
+            var team = await GetTeam(teamId);
+            if (team != null && team.OwnerId == userId)
+            {
+                // get team interviews
+                var searchInterviews = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
+                {
+                    IndexName = "TeamId-Index",
+                    Filter = new QueryFilter(nameof(Interview.TeamId), QueryOperator.Equal, teamId)
+                });
+                var interviews = await searchInterviews.GetRemainingAsync();
+
+                // Delete team interviews
+                if (interviews != null && interviews.Any())
+                {
+                    var interviewBatch = _context.CreateBatchWrite<Interview>();
+                    interviewBatch.AddDeleteItems(interviews);
+                    await interviewBatch.ExecuteAsync();
+                }
+
+                // get team templates
+                var searchTemaples = _context.FromQueryAsync<Template>(new QueryOperationConfig()
+                {
+                    IndexName = "TeamId-index",
+                    Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
+                });
+                var templates = await searchTemaples.GetRemainingAsync();
+
+                // Delete team templates
+                if (templates != null && templates.Any())
+                {
+                    var templateBatch = _context.CreateBatchWrite<Template>();
+                    templateBatch.AddDeleteItems(templates);
+                    await templateBatch.ExecuteAsync();
+                }
+
+                // Remove members from the team
+                var members = await GetTeamMembers(userId, teamId);
+                foreach (var member in members)
+                {
+                    await LeaveTeam(member.UserId, teamId);
+                }
+
+                // Delete team
+                await _context.DeleteAsync(team);
+            }
+        }
+
         public async Task<List<Team>> GetTeams(List<string> teamIds)
         {
             var teams = new List<Team>();
