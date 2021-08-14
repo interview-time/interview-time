@@ -46,6 +46,7 @@ const menuIconStyle = { fontSize: '24px' }
  * @param {UserProfile} profile
  * @param activeTeam
  * @param setActiveTeam
+ * @param setTemplates
  * @returns {JSX.Element}
  * @constructor
  */
@@ -99,7 +100,10 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             teamId: team.teamId,
             name: team.teamName
         };
-        setActiveTeam(selected)
+        if (selected.teamId !== activeTeam.teamId) {
+            setActiveTeam(selected);
+            history.push(routeHome());
+        }
     }
 
     const onUserSelected = () => {
@@ -107,7 +111,10 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             name: user.name,
             picture: user.picture
         };
-        setActiveTeam(selected)
+        if (selected.name !== activeTeam.name) {
+            setActiveTeam(selected);
+            history.push(routeHome());
+        }
     }
 
     const onCreateTeam = () => {

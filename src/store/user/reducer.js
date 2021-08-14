@@ -1,9 +1,11 @@
-import { LOAD_PROFILE, setProfile, setupUser, SETUP_USER, SET_PROFILE, SET_ACTIVE_TEAM } from "./actions";
+import { LOAD_PROFILE, SET_ACTIVE_TEAM, SET_PROFILE, setProfile, SETUP_USER, setupUser } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { getCachedActiveTeam, setCachedActiveTeam } from "../../components/utils/storage";
+import { loadTemplates, setTemplates } from "../templates/actions";
+import { loadInterviews, setInterviews } from "../interviews/actions";
 
 /**
  *
@@ -74,7 +76,18 @@ const userReducer = (state = initialState, action) => {
         case SET_ACTIVE_TEAM: {
             console.log(action.type);
             const { team } = action.payload;
-            setCachedActiveTeam(team)
+
+            setCachedActiveTeam(team);
+
+            Promise.resolve().then(() => {
+                // clean data for current team
+                store.dispatch(setTemplates([]));
+                store.dispatch(setInterviews([]));
+
+                // load new data for current team
+                store.dispatch(loadTemplates());
+                store.dispatch(loadInterviews());
+            })
 
             return {
                 ...state,

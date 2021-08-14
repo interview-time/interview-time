@@ -34,6 +34,7 @@
  * @typedef {Object} Interview
  * @property {string} userId
  * @property {string} interviewId
+ * @property {string} teamId
  * @property {string} candidate
  * @property {string} candidateNotes
  * @property {string} position
@@ -68,6 +69,7 @@
  * @property {string} userId
  * @property {string} templateId
  * @property {string} libraryId
+ * @property {string} teamId
  * @property {string} title
  * @property {string} image
  * @property {string} type

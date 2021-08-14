@@ -17,7 +17,7 @@ import {
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
-import { config } from "../common";
+import { config, getActiveTeamId } from "../common";
 
 /**
  *
@@ -39,9 +39,12 @@ const templatesReducer = (state = initialState, action) => {
             console.log(action.type);
             const { forceFetch } = action.payload;
 
+            const teamId = getActiveTeamId();
+            const url = teamId ? `${URL}/${teamId}` : URL;
+
             if (forceFetch || (state.templates.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then((token) => axios.get(URL, config(token)))
+                    .then((token) => axios.get(url, config(token)))
                     .then((res) => store.dispatch(setTemplates(res.data || [])))
                     .catch((reason) => console.error(reason));
 
@@ -109,6 +112,7 @@ const templatesReducer = (state = initialState, action) => {
             console.log(action.type);
             const { template } = action.payload;
             template.templateId = Date.now().toString();
+            template.teamId = getActiveTeamId();
 
             getAccessTokenSilently()
                 .then((token) => axios.post(URL, template, config(token)))
