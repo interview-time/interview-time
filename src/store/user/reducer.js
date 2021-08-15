@@ -1,4 +1,15 @@
-import { LOAD_PROFILE, SET_ACTIVE_TEAM, SET_PROFILE, setProfile, SETUP_USER, setupUser } from "./actions";
+import {
+    CREATE_TEAM,
+    DELETE_TEAM,
+    LOAD_PROFILE,
+    SET_ACTIVE_TEAM,
+    SET_PROFILE,
+    setActiveTeam,
+    setProfile,
+    SETUP_USER,
+    setupUser,
+    UPDATE_TEAM
+} from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
@@ -9,15 +20,16 @@ import { loadInterviews, setInterviews } from "../interviews/actions";
 
 /**
  *
- * @type {{profile: UserProfile, loading: boolean}}
+ * @type {{createTeamResult: null, profile: UserProfile, activeTeam: any, updateTeamStatus: string, createTeamStatus: string, loading: boolean}}
  */
 const initialState = {
-    activeTeam: getCachedActiveTeam(),
     profile: null,
     loading: false,
+    activeTeam: getCachedActiveTeam()
 };
 
-const URL = `${process.env.REACT_APP_API_URL}/user`;
+const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
+const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -26,10 +38,10 @@ const userReducer = (state = initialState, action) => {
 
             if (forceFetch || (!state.profile && !state.loading)) {
                 getAccessTokenSilently()
-                    .then((token) => axios.get(URL, config(token)))
+                    .then((token) => axios.get(URL_PROFILE, config(token)))
                     .then((res) => {
                         if (!res.data) {
-                            var profile = {
+                            const profile = {
                                 name: name,
                                 email: email,
                                 timezoneOffset: new Date().getTimezoneOffset(),
@@ -52,7 +64,7 @@ const userReducer = (state = initialState, action) => {
             const { profile } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => axios.post(URL, profile, config(token)))
+                .then((token) => axios.post(URL_PROFILE, profile, config(token)))
                 .then((res) => {
                     store.dispatch(setProfile(res.data));
                 })
@@ -75,24 +87,108 @@ const userReducer = (state = initialState, action) => {
 
         case SET_ACTIVE_TEAM: {
             console.log(action.type);
-            const { team } = action.payload;
+            const { team, reloadData } = action.payload;
 
             setCachedActiveTeam(team);
 
-            Promise.resolve().then(() => {
-                // clean data for current team
-                store.dispatch(setTemplates([]));
-                store.dispatch(setInterviews([]));
+            if (reloadData) {
+                Promise.resolve().then(() => {
+                    // clean data for current team
+                    store.dispatch(setTemplates([]));
+                    store.dispatch(setInterviews([]));
 
-                // load new data for current team
-                store.dispatch(loadTemplates());
-                store.dispatch(loadInterviews());
-            })
+                    // load new data for current team
+                    store.dispatch(loadTemplates());
+                    store.dispatch(loadInterviews());
+                })
+            }
 
             return {
                 ...state,
                 activeTeam: team
             };
+        }
+
+        case CREATE_TEAM: {
+            console.log(action.type);
+            const { team } = action.payload;
+
+            getAccessTokenSilently()
+                .then(token => { // create team
+                    const tokenPromise = Promise.resolve(token);
+                    const teamPromise = axios.post(URL_TEAMS, team, config(token));
+                    return Promise.all([tokenPromise, teamPromise]);
+                })
+                .then((res) => { // load profile which contains teams array
+                    const token = res[0]
+                    const team = res[1].data
+
+                    const teamPromise = Promise.resolve(team)
+                    const profilePromise = axios.get(URL_PROFILE, config(token))
+
+                    return Promise.all([teamPromise, profilePromise]);
+                })
+                .then((res) => {
+                    const team = res[0]
+                    const profile = res[1].data
+
+                    store.dispatch(setActiveTeam({
+                        teamId: team.teamId,
+                        teamName: team.name
+                    }))
+                    store.dispatch(setProfile(profile || []));
+                })
+                .catch(reason => console.error(reason));
+
+            return state;
+        }
+
+        case UPDATE_TEAM: {
+            console.log(action.type);
+            const { team } = action.payload;
+
+            getAccessTokenSilently()
+                .then(token => { // update team
+                    const tokenPromise = Promise.resolve(token);
+                    const teamPromise = axios.put(URL_TEAMS, team, config(token));
+
+                    return Promise.all([tokenPromise, teamPromise]);
+                })
+                .then((res) => { // load profile which contains teams array
+                    const token = res[0]
+                    return axios.get(URL_PROFILE, config(token));
+                })
+                .then((res) => {
+                    const profile = res.data
+                    store.dispatch(setProfile(profile || []));
+                    store.dispatch(setActiveTeam({
+                        teamId: team.teamId,
+                        teamName: team.teamName
+                    }, false))
+                })
+                .catch(reason => console.error(reason));
+
+            return state;
+        }
+
+        case DELETE_TEAM: {
+            console.log(action.type);
+            const { teamId } = action.payload;
+
+            getAccessTokenSilently()
+                .then(token => axios.delete(`${URL_TEAMS}/${teamId}`, config(token)))
+                .then(() => {
+                    console.log("Team removed.");
+                    const profile = {
+                        ...state.profile,
+                        teams: state.profile.teams.filter(team => team.teamId !== teamId)
+                    }
+                    store.dispatch(setProfile(profile));
+                    store.dispatch(setActiveTeam(null, false))
+                })
+                .catch(reason => console.error(reason));
+
+            return state;
         }
 
         default:

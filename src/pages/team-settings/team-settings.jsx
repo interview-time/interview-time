@@ -7,26 +7,24 @@ import TeamDetails from "./team-details";
 import TeamMembers from "./team-members";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { loadProfile } from "../../store/user/actions";
-import { updateTeam } from "../../store/teams/actions";
-import { STATUS_ERROR, STATUS_FINISHED, STATUS_STARTED } from "../../store/common";
+import { deleteTeam, loadProfile, updateTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
 
 const { TabPane } = Tabs;
 
 /**
  *
- * @param {UserProfile} profile
- * @param {boolean} loadingProfile
- * @param {string} updateTeamStatus
+ * @param {String} userName
+ * @param {Team[]} profile
  * @param loadProfile
  * @param updateTeam
+ * @param deleteTeam
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamSettings = ({ profile, loadingProfile, updateTeamStatus, updateTeam, loadProfile }) => {
+const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) => {
 
-    const [updateStatus, setUpdateStatus] = useState();
+    const [loading, setLoading] = useState(false);
     const [team, setTeam] = useState();
 
     const location = useLocation();
@@ -34,34 +32,17 @@ const TeamSettings = ({ profile, loadingProfile, updateTeamStatus, updateTeam, l
     const { id } = useParams();
 
     useEffect(() => {
-        if (profile) {
-            const teams = defaultTo(profile.teams, []);
-            const currentTeam = teams.find(team => team.teamId === id);
-            if (!currentTeam) {
-                // team not found, this is cached profile, force fetch
-                loadProfile(profile.name, profile.email, true)
-            } else if(!team) {
-                setTeam(currentTeam);
-            }
-        } else {
+        if (teams.length === 0) {
             loadProfile()
+        } else {
+            const currentTeam = teams.find(team => team.teamId === id);
+            if (currentTeam) {
+                setTeam(currentTeam);
+                setLoading(false)
+            }
         }
         // eslint-disable-next-line
-    }, [id, profile]);
-
-    useEffect(() => {
-        const newStatus = updateTeamStatus;
-        const prevStatus = updateStatus;
-
-        if (prevStatus === STATUS_STARTED && newStatus === STATUS_FINISHED) {
-            message.success("Team name has been changed.")
-        } else if (prevStatus === STATUS_STARTED && newStatus === STATUS_ERROR) {
-            message.error("Team name has been changed.")
-        }
-        setUpdateStatus(updateTeamStatus)
-
-        // eslint-disable-next-line
-    }, [updateTeamStatus]);
+    }, [id, teams]);
 
     /**
      *
@@ -80,18 +61,18 @@ const TeamSettings = ({ profile, loadingProfile, updateTeamStatus, updateTeam, l
             ...team,
             teamName: teamName
         };
+        setLoading(true)
         updateTeam(newTeam)
-        setTeam(newTeam)
     }
 
     const onDeleteClicked = () => {
         // TODO only allow admin & disable buttons
-        console.log("onDeleteClicked")
+        deleteTeam(team.teamId)
         message.success(`Team '${getTeamName()}' has been removed.`)
         history.push("/")
     }
 
-    const isLoading = () => loadingProfile || updateStatus === STATUS_STARTED
+    const isLoading = () => !team || loading
 
     return (
         <Layout>
@@ -117,7 +98,7 @@ const TeamSettings = ({ profile, loadingProfile, updateTeamStatus, updateTeam, l
                             >
                                 <TeamMembers
                                     teamName={getTeamName()}
-                                    userName={profile.name}
+                                    userName={userName}
                                     token={team ? team.token : null} />
                             </TabPane>
                         </Tabs>
@@ -128,16 +109,15 @@ const TeamSettings = ({ profile, loadingProfile, updateTeamStatus, updateTeam, l
     );
 }
 
-const mapDispatch = { updateTeam, loadProfile };
+const mapDispatch = { updateTeam, deleteTeam, loadProfile };
 
 const mapState = (state) => {
     const userState = state.user || {};
-    const teamState = state.team || {};
+    const profile = userState.profile || {}
 
     return {
-        profile: userState.profile,
-        loadingProfile: userState.loading,
-        updateTeamStatus: teamState.updateTeamStatus,
+        userName: profile.name,
+        teams: defaultTo(profile.teams, [])
     };
 };
 

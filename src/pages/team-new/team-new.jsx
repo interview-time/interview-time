@@ -3,58 +3,52 @@ import { Button, Card, Col, Form, Input, message, Spin } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import styles from "../team-new/team-new.module.css";
-import { createTeam } from "../../store/teams/actions";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
-import { STATUS_ERROR, STATUS_FINISHED, STATUS_STARTED } from "../../store/common";
 import { useHistory } from "react-router-dom";
-import { routeTeamSettings } from "../../components/utils/route";
+import { routeTeamMembers } from "../../components/utils/route";
+import { createTeam } from "../../store/user/actions";
+import { defaultTo } from "lodash/util";
 
 /**
  *
- * @param {String} createTeamStatus
- * @param {Team} createTeamResult
+ * @param {Team[]} teams
  * @param createTeam
  * @returns {JSX.Element}
  * @constructor
  */
-const NewTeam = ({ createTeamStatus, createTeamResult, createTeam }) => {
+const NewTeam = ({ teams, createTeam }) => {
 
-    const [createStatus, setCreateStatus] = useState();
+    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState();
 
     const history = useHistory();
 
     useEffect(() => {
-        const newStatus = createTeamStatus;
-        const prevStatus = createStatus;
-
-        if (prevStatus === STATUS_STARTED && newStatus === STATUS_FINISHED && createTeamResult) {
+        let team = teams.find(team => team.teamName === name)
+        if (team) {
             message.success("Team has been create.")
-            history.push(routeTeamSettings(createTeamResult.teamId))
-        } else if (prevStatus === STATUS_STARTED && newStatus === STATUS_ERROR) {
-            message.error("Team creation failed.")
+            history.push(routeTeamMembers(team.teamId))
         }
-        setCreateStatus(newStatus)
 
         // eslint-disable-next-line
-    }, [createTeamStatus]);
+    }, [teams, name]);
 
-    const team = {
-        teamName: ''
-    }
 
-    const onNameChange = (e) => {
-        team.teamName = e.target.value;
-    };
+    const onSaveClicked = (values) => {
+        const teamName = values.name;
 
-    const onSaveClicked = () => {
-        createTeam(team)
+        setLoading(true)
+        setName(teamName)
+        createTeam({
+            teamName: teamName
+        })
     };
 
     return (
         <Layout>
             <Col span={24} xl={{ span: 12, offset: 6 }} xxl={{ span: 12, offset: 6 }}>
-                <Spin spinning={createStatus === STATUS_STARTED} tip="Creating team...">
+                <Spin spinning={loading} tip="Creating team...">
                     <Card style={{ marginTop: 12 }}>
                         <Title level={4}>Create Team</Title>
                         <Text type="secondary" style={{ marginTop: 12 }}>
@@ -78,7 +72,6 @@ const NewTeam = ({ createTeamStatus, createTeamResult, createTeam }) => {
                             >
                                 <Input
                                     placeholder="Team name"
-                                    onChange={onNameChange}
                                 />
                             </Form.Item>
                             <div className={styles.divRight}>
@@ -99,11 +92,11 @@ const NewTeam = ({ createTeamStatus, createTeamResult, createTeam }) => {
 const mapDispatch = { createTeam };
 
 const mapState = (state) => {
-    const teamState = state.team || {};
+    const userState = state.user || {};
+    const profile = userState.profile || {}
 
     return {
-        createTeamStatus: teamState.createTeamStatus,
-        createTeamResult: teamState.createTeamResult,
+        teams: defaultTo(profile.teams, [])
     };
 };
 
