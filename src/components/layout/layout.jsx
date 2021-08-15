@@ -100,7 +100,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             teamId: team.teamId,
             teamName: team.teamName
         };
-        if (selected.teamId !== activeTeam.teamId) {
+        if (selected.teamId !== getActiveTeam().teamId) {
             setActiveTeam(selected);
             history.push(routeHome());
         }
@@ -111,7 +111,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             teamName: user.name,
             picture: user.picture
         };
-        if (selected.teamName !== activeTeam.teamName) {
+        if (selected.teamName !== getActiveTeam().teamName) {
             setActiveTeam(selected);
             history.push(routeHome());
         }
