@@ -65,6 +65,10 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         };
     }
 
+    const getActiveTeamName = () => truncate(getActiveTeam().teamName, {
+        'length': 14
+    })
+
     const getSelectedKey = () => {
         if (location.pathname.includes(routeTemplates())) {
             return routeTemplates()
@@ -83,10 +87,6 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         }
     }
 
-    const getSelectedTeamName = () => truncate(getActiveTeam().name, {
-        'length': 14
-    })
-
     const onFeedbackClicked = () => {
         setFeedbackVisible(true)
     }
@@ -98,7 +98,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     const onTeamSelected = (team) => {
         const selected = {
             teamId: team.teamId,
-            name: team.teamName
+            teamName: team.teamName
         };
         if (selected.teamId !== activeTeam.teamId) {
             setActiveTeam(selected);
@@ -108,10 +108,10 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
 
     const onUserSelected = () => {
         const selected = {
-            name: user.name,
+            teamName: user.name,
             picture: user.picture
         };
-        if (selected.name !== activeTeam.name) {
+        if (selected.teamName !== activeTeam.teamName) {
             setActiveTeam(selected);
             history.push(routeHome());
         }
@@ -219,7 +219,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                                     size={28}
                                     icon={<ProfileIcon />} />}
                                 {getActiveTeam().teamId && <TeamCircleIcon />}
-                                <Text className={styles.selectedTeamText}>{getSelectedTeamName()}</Text>
+                                <Text className={styles.selectedTeamText}>{getActiveTeamName()}</Text>
                                 <TeamSwitcherIcon />
                             </div>
                         </Dropdown>

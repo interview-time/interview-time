@@ -69,3 +69,5 @@ export const routeTeamSettings = (id) => {
     const url = "/team/:id/settings";
     return id ? url.replace(":id", id) : url;
 }
+
+export const routeTeamMembers = (id) => `/team/${id}/settings?tab=members`
