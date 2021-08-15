@@ -9,13 +9,14 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { deleteTeam, loadProfile, updateTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
+import { TEAM_ROLE_ADMIN } from "../../store/model";
 
 const { TabPane } = Tabs;
 
 /**
  *
  * @param {String} userName
- * @param {Team[]} profile
+ * @param {Team[]} teams
  * @param loadProfile
  * @param updateTeam
  * @param deleteTeam
@@ -55,8 +56,9 @@ const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) 
 
     const getTeamName = () => team ? team.teamName : "Team"
 
+    const isAdmin = () => team ? team.role === TEAM_ROLE_ADMIN : false
+
     const onSaveClicked = (teamName) => {
-        // TODO only allow admin & disable buttons
         const newTeam = {
             ...team,
             teamName: teamName
@@ -66,7 +68,6 @@ const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) 
     }
 
     const onDeleteClicked = () => {
-        // TODO only allow admin & disable buttons
         deleteTeam(team.teamId)
         message.success(`Team '${getTeamName()}' has been removed.`)
         history.push("/")
@@ -88,6 +89,7 @@ const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) 
                             >
                                 <TeamDetails
                                     teamName={getTeamName()}
+                                    isAdmin={isAdmin()}
                                     onSaveClicked={onSaveClicked}
                                     onDeleteClicked={onDeleteClicked}
                                 />
