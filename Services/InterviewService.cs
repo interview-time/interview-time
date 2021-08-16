@@ -30,27 +30,33 @@ namespace CafApi.Services
         {
             if (teamId != null)
             {
-                var team = await _context.LoadAsync<Team>(teamId);
-                if (team != null && team.OwnerId == userId) // Team admin gets to see all the interviews
+                var isBelongInTeam = await _userService.IsBelongInTeam(userId, teamId);
+                if (isBelongInTeam)
                 {
-                    var search = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
+                    var team = await _context.LoadAsync<Team>(teamId);
+                    if (team != null) // Team admin gets to see all the interviews
                     {
-                        IndexName = "TeamId-Index",
-                        Filter = new QueryFilter(nameof(Interview.TeamId), QueryOperator.Equal, teamId)
-                    });
-                    var interviews = await search.GetRemainingAsync();
+                        var search = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
+                        {
+                            IndexName = "TeamId-Index",
+                            Filter = new QueryFilter(nameof(Interview.TeamId), QueryOperator.Equal, teamId)
+                        });
+                        var interviews = await search.GetRemainingAsync();
 
-                    return interviews;
+                        if (team.OwnerId != userId) // Not Admin
+                        {
+                            return interviews.Where(i => i.UserId == userId).ToList();
+                        }
+
+                        return interviews;
+                    }
                 }
             }
 
             var config = new DynamoDBOperationConfig();
 
             var myInterviews = await _context.QueryAsync<Interview>(userId, config).GetRemainingAsync();
-            if (teamId != null)
-            {
-                myInterviews = myInterviews.Where(i => i.TeamId == teamId).ToList();
-            }
+            myInterviews = myInterviews.Where(i => string.IsNullOrWhiteSpace(i.TeamId)).ToList();
 
             return myInterviews;
         }
