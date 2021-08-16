@@ -2,7 +2,16 @@ import { Button, Form, Input, Popconfirm, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import styles from "./team-settings.module.css";
 
-const TeamDetails = ({ teamName, onSaveClicked, onDeleteClicked }) => {
+/**
+ *
+ * @param {String} teamName
+ * @param {boolean} team
+ * @param onSaveClicked
+ * @param onDeleteClicked
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const TeamDetails = ({ teamName, isAdmin, onSaveClicked, onDeleteClicked }) => {
 
     const team = {
         teamName: teamName
@@ -34,6 +43,7 @@ const TeamDetails = ({ teamName, onSaveClicked, onDeleteClicked }) => {
             <Input
                 placeholder="Team name"
                 onChange={onNameChange}
+                disabled={!isAdmin}
             />
         </Form.Item>
         <div className={styles.divRight}>
@@ -44,9 +54,9 @@ const TeamDetails = ({ teamName, onSaveClicked, onDeleteClicked }) => {
                     okText="Yes"
                     cancelText="No"
                 >
-                    <Button>Delete</Button>
+                    <Button disabled={!isAdmin}>Delete</Button>
                 </Popconfirm>
-                <Button type="primary" htmlType="submit">Update</Button>
+                <Button type="primary" htmlType="submit" disabled={!isAdmin}>Update</Button>
             </Space>
         </div>
     </Form>

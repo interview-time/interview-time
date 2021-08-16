@@ -100,6 +100,7 @@
  * @property {string} teamId
  * @property {string} teamName
  * @property {string} token
+ * @property {string} role - TEAM_ROLE_ADMIN, TEAM_ROLE_MEMBER
  */
 
 /**
@@ -108,3 +109,6 @@
  * @property {string} email
  * @property {Team[]} teams
  */
+
+export const TEAM_ROLE_ADMIN = "ADMIN";
+export const TEAM_ROLE_MEMBER = "MEMBER";
