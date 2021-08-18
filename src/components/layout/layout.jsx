@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Divider, Dropdown, Layout as AntLayout, Menu } from "antd";
+import { Button, Divider, Dropdown, Layout as AntLayout, Menu, notification } from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
@@ -32,9 +32,10 @@ import { useAuth0 } from "../../react-auth0-spa";
 import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
-import { setActiveTeam } from "../../store/user/actions";
+import { joinTeam, setActiveTeam } from "../../store/user/actions";
 import { connect } from "react-redux";
 import Text from "antd/lib/typography/Text";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const menuIconStyle = { fontSize: '24px' }
 
@@ -45,18 +46,40 @@ const menuIconStyle = { fontSize: '24px' }
  * @param contentStyle
  * @param {UserProfile} profile
  * @param activeTeam
- * @param setActiveTeam
  * @param setTemplates
+ * @param setActiveTeam
+ * @param joinTeam
  * @returns {JSX.Element}
  * @constructor
  */
-const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setActiveTeam }) => {
+const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setActiveTeam, joinTeam }) => {
 
     const location = useLocation();
     const history = useHistory();
     const { user } = useAuth0();
 
     const [feedbackVisible, setFeedbackVisible] = React.useState(false)
+
+    React.useEffect(() => {
+        let joinTeamToken = sessionStorage.getItem("joinTeam");
+        if (joinTeamToken) {
+            openTeamJoinProgressNotification()
+            joinTeam(joinTeamToken)
+        }
+        // eslint-disable-next-line
+    }, []);
+
+    React.useEffect(() => {
+        let joinTeamToken = sessionStorage.getItem("joinTeam");
+        if (joinTeamToken) {
+            const joinedTeam = profile.teams.find(team => team.token === joinTeamToken)
+            if (joinedTeam) {
+                openTeamJoinSuccessNotification(joinedTeam);
+                sessionStorage.removeItem("joinTeam")
+            }
+        }
+        // eslint-disable-next-line
+    }, [profile]);
 
     const getActiveTeam = () => {
         return activeTeam ? activeTeam : {
@@ -87,8 +110,35 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         }
     }
 
+    const joinTeamNotification = 'join-team-notification';
+
+    const openTeamJoinProgressNotification = () => {
+        notification.open({
+            key: joinTeamNotification,
+            message: 'Team',
+            description: 'Team join in progress.',
+            icon: <LoadingOutlined />
+        });
+    };
+
+    const openTeamJoinSuccessNotification = (team) => {
+        const button = (
+            <Button type="primary" size="small" onClick={() => {
+                notification.close(joinTeamNotification)
+                onTeamSelected(team)
+            }}>Switch team</Button>
+        );
+        notification['success']({
+            key: joinTeamNotification,
+            message: 'Team',
+            description: `You have successfully joined '${team.teamName}' team.`,
+            btn: button,
+            duration: 30,
+        });
+    }
+
     const onFeedbackClicked = () => {
-        setFeedbackVisible(true)
+        openTeamJoinProgressNotification()
     }
 
     const onFeedbackClose = () => {
@@ -240,7 +290,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     )
 };
 
-const mapDispatch = { setActiveTeam };
+const mapDispatch = { setActiveTeam, joinTeam };
 
 const mapState = (state) => {
     const userState = state.user || {};

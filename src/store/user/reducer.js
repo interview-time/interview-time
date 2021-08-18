@@ -1,6 +1,7 @@
 import {
     CREATE_TEAM,
     DELETE_TEAM,
+    JOIN_TEAM,
     LOAD_PROFILE,
     SET_ACTIVE_TEAM,
     SET_PROFILE,
@@ -20,7 +21,7 @@ import { loadInterviews, setInterviews } from "../interviews/actions";
 
 /**
  *
- * @type {{createTeamResult: null, profile: UserProfile, activeTeam: any, updateTeamStatus: string, createTeamStatus: string, loading: boolean}}
+ * @type {{profile: UserProfile, activeTeam: any, loading: boolean}}
  */
 const initialState = {
     profile: null,
@@ -185,6 +186,33 @@ const userReducer = (state = initialState, action) => {
                     }
                     store.dispatch(setProfile(profile));
                     store.dispatch(setActiveTeam(null, false))
+                })
+                .catch(reason => console.error(reason));
+
+            return state;
+        }
+
+        case JOIN_TEAM: {
+            console.log(action.type);
+            const { token } = action.payload;
+
+            const data = {
+                token: token
+            }
+
+            getAccessTokenSilently()
+                .then(token => { // join team
+                    const tokenPromise = Promise.resolve(token);
+                    const teamPromise = axios.put(`${URL_TEAMS}/join`, data, config(token))
+                    return Promise.all([tokenPromise, teamPromise]);
+                })
+                .then((res) => { // load profile which contains teams array
+                    const token = res[0]
+                    return axios.get(URL_PROFILE, config(token));
+                })
+                .then((res) => {
+                    const profile = res.data
+                    store.dispatch(setProfile(profile || []));
                 })
                 .catch(reason => console.error(reason));
 

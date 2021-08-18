@@ -71,3 +71,5 @@ export const routeTeamSettings = (id) => {
 }
 
 export const routeTeamMembers = (id) => `/team/${id}/settings?tab=members`
+
+export const routeTeamJoin = () => "/team/join/:id"

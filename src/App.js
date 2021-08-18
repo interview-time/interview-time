@@ -21,6 +21,7 @@ import {
     routeSharedTemplate,
     routeTeamNew,
     routeTeamSettings,
+    routeTeamJoin,
 } from "./components/utils/route";
 import Default from "./pages/default/default";
 import Interviews from "./pages/interviews/interviews";
@@ -43,6 +44,7 @@ import TemplatePreview from "./pages/template-preview/template-preview";
 import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
 import TeamSettings from "./pages/team-settings/team-settings";
+import JoinTeam from "./pages/team-join/team-join";
 
 function App({ history }) {
     useEffect(() => {
@@ -87,6 +89,7 @@ function App({ history }) {
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
             <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
+            <Route path={routeTeamJoin()} exact component={JoinTeam} />
         </Switch>
     );
 }
