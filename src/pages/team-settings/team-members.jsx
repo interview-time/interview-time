@@ -32,7 +32,7 @@ const TeamMembers = ({ token, userName, teamName }) => {
         setCopied(true)
     }
 
-    const getSharedURL = () => token ? `https://app.interviewer.space/team/join/${token}?userName=${userName}&teamName=${teamName}` : null
+    const getSharedURL = () => token ? encodeURI(`https://app.interviewer.space/team/join/${token}?userName=${userName}&teamName=${teamName}`) : null
 
     const copyButton = <CopyToClipboard text={getSharedURL()} onCopy={onCopyClicked}>
         <Button type="text"
