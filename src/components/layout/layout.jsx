@@ -36,8 +36,16 @@ import { joinTeam, setActiveTeam } from "../../store/user/actions";
 import { connect } from "react-redux";
 import Text from "antd/lib/typography/Text";
 import { LoadingOutlined } from "@ant-design/icons";
+import { defaultTo } from "lodash/util";
 
 const menuIconStyle = { fontSize: '24px' }
+
+/**
+ * @typedef {Object} ActiveTeam
+ * @property {string|null} teamId - if not null team is selected, otherwise user is selected
+ * @property {string} teamName
+ * @property {string} picture
+ */
 
 /**
  *
@@ -72,7 +80,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     React.useEffect(() => {
         let joinTeamToken = sessionStorage.getItem("joinTeam");
         if (joinTeamToken) {
-            const joinedTeam = profile.teams.find(team => team.token === joinTeamToken)
+            const joinedTeam = defaultTo(profile.teams, []).find(team => team.token === joinTeamToken)
             if (joinedTeam) {
                 openTeamJoinSuccessNotification(joinedTeam);
                 sessionStorage.removeItem("joinTeam")
@@ -81,9 +89,13 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         // eslint-disable-next-line
     }, [profile]);
 
+    /**
+     *
+     * @returns {ActiveTeam}
+     */
     const getActiveTeam = () => {
         return activeTeam ? activeTeam : {
-            name: user.name,
+            teamName: user.name,
             picture: user.picture
         };
     }
@@ -147,8 +159,8 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
 
     const onTeamSelected = (team) => {
         const selected = {
-            teamId: team.teamId,
-            teamName: team.teamName
+            teamName: team.teamName,
+            teamId: team.teamId
         };
         if (selected.teamId !== getActiveTeam().teamId) {
             setActiveTeam(selected);
@@ -188,7 +200,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                 </div>
             </Menu.Item>
             <Menu.Divider />
-            {profile.teams.map(team => <>
+            {defaultTo(profile.teams, []).map(team => <>
                 <Menu.Item onClick={() => onTeamSelected(team)}>
                     <div className={styles.menuTeam}>
                         <TeamIcon style={menuIconStyle} />
@@ -264,7 +276,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                         <Dropdown overlay={teamMenu}>
                             <div className={styles.selectedTeam}>
                                 {!getActiveTeam().teamId && <Avatar
-                                    src={user ? getActiveTeam().picture : null}
+                                    src={getActiveTeam().picture}
                                     className={styles.avatar}
                                     size={28}
                                     icon={<ProfileIcon />} />}
