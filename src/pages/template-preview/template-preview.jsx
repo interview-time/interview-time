@@ -13,7 +13,6 @@ import {
     ArrowLeftOutlined,
     CopyOutlined,
     DeleteOutlined,
-    DownOutlined,
     EditOutlined,
     ExclamationCircleOutlined,
     ShareAltOutlined
@@ -110,7 +109,6 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
 
     const menu = (
         <Menu>
-            <Menu.Item onClick={onEditClicked}><EditOutlined /> Edit</Menu.Item>
             <Menu.Item onClick={onCopyClicked}><CopyOutlined /> Copy</Menu.Item>
             <Menu.Item onClick={onDeleteClicked}><DeleteOutlined /> Delete</Menu.Item>
             <Menu.Divider />
@@ -139,9 +137,9 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
                         <div className={styles.divSpaceBetween}>
                             <Button type="primary" onClick={onScheduleInterviewClicked}>Schedule interview</Button>
 
-                            <Dropdown overlay={menu}>
-                                <Button>Actions <DownOutlined /></Button>
-                            </Dropdown>
+                            <Dropdown.Button overlay={menu} onClick={onEditClicked}>
+                                <EditOutlined /> Edit
+                            </Dropdown.Button>
                         </div>
                     </Card>
                     <Card className={styles.row}>
