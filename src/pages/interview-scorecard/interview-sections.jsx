@@ -1,7 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
 import {
-    Button,
     Card,
     Col,
     Dropdown,
@@ -30,7 +29,6 @@ import {
     ArrowLeftOutlined,
     CloseOutlined,
     DeleteOutlined,
-    DownOutlined,
     EditOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
@@ -139,9 +137,6 @@ export const InterviewInformationSection = ({
 
     const menu = (
         <Menu>
-            <Menu.Item onClick={onEditInterview}>
-                <EditOutlined /> Edit
-            </Menu.Item>
             <Menu.Item onClick={onDeleteClicked}>
                 <DeleteOutlined /> Delete
             </Menu.Item>
@@ -158,11 +153,9 @@ export const InterviewInformationSection = ({
                     </Title>
                 </div>
                 {(onDeleteInterview || onEditInterview) && (
-                    <Dropdown overlay={menu}>
-                        <Button>
-                            Actions <DownOutlined />
-                        </Button>
-                    </Dropdown>
+                    <Dropdown.Button overlay={menu} onClick={onEditInterview}>
+                        <EditOutlined /> Edit
+                    </Dropdown.Button>
                 )}
             </div>
             <Row style={{ marginTop: "24px" }}>
