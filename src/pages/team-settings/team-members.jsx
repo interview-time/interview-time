@@ -1,11 +1,43 @@
-import { Button, Input, Space } from "antd";
+import { Button, Input, Space, Table, Tag } from "antd";
 import Text from "antd/lib/typography/Text";
 import styles from "./team-settings.module.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CheckOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { TEAM_ROLE_ADMIN, TEAM_ROLE_MEMBER } from "../../store/model";
 
-const TeamMembers = ({ token, userName, teamName }) => {
+const columns = [
+    {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+    },
+    {
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
+    },
+    {
+        title: 'Role',
+        key: 'role',
+        render: (member) => (
+            <>
+                <Tag>{member.isAdmin ? TEAM_ROLE_ADMIN : TEAM_ROLE_MEMBER}</Tag>
+            </>
+        ),
+    },
+]
+
+/**
+ *
+ * @param {String} token
+ * @param {String} userName
+ * @param {String} teamName
+ * @param {TeamMember[]} teamMembers
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const TeamMembers = ({ token, userName, teamName, teamMembers }) => {
 
     const [copied, setCopied] = useState(false);
 
@@ -42,8 +74,11 @@ const TeamMembers = ({ token, userName, teamName }) => {
         </Button>
     </CopyToClipboard>
 
-    return <div style={{ marginTop: 24 }}>
-        <Space direction="vertical">
+    return <div style={{ marginTop: 12 }}>
+
+        <Table style={{marginTop: 12}} columns={columns} dataSource={teamMembers} pagination={false} />
+
+        <Space direction="vertical" style={{marginTop: 24}}>
             <Text strong>Invite anyone, with one simple link</Text>
 
             <Text type="secondary">
