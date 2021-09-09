@@ -3,10 +3,13 @@ import {
     DELETE_TEAM,
     JOIN_TEAM,
     LOAD_PROFILE,
+    LOAD_TEAM_MEMBERS,
     SET_ACTIVE_TEAM,
     SET_PROFILE,
+    SET_TEAM_MEMBERS,
     setActiveTeam,
     setProfile,
+    setTeamMembers,
     SETUP_USER,
     setupUser,
     UPDATE_TEAM
@@ -21,12 +24,13 @@ import { loadInterviews, setInterviews } from "../interviews/actions";
 
 /**
  *
- * @type {{profile: UserProfile, activeTeam: any, loading: boolean}}
+ * @type {{profile: UserProfile, activeTeam: any, loading: boolean, teamMembers: TeamMember[]}}
  */
 const initialState = {
     profile: null,
     loading: false,
-    activeTeam: getCachedActiveTeam()
+    activeTeam: getCachedActiveTeam(),
+    teamMembers: null
 };
 
 const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
@@ -102,6 +106,12 @@ const userReducer = (state = initialState, action) => {
                     store.dispatch(loadTemplates());
                     store.dispatch(loadInterviews());
                 })
+
+                return {
+                    ...state,
+                    activeTeam: team,
+                    teamMembers: null
+                };
             }
 
             return {
@@ -190,6 +200,28 @@ const userReducer = (state = initialState, action) => {
                 .catch(reason => console.error(reason));
 
             return state;
+        }
+
+        case LOAD_TEAM_MEMBERS: {
+            console.log(action.type);
+            const { teamId } = action.payload;
+
+            getAccessTokenSilently()
+                .then(token => axios.get(`${URL_TEAMS}/members/${teamId}`, config(token)))
+                .then((res) => store.dispatch(setTeamMembers(res.data)))
+                .catch(reason => console.error(reason));
+
+            return state;
+        }
+
+        case SET_TEAM_MEMBERS: {
+            console.log(action.type);
+            const { members } = action.payload;
+
+            return {
+                ...state,
+                teamMembers: members
+            };
         }
 
         case JOIN_TEAM: {

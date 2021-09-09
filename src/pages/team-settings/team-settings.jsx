@@ -7,7 +7,7 @@ import TeamDetails from "./team-details";
 import TeamMembers from "./team-members";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { deleteTeam, loadProfile, updateTeam } from "../../store/user/actions";
+import { deleteTeam, loadProfile, updateTeam, loadTeamMembers } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
 import { TEAM_ROLE_ADMIN } from "../../store/model";
 
@@ -17,13 +17,15 @@ const { TabPane } = Tabs;
  *
  * @param {String} userName
  * @param {Team[]} teams
+ * @param {TeamMembers[]} teamMembers
  * @param loadProfile
  * @param updateTeam
  * @param deleteTeam
+ * @param loadTeamMembers
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) => {
+const TeamSettings = ({ userName, teams, teamMembers, loadProfile, updateTeam, deleteTeam, loadTeamMembers }) => {
 
     const [loading, setLoading] = useState(false);
     const [team, setTeam] = useState();
@@ -40,6 +42,7 @@ const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) 
             if (currentTeam) {
                 setTeam(currentTeam);
                 setLoading(false)
+                loadTeamMembers(currentTeam.teamId)
             }
         }
         // eslint-disable-next-line
@@ -101,6 +104,7 @@ const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) 
                                 <TeamMembers
                                     teamName={getTeamName()}
                                     userName={userName}
+                                    teamMembers={teamMembers}
                                     token={team ? team.token : null} />
                             </TabPane>
                         </Tabs>
@@ -111,15 +115,17 @@ const TeamSettings = ({ userName, teams, loadProfile, updateTeam, deleteTeam }) 
     );
 }
 
-const mapDispatch = { updateTeam, deleteTeam, loadProfile };
+const mapDispatch = { updateTeam, deleteTeam, loadProfile, loadTeamMembers };
 
 const mapState = (state) => {
     const userState = state.user || {};
     const profile = userState.profile || {}
+    const teamMembers = userState.teamMembers || []
 
     return {
         userName: profile.name,
-        teams: defaultTo(profile.teams, [])
+        teams: defaultTo(profile.teams, []),
+        teamMembers: teamMembers
     };
 };
 

@@ -6,6 +6,8 @@ export const CREATE_TEAM = "CREATE_TEAM";
 export const UPDATE_TEAM = "UPDATE_TEAM";
 export const DELETE_TEAM = "DELETE_TEAM";
 export const JOIN_TEAM = "JOIN_TEAM";
+export const LOAD_TEAM_MEMBERS = "LOAD_TEAM_MEMBERS";
+export const SET_TEAM_MEMBERS = "SET_TEAM_MEMBERS";
 
 export const loadProfile = (name, email, forceFetch = false) => ({
     type: LOAD_PROFILE,
@@ -72,6 +74,30 @@ export const deleteTeam = (teamId) => ({
     type: DELETE_TEAM,
     payload: {
         teamId
+    }
+});
+
+/**
+ *
+ * @param {String} teamId
+ * @returns {{payload: {teamId}, type: String}}
+ */
+export const loadTeamMembers = (teamId) => ({
+    type: LOAD_TEAM_MEMBERS,
+    payload: {
+        teamId
+    }
+});
+
+/**
+ *
+ * @param {TeamMember[]} members
+ * @returns {{payload: {members}, type: string}}
+ */
+export const setTeamMembers = (members) => ({
+    type: SET_TEAM_MEMBERS,
+    payload: {
+        members
     }
 });
 

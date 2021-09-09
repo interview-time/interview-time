@@ -104,6 +104,14 @@
  */
 
 /**
+ * @typedef {Object} TeamMember
+ * @property {string} userId
+ * @property {string} name
+ * @property {string} email
+ * @property {boolean} isAdmin
+ */
+
+/**
  * @typedef {Object} UserProfile
  * @property {string} name
  * @property {string} email
