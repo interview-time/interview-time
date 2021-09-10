@@ -150,7 +150,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     }
 
     const onFeedbackClicked = () => {
-        openTeamJoinProgressNotification()
+        setFeedbackVisible(true)
     }
 
     const onFeedbackClose = () => {
