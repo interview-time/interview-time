@@ -1,7 +1,7 @@
 import {
     CREATE_TEAM,
     DELETE_TEAM,
-    JOIN_TEAM,
+    JOIN_TEAM, LEAVE_TEAM,
     LOAD_PROFILE,
     LOAD_TEAM_MEMBERS,
     SET_ACTIVE_TEAM,
@@ -245,6 +245,30 @@ const userReducer = (state = initialState, action) => {
                 .then((res) => {
                     const profile = res.data
                     store.dispatch(setProfile(profile || []));
+                })
+                .catch(reason => console.error(reason));
+
+            return state;
+        }
+
+        case LEAVE_TEAM: {
+            console.log(action.type);
+            const { teamId } = action.payload;
+
+            const data = {
+                teamId: teamId
+            }
+
+            getAccessTokenSilently()
+                .then(token => axios.put(`${URL_TEAMS}/leave`, data, config(token)))
+                .then(() => {
+                    console.log("Team left.");
+                    const profile = {
+                        ...state.profile,
+                        teams: state.profile.teams.filter(team => team.teamId !== teamId)
+                    }
+                    store.dispatch(setProfile(profile));
+                    store.dispatch(setActiveTeam(null, false))
                 })
                 .catch(reason => console.error(reason));
 

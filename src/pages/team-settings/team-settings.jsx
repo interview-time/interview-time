@@ -7,7 +7,7 @@ import TeamDetails from "./team-details";
 import TeamMembers from "./team-members";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { deleteTeam, loadProfile, updateTeam, loadTeamMembers } from "../../store/user/actions";
+import { deleteTeam, leaveTeam, loadProfile, loadTeamMembers, updateTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
 import { TEAM_ROLE_ADMIN } from "../../store/model";
 
@@ -21,11 +21,21 @@ const { TabPane } = Tabs;
  * @param loadProfile
  * @param updateTeam
  * @param deleteTeam
+ * @param leaveTeam
  * @param loadTeamMembers
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamSettings = ({ userName, teams, teamMembers, loadProfile, updateTeam, deleteTeam, loadTeamMembers }) => {
+const TeamSettings = ({
+    userName,
+    teams,
+    teamMembers,
+    loadProfile,
+    updateTeam,
+    deleteTeam,
+    leaveTeam,
+    loadTeamMembers
+}) => {
 
     const [loading, setLoading] = useState(false);
     const [team, setTeam] = useState();
@@ -76,6 +86,12 @@ const TeamSettings = ({ userName, teams, teamMembers, loadProfile, updateTeam, d
         history.push("/")
     }
 
+    const onLeaveClicked = () => {
+        leaveTeam(team.teamId)
+        message.success(`You left '${getTeamName()}' team.`)
+        history.push("/")
+    }
+
     const isLoading = () => !team || loading
 
     return (
@@ -95,6 +111,7 @@ const TeamSettings = ({ userName, teams, teamMembers, loadProfile, updateTeam, d
                                     isAdmin={isAdmin()}
                                     onSaveClicked={onSaveClicked}
                                     onDeleteClicked={onDeleteClicked}
+                                    onLeaveClicked={onLeaveClicked}
                                 />
                             </TabPane>
                             <TabPane
@@ -115,7 +132,7 @@ const TeamSettings = ({ userName, teams, teamMembers, loadProfile, updateTeam, d
     );
 }
 
-const mapDispatch = { updateTeam, deleteTeam, loadProfile, loadTeamMembers };
+const mapDispatch = { updateTeam, deleteTeam, loadProfile, leaveTeam, loadTeamMembers };
 
 const mapState = (state) => {
     const userState = state.user || {};

@@ -6,6 +6,7 @@ export const CREATE_TEAM = "CREATE_TEAM";
 export const UPDATE_TEAM = "UPDATE_TEAM";
 export const DELETE_TEAM = "DELETE_TEAM";
 export const JOIN_TEAM = "JOIN_TEAM";
+export const LEAVE_TEAM = "LEAVE_TEAM";
 export const LOAD_TEAM_MEMBERS = "LOAD_TEAM_MEMBERS";
 export const SET_TEAM_MEMBERS = "SET_TEAM_MEMBERS";
 
@@ -72,6 +73,18 @@ export const updateTeam = (team) => ({
  */
 export const deleteTeam = (teamId) => ({
     type: DELETE_TEAM,
+    payload: {
+        teamId
+    }
+});
+
+/**
+ *
+ * @param {String} teamId
+ * @returns {{payload: {teamId}, type: String}}
+ */
+export const leaveTeam = (teamId) => ({
+    type: LEAVE_TEAM,
     payload: {
         teamId
     }

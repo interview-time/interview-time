@@ -11,7 +11,7 @@ import styles from "./team-settings.module.css";
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamDetails = ({ teamName, isAdmin, onSaveClicked, onDeleteClicked }) => {
+const TeamDetails = ({ teamName, isAdmin, onSaveClicked, onDeleteClicked, onLeaveClicked }) => {
 
     const team = {
         teamName: teamName
@@ -53,10 +53,19 @@ const TeamDetails = ({ teamName, isAdmin, onSaveClicked, onDeleteClicked }) => {
                     onConfirm={onDeleteClicked}
                     okText="Yes"
                     cancelText="No"
+                    disabled={!isAdmin}
                 >
                     <Button disabled={!isAdmin}>Delete</Button>
                 </Popconfirm>
                 <Button type="primary" htmlType="submit" disabled={!isAdmin}>Update</Button>
+                {!isAdmin && <Popconfirm
+                    title="Are you want to leave this team?"
+                    onConfirm={onLeaveClicked}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button>Leave</Button>
+                </Popconfirm>}
             </Space>
         </div>
     </Form>
