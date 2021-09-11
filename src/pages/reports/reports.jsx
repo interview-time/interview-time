@@ -206,6 +206,9 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
                 <Card bodyStyle={{ padding: 0 }}>
                     <Table
                         pagination={false}
+                        scroll={{
+                            x: 'max-content'
+                        }}
                         columns={columns}
                         dataSource={interviewsData}
                         loading={loading}

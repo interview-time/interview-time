@@ -208,6 +208,9 @@ const TemplateQuestionsCard = ({
             <Table
                 pagination={false}
                 showHeader={false}
+                scroll={{
+                    x: 'max-content'
+                }}
                 dataSource={questions}
                 columns={columns}
                 rowKey="index"

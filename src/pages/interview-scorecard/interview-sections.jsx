@@ -3,7 +3,7 @@ import React from "react";
 import {
     Card,
     Col,
-    Dropdown,
+    Dropdown, Grid,
     Input,
     Menu,
     message,
@@ -46,6 +46,7 @@ import { interviewToTags } from "../../components/utils/converters";
 import { isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
+const { useBreakpoint } = Grid;
 
 /**
  *
@@ -254,6 +255,7 @@ const InterviewQuestionsCard = ({
 }) => {
     const [collapsed, setCollapsed] = React.useState(false);
     const [hoverIndex, setHoverIndex] = React.useState(-1);
+    const screens = useBreakpoint();
 
     const columns = [
         {
@@ -272,6 +274,7 @@ const InterviewQuestionsCard = ({
             title: "Tags",
             key: "tags",
             dataIndex: "tags",
+            responsive: ['lg'], // hide tags for 'lg' devices
             width: 250,
             shouldCellUpdate: (record, prevRecord) => record.tags !== prevRecord.tags,
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
@@ -350,6 +353,9 @@ const InterviewQuestionsCard = ({
                     <Card bodyStyle={{ padding: 0 }}>
                         <Table
                             columns={columns}
+                            scroll={{
+                                x: screens.lg ? false : 'max-content' // turn off table scrolling for 'lg' devices
+                            }}
                             dataSource={group.questions.map((question, index) => {
                                 question.key = index;
                                 return question;
