@@ -226,7 +226,11 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
 
     return (
         <AntLayout className={styles.globalLayout}>
-            <AntLayout.Sider theme='light' className={styles.globalSider}>
+            <AntLayout.Sider
+                theme='light'
+                breakpoint="lg"
+                collapsedWidth="0"
+                className={styles.globalSider}>
                 <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
                 <Menu theme="light"
                       mode="vertical"
