@@ -76,7 +76,14 @@ const TeamMembers = ({ token, userName, teamName, teamMembers }) => {
 
     return <div style={{ marginTop: 12 }}>
 
-        <Table style={{marginTop: 12}} columns={columns} dataSource={teamMembers} pagination={false} />
+        <Table
+            style={{marginTop: 12}}
+            columns={columns}
+            dataSource={teamMembers}
+            scroll={{
+                x: 'max-content'
+            }}
+            pagination={false} />
 
         <Space direction="vertical" style={{marginTop: 24}}>
             <Text strong>Invite anyone, with one simple link</Text>

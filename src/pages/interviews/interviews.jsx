@@ -49,6 +49,7 @@ const Interviews = ({ interviews, loading, loadInterviews }) => {
             title: "Candidate Name",
             key: "candidate",
             dataIndex: "candidate",
+            // fixed: 'left',
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
             render: (candidate, interview) => {
@@ -106,6 +107,9 @@ const Interviews = ({ interviews, loading, loadInterviews }) => {
                 <Card bodyStyle={{ padding: 0 }}>
                     <Table
                         pagination={false}
+                        scroll={{
+                            x: 'max-content'
+                        }}
                         columns={columns}
                         dataSource={interviews}
                         loading={loading}
