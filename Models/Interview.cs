@@ -13,6 +13,8 @@ namespace CafApi.Models
         [DynamoDBRangeKey]
         public string InterviewId { get; set; }
 
+        public string CandidateId { get; set; }
+
         public string Candidate { get; set; }
 
         public string CandidateNotes { get; set; }
