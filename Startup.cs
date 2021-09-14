@@ -10,6 +10,7 @@ using Amazon.DynamoDBv2;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon;
 using CafApi.Services;
+using Amazon.S3;
 
 namespace CafApi
 {
@@ -69,10 +70,26 @@ namespace CafApi
                 }
             );
 
+            //    var credentialChains = new Amazon.Runtime.CredentialManagement.CredentialProfileStoreChain();
+            //             Amazon.Runtime.AWSCredentials credentials;
+            //             if (!credentialChains.TryGetAWSCredentials(options.Profile, out credentials))
+            //             {
+            //                 credentials = Amazon.Runtime.FallbackCredentialsFactory.GetCredentials();
+            //             }
+
+            var s3Config = new AmazonS3Config
+            {
+                RegionEndpoint = RegionEndpoint.GetBySystemName("ap-southeast-2"),
+                UseAccelerateEndpoint = true
+            };
+
+            services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Config));
+
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ITemplateService, TemplateService>();
             services.AddSingleton<IInterviewService, InterviewService>();
             services.AddSingleton<ITeamService, TeamService>();
+            services.AddSingleton<ICandidateService, CandidateService>();
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
         }
 
