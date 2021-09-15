@@ -147,12 +147,9 @@ export const InterviewInformationSection = ({
     return (
         <Card loading={loading}>
             <div className={styles.divSpaceBetween}>
-                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                    <ArrowLeftOutlined />{" "}
-                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                        {title}
-                    </Title>
-                </div>
+                <Title level={4} style={{ marginBottom: 0 }}>
+                    {title}
+                </Title>
                 {(onDeleteInterview || onEditInterview) && (
                     <Dropdown.Button overlay={menu} onClick={onEditInterview}>
                         <EditOutlined /> Edit
