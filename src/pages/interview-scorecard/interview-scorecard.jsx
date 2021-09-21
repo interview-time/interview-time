@@ -145,6 +145,13 @@ const InterviewScorecard = ({
         setInterview({ ...interview, notes: e.target.value });
     };
 
+    const onAssessmentChanged = (assessment) => {
+        setInterview({
+            ...interview,
+            decision: assessment,
+        });
+    };
+
     const showFeedbackStep = () => {
         onStepChanged(STEP_FEEDBACK)
     };
@@ -248,7 +255,7 @@ const InterviewScorecard = ({
                             assessment={interview.decision}
                             disabled={isCompletedStatus()}
                             onAssessmentChanged={(assessment) => {
-                                // onAssessmentChanged(assessment);
+                                onAssessmentChanged(assessment);
                             }}
                         />
                         <Button type="primary" onClick={onSubmitClicked} disabled={isCompletedStatus()}>

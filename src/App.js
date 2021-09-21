@@ -5,7 +5,6 @@ import {
     routeAccount,
     routeHome,
     routeInterviewAdd,
-    routeInterviewCandidate,
     routeInterviewDetails,
     routeInterviewReport,
     routeInterviews,
@@ -27,7 +26,6 @@ import Default from "./pages/default/default";
 import Interviews from "./pages/interviews/interviews";
 import InterviewScorecard from "./pages/interview-scorecard/interview-scorecard";
 import InterviewSchedule from "./pages/interview-schedule/interview-schedule";
-import InterviewEvaluation from "./pages/interview-evaluation/interview-evaluation";
 import Templates from "./pages/templates/templates";
 import TemplateEdit from "./pages/template-edit/template-edit";
 import Reports from "./pages/reports/reports";
@@ -76,7 +74,6 @@ function App({ history }) {
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewSchedule} />
             <PrivateRoute path={routeInterviewDetails()} exact component={InterviewSchedule} />
             <PrivateRoute path={routeInterviewScorecard()} exact component={InterviewScorecard} />
-            <PrivateRoute path={routeInterviewCandidate()} exact component={InterviewEvaluation} />
             <PrivateRoute path={routeInterviewReport()} exact component={ReportDetails} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
             <PrivateRoute path={routeTemplateBlank()} exact component={TemplateEdit} />
