@@ -4,13 +4,15 @@ import templates from "./templates/reducer";
 import interviews from "./interviews/reducer";
 import communityQuestions from "./community-questions/reducer";
 import user from "./user/reducer";
+import candidates from "./candidates/reducer";
 
 export const rootReducer = combineReducers({
     questionBank,
     templates,
     interviews,
     communityQuestions,
-    user
+    user,
+    candidates,
 });
 
 export default createStore(

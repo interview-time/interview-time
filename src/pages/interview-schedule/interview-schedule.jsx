@@ -31,6 +31,7 @@ import {
     loadInterviews,
     updateInterview,
 } from "../../store/interviews/actions";
+import { loadCandidates, createCandidate, updateCandidate } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template-edit/template-group-modal";
 import TemplateQuestionsCard from "../template-edit/template-questions-card";
@@ -56,11 +57,13 @@ const { TextArea } = Input;
 const InterviewSchedule = ({
     interviews,
     templates,
+    candidates,
     addInterview,
     addInterviewWithTemplate,
     loadInterviews,
     updateInterview,
     loadTemplates,
+    createCandidate,
 }) => {
     /**
      *
@@ -128,6 +131,7 @@ const InterviewSchedule = ({
 
     React.useEffect(() => {
         loadTemplates();
+        loadCandidates();
 
         if (isExistingInterviewFlow()) {
             loadInterviews();
@@ -189,7 +193,8 @@ const InterviewSchedule = ({
     const onRemoveQuestionClicked = (questionId) => {
         const updatedInterview = cloneDeep(interview);
         updatedInterview.structure.groups.forEach(
-            (group) => (group.questions = group.questions.filter((q) => q.questionId !== questionId))
+            (group) =>
+                (group.questions = group.questions.filter((q) => q.questionId !== questionId))
         );
         setInterview(updatedInterview);
     };
@@ -212,7 +217,9 @@ const InterviewSchedule = ({
 
     const onDeleteGroupClicked = (id) => {
         const updatedInterview = cloneDeep(interview);
-        updatedInterview.structure.groups = updatedInterview.structure.groups.filter((g) => g.groupId !== id);
+        updatedInterview.structure.groups = updatedInterview.structure.groups.filter(
+            (g) => g.groupId !== id
+        );
         setInterview(updatedInterview);
     };
 
@@ -274,7 +281,11 @@ const InterviewSchedule = ({
         const updatedInterview = cloneDeep(interview);
         const fromIndex = updatedInterview.structure.groups.findIndex((g) => g.groupId === id);
         const toIndex = fromIndex - 1;
-        updatedInterview.structure.groups = arrayMove(updatedInterview.structure.groups, fromIndex, toIndex);
+        updatedInterview.structure.groups = arrayMove(
+            updatedInterview.structure.groups,
+            fromIndex,
+            toIndex
+        );
         setInterview(updatedInterview);
     };
 
@@ -282,7 +293,11 @@ const InterviewSchedule = ({
         const updatedInterview = cloneDeep(interview);
         const fromIndex = updatedInterview.structure.groups.findIndex((g) => g.groupId === id);
         const toIndex = fromIndex + 1;
-        updatedInterview.structure.groups = arrayMove(updatedInterview.structure.groups, fromIndex, toIndex);
+        updatedInterview.structure.groups = arrayMove(
+            updatedInterview.structure.groups,
+            fromIndex,
+            toIndex
+        );
         setInterview(updatedInterview);
     };
 
@@ -335,7 +350,9 @@ const InterviewSchedule = ({
                 <Title level={4} style={{ margin: 0 }}>
                     Template - {selectedTemplate.title}
                 </Title>
-                <Text type="secondary">Customize an interview template to match any of your processes.</Text>
+                <Text type="secondary">
+                    Customize an interview template to match any of your processes.
+                </Text>
 
                 {selectedTemplateCollapsed && (
                     <Button onClick={onCollapseClicked}>Show template details</Button>
@@ -352,8 +369,8 @@ const InterviewSchedule = ({
             <Card style={marginTop12} loading={isInitialLoading()}>
                 <Title level={4}>Intro</Title>
                 <Text type="secondary">
-                    This section serves as a reminder for what interviewer must do at the beginning of the
-                    interview.
+                    This section serves as a reminder for what interviewer must do at the beginning
+                    of the interview.
                 </Text>
                 <TextArea
                     style={marginTop16}
@@ -380,8 +397,8 @@ const InterviewSchedule = ({
                     </Popover>
                 </Space>
                 <Text type="secondary">
-                    Grouping questions helps to evaluate skills in a particular competence area and make a
-                    more granular assessment.
+                    Grouping questions helps to evaluate skills in a particular competence area and
+                    make a more granular assessment.
                 </Text>
                 <div>
                     {interview.structure.groups.map((group) => (
@@ -448,10 +465,15 @@ const InterviewSchedule = ({
                     </div>
                 </div>
                 <Text type="secondary">
-                    Enter interview details information so you can easily discover it among other interviews.
+                    Enter interview details information so you can easily discover it among other
+                    interviews.
                 </Text>
                 <div className={styles.divSpaceBetween}>
-                    <Space direction="vertical" className={styles.fillWidth} style={{ marginRight: 16 }}>
+                    <Space
+                        direction="vertical"
+                        className={styles.fillWidth}
+                        style={{ marginRight: 16 }}
+                    >
                         <Form.Item
                             name="template"
                             label={<Text strong>Template</Text>}
@@ -471,7 +493,9 @@ const InterviewSchedule = ({
                                 options={templateOptions}
                                 //defaultValue={interview.templateId || interview.libraryId}
                                 filterOption={(inputValue, option) =>
-                                    option.label.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase())
+                                    option.label
+                                        .toLocaleLowerCase()
+                                        .includes(inputValue.toLocaleLowerCase())
                                 }
                                 notFoundContent={<Text>No template found.</Text>}
                                 dropdownRender={(menu) => (
@@ -511,7 +535,11 @@ const InterviewSchedule = ({
                     </Space>
                 </div>
                 <div className={styles.divSpaceBetween}>
-                    <Space direction="vertical" className={styles.fillWidth} style={{ marginRight: 16 }}>
+                    <Space
+                        direction="vertical"
+                        className={styles.fillWidth}
+                        style={{ marginRight: 16 }}
+                    >
                         <Form.Item
                             name="date"
                             label={<Text strong>Interview Date</Text>}
@@ -524,7 +552,7 @@ const InterviewSchedule = ({
                         >
                             <DatePicker
                                 showTime={{
-                                    minuteStep: 5
+                                    minuteStep: 5,
                                 }}
                                 allowClear={false}
                                 format={DATE_FORMAT_DISPLAY}
@@ -619,14 +647,20 @@ const mapDispatch = {
     loadInterviews,
     updateInterview,
     loadTemplates,
+    loadCandidates,
+    createCandidate,
+    updateCandidate,
 };
+
 const mapState = (state) => {
     const interviewState = state.interviews || {};
     const templateState = state.templates || {};
+    const candidatesState = state.candidates || {};
 
     return {
         interviews: interviewState.interviews,
         templates: templateState.templates,
+        candidates: candidatesState.candidates
     };
 };
 
