@@ -115,6 +115,31 @@ export const getGroupAssessmentColor = (group) => {
  * @param {InterviewGroup} group
  * @returns {string}
  */
+export const getGroupAssessmentEmoji = (group) => {
+    let assessment = getGroupAssessmentNumber(group);
+    let emojiTotal = 10
+    let emojiColorIndex = Math.round(assessment * emojiTotal)
+    let emojiColor = "⬛";
+    if (assessment >= PERFORMANCE_SCORE_HIGHLY_SKILLED) {
+        emojiColor = "🟩";
+    } else if (assessment >= PERFORMANCE_SCORE_SKILLED) {
+        emojiColor = "🟨";
+    } else if (assessment >= PERFORMANCE_SCORE_LOW_SKILLS) {
+        emojiColor = "🟥";
+    }
+
+    let progress = ""
+    for (let i = 0; i < emojiTotal; i++) {
+        progress += i < emojiColorIndex ? emojiColor : "⬛️";
+    }
+    return progress;
+}
+
+/**
+ *
+ * @param {InterviewGroup} group
+ * @returns {string}
+ */
 export const getGroupAssessmentText = (group) => {
     const assessment = getGroupAssessmentNumber(group);
     if (assessment >= PERFORMANCE_SCORE_HIGHLY_SKILLED) {

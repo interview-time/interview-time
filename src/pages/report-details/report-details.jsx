@@ -91,7 +91,7 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
                             type="line"
                             status="active"
                             strokeLinecap="square"
-                            strokeColor="#69C0FF"
+                            strokeColor={getGroupAssessmentColor(group)}
                             steps={10}
                             strokeWidth={16}
                             percent={getGroupAssessmentPercent(group)}
@@ -206,7 +206,7 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
 
                         <Modal
                             visible={showExportNotes}
-                            title={interview.candidate}
+                            title={`Export Notes - ${interview.candidate}`}
                             onCancel={() => setShowExportNotes(false)}
                             footer={null}
                             width={600}
