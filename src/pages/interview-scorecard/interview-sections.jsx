@@ -26,7 +26,6 @@ import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import {
-    ArrowLeftOutlined,
     CloseOutlined,
     DeleteOutlined,
     EditOutlined,
@@ -111,7 +110,6 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
  * @param {Interview} interview
  * @param onDeleteInterview
  * @param onEditInterview
- * @param onBackClicked
  * @returns {JSX.Element}
  * @constructor
  */
@@ -121,7 +119,6 @@ export const InterviewInformationSection = ({
     interview,
     onDeleteInterview,
     onEditInterview,
-    onBackClicked,
 }) => {
     const onDeleteClicked = () => {
         Modal.confirm({
@@ -147,12 +144,9 @@ export const InterviewInformationSection = ({
     return (
         <Card loading={loading}>
             <div className={styles.divSpaceBetween}>
-                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                    <ArrowLeftOutlined />{" "}
-                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                        {title}
-                    </Title>
-                </div>
+                <Title level={4} style={{ marginBottom: 0 }}>
+                    {title}
+                </Title>
                 {(onDeleteInterview || onEditInterview) && (
                     <Dropdown.Button overlay={menu} onClick={onEditInterview}>
                         <EditOutlined /> Edit
@@ -561,6 +555,7 @@ export const InterviewGroupsSection = ({
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
  * @param hashStyle
+ * @param disabled
  * @returns {JSX.Element}
  * @constructor
  */
