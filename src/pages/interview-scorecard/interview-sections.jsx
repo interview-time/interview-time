@@ -16,7 +16,6 @@ import {
 } from "antd";
 import {
     createTagColors,
-    DATE_FORMAT_DISPLAY,
     InterviewAssessment,
     Status,
 } from "../../components/utils/constants";
@@ -30,7 +29,6 @@ import {
     DeleteOutlined,
     EditOutlined,
 } from "@ant-design/icons";
-import moment from "moment";
 import {
     AddNoteIcon,
     CollapseIcon,
@@ -42,7 +40,7 @@ import {
     StarIcon,
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
-import { isEmpty } from "../../components/utils/utils";
+import { getDate, isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;
@@ -164,8 +162,8 @@ export const InterviewInformationSection = ({
                 <Col flex="1">
                     <Space direction="vertical">
                         <Text className="fs-mask">{interview.candidate}</Text>
-                        <Text className="fs-mask">{interview.position}</Text>
-                        <Text>{moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}</Text>
+                        <Text className="fs-mask">{defaultTo(interview.position, "-")}</Text>
+                        <Text>{getDate(interview.interviewDateTime, "-")}</Text>
                     </Space>
                 </Col>
             </Row>

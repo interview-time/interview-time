@@ -168,15 +168,7 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
     return (
         <Layout>
             <Row className={styles.rootContainer}>
-                <Col
-                    key={interview.interviewId}
-                    xxl={{ span: 14, offset: 5 }}
-                    xl={{ span: 18, offset: 3 }}
-                    lg={{ span: 24 }}
-                    md={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    xs={{ span: 24 }}
-                >
+                <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                     <Card loading={initialLoading()} bodyStyle={{ padding: 48 }}>
                         <div className={styles.headerTitleContainer} onClick={onBackClicked}>
                             <ArrowLeftOutlined />{" "}
