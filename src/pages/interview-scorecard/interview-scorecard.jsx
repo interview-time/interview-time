@@ -270,11 +270,7 @@ const InterviewScorecard = ({
     return interview ? (
         <Layout>
             <Row className={styles.rootContainer}>
-                <Col
-                    xxl={{ span: 16, offset: 4 }}
-                    xl={{ span: 20, offset: 2 }}
-                    lg={{ span: 24 }}
-                >
+                <Col span={24} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
                     <Card style={{ marginBottom: 12 }}>
                         <Steps current={step} onChange={onStepChanged}>
                             <Step

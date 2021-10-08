@@ -42,10 +42,7 @@ const Account = () => {
             <StickyHeader title="Profile" />
         } contentStyle={styles.pageContent}>
             <Row>
-                <Col
-                    xxl={{ span: 16, offset: 4 }}
-                    xl={{ span: 20, offset: 2 }}
-                    lg={{ span: 24 }}>
+                <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                     <Card>
                         <Meta
                             avatar={

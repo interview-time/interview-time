@@ -2,6 +2,7 @@ import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import {
+    AutoComplete,
     Button,
     Card,
     Col,
@@ -21,7 +22,7 @@ import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, Status } from "../../components/utils/constants";
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, POSITIONS, Status, } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
@@ -37,7 +38,8 @@ import TemplateQuestionsCard from "../template-edit/template-questions-card";
 import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateNew } from "../../components/utils/route";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import moment from "moment";
+import { sortBy } from "lodash/collection";
+import { getDate } from "../../components/utils/utils";
 
 const { TextArea } = Input;
 
@@ -160,8 +162,8 @@ const InterviewSchedule = ({
         interview.candidate = e.target.value;
     };
 
-    const onPositionChange = (e) => {
-        interview.position = e.target.value;
+    const onPositionChange = (value) => {
+        interview.position = value;
     };
 
     const onDateChange = (date) => {
@@ -179,10 +181,10 @@ const InterviewSchedule = ({
         updatedInterview.structure.groups
             .find((group) => group.groupId === groupId)
             .questions.push({
-                questionId: questionId,
-                question: "",
-                tags: [],
-            });
+            questionId: questionId,
+            question: "",
+            tags: [],
+        });
         setInterview(updatedInterview);
     };
 
@@ -427,31 +429,31 @@ const InterviewSchedule = ({
     );
 
     const InterviewDetails = () => (
-        <Form
-            name="basic"
-            layout="vertical"
-            initialValues={{
-                template: interview.templateId || interview.libraryId,
-                candidate: interview.candidate,
-                date: interview.interviewDateTime ? moment(interview.interviewDateTime) : undefined,
-                position: interview.position,
-            }}
-            onFinish={onSaveClicked}
-        >
-            <Card style={marginTop12} key={interview.interviewId} loading={isInitialLoading()}>
-                <div className={styles.header} style={{ marginBottom: 12 }}>
-                    <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                        <ArrowLeftOutlined />
-                        <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                            Schedule Interview
-                        </Title>
-                    </div>
+        <Card style={marginTop12} key={interview.interviewId} loading={isInitialLoading()}>
+            <div className={styles.header} style={{ marginBottom: 12 }}>
+                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                    <ArrowLeftOutlined />
+                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
+                        Schedule Interview
+                    </Title>
                 </div>
-                <Text type="secondary">
-                    Enter interview details information so you can easily discover it among other interviews.
-                </Text>
-                <div className={styles.divSpaceBetween}>
-                    <Space direction="vertical" className={styles.fillWidth} style={{ marginRight: 16 }}>
+            </div>
+            <Text type="secondary">
+                Enter interview details information so you can easily discover it among other interviews.
+            </Text>
+            <Form
+                name="basic"
+                layout="vertical"
+                initialValues={{
+                    template: interview.templateId || interview.libraryId,
+                    candidate: interview.candidate,
+                    date: getDate(interview.interviewDateTime),
+                    position: interview.position ? interview.position : undefined,
+                }}
+                onFinish={onSaveClicked}
+            >
+                <Row gutter={16} style={marginTop16}>
+                    <Col span={12}>
                         <Form.Item
                             name="template"
                             label={<Text strong>Template</Text>}
@@ -465,11 +467,9 @@ const InterviewSchedule = ({
                             <Select
                                 showSearch
                                 allowClear
-                                className={styles.fillWidth}
                                 placeholder="Select interview template"
                                 onChange={onTemplateSelect}
                                 options={templateOptions}
-                                //defaultValue={interview.templateId || interview.libraryId}
                                 filterOption={(inputValue, option) =>
                                     option.label.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase())
                                 }
@@ -489,8 +489,8 @@ const InterviewSchedule = ({
                                 )}
                             />
                         </Form.Item>
-                    </Space>
-                    <Space direction="vertical" className={styles.fillWidth}>
+                    </Col>
+                    <Col span={12}>
                         <Form.Item
                             name="candidate"
                             label={<Text strong>Candidate</Text>}
@@ -505,26 +505,35 @@ const InterviewSchedule = ({
                                 className="fs-mask"
                                 placeholder="e.g. Kristin Watson"
                                 onChange={onCandidateChange}
-                                //defaultValue={interview.candidate}
                             />
                         </Form.Item>
-                    </Space>
-                </div>
-                <div className={styles.divSpaceBetween}>
-                    <Space direction="vertical" className={styles.fillWidth} style={{ marginRight: 16 }}>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item
+                            name="position"
+                            label={<Text strong>Position</Text>}
+                        >
+                            <AutoComplete
+                                allowClear
+                                placeholder="Select position you are hiring for e.g. Software Developer"
+                                options={sortBy(POSITIONS, ["value"])}
+                                filterOption={(inputValue, option) =>
+                                    option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                                }
+                                onChange={onPositionChange}
+                            />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
                         <Form.Item
                             name="date"
                             label={<Text strong>Interview Date</Text>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter interview date and time",
-                                },
-                            ]}
                         >
                             <DatePicker
                                 showTime={{
-                                    minuteStep: 5
+                                    minuteStep: 15
                                 }}
                                 allowClear={false}
                                 format={DATE_FORMAT_DISPLAY}
@@ -532,28 +541,8 @@ const InterviewSchedule = ({
                                 onChange={onDateChange}
                             />
                         </Form.Item>
-                    </Space>
-                    <Space direction="vertical" className={styles.fillWidth}>
-                        <Form.Item
-                            name="position"
-                            label={<Text strong>Position</Text>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter candidate position",
-                                },
-                            ]}
-                        >
-                            <Input
-                                className="fs-mask"
-                                placeholder="e.g. Junior Software Developer"
-                                //defaultValue={interview.position}
-                                onChange={onPositionChange}
-                            />
-                        </Form.Item>
-                    </Space>
-                </div>
-
+                    </Col>
+                </Row>
                 <Divider />
                 <div className={styles.divSpaceBetween}>
                     <Text />
@@ -564,21 +553,14 @@ const InterviewSchedule = ({
                         </Button>
                     </Space>
                 </div>
-            </Card>
-        </Form>
+            </Form>
+        </Card>
     );
 
     return (
         <Layout>
             <Row className={styles.rootContainer}>
-                <Col
-                    xxl={{ span: 16, offset: 4 }}
-                    xl={{ span: 16, offset: 4 }}
-                    lg={{ span: 20, offset: 2 }}
-                    md={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    xs={{ span: 24 }}
-                >
+                <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                     <InterviewDetails />
 
                     {selectedTemplate && isExistingInterviewFlow() && <TemplateInformation />}
