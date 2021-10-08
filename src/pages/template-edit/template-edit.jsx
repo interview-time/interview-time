@@ -24,6 +24,7 @@ import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import Spinner from "../../components/spinner/spinner";
+import { filterOptionLabel } from "../../components/utils/filters";
 
 const { TextArea } = Input;
 
@@ -321,9 +322,7 @@ const TemplateEdit = ({
                                             onSelect={onCategoryChange}
                                             options={templateCategories}
                                             showSearch
-                                            filterOption={(inputValue, option) =>
-                                                option.value.toLocaleLowerCase().includes(inputValue)
-                                            }
+                                            filterOption={filterOptionLabel}
                                         />
                                     </Form.Item>
                                 </Space>

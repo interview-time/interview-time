@@ -32,3 +32,21 @@ export const filterQuestionDifficulty = (questions, difficultyFilter) => {
     return defaultTo(questions, [])
         .filter(question => difficultyFilter === question.difficulty)
 }
+
+/**
+ *
+ * @param {string} inputValue
+ * @param option
+ * @returns {boolean}
+ */
+export const filterOptionLabel = (inputValue, option) =>
+    option.label.toLowerCase().includes(inputValue.toLowerCase())
+
+/**
+ *
+ * @param {string} inputValue
+ * @param option
+ * @returns {boolean}
+ */
+export const filterOptionValue = (inputValue, option) =>
+    option.value.toLowerCase().includes(inputValue.toLowerCase())

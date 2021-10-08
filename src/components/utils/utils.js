@@ -10,10 +10,24 @@ export const isEmpty = (data) => !data || data.length === 0
  * @param {string} defaultValue
  * @returns {string}
  */
-export const getDate = (dateTime, defaultValue = "") => {
+export const getFormattedDate = (dateTime, defaultValue = "") => {
     if (dateTime) {
         const date = moment(dateTime);
         return date.year() > 1 ? date.format(DATE_FORMAT_DISPLAY) : defaultValue;
+    }
+    return defaultValue
+}
+
+/**
+ *
+ * @param {string} dateTime
+ * @param {undefined|string} defaultValue
+ * @returns {undefined|moment.Moment}
+ */
+export const getDate = (dateTime, defaultValue = undefined) => {
+    if (dateTime) {
+        const date = moment(dateTime);
+        return date.year() > 1 ? date : defaultValue;
     }
     return defaultValue
 }

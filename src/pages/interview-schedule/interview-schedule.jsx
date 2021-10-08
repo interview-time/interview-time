@@ -39,7 +39,8 @@ import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateNew } from "../../components/utils/route";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
-import { getDate } from "../../components/utils/utils";
+import { getDate} from "../../components/utils/utils";
+import { filterOptionLabel} from "../../components/utils/filters";
 
 const { TextArea } = Input;
 
@@ -447,7 +448,7 @@ const InterviewSchedule = ({
                 initialValues={{
                     template: interview.templateId || interview.libraryId,
                     candidate: interview.candidate,
-                    date: getDate(interview.interviewDateTime),
+                    date: getDate(interview.interviewDateTime, undefined),
                     position: interview.position ? interview.position : undefined,
                 }}
                 onFinish={onSaveClicked}
@@ -470,9 +471,7 @@ const InterviewSchedule = ({
                                 placeholder="Select interview template"
                                 onChange={onTemplateSelect}
                                 options={templateOptions}
-                                filterOption={(inputValue, option) =>
-                                    option.label.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase())
-                                }
+                                filterOption={filterOptionLabel}
                                 notFoundContent={<Text>No template found.</Text>}
                                 dropdownRender={(menu) => (
                                     <div>
@@ -503,7 +502,7 @@ const InterviewSchedule = ({
                         >
                             <Input
                                 className="fs-mask"
-                                placeholder="e.g. Kristin Watson"
+                                placeholder="Enter candidate full name"
                                 onChange={onCandidateChange}
                             />
                         </Form.Item>
@@ -517,7 +516,7 @@ const InterviewSchedule = ({
                         >
                             <AutoComplete
                                 allowClear
-                                placeholder="Select position you are hiring for e.g. Software Developer"
+                                placeholder="Select position you are hiring for"
                                 options={sortBy(POSITIONS, ["value"])}
                                 filterOption={(inputValue, option) =>
                                     option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
