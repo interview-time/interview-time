@@ -13,7 +13,7 @@ import { routeInterviewAdd, routeInterviewScorecard } from "../../components/uti
 import Title from "antd/lib/typography/Title";
 import DemoTag from "../../components/demo/demo-tag";
 import Text from "antd/lib/typography/Text";
-import { getDate, orderByInterviewDate } from "../../components/utils/utils";
+import { getFormattedDate, orderByInterviewDate } from "../../components/utils/utils";
 import { defaultTo } from "lodash/util";
 
 const { Search } = Input;
@@ -109,7 +109,7 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews }) => {
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: (interview) => (
                 <Text type={textType(interview)}
-                      className="fs-mask">{getDate(interview.interviewDateTime, "-")}</Text>
+                      className="fs-mask">{getFormattedDate(interview.interviewDateTime, "-")}</Text>
             ),
         },
         {

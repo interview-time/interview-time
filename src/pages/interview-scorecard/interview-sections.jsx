@@ -40,7 +40,7 @@ import {
     StarIcon,
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
-import { getDate, isEmpty } from "../../components/utils/utils";
+import { getFormattedDate, isEmpty } from "../../components/utils/utils";
 
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;
@@ -163,7 +163,7 @@ export const InterviewInformationSection = ({
                     <Space direction="vertical">
                         <Text className="fs-mask">{interview.candidate}</Text>
                         <Text className="fs-mask">{defaultTo(interview.position, "-")}</Text>
-                        <Text>{getDate(interview.interviewDateTime, "-")}</Text>
+                        <Text>{getFormattedDate(interview.interviewDateTime, "-")}</Text>
                     </Space>
                 </Col>
             </Row>
