@@ -41,6 +41,9 @@ import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design
 import { sortBy } from "lodash/collection";
 import { getDate} from "../../components/utils/utils";
 import { filterOptionLabel} from "../../components/utils/filters";
+import Spinner from "../../components/spinner/spinner";
+import { loadTeamMembers } from "../../store/user/actions";
+import { useAuth0 } from "../../react-auth0-spa";
 
 const { TextArea } = Input;
 
@@ -48,23 +51,36 @@ const { TextArea } = Input;
  *
  * @param {Interview[]} interviews
  * @param {Template[]} templates
+ * @param {TeamMember[]} teamMembers
+ * @param activeTeam
  * @param addInterview
  * @param addInterviewWithTemplate
  * @param loadInterviews
  * @param updateInterview
  * @param loadTemplates
+ * @param loadTeamMembers
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewSchedule = ({
     interviews,
     templates,
+    teamMembers,
+    activeTeam,
     addInterview,
     addInterviewWithTemplate,
     loadInterviews,
     updateInterview,
     loadTemplates,
+    loadTeamMembers,
 }) => {
+
+    const history = useHistory();
+
+    const { id } = useParams();
+    const { user } = useAuth0();
+    const location = useLocation();
+
     /**
      *
      * @type {Interview}
@@ -74,6 +90,7 @@ const InterviewSchedule = ({
         templateId: undefined,
         libraryId: undefined,
         status: Status.NEW,
+        interviewers: [user.email],
         title: "",
         structure: {
             header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
@@ -82,21 +99,18 @@ const InterviewSchedule = ({
         },
     };
 
-    const history = useHistory();
-
-    const { id } = useParams();
-    const location = useLocation();
-
     const [interview, setInterview] = useState(emptyInterview);
     const [selectedTemplateCollapsed, setSelectedTemplateCollapsed] = useState(true);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [templateOptions, setTemplateOptions] = useState([]);
+    const [interviewersOptions, setInterviewersOptions] = useState([]);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [questionGroupModal, setQuestionGroupModal] = useState({
         visible: false,
         name: null,
         id: null,
     });
+
 
     React.useEffect(() => {
         if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
@@ -130,17 +144,39 @@ const InterviewSchedule = ({
     }, [interviews, id, templates, interview]);
 
     React.useEffect(() => {
+        if(isTeamSpace() && teamMembers.length !== 0) {
+            setInterviewersOptions(teamMembers.map(member =>
+                member.email === user.email ? {
+                    label: `${member.name} (you)`,
+                    value: member.email,
+                    disabled: !member.isAdmin // only admins can unselect themself
+                } : {
+                    label: member.name,
+                    value: member.email,
+                }))
+        }
+        // eslint-disable-next-line
+    }, [teamMembers]);
+
+    React.useEffect(() => {
         loadTemplates();
 
         if (isExistingInterviewFlow()) {
             loadInterviews();
         }
+
+        if(isTeamSpace()) {
+            loadTeamMembers(activeTeam.teamId);
+        }
+
         // eslint-disable-next-line
     }, []);
 
     const isExistingInterviewFlow = () => id;
 
     const isFromTemplateFlow = () => fromTemplateId() !== null;
+
+    const isTeamSpace = () => activeTeam && activeTeam.teamId;
 
     const isInitialLoading = () =>
         (isExistingInterviewFlow() && !interview.interviewId) ||
@@ -166,6 +202,10 @@ const InterviewSchedule = ({
     const onPositionChange = (value) => {
         interview.position = value;
     };
+
+    const onInterviewersChange = (values) => {
+        interview.interviewers = values
+    }
 
     const onDateChange = (date) => {
         interview.interviewDateTime = date.utc().format(DATE_FORMAT_SERVER);
@@ -352,7 +392,7 @@ const InterviewSchedule = ({
 
     const TemplateDetails = () => (
         <div>
-            <Card style={marginTop12} loading={isInitialLoading()}>
+            <Card style={marginTop12}>
                 <Title level={4}>Intro</Title>
                 <Text type="secondary">
                     This section serves as a reminder for what interviewer must do at the beginning of the
@@ -367,7 +407,7 @@ const InterviewSchedule = ({
                 />
             </Card>
 
-            <Card style={marginTop12} loading={isInitialLoading()}>
+            <Card style={marginTop12}>
                 <Space style={{ width: "100%" }}>
                     <Title level={4}>Questions</Title>
                     <Popover
@@ -412,7 +452,7 @@ const InterviewSchedule = ({
                 </Button>
             </Card>
 
-            <Card style={marginVertical12} loading={isInitialLoading()}>
+            <Card style={marginVertical12}>
                 <Title level={4}>End of interview</Title>
                 <Text type="secondary">
                     This section serves as a reminder for what interviewer must do at the end of the
@@ -430,7 +470,7 @@ const InterviewSchedule = ({
     );
 
     const InterviewDetails = () => (
-        <Card style={marginTop12} key={interview.interviewId} loading={isInitialLoading()}>
+        <Card style={marginTop12} key={interview.interviewId}>
             <div className={styles.header} style={{ marginBottom: 12 }}>
                 <div className={styles.headerTitleContainer} onClick={onBackClicked}>
                     <ArrowLeftOutlined />
@@ -450,6 +490,7 @@ const InterviewSchedule = ({
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime, undefined),
                     position: interview.position ? interview.position : undefined,
+                    interviewers: interview.interviewers || []
                 }}
                 onFinish={onSaveClicked}
             >
@@ -508,6 +549,28 @@ const InterviewSchedule = ({
                         </Form.Item>
                     </Col>
                 </Row>
+                {isTeamSpace() && <Row gutter={16}>
+                    <Col span={24}>
+                        <Form.Item
+                            name="interviewers"
+                            label={<Text strong>Interviewers</Text>}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please select at least 1 interviewer",
+                                },
+                            ]}
+                        >
+                            <Select
+                                mode="multiple"
+                                placeholder="Select interviewers"
+                                options={interviewersOptions}
+                                filterOption={filterOptionLabel}
+                                onChange={onInterviewersChange}
+                            />
+                        </Form.Item>
+                    </Col>
+                </Row>}
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
@@ -558,15 +621,17 @@ const InterviewSchedule = ({
 
     return (
         <Layout>
-            <Row className={styles.rootContainer}>
-                <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                    <InterviewDetails />
+            {isInitialLoading() ? <Spinner /> :
+                <Row className={styles.rootContainer}>
+                    <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
+                        <InterviewDetails />
 
-                    {selectedTemplate && isExistingInterviewFlow() && <TemplateInformation />}
+                        {selectedTemplate && isExistingInterviewFlow() && <TemplateInformation />}
 
-                    {!selectedTemplateCollapsed && <TemplateDetails />}
-                </Col>
-            </Row>
+                        {!selectedTemplateCollapsed && <TemplateDetails />}
+                    </Col>
+                </Row>
+            }
 
             <TemplateGroupModal
                 visible={questionGroupModal.visible}
@@ -600,14 +665,18 @@ const mapDispatch = {
     loadInterviews,
     updateInterview,
     loadTemplates,
+    loadTeamMembers
 };
 const mapState = (state) => {
     const interviewState = state.interviews || {};
     const templateState = state.templates || {};
+    const userState = state.user || {};
 
     return {
         interviews: interviewState.interviews,
         templates: templateState.templates,
+        teamMembers: userState.teamMembers || [],
+        activeTeam: userState.activeTeam,
     };
 };
 
