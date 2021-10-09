@@ -39,8 +39,8 @@ import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateNew } from "../../components/utils/route";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
-import { getDate} from "../../components/utils/utils";
-import { filterOptionLabel} from "../../components/utils/filters";
+import { getDate } from "../../components/utils/utils";
+import { filterOptionLabel } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { loadTeamMembers } from "../../store/user/actions";
 import { useAuth0 } from "../../react-auth0-spa";
@@ -90,7 +90,6 @@ const InterviewSchedule = ({
         templateId: undefined,
         libraryId: undefined,
         status: Status.NEW,
-        interviewers: [user.email],
         title: "",
         structure: {
             header: "Take 10 minutes to introduce yourself and make the candidate comfortable.",
@@ -111,7 +110,6 @@ const InterviewSchedule = ({
         id: null,
     });
 
-
     React.useEffect(() => {
         if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
             const template = cloneDeep(findTemplate(fromTemplateId(), templates));
@@ -120,18 +118,24 @@ const InterviewSchedule = ({
                 templateId: template.templateId,
                 structure: template.structure,
             });
-        } else if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            setInterview(cloneDeep(findInterview(id, interviews)));
         }
 
-        // selected template-edit
-        if (interview.templateId && templates.length !== 0) {
+        // selected template
+        if (interview.templateId && templates.length !== 0 && !selectedTemplate) {
             const template = cloneDeep(findTemplate(interview.templateId, templates));
             setSelectedTemplate(template);
         }
+    }, [interview, templates]);
 
+    React.useEffect(() => {
+        if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
+            setInterview(cloneDeep(findInterview(id, interviews)));
+        }
+    }, [interviews]);
+
+    React.useEffect(() => {
         // templates selector
-        if (templates.length !== 0) {
+        if (templates.length !== 0 && templateOptions.length === 0) {
             setTemplateOptions(
                 templates.map((template) => ({
                     value: template.templateId,
@@ -139,21 +143,29 @@ const InterviewSchedule = ({
                 }))
             );
         }
-
-        // eslint-disable-next-line
-    }, [interviews, id, templates, interview]);
+    }, [templates]);
 
     React.useEffect(() => {
         if(isTeamSpace() && teamMembers.length !== 0) {
+            // interviewers selector
+            const currentUser = teamMembers.find(member => member.email === user.email)
             setInterviewersOptions(teamMembers.map(member =>
-                member.email === user.email ? {
+                member.userId === currentUser.userId ? {
                     label: `${member.name} (you)`,
-                    value: member.email,
-                    disabled: !member.isAdmin // only admins can unselect themself
+                    value: member.userId,
+                    disabled: !member.isAdmin // non-admins can't remove themselves from interviews
                 } : {
                     label: member.name,
-                    value: member.email,
+                    value: member.userId,
                 }))
+
+            if (!isExistingInterviewFlow()) {
+                // pre-select current user as interviewer
+                setInterview({
+                    ...interview,
+                    interviewers: [currentUser.userId]
+                })
+            }
         }
         // eslint-disable-next-line
     }, [teamMembers]);
@@ -373,7 +385,7 @@ const InterviewSchedule = ({
     const marginTop16 = { marginTop: 16 };
 
     const TemplateInformation = () => (
-        <Card style={marginTop12} loading={isInitialLoading()}>
+        <Card style={marginTop12}>
             <Space direction="vertical">
                 <Title level={4} style={{ margin: 0 }}>
                     Template - {selectedTemplate.title}
