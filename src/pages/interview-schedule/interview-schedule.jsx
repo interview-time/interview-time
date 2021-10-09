@@ -111,6 +111,7 @@ const InterviewSchedule = ({
     });
 
     React.useEffect(() => {
+        // new interview from template
         if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
             const template = cloneDeep(findTemplate(fromTemplateId(), templates));
             setInterview({
@@ -125,12 +126,15 @@ const InterviewSchedule = ({
             const template = cloneDeep(findTemplate(interview.templateId, templates));
             setSelectedTemplate(template);
         }
+        // eslint-disable-next-line
     }, [interview, templates]);
 
     React.useEffect(() => {
+        // existing interview
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
             setInterview(cloneDeep(findInterview(id, interviews)));
         }
+        // eslint-disable-next-line
     }, [interviews]);
 
     React.useEffect(() => {
@@ -143,6 +147,7 @@ const InterviewSchedule = ({
                 }))
             );
         }
+        // eslint-disable-next-line
     }, [templates]);
 
     React.useEffect(() => {
