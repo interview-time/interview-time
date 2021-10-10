@@ -34,6 +34,7 @@
  * @typedef {Object} Interview
  * @property {string} userId
  * @property {string} interviewId
+ * @property {string[]} interviewers
  * @property {string} teamId
  * @property {string} candidate
  * @property {string} candidateNotes
