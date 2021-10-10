@@ -158,7 +158,6 @@ const InterviewSchedule = ({
                 member.userId === currentUser.userId ? {
                     label: `${member.name} (you)`,
                     value: member.userId,
-                    disabled: !member.isAdmin // non-admins can't remove themselves from interviews
                 } : {
                     label: member.name,
                     value: member.userId,
@@ -581,6 +580,7 @@ const InterviewSchedule = ({
                             <Select
                                 mode="multiple"
                                 placeholder="Select interviewers"
+                                disabled={isExistingInterviewFlow()}
                                 options={interviewersOptions}
                                 filterOption={filterOptionLabel}
                                 onChange={onInterviewersChange}
