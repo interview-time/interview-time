@@ -43,6 +43,8 @@ namespace CafApi.Models
         [DynamoDBIgnore]
         public string CreatedBy { get; set; }
 
+        public List<string> Interviewers { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }

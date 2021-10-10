@@ -6,6 +6,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Models;
+using CafApi.Utils;
 using CafApi.ViewModel;
 
 namespace CafApi.Services
@@ -72,7 +73,7 @@ namespace CafApi.Services
         }
 
         public async Task<Interview> AddInterview(Interview interview)
-        {
+        {           
             interview.InterviewId = Guid.NewGuid().ToString();
             interview.CreatedDate = DateTime.UtcNow;
             interview.ModifiedDate = DateTime.UtcNow;

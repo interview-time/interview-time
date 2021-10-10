@@ -60,6 +60,7 @@ namespace CafApi.Controllers
 
             return new ProfileResponse
             {
+                UserId = profile.UserId,
                 Name = profile.Name,
                 Email = profile.Email,
                 TimezoneOffset = profile.TimezoneOffset,

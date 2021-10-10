@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
+using CafApi.Utils;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,10 @@ namespace CafApi.Controllers
     public class InterviewController : ControllerBase
     {
         private readonly IInterviewService _interviewService;
+        private readonly IUserService _userService;
         private readonly ILogger<InterviewController> _logger;
         private readonly string _demoUserId;
-        
+
         private string UserId
         {
             get
@@ -29,10 +31,14 @@ namespace CafApi.Controllers
             }
         }
 
-        public InterviewController(ILogger<InterviewController> logger, IInterviewService interviewService, IConfiguration configuration)
+        public InterviewController(ILogger<InterviewController> logger,
+            IInterviewService interviewService,
+            IUserService userService,
+            IConfiguration configuration)
         {
             _logger = logger;
             _interviewService = interviewService;
+            _userService = userService;
 
             _demoUserId = configuration["DemoUserId"];
         }
@@ -48,6 +54,28 @@ namespace CafApi.Controllers
         [HttpPost()]
         public async Task<Interview> AddInterview([FromBody] Interview interview)
         {
+            if (interview.Interviewers != null && interview.Interviewers.Any() && !string.IsNullOrWhiteSpace(interview.TeamId))
+            {
+                Interview mainInterview = null;
+                foreach (var interviewer in interview.Interviewers)
+                {
+                    var isBelongInTeam = await _userService.IsBelongInTeam(interviewer, interview.TeamId);
+                    if (isBelongInTeam)
+                    {
+                        var newInterview = interview.Clone();
+                        newInterview.UserId = interviewer;
+
+                        newInterview = await _interviewService.AddInterview(newInterview);
+                        if (newInterview.UserId == UserId)
+                        {
+                            mainInterview = newInterview;
+                        }
+                    }
+                }
+
+                return mainInterview;
+            }
+
             interview.UserId = UserId;
             if (UserId == _demoUserId)
             {
@@ -59,7 +87,7 @@ namespace CafApi.Controllers
 
         [HttpPut()]
         public async Task UpdateInterview([FromBody] Interview interview)
-        {
+        {          
             interview.UserId = UserId;
             if (UserId == _demoUserId)
             {
