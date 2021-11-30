@@ -4,10 +4,15 @@ import { Button, Card, Col, Modal, Progress, Row, Space, Steps } from "antd";
 import Layout from "../../components/layout/layout";
 import styles from "./interview-scorecard.module.css";
 import { connect } from "react-redux";
-import { deleteInterview, loadInterviews, updateScorecard, updateInterview } from "../../store/interviews/actions";
+import {
+    deleteInterview,
+    loadInterviews,
+    updateScorecard,
+    updateInterview,
+} from "../../store/interviews/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import { routeInterviewDetails, routeInterviews, routeReports, } from "../../components/utils/route";
+import { routeInterviewDetails, routeInterviews, routeReports } from "../../components/utils/route";
 import { findInterview, findQuestionInGroups } from "../../components/utils/converters";
 import {
     InterviewAssessmentButtons,
@@ -25,18 +30,19 @@ import {
     getGroupAssessmentText,
     getOverallPerformanceColor,
     getOverallPerformancePercent,
-    getQuestionsWithAssessment
+    getQuestionsWithAssessment,
 } from "../../components/utils/assessment";
 import Text from "antd/lib/typography/Text";
 import { Status } from "../../components/utils/constants";
 import { personalEvent } from "../../analytics";
+import InterviewHeader from "./interview-header";
 
 const { Step } = Steps;
 
 const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
 const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
-const STEP_INTERVIEW = 0
-const STEP_FEEDBACK = 1
+const STEP_INTERVIEW = 0;
+const STEP_FEEDBACK = 1;
 
 /**
  *
@@ -56,7 +62,7 @@ const InterviewScorecard = ({
     deleteInterview,
     loadInterviews,
     updateScorecard,
-    updateInterview
+    updateInterview,
 }) => {
     /**
      * @type {Template}
@@ -112,7 +118,7 @@ const InterviewScorecard = ({
             updateScorecard(interview);
             setStep(STEP_FEEDBACK);
         }
-    }
+    };
 
     const isCompletedStatus = () => interview.status === Status.COMPLETED;
 
@@ -135,7 +141,8 @@ const InterviewScorecard = ({
 
     const onQuestionAssessmentChanged = (questionId, assessment) => {
         setInterview((prevInterview) => {
-            findQuestionInGroups(questionId, prevInterview.structure.groups).assessment = assessment;
+            findQuestionInGroups(questionId, prevInterview.structure.groups).assessment =
+                assessment;
 
             return { ...prevInterview };
         });
@@ -153,7 +160,7 @@ const InterviewScorecard = ({
     };
 
     const showFeedbackStep = () => {
-        onStepChanged(STEP_FEEDBACK)
+        onStepChanged(STEP_FEEDBACK);
     };
 
     const onSubmitClicked = () => {
@@ -227,43 +234,10 @@ const InterviewScorecard = ({
                     strokeColor={getOverallPerformanceColor(interview.structure.groups)}
                     percent={getOverallPerformancePercent(interview.structure.groups)}
                 />
-                <span>{getQuestionsWithAssessment(interview.structure.groups).length} questions</span>
+                <span>
+                    {getQuestionsWithAssessment(interview.structure.groups).length} questions
+                </span>
             </div>
-        </Card>
-    );
-
-    const NotesCard = () => (
-        <Card title="Notes" style={{ marginBottom: 12 }}>
-            <span className="fs-mask">
-                {interview.notes && interview.notes.length > 0 ? interview.notes : "There are no notes."}
-            </span>
-        </Card>
-    );
-
-    const DecisionCard = () => (
-        <Card style={{ marginBottom: 24 }}>
-            <Row>
-                <Space className={styles.space} direction="vertical">
-                    <Text strong>Ready to make hiring recommendation?</Text>
-                    <Text>
-                        Based on the interview data, please evaluate if the candidate is qualified for the
-                        position.
-                    </Text>
-
-                    <div className={styles.divSpaceBetween}>
-                        <InterviewAssessmentButtons
-                            assessment={interview.decision}
-                            disabled={isCompletedStatus()}
-                            onAssessmentChanged={(assessment) => {
-                                onAssessmentChanged(assessment);
-                            }}
-                        />
-                        <Button type="primary" onClick={onSubmitClicked} disabled={isCompletedStatus()}>
-                            Submit Evaluation
-                        </Button>
-                    </div>
-                </Space>
-            </Row>
         </Card>
     );
 
@@ -271,82 +245,48 @@ const InterviewScorecard = ({
         <Layout>
             <Row className={styles.rootContainer}>
                 <Col span={24} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
-                    <Card style={{ marginBottom: 12 }}>
-                        <Steps current={step} onChange={onStepChanged}>
-                            <Step
-                                title="Interview"
-                                className={styles.stepInterview}
-                                description={
-                                    <Text className={styles.stepDescription}>Run interview and capture feedback.</Text>
-                                } />
-                            <Step
-                                title="Feedback"
-                                className={styles.stepFeedback}
-                                description={
-                                    <Text className={styles.stepDescription}>Review and submit interview decision.</Text>
-                                } />
-                        </Steps>
-                    </Card>
-
-                    {step === STEP_INTERVIEW && <div>
-                        <div style={{ marginBottom: 12 }}>
-                            <InterviewInformationSection
-                                title="Interview"
-                                onDeleteInterview={onDeleteInterview}
-                                onEditInterview={onEditInterview}
-                                interview={interview}
-                            />
-                        </div>
-
-                        <Card style={{ marginBottom: 12 }}>
-                            <IntroSection interview={interview} hashStyle={styles.hash} />
-                        </Card>
-
-                        <InterviewGroupsSection
-                            interview={interview}
-                            onQuestionNotesChanged={onQuestionNotesChanged}
-                            onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                            hashStyle={styles.hash}
-                        />
-
-                        <Card style={{ marginTop: 12 }}>
-                            <SummarySection interview={interview} />
-                        </Card>
-
-                        <NotesSection
-                            notes={interview.notes}
-                            status={interview.status}
-                            onChange={onNoteChanges}
-                        />
-
-                        <Card style={{ marginTop: 12, marginBottom: 24 }}>
-                            <div className={styles.divSpaceBetween}>
-                                <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
-                                <Button type="primary" onClick={showFeedbackStep}>
-                                    Next to Feedback
-                                </Button>
+                    {step === STEP_INTERVIEW && (
+                        <div>
+                            <div style={{ marginBottom: 12 }}>
+                                <InterviewHeader
+                                    name={interview.candidate}
+                                    position={interview.position}
+                                    onComplete={showFeedbackStep}
+                                    onBack={() => history.goBack()}
+                                />
                             </div>
-                        </Card>
-                    </div>}
 
-                    {step === STEP_FEEDBACK && <div>
-                        <div style={{ marginBottom: 12 }}>
-                            <InterviewInformationSection
-                                title="Candidate Evaluation"
+                            <Card style={{ marginBottom: 12 }}>
+                                <IntroSection interview={interview} hashStyle={styles.hash} />
+                            </Card>
+
+                            <InterviewGroupsSection
                                 interview={interview}
+                                onQuestionNotesChanged={onQuestionNotesChanged}
+                                onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                                hashStyle={styles.hash}
                             />
+
+                            <Card style={{ marginTop: 12 }}>
+                                <SummarySection interview={interview} />
+                            </Card>
+
+                            <NotesSection
+                                notes={interview.notes}
+                                status={interview.status}
+                                onChange={onNoteChanges}
+                            />
+
+                            <Card style={{ marginTop: 12, marginBottom: 24 }}>
+                                <div className={styles.divSpaceBetween}>
+                                    <TimeAgo
+                                        timestamp={interview.modifiedDate}
+                                        saving={interviewsUploading}
+                                    />
+                                </div>
+                            </Card>
                         </div>
-
-                        <Row gutter={12} style={{ marginBottom: 12 }}>
-                            <Col span={6}>{OverallPerformanceCard()}</Col>
-                            <Col span={18}>{CompetenceAreaCard()}</Col>
-                        </Row>
-
-                        {NotesCard()}
-
-                        {DecisionCard()}
-                    </div>}
-
+                    )}
                 </Col>
             </Row>
         </Layout>
