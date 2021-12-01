@@ -4,6 +4,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import { connect } from "react-redux";
 import Spinner from "../spinner/spinner";
 import { loadProfile, setupUser } from "../../store/user/actions";
+import { getParameterByName } from "../utils/utils";
 
 const PrivateRoute = ({
     loadProfile,
@@ -24,9 +25,13 @@ const PrivateRoute = ({
         if (loading || isAuthenticated) {
             return;
         }
+
+        const mode = getParameterByName("mode");
+
         const fn = async () => {
             await loginWithRedirect({
                 appState: { targetUrl: path },
+                screen_hint: mode,
             });
         };
         fn();
@@ -34,7 +39,11 @@ const PrivateRoute = ({
 
     const render = (props) => (isAuthenticated === true ? <Component {...props} /> : null);
 
-    return profile && !loadingProfile ? <Route path={path} render={render} {...rest} /> : <Spinner />;
+    return profile && !loadingProfile ? (
+        <Route path={path} render={render} {...rest} />
+    ) : (
+        <Spinner />
+    );
 };
 
 const mapDispatch = { loadProfile, setupUser };
