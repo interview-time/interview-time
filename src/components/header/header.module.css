@@ -1,0 +1,18 @@
+.header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+    background-color: white;
+}
+
+.back {
+    margin-right: auto;
+}
+
+.candidate {
+    text-align: center;
+}
+
+.actions {
+    margin-left: auto;
+}

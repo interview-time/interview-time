@@ -7,6 +7,7 @@ export const Status = {
     NEW: "NEW",
     STARTED: "STARTED",
     COMPLETED: "COMPLETED",
+    SUBMITTED: "SUBMITTED"
 }
 
 export const Difficulty = {

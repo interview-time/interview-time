@@ -227,7 +227,7 @@ const mapState = (state) => {
     const interviewsState = state.interviews || {};
 
     const interviews = reverse(sortBy(cloneDeep(
-        interviewsState.interviews.filter(interview => interview.status === Status.COMPLETED)
+        interviewsState.interviews.filter(interview => interview.status === Status.SUBMITTED)
     ), ['interviewDateTime']))
 
     return {
