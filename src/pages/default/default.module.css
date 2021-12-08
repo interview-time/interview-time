@@ -28,3 +28,7 @@
 .row {
     cursor: pointer;
 }
+
+.section {
+    margin-bottom: 24px;
+}

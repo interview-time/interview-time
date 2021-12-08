@@ -21,7 +21,6 @@ import moment from "moment";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import { StarEmphasisIcon } from "../../components/utils/icons";
-import { routeInterviewScorecard } from "../../components/utils/route";
 import ExportNotes from "../../components/export-notes/export-notes";
 
 /**
@@ -64,10 +63,6 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
 
     const onBackClicked = () => {
         history.goBack();
-    };
-
-    const onMoreClicked = () => {
-        history.push(routeInterviewScorecard(interview.interviewId));
     };
 
     const initialLoading = () => !interview.interviewId;
@@ -129,7 +124,9 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
                 Notes
             </Title>
             <span className="fs-mask">
-                {interview.notes && interview.notes.length > 0 ? interview.notes : "There are no notes."}
+                {interview.notes && interview.notes.length > 0
+                    ? interview.notes
+                    : "There are no notes."}
             </span>
         </div>
     );
@@ -149,15 +146,21 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
                     <Space direction="vertical" size={16}>
                         <Text className="fs-mask">{interview.candidate}</Text>
                         <Text className="fs-mask">{interview.position}</Text>
-                        <Text>{moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}</Text>
+                        <Text>
+                            {moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}
+                        </Text>
                         {isCandidateQualified && (
                             <Space>
-                                <Text className={styles.assessmentGreen}>qualified for the position</Text>
+                                <Text className={styles.assessmentGreen}>
+                                    qualified for the position
+                                </Text>
                                 <StarEmphasisIcon className={styles.assessmentIcon} />
                             </Space>
                         )}
                         {!isCandidateQualified && (
-                            <Text className={styles.assessmentRed}>not qualified for the position</Text>
+                            <Text className={styles.assessmentRed}>
+                                not qualified for the position
+                            </Text>
                         )}
                     </Space>
                 </Col>
@@ -188,10 +191,11 @@ const ReportDetails = ({ interviews, loadInterviews }) => {
                         <Notes />
 
                         <div className={styles.moreContainer}>
-                            <Button ghost type="primary" onClick={onMoreClicked}>
-                                More details
-                            </Button>
-                            <Button className={styles.export} type="primary" onClick={() => setShowExportNotes(true)}>
+                            <Button
+                                className={styles.export}
+                                type="primary"
+                                onClick={() => setShowExportNotes(true)}
+                            >
                                 Export Notes
                             </Button>
                         </div>

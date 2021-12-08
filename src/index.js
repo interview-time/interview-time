@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { BrowserRouter } from "react-router-dom";
+import "inter-ui/inter.css";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";

@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.less";
 import React, { useEffect } from "react";
 import { Switch, withRouter, Route } from "react-router-dom";
 import {
