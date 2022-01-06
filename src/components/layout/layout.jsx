@@ -20,7 +20,6 @@ import {
     routeAccount,
     routeHome,
     routeInterviews,
-    routeNews,
     routeReports,
     routeTeamNew,
     routeTeamSettings,
@@ -66,6 +65,12 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     const history = useHistory();
     const { user } = useAuth0();
 
+    const MENU_KEY_PROFILE = 1
+    const MENU_KEY_HOME = 2
+    const MENU_KEY_TEMPLATES = 3
+    const MENU_KEY_INTERVIEWS = 4
+    const MENU_KEY_REPORTS = 5
+
     const [feedbackVisible, setFeedbackVisible] = React.useState(false)
 
     React.useEffect(() => {
@@ -94,31 +99,26 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
      * @returns {ActiveTeam}
      */
     const getActiveTeam = () => {
-        return activeTeam ? activeTeam : {
-            teamName: user.name,
-            picture: user.picture
-        };
+        return activeTeam ? activeTeam : profile.teams[0];
     }
 
     const getActiveTeamName = () => truncate(getActiveTeam().teamName, {
         'length': 14
     })
 
-    const getSelectedKey = () => {
-        if (location.pathname.includes(routeTemplates())) {
-            return routeTemplates()
+    const getSelectedMenuKey = () => {
+        if (location.pathname.includes(routeTemplates()) || location.pathname.includes(routeTemplateNew())) {
+            return MENU_KEY_TEMPLATES
         } else if (location.pathname.includes(routeInterviews())) {
-            return routeInterviews()
-        } else if (location.pathname.includes(routeNews())) {
-            return routeNews()
-        } else if (location.pathname.includes(routeTemplateNew())) {
-            return routeTemplateNew()
+            return MENU_KEY_INTERVIEWS
         } else if (location.pathname.includes(routeReports())) {
-            return routeReports()
-        } else if (location.pathname.includes("settings") || location.pathname.includes("account")) {
-            return "settings"
+            return MENU_KEY_REPORTS
+        } else if (location.pathname.includes(routeAccount())) {
+            return MENU_KEY_PROFILE
         } else if (location.pathname.includes(routeHome())) {
-            return routeHome()
+            return MENU_KEY_HOME
+        } else if (location.pathname.includes("settings")) {
+            return "settings"
         }
     }
 
@@ -168,38 +168,12 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         }
     }
 
-    const onUserSelected = () => {
-        const selected = {
-            teamName: user.name,
-            picture: user.picture
-        };
-        if (selected.teamName !== getActiveTeam().teamName) {
-            setActiveTeam(selected);
-            history.push(routeHome());
-        }
-    }
-
     const onCreateTeam = () => {
         history.push(routeTeamNew())
     }
 
     const teamMenu = (
         <Menu>
-            <Menu.Item onClick={() => onUserSelected()}>
-                <div className={styles.menuTeam}>
-                    <Avatar
-                        src={user ? user.picture : null}
-                        className={styles.avatar}
-                        size={24}
-                        icon={<ProfileIcon />} />
-                    <div className={styles.menuTeamText}>
-                        <Text>{profile.name}</Text>
-                        <Text type="secondary">Personal</Text>
-                    </div>
-                    {!getActiveTeam().teamId && <TeamSelectedIcon />}
-                </div>
-            </Menu.Item>
-            <Menu.Divider />
             {defaultTo(profile.teams, []).map(team => <>
                 <Menu.Item onClick={() => onTeamSelected(team)}>
                     <div className={styles.menuTeam}>
@@ -235,28 +209,39 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                 <Menu theme="light"
                       mode="vertical"
                       defaultSelectedKeys={[routeHome()]}
-                      selectedKeys={[getSelectedKey()]}
+                      selectedKeys={[getSelectedMenuKey()]}
                       className={styles.menu}
                 >
-                    <Menu.Item key={routeHome()} className={styles.menuItem}
+                    <Menu.Item key={MENU_KEY_PROFILE} className={styles.menuItem}
+                               icon={<Avatar
+                                   src={user ? user.picture : null}
+                                   className={styles.avatar}
+                                   size={24}
+                                   icon={<ProfileIcon />} />}>
+                        <Link to={routeAccount()}>
+                            <span className="nav-text">{profile.name}</span>
+                        </Link>
+                    </Menu.Item>
+                    <Divider style={{ margin: 8 }} />
+                    <Menu.Item key={MENU_KEY_HOME} className={styles.menuItem}
                                icon={<HomeIcon style={menuIconStyle} />}>
                         <Link to={routeHome()}>
                             <span className="nav-text">Home</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={routeTemplates()} className={styles.menuItem}
+                    <Menu.Item key={MENU_KEY_TEMPLATES} className={styles.menuItem}
                                icon={<GuideIcon style={menuIconStyle} />}>
                         <Link to={routeTemplates()}>
                             <span className="nav-text">Templates</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={routeInterviews()} className={styles.menuItem}
+                    <Menu.Item key={MENU_KEY_INTERVIEWS} className={styles.menuItem}
                                icon={<InterviewIcon style={menuIconStyle} />}>
                         <Link to={routeInterviews()}>
                             <span className="nav-text">Interviews</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={routeReports()} className={styles.menuItem}
+                    <Menu.Item key={MENU_KEY_REPORTS} className={styles.menuItem}
                                icon={<CandidatesIcon style={menuIconStyle} />}>
                         <Link to={routeReports()}>
                             <span className="nav-text">Reports</span>
@@ -271,20 +256,14 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                     <Divider style={{ margin: 8 }} />
                     <Menu.Item key="settings" className={styles.menuItem}
                                icon={<SettingsIcon style={menuIconStyle} />}>
-                        <Link to={getActiveTeam().teamId ? routeTeamSettings(getActiveTeam().teamId) : routeAccount()}>
-                            <span
-                                className="nav-text">{getActiveTeam().teamId ? "Team Settings" : "User Settings"}</span>
+                        <Link to={routeTeamSettings(getActiveTeam().teamId)}>
+                            <span className="nav-text">Team Settings</span>
                         </Link>
                     </Menu.Item>
                     <div>
                         <Dropdown overlay={teamMenu}>
                             <div className={styles.selectedTeam}>
-                                {!getActiveTeam().teamId && <Avatar
-                                    src={getActiveTeam().picture}
-                                    className={styles.avatar}
-                                    size={28}
-                                    icon={<ProfileIcon />} />}
-                                {getActiveTeam().teamId && <TeamCircleIcon />}
+                                <TeamCircleIcon />
                                 <Text className={styles.selectedTeamText}>{getActiveTeamName()}</Text>
                                 <TeamSwitcherIcon />
                             </div>
