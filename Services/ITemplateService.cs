@@ -33,7 +33,7 @@ namespace CafApi.Services
 
         Task DeleteLibraryTemplate(string userId, string libraryId);
 
-        Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId);
+        Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId, string toTeamId);
 
         Task<Template> GetSharedTemplate(string token);
 

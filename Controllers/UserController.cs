@@ -81,6 +81,7 @@ namespace CafApi.Controllers
             if (profile == null)
             {
                 profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset);
+                var team = await _teamService.CreateTeam(UserId, "My Team");
 
                 // populate demo data            
                 var demoInterviews = await _interviewService.GetInterviews(_demoUserId);
@@ -90,13 +91,13 @@ namespace CafApi.Controllers
                     var toTemplate = await _templateService.GetTemplate(UserId, interview.TemplateId);
                     if (toTemplate == null)
                     {
-                        toTemplate = await _templateService.CloneTemplate(_demoUserId, interview.TemplateId, UserId);
+                        toTemplate = await _templateService.CloneTemplate(_demoUserId, interview.TemplateId, UserId, team.TeamId);
                     }
 
                     var toInterview = await _interviewService.GetInterview(UserId, interview.InterviewId);
                     if (toInterview == null)
                     {
-                        await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId, toTemplate.TemplateId);
+                        await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId, team.TeamId, toTemplate.TemplateId);
                     }
                 }
             }

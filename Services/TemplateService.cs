@@ -256,11 +256,12 @@ namespace CafApi.Services
             await _context.DeleteAsync<Library>(userId, libraryId);
         }
 
-        public async Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId)
+        public async Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId, string toTeamId)
         {
             var fromTemplate = await GetTemplate(fromUserId, fromTemplateId);
 
             fromTemplate.UserId = toUserId;
+            fromTemplate.TeamId = toTeamId;
             fromTemplate.TemplateId = Guid.NewGuid().ToString();
             fromTemplate.CreatedDate = DateTime.UtcNow;
             fromTemplate.ModifiedDate = DateTime.UtcNow;
