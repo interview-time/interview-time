@@ -145,7 +145,7 @@ namespace CafApi.Services
             return new List<Profile>();
         }
 
-        public async Task<Team> JoinTeam(string userId, string token)
+        public async Task<Team> JoinTeam(string userId, string token, string role = null)
         {
             var search = _context.FromQueryAsync<Team>(new QueryOperationConfig()
             {
@@ -157,7 +157,7 @@ namespace CafApi.Services
 
             if (teams != null)
             {
-                await AddToTeam(userId, teams.First().TeamId);
+                await AddToTeam(userId, teams.First().TeamId, role);
             }
 
             return team;
@@ -166,9 +166,9 @@ namespace CafApi.Services
         public async Task LeaveTeam(string userId, string teamId)
         {
             var profile = await _userService.GetProfile(userId);
-            if (profile != null && profile.Teams != null && profile.Teams.Contains(teamId))
+            if (profile != null && profile.Teams != null && profile.Teams.Any(t => t.TeamId == teamId))
             {
-                profile.Teams.Remove(teamId);
+                profile.Teams.RemoveAll(t => t.TeamId == teamId);
                 if (profile.Teams.Count == 0)
                 {
                     profile.Teams = null;
@@ -178,18 +178,29 @@ namespace CafApi.Services
             }
         }
 
-        private async Task AddToTeam(string userId, string teamId)
+        private async Task AddToTeam(string userId, string teamId, string role = null)
         {
             var profile = await _userService.GetProfile(userId);
             if (profile != null)
             {
                 if (profile.Teams == null)
                 {
-                    profile.Teams = new List<string> { teamId };
+                    profile.Teams = new List<UserTeam>
+                    {
+                        new UserTeam
+                        {
+                            TeamId = teamId,
+                            Roles = new List<string>{ role ?? TeamRole.INTERVIEWER.ToString() }
+                        }
+                    };
                 }
-                else if (!profile.Teams.Contains(teamId))
+                else if (!profile.Teams.Any(t => t.TeamId == teamId))
                 {
-                    profile.Teams.Add(teamId);
+                    profile.Teams.Add(new UserTeam
+                    {
+                        TeamId = teamId,
+                        Roles = new List<string> { role ?? TeamRole.INTERVIEWER.ToString() }
+                    });
                 }
                 await _context.SaveAsync(profile);
             }
