@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Button } from "antd";
+import { Button, Col, Space } from "antd";
 import { InterviewGroupsSection, IntroSection, SummarySection } from "./interview-sections";
 import NotesSection from "./notes-section";
 import TimeAgo from "../../components/time-ago/time-ago";
@@ -14,48 +14,48 @@ const Assessment = ({
     onNoteChanges,
     interviewsUploading,
 }) => {
-   
 
     return (
-        <div>
-            <div style={{ marginBottom: 12 }}>
-                <Header
-                    title={interview.candidate}
-                    subtitle={interview.position}
-                    rightComponent={
+        <div className={styles.rootContainer}>
+            <Header
+                title={interview.candidate}
+                subtitle={interview.position}
+                rightComponent={
+                    <Space>
+                        <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
                         <Button type="primary" onClick={onCompletedClicked}>
                             Complete Interview
                         </Button>
-                    }
-                />
-            </div>
-
-            <Card style={{ marginBottom: 12 }}>
-                <IntroSection interview={interview} hashStyle={styles.hash} />
-            </Card>
-
-            <InterviewGroupsSection
-                interview={interview}
-                onQuestionNotesChanged={onQuestionNotesChanged}
-                onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                hashStyle={styles.hash}
+                    </Space>
+                }
             />
 
-            <Card style={{ marginTop: 12 }}>
-                <SummarySection interview={interview} />
-            </Card>
+            <Col span={24}
+                 xl={{ span: 20, offset: 2 }}
+                 xxl={{ span: 16, offset: 4 }}>
+
+                <div className={styles.card}>
+                    <IntroSection interview={interview} hashStyle={styles.hash} />
+                </div>
+
+                <InterviewGroupsSection
+                    interview={interview}
+                    onQuestionNotesChanged={onQuestionNotesChanged}
+                    onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                    hashStyle={styles.hash}
+                />
+
+                <div className={styles.card} style={{ marginBottom: 32 }}>
+                    <SummarySection interview={interview} />
+                </div>
+
+            </Col>
 
             <NotesSection
                 notes={interview.notes}
                 status={interview.status}
                 onChange={onNoteChanges}
             />
-
-            <Card style={{ marginTop: 12, marginBottom: 24 }}>
-                <div className={styles.divSpaceBetween}>
-                    <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
-                </div>
-            </Card>
         </div>
     );
 };
