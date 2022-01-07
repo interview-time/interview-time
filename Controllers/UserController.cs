@@ -56,7 +56,7 @@ namespace CafApi.Controllers
                 return null;
             }
 
-            var teams = await _teamService.GetTeams(profile.Teams);
+            var teams = await _teamService.GetTeams(profile.Teams?.Select(t => t.TeamId).ToList());
 
             return new ProfileResponse
             {
@@ -69,7 +69,7 @@ namespace CafApi.Controllers
                     TeamId = t.TeamId,
                     TeamName = t.Name,
                     Token = t.Token,
-                    Role = t.OwnerId == UserId ? "ADMIN" : "MEMBER"
+                    Roles = profile.Teams.Where(t => t.TeamId == t.TeamId).Select(t => t.Roles).FirstOrDefault()
                 }).ToList()
             };
         }

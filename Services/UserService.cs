@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -41,7 +42,7 @@ namespace CafApi.Services
         {
             var profile = await _context.LoadAsync<Profile>(userId);
 
-            return (profile != null && profile.Teams != null && profile.Teams.Contains(teamId));
+            return (profile != null && profile.Teams != null && profile.Teams.Any(t => t.TeamId == teamId));
         }
     }
 }

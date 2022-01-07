@@ -69,14 +69,15 @@ namespace CafApi.Controllers
                 UserId = m.UserId,
                 Name = m.Name,
                 Email = m.Email,
-                IsAdmin = m.UserId == team.OwnerId
+                IsAdmin = m.UserId == team.OwnerId,
+                Roles = m.Teams.Where(t => t.TeamId == teamId).Select(t => t.Roles).FirstOrDefault()
             }).ToList();
         }
 
         [HttpPut("join")]
         public async Task<Team> JoinTeam(JoinTeamRequest request)
         {
-            var team = await _teamService.JoinTeam(UserId, request.Token);
+            var team = await _teamService.JoinTeam(UserId, request.Token, request.Role);
 
             return team;
         }
