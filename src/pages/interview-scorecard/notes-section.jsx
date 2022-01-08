@@ -1,46 +1,60 @@
 import React, { useState } from "react";
-import { Input, Switch, Tooltip } from "antd";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Col, Input, Space, Switch } from "antd";
 import { Status } from "../../components/utils/constants";
-import { isStickyNotesEnabled, setStickyNotesEnabled } from "../../components/utils/storage";
 import styles from "./interview-sections.module.css";
+import { LightingIcon, LightingSmallIcon } from "../../components/utils/icons";
+import Text from "antd/lib/typography/Text";
 
 const { TextArea } = Input;
 
 const NotesSection = ({ notes, status, onChange }) => {
-    const [isSticky, setIsSticky] = useState(isStickyNotesEnabled());
+    const [isExpanded, setIsExpanded] = useState(true);
 
-    return (
-        <div className={`${styles.notes} ${isSticky ? styles.stickyNotes : ""}`}>
+    const onExpandClicked = () => {
+        setIsExpanded(true)
+    }
+
+    const CollapsedNotes = () => <div className={styles.notesCollapsed} onClick={onExpandClicked}>
+        <div className={styles.quickNotesLabelSmallHolder}>
+            <LightingSmallIcon className={styles.iconNotesSmall} />
+            <span className={styles.quickNotesLabelSmall}>Quick notes</span>
+        </div>
+        <div className={styles.notesCollapsedDivider} />
+    </div>
+
+    const ExpandedNotes = () => <div className={styles.notes}>
+        <Col span={24}
+             xl={{ span: 20, offset: 2 }}
+             xxl={{ span: 16, offset: 4 }}>
             <div className={styles.notesHeader}>
-                <Title level={4}>Notes</Title>
-                <Tooltip title="Notes always visible during scroll">
-                <span>
-                    <Text type="secondary">Always visible</Text>
+                <Space>
+                    <LightingIcon className={styles.iconNotesBig} />
+                    <span className={styles.quickNotesLabel}>Quick notes</span>
+                </Space>
+                <Space>
                     <Switch
                         className={styles.notesSwitch}
-                        defaultChecked={isSticky}
-                        size="small"
-                        onChange={(checked) => {
-                            setStickyNotesEnabled(checked);
-                            setIsSticky(checked);
-                        }}
+                        defaultChecked={!isExpanded}
+                        onChange={checked => setIsExpanded(!checked)}
                     />
-                </span>
-                </Tooltip>
+                    <Text type="secondary">Minimize</Text>
+                </Space>
             </div>
 
             <TextArea
                 {...(status === Status.COMPLETED ? { readonly: "true" } : {})}
                 className={styles.notesTextArea + " fs-mask"}
-                placeholder="Interview notes..."
+                placeholder="Enter generic notes here"
                 bordered={false}
                 autoSize={{ minRows: 3, maxRows: 6 }}
                 onChange={onChange}
                 defaultValue={notes}
             />
-        </div>
+        </Col>
+    </div>;
+
+    return (
+        isExpanded ? ExpandedNotes() : CollapsedNotes()
     );
 };
 

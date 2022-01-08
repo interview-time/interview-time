@@ -2,7 +2,15 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
+    align-items: center;
     background-color: white;
+    padding: 0 32px;
+    height: 80px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 99;
 }
 
 .back {
@@ -11,6 +19,10 @@
 
 .candidate {
     text-align: center;
+}
+
+.subheader {
+    font-size: 14px;
 }
 
 .actions {

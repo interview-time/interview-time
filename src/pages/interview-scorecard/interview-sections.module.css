@@ -33,6 +33,24 @@
     justify-content: space-between;
 }
 
+.questionsHeaderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+}
+
+.tableContainer {
+    background-color: white;
+    margin-top: 32px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
+    border-radius: 8px;
+}
+
+.divider {
+    border-bottom: 1px solid #f0f0f0;
+}
+
 .tag {
     color: rgba(0, 0, 0, 0.85);
 }
@@ -131,10 +149,30 @@
 }
 
 .notes {
+    position: sticky;
+    position: -webkit-sticky;
+    bottom: 0;
+    z-index: 99;
     background-color: #ffffff;
-    border: 1px solid #f0f0f0;
-    padding: 20px;
-    margin-top: 12px;
+    border-top: 5px solid #4B5563;
+    box-shadow: 0 -4px 8px -2px rgba(16, 24, 40, 0.1), 0 -2px 4px -2px rgba(16, 24, 40, 0.06);
+    padding-top: 20px;
+}
+
+.notesCollapsedDivider {
+    width: 100%;
+    border-top: 6px solid #9CA3AF;
+    box-shadow: 0 -4px 8px -2px rgba(16, 24, 40, 0.1), 0 -2px 4px -2px rgba(16, 24, 40, 0.06);
+}
+
+.notesCollapsed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    position: -webkit-sticky;
+    bottom: 0;
+    z-index: 99;
 }
 
 .notesHeader {
@@ -142,14 +180,47 @@
     justify-content: space-between;
 }
 
+.iconNotesBig {
+    color: #6B7280;
+}
+
+.iconNotesSmall {
+    color: #F9FAFB;
+    font-size: 12px;
+}
+
 .notesSwitch {
     margin-left: 5px;
+}
+
+.quickNotesLabel {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.quickNotesLabelSmall {
+    font-size: 14px;
+    font-weight: 500;
+    color: #F9FAFB;
+    margin-left: 4px;
+}
+
+.quickNotesLabelSmallHolder {
+    display: flex;
+    align-items: center;
+    box-shadow: 0 -4px 8px -2px rgba(16, 24, 40, 0.1), 0 -2px 4px -2px rgba(16, 24, 40, 0.06);
+    border-radius: 8px 8px 0 0;
+    background-color: #9CA3AF;
+    padding-top: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    cursor: pointer;
 }
 
 .notesTextArea {
     resize: none;
     padding: 0;
-    font-style: italic;
+    margin-top: 16px;
 }
 
 .stickyNotes {
@@ -159,7 +230,7 @@
     bottom: 0;
 }
 
-.questionTextArea {
+.questionNotesArea {
     resize: none;
-    font-style: italic;
+    font-size: 14px;
 }

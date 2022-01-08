@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Col, Modal, Row } from "antd";
-import Layout from "../../components/layout/layout";
-import styles from "./interview-scorecard.module.css";
+import { Modal, Row } from "antd";
 import { connect } from "react-redux";
-import {
-    deleteInterview,
-    loadInterviews,
-    updateScorecard,
-    updateInterview,
-} from "../../store/interviews/actions";
+import { deleteInterview, loadInterviews, updateInterview, updateScorecard, } from "../../store/interviews/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
 import { routeReports } from "../../components/utils/route";
@@ -30,7 +23,6 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  * @param {Interview[]} interviews
  * @param {Template[]} templates
  * @param {boolean} interviewsUploading
- * @param deleteInterview
  * @param loadInterviews
  * @param updateScorecard
  * @param updateInterview
@@ -155,29 +147,25 @@ const InterviewScorecard = ({
     };
 
     return interview ? (
-        <Layout>
-            <Row className={styles.rootContainer}>
-                <Col span={24} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
-                    {(interview.status === Status.NEW || interview.status === Status.STARTED) && (
-                        <Assessment
-                            interview={interview}
-                            onCompletedClicked={onCompletedClicked}
-                            onQuestionNotesChanged={onQuestionNotesChanged}
-                            onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                            onNoteChanges={onNoteChanges}
-                            interviewsUploading={interviewsUploading}
-                        />
-                    )}
-                    {interview.status === Status.COMPLETED && (
-                        <Evaluation
-                            interview={interview}
-                            onSubmitClicked={onSubmitClicked}
-                            onAssessmentChanged={onAssessmentChanged}
-                        />
-                    )}
-                </Col>
-            </Row>
-        </Layout>
+        <Row>
+            {(interview.status === Status.NEW || interview.status === Status.STARTED) && (
+                <Assessment
+                    interview={interview}
+                    onCompletedClicked={onCompletedClicked}
+                    onQuestionNotesChanged={onQuestionNotesChanged}
+                    onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                    onNoteChanges={onNoteChanges}
+                    interviewsUploading={interviewsUploading}
+                />
+            )}
+            {interview.status === Status.COMPLETED && (
+                <Evaluation
+                    interview={interview}
+                    onSubmitClicked={onSubmitClicked}
+                    onAssessmentChanged={onAssessmentChanged}
+                />
+            )}
+        </Row>
     ) : (
         <Spinner />
     );

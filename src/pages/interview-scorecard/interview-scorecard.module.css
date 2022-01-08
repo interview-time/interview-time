@@ -31,7 +31,17 @@
 }
 
 .rootContainer {
-    margin-top: 24px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #F9FAFB;
+}
+
+.card {
+    background-color: white;
+    margin-top: 32px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
+    border-radius: 8px;
+    padding: 24px;
 }
 
 .summary {
@@ -70,11 +80,6 @@
     display: inline-block;
     margin-left: 16px;
     margin-right: 16px;
-}
-
-.card {
-    height: 280px;
-    overflow: scroll;
 }
 
 .toc {
