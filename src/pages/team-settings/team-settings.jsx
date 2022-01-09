@@ -69,7 +69,7 @@ const TeamSettings = ({
 
     const getTeamName = () => team ? team.teamName : "Team"
 
-    const isAdmin = () => team ? team.role === TEAM_ROLE_ADMIN : false
+    const isAdmin = () => team ? team.roles.some((role) => role === TEAM_ROLE_ADMIN) : false
 
     const onSaveClicked = (teamName) => {
         const newTeam = {
