@@ -314,6 +314,15 @@ const NoteSvg = () => (
     </svg>
 );
 
+export const CloseIcon = props => <Icon component={CloseSvg} {...props} />;
+
+const CloseSvg = () => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M5 15L15 5M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+
+);
+
 export const NoteIcon = props => <Icon component={NoteSvg} {...props} />;
 
 const LightingSvg = () => (

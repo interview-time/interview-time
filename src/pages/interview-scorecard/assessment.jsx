@@ -5,6 +5,8 @@ import NotesSection from "./notes-section";
 import TimeAgo from "../../components/time-ago/time-ago";
 import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
+import { BackIcon } from "../../components/utils/icons";
+import { useHistory } from "react-router-dom";
 
 const Assessment = ({
     interview,
@@ -15,11 +17,20 @@ const Assessment = ({
     interviewsUploading,
 }) => {
 
+    const history = useHistory();
+
     return (
         <div className={styles.rootContainer}>
             <Header
                 title={interview.candidate}
                 subtitle={interview.position}
+                leftComponent={
+                    <Button
+                        icon={<BackIcon />}
+                        size="large"
+                        onClick={() => history.goBack()}
+                    />
+                }
                 rightComponent={
                     <Space>
                         <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
@@ -34,7 +45,7 @@ const Assessment = ({
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
 
-                <div className={styles.card}>
+                <div className={styles.card} style={{ marginTop: 32 }}>
                     <IntroSection interview={interview} hashStyle={styles.hash} />
                 </div>
 
@@ -45,7 +56,7 @@ const Assessment = ({
                     hashStyle={styles.hash}
                 />
 
-                <div className={styles.card} style={{ marginBottom: 32 }}>
+                <div className={styles.card} style={{ marginBottom: 32, marginTop: 32 }}>
                     <SummarySection interview={interview} />
                 </div>
 

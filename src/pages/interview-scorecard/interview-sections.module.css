@@ -55,29 +55,29 @@
     color: rgba(0, 0, 0, 0.85);
 }
 
-.assessmentButtonGreen {
-    width: 120px;
+.assessmentButton {
+    /*width: 140px;*/
     height: 36px;
+    padding-left: 8px;
+    padding-right: 16px;
+    min-width: 100px;
     display: flex;
     align-items: center;
     cursor: pointer;
-    border-radius: 2px;
-    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+}
+
+.assessmentButtonGreen {
+    border: 1px solid #D1D5DB;
 }
 
 .assessmentButtonGreen:hover {
-    border: 1px solid #52c41a;
+    border: 1px solid #22C55E;
     background-color: rgba(246, 255, 237, 0.4);
 }
 
 .assessmentButtonRed {
-    width: 120px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 2px;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #D1D5DB;
 }
 
 .assessmentButtonRed:hover {
@@ -86,23 +86,11 @@
 }
 
 .assessmentButtonGreenActive {
-    width: 120px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 2px;
-    border: 1px solid #52c41a;
+    border: 1px solid #22C55E;
     background-color: rgba(246, 255, 237, 0.4);
 }
 
 .assessmentButtonRedActive {
-    width: 120px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 2px;
     border: 1px solid #ff4d4f;
     background-color: rgba(255, 241, 240, 0.4);
 }
@@ -112,7 +100,7 @@
 }
 
 .assessmentTextGreen {
-    color: #52c41a;
+    color: #22C55E;
 }
 
 .assessmentTextRed {
@@ -120,14 +108,14 @@
 }
 
 .assessmentIcon {
-    color: rgba(0, 0, 0, 0.25);
+    color: #D1D5DB;
     font-size: 20px;
     margin-left: 8px;
     margin-right: 8px;
 }
 
 .assessmentIconActive {
-    color: #fadb14;
+    color: #FBBF24;
     font-size: 20px;
     margin-left: 8px;
     margin-right: 8px;

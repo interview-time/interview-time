@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, Card, Col, Progress, Row, Space, Typography } from "antd";
+import React, { useState } from "react";
+import { Button, Col, Progress, Space, Typography } from "antd";
 import { InterviewAssessmentButtons } from "./interview-sections";
 import {
     getGroupAssessmentColor,
@@ -7,116 +7,160 @@ import {
     getGroupAssessmentText,
     getOverallPerformanceColor,
     getOverallPerformancePercent,
-    getQuestionsWithAssessment,
 } from "../../components/utils/assessment";
 import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
+import Title from "antd/lib/typography/Title";
+import { Status } from "../../components/utils/constants";
+import TextArea from "antd/lib/input/TextArea";
+import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
+import TimeAgo from "../../components/time-ago/time-ago";
+import { filterGroupsWithAssessment, filterQuestionsWithAssessment } from "../../components/utils/filters";
+import { CloseIcon } from "../../components/utils/icons";
+import { routeInterviews } from "../../components/utils/route";
+import { useHistory } from "react-router-dom";
 
 const { Text } = Typography;
 
-const bodyStyleCard = () => ({
-    height: 220,
-    overflow: "scroll",
-});
+const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteChanges, onAssessmentChanged }) => {
 
-const Evaluation = ({ interview, onSubmitClicked, onAssessmentChanged }) => {
+    const [expanded, setExpanded] = useState(false)
+    const history = useHistory();
+
+    const onExpandClicked = () => setExpanded(true)
+
+    const onCollapseClicked = () => setExpanded(false)
+
     return (
         <div className={styles.rootContainer}>
             <Header
                 title="Final step"
                 subtitle="Submit your evaluation"
-                showBackButton={false}
+                leftComponent={
+                    <Button
+                        icon={<CloseIcon />}
+                        size="large"
+                        onClick={() => history.push(routeInterviews())}
+                    />
+                }
                 rightComponent={
-                    <Button type="primary" onClick={onSubmitClicked}>
-                        Submit Evaluation
-                    </Button>
+                    <Space>
+                        <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
+                        <Button type="primary" onClick={onSubmitClicked}>
+                            Submit Evaluation
+                        </Button>
+                    </Space>
                 }
             />
 
             <Col span={24}
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
-
-                <Row gutter={12} style={{ marginBottom: 12, marginTop: 60 }}>
-                    <Col span={6}>
-                        <Card title="Overall Performance" bodyStyle={bodyStyleCard()}>
-                            <div className={styles.divVerticalCenter}>
-                                <Progress
-                                    style={{ marginBottom: 16 }}
-                                    type="circle"
-                                    status="active"
-                                    strokeLinecap="square"
-                                    strokeColor={getOverallPerformanceColor(interview.structure.groups)}
-                                    percent={getOverallPerformancePercent(interview.structure.groups)}
-                                />
-                                <span>
-                                {getQuestionsWithAssessment(interview.structure.groups).length}{" "}
-                                    questions
-                            </span>
+                <div className={styles.divVerticalCenter}>
+                    <span className={styles.guidingLine} />
+                    <Progress
+                        type="circle"
+                        status="active"
+                        strokeLinecap="square"
+                        trailColor="#E5E7EB"
+                        width={160}
+                        strokeWidth={8}
+                        strokeColor={getOverallPerformanceColor(interview.structure.groups)}
+                        percent={getOverallPerformancePercent(interview.structure.groups)}
+                        format={(percent) => {
+                            return <div className={styles.scoreHolder}>
+                                <Text className={styles.scoreText}>{percent}</Text>
+                                <Text className={styles.scoreLabel} type="secondary">Score</Text>
                             </div>
-                        </Card>
-                    </Col>
-                    <Col span={18}>
-                        {" "}
-                        <Card title="Competence Areas" bodyStyle={bodyStyleCard()}>
-                            {interview.structure.groups.map((group) => (
-                                <Row style={{ marginBottom: 24 }} justify="center">
-                                    <Col flex="1" className={styles.divHorizontalCenter}>
-                                        <span>{group.name}</span>
-                                    </Col>
-                                    <Col flex="1" className={styles.divHorizontalCenter}>
-                                        <Progress
-                                            type="line"
-                                            status="active"
-                                            strokeLinecap="square"
-                                            strokeColor={getGroupAssessmentColor(group)}
-                                            steps={10}
-                                            strokeWidth={16}
-                                            percent={getGroupAssessmentPercent(group)}
-                                        />
-                                    </Col>
-                                    <Col flex="1" className={styles.divHorizontalCenter}>
-                                    <span
-                                        className={styles.dotSmall}
-                                        style={{ backgroundColor: getGroupAssessmentColor(group) }}
+                        }}
+                    />
+                    <span className={styles.guidingLine} />
+                </div>
+                <div className={styles.card} style={{ padding: 0 }}>
+                    <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
+                        <Title level={4} style={{ marginBottom: 0 }}>Competence areas</Title>
+                        {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
+                        {expanded && <Button onClick={onCollapseClicked}>Collapse</Button>}
+                    </div>
+                    {filterGroupsWithAssessment(interview.structure.groups)
+                        .map((group) => (
+                        <>
+                            <div className={styles.divider} />
+                            <div className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}
+                                 style={{ backgroundColor: expanded ? "#F9FAFB" : "#FFFFFF" }}>
+                                <Text strong>{group.name}</Text>
+                                <div className={styles.divHorizontalCenter}>
+                                    <Text type="secondary"
+                                          style={{ marginRight: 12 }}>{getGroupAssessmentText(group)}</Text>
+                                    <Progress
+                                        type="line"
+                                        status="active"
+                                        strokeLinecap="square"
+                                        strokeColor={getGroupAssessmentColor(group)}
+                                        trailColor="#E5E7EB"
+                                        steps={10}
+                                        strokeWidth={16}
+                                        percent={getGroupAssessmentPercent(group)}
+                                        format={(percent) => <Text type="secondary">{percent}%</Text>}
                                     />
-                                        <span>{getGroupAssessmentText(group)}</span>
-                                    </Col>
-                                </Row>
-                            ))}
-                        </Card>
-                    </Col>
-                </Row>
-
-                <Card title="Notes" style={{ marginBottom: 12 }}>
-                <span className="fs-mask">
-                    {interview.notes && interview.notes.length > 0
-                        ? interview.notes
-                        : "There are no notes."}
-                </span>
-                </Card>
-
-                <Card style={{ marginBottom: 24 }}>
-                    <Row>
-                        <Space className={styles.space} direction="vertical">
-                            <Text strong>Ready to make hiring recommendation?</Text>
-                            <Text>
-                                Based on the interview data, please evaluate if the candidate is
-                                qualified for the position.
-                            </Text>
-
-                            <div className={styles.divSpaceBetween}>
-                                <InterviewAssessmentButtons
-                                    assessment={interview.decision}
-                                    onAssessmentChanged={(assessment) => {
-                                        onAssessmentChanged(assessment);
-                                    }}
-                                />
+                                </div>
                             </div>
-                        </Space>
-                    </Row>
-                </Card>
+                            {expanded && filterQuestionsWithAssessment(group)
+                                .map(question => <>
+                                    <div className={styles.divider} />
+                                    <div className={`${styles.competenceAreaRow} ${styles.divSpaceBetween}`}>
+                                        <div className={styles.divVertical}>
+                                            <Text>{question.question}</Text>
+                                            <Text className={styles.questionNotes}
+                                                  type="secondary">{question.notes}</Text>
+                                        </div>
+                                        <AssessmentCheckbox
+                                            defaultValue={question.assessment}
+                                            disabled={true}
+                                        />
+                                    </div>
+                                </>)}
+                        </>
+                    ))}
+                </div>
 
+                <div className={styles.divVerticalCenter}>
+                    <span className={styles.guidingLine} />
+                    <div className={`${styles.card} ${styles.noPaddingCard}`}>
+                        <Title level={4} style={{ margin: 24 }}>Summary notes</Title>
+                        <div className={styles.divider} />
+                        <TextArea
+                            {...(interview.status === Status.SUBMITTED ? { readonly: "true" } : {})}
+                            className={`${styles.notesTextArea} fs-mask`}
+                            placeholder="No summary was left, you can still add notes now"
+                            bordered={false}
+                            autoSize={{ minRows: 1 }}
+                            onChange={onNoteChanges}
+                            defaultValue={interview.notes}
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.divVerticalCenter} style={{ marginBottom: 32 }}>
+                    <span className={styles.guidingLine} />
+                    <div className={`${styles.card} ${styles.noPaddingCard} ${styles.decisionCard}`}>
+                        <div style={{ margin: 24 }}>
+                            <Title level={4}>Submit your hiring decision</Title>
+                            <Text className={styles.decisionLabel}
+                                  type="secondary">Based on the interview data, please evaluate if the candidate is
+                                qualified for the position.</Text>
+                        </div>
+                        <div className={styles.divider} />
+                        <div className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}>
+                            <InterviewAssessmentButtons
+                                assessment={interview.decision}
+                                onAssessmentChanged={(assessment) => {
+                                    onAssessmentChanged(assessment);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
             </Col>
         </div>
     );

@@ -162,7 +162,9 @@ const InterviewScorecard = ({
                 <Evaluation
                     interview={interview}
                     onSubmitClicked={onSubmitClicked}
+                    onNoteChanges={onNoteChanges}
                     onAssessmentChanged={onAssessmentChanged}
+                    interviewsUploading={interviewsUploading}
                 />
             )}
         </Row>
