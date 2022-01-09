@@ -14,9 +14,9 @@ namespace CafApi.Services
 
         Task Delete(string userId, string teamId);
 
-        Task<List<Team>> GetTeams(List<string> teamIds);
+        Task<List<(Team, TeamMember)>> GetUserTeams(string userId);
 
-        Task<List<Profile>> GetTeamMembers(string userId, string teamId);
+        Task<List<(Profile, TeamMember)>> GetTeamMembers(string userId, string teamId);
 
         Task<Team> JoinTeam(string userId, string token, string role = null);
 

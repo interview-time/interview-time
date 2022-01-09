@@ -62,15 +62,15 @@ namespace CafApi.Controllers
                 return NotFound();
             }
 
-            var members = await _teamService.GetTeamMembers(UserId, teamId);
+            List<(Profile Profile, TeamMember TeamMember)> members = await _teamService.GetTeamMembers(UserId, teamId);
 
             return members.Select(m => new TeamMembersResponse
             {
-                UserId = m.UserId,
-                Name = m.Name,
-                Email = m.Email,
-                IsAdmin = m.UserId == team.OwnerId,
-                Roles = m.Teams.Where(t => t.TeamId == teamId).Select(t => t.Roles).FirstOrDefault()
+                UserId = m.Profile.UserId,
+                Name = m.Profile.Name,
+                Email = m.Profile.Email,
+                IsAdmin = m.Profile.UserId == team.OwnerId,
+                Roles = m.TeamMember.Roles
             }).ToList();
         }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 
 namespace CafApi.Models
@@ -16,17 +15,8 @@ namespace CafApi.Models
 
         public int TimezoneOffset { get; set; }
 
-        public List<UserTeam> Teams { get; set; }
-
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
-    }
-
-    public class UserTeam
-    {
-        public string TeamId { get; set; }
-
-        public List<string> Roles { get; set; }
     }
 }
