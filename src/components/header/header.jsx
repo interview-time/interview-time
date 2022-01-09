@@ -1,26 +1,14 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
-import { Button, Typography } from "antd";
+import { Typography } from "antd";
 import styles from "./header.module.css";
-import { BackIcon } from "../utils/icons";
 import Text from "antd/lib/typography/Text";
 
 const { Title } = Typography;
 
-const Header = ({ title, subtitle, rightComponent, showBackButton = true }) => {
-    const history = useHistory();
-
+const Header = ({ title, subtitle, rightComponent, leftComponent }) => {
     return (
         <div className={styles.header}>
-            <div className={styles.back}>
-                {showBackButton && (
-                    <Button
-                        icon={<BackIcon />}
-                        size="large"
-                        onClick={() => history.goBack()}
-                    />
-                )}
-            </div>
+            <div className={styles.back}>{leftComponent}</div>
             <div className={styles.candidate}>
                 <Title level={4} style={{ marginBottom: 0 }}>
                     {title}

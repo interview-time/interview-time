@@ -411,28 +411,28 @@ export const InterviewAssessmentButtons = ({ assessment, disabled, onAssessmentC
     return (
         <Space size={16}>
             <div
-                className={getAssessmentButtonRed(InterviewAssessment.STRONG_NO)}
+                className={`${styles.assessmentButton} ${getAssessmentButtonRed(InterviewAssessment.STRONG_NO)}`}
                 onClick={() => onButtonClicked(InterviewAssessment.STRONG_NO)}
             >
                 <StarIcon className={getAssessmentIconStyle(InterviewAssessment.STRONG_NO)} />
                 <Text className={getAssessmentTextRed(InterviewAssessment.STRONG_NO)}>strong no</Text>
             </div>
             <div
-                className={getAssessmentButtonRed(InterviewAssessment.NO)}
+                className={`${styles.assessmentButton} ${getAssessmentButtonRed(InterviewAssessment.NO)}`}
                 onClick={() => onButtonClicked(InterviewAssessment.NO)}
             >
                 <StarHalfIcon className={getAssessmentIconStyle(InterviewAssessment.NO)} />
                 <Text className={getAssessmentTextRed(InterviewAssessment.NO)}>no</Text>
             </div>
             <div
-                className={getAssessmentButtonBlue(InterviewAssessment.YES)}
+                className={`${styles.assessmentButton} ${getAssessmentButtonBlue(InterviewAssessment.YES)}`}
                 onClick={() => onButtonClicked(InterviewAssessment.YES)}
             >
                 <StarFilledIcon className={getAssessmentIconStyle(InterviewAssessment.YES)} />
                 <Text className={getAssessmentTextBlue(InterviewAssessment.YES)}>yes</Text>
             </div>
             <div
-                className={getAssessmentButtonBlue(InterviewAssessment.STRONG_YES)}
+                className={`${styles.assessmentButton} ${getAssessmentButtonBlue(InterviewAssessment.STRONG_YES)}`}
                 onClick={() => onButtonClicked(InterviewAssessment.STRONG_YES)}
             >
                 <StarEmphasisIcon className={getAssessmentIconStyle(InterviewAssessment.STRONG_YES)} />

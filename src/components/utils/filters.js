@@ -50,3 +50,19 @@ export const filterOptionLabel = (inputValue, option) =>
  */
 export const filterOptionValue = (inputValue, option) =>
     option.value.toLowerCase().includes(inputValue.toLowerCase())
+
+/**
+ *
+ * @param {InterviewGroup} inputValue
+ * @returns {Question[]}
+ */
+export const filterQuestionsWithAssessment = (inputValue) =>
+    inputValue.questions.filter(question => question.assessment !== 0)
+
+/**
+ *
+ * @param {InterviewGroup[]} inputValue
+ * @returns {InterviewGroup[]}
+ */
+export const filterGroupsWithAssessment = (inputValue) =>
+    inputValue.filter(group => filterQuestionsWithAssessment(group).length > 0)
