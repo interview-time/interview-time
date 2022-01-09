@@ -40,8 +40,8 @@ namespace CafApi.Services
 
             await _context.SaveAsync(team);
 
-            // add the user to the team 
-            await AddToTeam(userId, team.TeamId);
+            // add the user to the team
+            await AddToTeam(userId, team.TeamId, TeamRole.ADMIN.ToString());
 
             return team;
         }
@@ -96,10 +96,10 @@ namespace CafApi.Services
                 }
 
                 // Remove members from the team
-                var members = await GetTeamMembers(userId, teamId);
+                List<(Profile Profile, TeamMember TeamMember)> members = await GetTeamMembers(userId, teamId);
                 foreach (var member in members)
                 {
-                    await LeaveTeam(member.UserId, teamId);
+                    await LeaveTeam(member.Profile.UserId, teamId);
                 }
 
                 // Delete team
@@ -107,42 +107,64 @@ namespace CafApi.Services
             }
         }
 
-        public async Task<List<Team>> GetTeams(List<string> teamIds)
+        public async Task<List<(Team, TeamMember)>> GetUserTeams(string userId)
         {
-            var teams = new List<Team>();
+            var result = new List<(Team, TeamMember)>();
 
-            if (teamIds != null && teamIds.Any())
+            // Get all team this user is a member of
+            var search = _context.FromQueryAsync<TeamMember>(new QueryOperationConfig()
             {
-                foreach (var teamId in teamIds)
+                IndexName = "UserId-index",
+                Filter = new QueryFilter(nameof(TeamMember.UserId), QueryOperator.Equal, userId)
+            });
+            var memberOfTeams = await search.GetRemainingAsync();
+
+            if (memberOfTeams != null && memberOfTeams.Any())
+            {
+                var teamBatch = _context.CreateBatchGet<Team>();
+                foreach (var memberOfTeam in memberOfTeams)
                 {
-                    var team = await GetTeam(teamId);
-                    if (team != null)
-                    {
-                        teams.Add(team);
-                    }
+                    teamBatch.AddKey(memberOfTeam.TeamId);
+                }
+                await teamBatch.ExecuteAsync();
+
+                // prep result
+                foreach (var memberOfTeam in memberOfTeams)
+                {
+                    var team = teamBatch.Results.FirstOrDefault(t => t.TeamId == memberOfTeam.TeamId);
+                    result.Add((team, memberOfTeam));
                 }
             }
 
-            return teams;
+            return result;
         }
 
-        public async Task<List<Profile>> GetTeamMembers(string userId, string teamId)
+        public async Task<List<(Profile, TeamMember)>> GetTeamMembers(string userId, string teamId)
         {
+            var result = new List<(Profile, TeamMember)>();
             // check if user belongs to the team
             var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
             if (belongsToTeam)
             {
-                var scanConditions = new List<ScanCondition>{
-                new ScanCondition(nameof(Profile.Teams), ScanOperator.Contains, teamId)
-            };
+                var teamMembers = await _context.QueryAsync<TeamMember>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
 
-                var result = _context.ScanAsync<Profile>(scanConditions);
-                var members = await result.GetRemainingAsync();
+                // Get profile for every team member
+                var profileBatch = _context.CreateBatchGet<Profile>();
+                foreach (var teamMember in teamMembers)
+                {
+                    profileBatch.AddKey(teamMember.UserId);
+                }
+                await profileBatch.ExecuteAsync();
 
-                return members;
+                // prep result
+                foreach (var teamMember in teamMembers)
+                {
+                    var profile = profileBatch.Results.FirstOrDefault(p => p.UserId == teamMember.UserId);
+                    result.Add((profile, teamMember));
+                }
             }
 
-            return new List<Profile>();
+            return result;
         }
 
         public async Task<Team> JoinTeam(string userId, string token, string role = null)
@@ -165,44 +187,29 @@ namespace CafApi.Services
 
         public async Task LeaveTeam(string userId, string teamId)
         {
-            var profile = await _userService.GetProfile(userId);
-            if (profile != null && profile.Teams != null && profile.Teams.Any(t => t.TeamId == teamId))
+            var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
+            if (teamMember != null)
             {
-                profile.Teams.RemoveAll(t => t.TeamId == teamId);
-                if (profile.Teams.Count == 0)
-                {
-                    profile.Teams = null;
-                }
-
-                await _context.SaveAsync(profile);
+                await _context.DeleteAsync(teamMember);
             }
         }
 
         private async Task AddToTeam(string userId, string teamId, string role = null)
         {
-            var profile = await _userService.GetProfile(userId);
-            if (profile != null)
+            var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
+
+            if (teamMember == null)
             {
-                if (profile.Teams == null)
+                teamMember = new TeamMember
                 {
-                    profile.Teams = new List<UserTeam>
-                    {
-                        new UserTeam
-                        {
-                            TeamId = teamId,
-                            Roles = new List<string>{ role ?? TeamRole.INTERVIEWER.ToString() }
-                        }
-                    };
-                }
-                else if (!profile.Teams.Any(t => t.TeamId == teamId))
-                {
-                    profile.Teams.Add(new UserTeam
-                    {
-                        TeamId = teamId,
-                        Roles = new List<string> { role ?? TeamRole.INTERVIEWER.ToString() }
-                    });
-                }
-                await _context.SaveAsync(profile);
+                    TeamId = teamId,
+                    UserId = userId,
+                    Roles = new List<string> { role ?? TeamRole.INTERVIEWER.ToString() },
+                    ModifiedDate = DateTime.UtcNow,
+                    CreatedDate = DateTime.UtcNow
+                };
+
+                await _context.SaveAsync(teamMember);
             }
         }
     }

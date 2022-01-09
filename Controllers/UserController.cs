@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -56,7 +57,7 @@ namespace CafApi.Controllers
                 return null;
             }
 
-            var teams = await _teamService.GetTeams(profile.Teams?.Select(t => t.TeamId).ToList());
+            List<(Team Team, TeamMember TeamMember)> teams = await _teamService.GetUserTeams(UserId);
 
             return new ProfileResponse
             {
@@ -66,10 +67,10 @@ namespace CafApi.Controllers
                 TimezoneOffset = profile.TimezoneOffset,
                 Teams = teams.Select(t => new TeamResponse
                 {
-                    TeamId = t.TeamId,
-                    TeamName = t.Name,
-                    Token = t.Token,
-                    Roles = profile.Teams.Where(t => t.TeamId == t.TeamId).Select(t => t.Roles).FirstOrDefault()
+                    TeamId = t.Team.TeamId,
+                    TeamName = t.Team.Name,
+                    Token = t.Team.Token,
+                    Roles = t.TeamMember.Roles
                 }).ToList()
             };
         }

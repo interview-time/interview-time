@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -40,9 +39,9 @@ namespace CafApi.Services
 
         public async Task<bool> IsBelongInTeam(string userId, string teamId)
         {
-            var profile = await _context.LoadAsync<Profile>(userId);
+            var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
 
-            return (profile != null && profile.Teams != null && profile.Teams.Any(t => t.TeamId == teamId));
+            return teamMember != null;
         }
     }
 }
