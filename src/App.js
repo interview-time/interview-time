@@ -29,7 +29,6 @@ import InterviewSchedule from "./pages/interview-schedule/interview-schedule";
 import Templates from "./pages/templates/templates";
 import TemplateEdit from "./pages/template-edit/template-edit";
 import Reports from "./pages/reports/reports";
-import ReportDetails from "./pages/report-details/report-details";
 import News from "./pages/news/news";
 import Account from "./pages/account/account";
 import Spinner from "./components/spinner/spinner";
@@ -43,6 +42,7 @@ import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
 import TeamSettings from "./pages/team-settings/team-settings";
 import JoinTeam from "./pages/team-join/team-join";
+import InterviewReport from "./pages/interview-scorecard/report";
 
 function App({ history }) {
     useEffect(() => {
@@ -74,7 +74,7 @@ function App({ history }) {
             <PrivateRoute path={routeInterviewAdd()} exact component={InterviewSchedule} />
             <PrivateRoute path={routeInterviewDetails()} exact component={InterviewSchedule} />
             <PrivateRoute path={routeInterviewScorecard()} exact component={InterviewScorecard} />
-            <PrivateRoute path={routeInterviewReport()} exact component={ReportDetails} />
+            <PrivateRoute path={routeInterviewReport()} exact component={InterviewReport} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
             <PrivateRoute path={routeTemplateBlank()} exact component={TemplateEdit} />
             <PrivateRoute path={routeTemplateNew()} exact component={TemplateNew} />

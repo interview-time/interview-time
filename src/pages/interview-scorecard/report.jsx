@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Button, Col, Progress, Space, Tag, Typography } from "antd";
-import { InterviewAssessmentButtons } from "./interview-sections";
+import React, { useEffect, useState } from "react";
+import { Button, Col, Modal, Progress, Space, Tag, Typography } from "antd";
 import {
+    getDecisionColor,
+    getDecisionText,
     getGroupAssessmentColor,
     getGroupAssessmentPercent,
     getGroupAssessmentText,
@@ -11,46 +12,88 @@ import {
 import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
 import Title from "antd/lib/typography/Title";
-import { Status } from "../../components/utils/constants";
-import TextArea from "antd/lib/input/TextArea";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import TimeAgo from "../../components/time-ago/time-ago";
 import { filterGroupsWithAssessment, filterQuestionsWithAssessment } from "../../components/utils/filters";
 import { CloseIcon } from "../../components/utils/icons";
 import { routeInterviews } from "../../components/utils/route";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { loadInterviews } from "../../store/interviews/actions";
+import { loadTeamMembers } from "../../store/user/actions";
+import { connect } from "react-redux";
+import { findInterview } from "../../components/utils/converters";
+import Spinner from "../../components/spinner/spinner";
+import Paragraph from "antd/lib/typography/Paragraph";
+import ExportNotes from "../../components/export-notes/export-notes";
 
 const { Text } = Typography;
 
-const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteChanges, onAssessmentChanged }) => {
+/**
+ *
+ * @param {Interview[]} interviews
+ * @param {TeamMember[]} teamMembers
+ * @param loadInterviews
+ * @param loadTeamMembers
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMembers }) => {
 
+    /**
+     * @type {Interview}
+     */
+    const [interview, setInterview] = useState();
     const [expanded, setExpanded] = useState(false)
+    const [showExportNotes, setShowExportNotes] = useState(false);
+
+    const { id } = useParams();
+
     const history = useHistory();
+
+    useEffect(() => {
+        // initial data loading
+        if (interviews.length > 0 && !interview) {
+            const currentInterview = findInterview(id, interviews);
+            setInterview(currentInterview);
+            loadTeamMembers(currentInterview.teamId)
+        }
+        // eslint-disable-next-line
+    }, [interviews]);
+
+    useEffect(() => {
+        loadInterviews();
+        // eslint-disable-next-line
+    }, []);
 
     const onExpandClicked = () => setExpanded(true)
 
     const onCollapseClicked = () => setExpanded(false)
 
-    return (
+    const getInterviewerName = () => {
+        return teamMembers && teamMembers.length > 0
+            ? teamMembers.find(member => member.userId === interview.userId).name : "";
+    }
+
+    const onExportClicked = () => {
+        setShowExportNotes(true)
+    }
+
+    return interview ? (
         <div className={styles.rootContainer}>
             <Header
-                title="Final step"
-                subtitle="Submit your evaluation"
+                title={interview.candidate}
+                subtitle={interview.position}
                 leftComponent={
-                    <Space size={16}>
-                        <Button
-                            icon={<CloseIcon />}
-                            size="large"
-                            onClick={() => history.push(routeInterviews())}
-                        />
-                        <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
-                    </Space>
+                    <Button
+                        icon={<CloseIcon />}
+                        size="large"
+                        onClick={() => history.push(routeInterviews())}
+                    />
                 }
                 rightComponent={
                     <Space size={16}>
-                        <Tag className={styles.tagOrange}>Finalizing...</Tag>
-                        <Button type="primary" onClick={onSubmitClicked}>
-                            Submit Evaluation
+                        <Tag className={styles.tagGreen}>Complete</Tag>
+                        <Button onClick={onExportClicked}>
+                            Export
                         </Button>
                     </Space>
                 }
@@ -59,8 +102,19 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
             <Col span={24}
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
-                <div className={styles.divVerticalCenter}>
-                    <span className={styles.guidingLine} />
+                <div className={styles.divVerticalCenter} style={{ paddingTop: 60 }}>
+                    <div className={`${styles.card} ${styles.noPaddingCard} ${styles.decisionCard}`}
+                         style={{ borderColor: getDecisionColor(interview.decision) }}>
+                        <div className={styles.decisionTextHolder}>
+                            <Title level={4} style={{ margin: 0 }}>🎉 {getInterviewerName()} scored a...</Title>
+                            <Tag color={getDecisionColor(interview.decision)}
+                                 style={{ marginLeft: 20 }}
+                                 className={styles.tag}>{getDecisionText(interview.decision)}</Tag>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
                     <Progress
                         type="circle"
                         status="active"
@@ -77,7 +131,6 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                             </div>
                         }}
                     />
-                    <span className={styles.guidingLine} />
                 </div>
                 <div className={styles.card} style={{ padding: 0 }}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
@@ -127,46 +180,39 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                         ))}
                 </div>
 
-                <div className={styles.divVerticalCenter}>
-                    <span className={styles.guidingLine} />
+                <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
                     <div className={`${styles.card} ${styles.noPaddingCard}`}>
                         <Title level={4} style={{ margin: 24 }}>Summary notes</Title>
                         <div className={styles.divider} />
-                        <TextArea
-                            {...(interview.status === Status.SUBMITTED ? { readonly: "true" } : {})}
-                            className={`${styles.notesTextArea} fs-mask`}
-                            placeholder="No summary was left, you can still add notes now"
-                            bordered={false}
-                            autoSize={{ minRows: 1 }}
-                            onChange={onNoteChanges}
-                            defaultValue={interview.notes}
-                        />
-                    </div>
-                </div>
-
-                <div className={styles.divVerticalCenter} style={{ marginBottom: 32 }}>
-                    <span className={styles.guidingLine} />
-                    <div className={`${styles.card} ${styles.noPaddingCard} ${styles.decisionCard}`}>
-                        <div style={{ margin: 24 }}>
-                            <Title level={4}>Submit your hiring decision</Title>
-                            <Text className={styles.decisionLabel}
-                                  type="secondary">Based on the interview data, please evaluate if the candidate is
-                                qualified for the position.</Text>
-                        </div>
-                        <div className={styles.divider} />
-                        <div className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}>
-                            <InterviewAssessmentButtons
-                                assessment={interview.decision}
-                                onAssessmentChanged={(assessment) => {
-                                    onAssessmentChanged(assessment);
-                                }}
-                            />
-                        </div>
+                        <Paragraph className={`${styles.notesTextArea} fs-mask`}>
+                            {interview.notes ? interview.notes : "No summary was left"}
+                        </Paragraph>
                     </div>
                 </div>
             </Col>
+            <Modal
+                visible={showExportNotes}
+                title={`Export Notes - ${interview.candidate}`}
+                onCancel={() => setShowExportNotes(false)}
+                footer={null}
+                width={600}
+            >
+                <ExportNotes interview={interview} />
+            </Modal>
         </div>
+    ) : (
+        <Spinner />
     );
 };
 
-export default Evaluation;
+const mapDispatch = { loadInterviews, loadTeamMembers };
+const mapState = (state) => {
+    const interviewsState = state.interviews || {};
+    const userState = state.user || {};
+    return {
+        interviews: interviewsState.interviews,
+        teamMembers: userState.teamMembers
+    };
+};
+
+export default connect(mapState, mapDispatch)(InterviewReport);

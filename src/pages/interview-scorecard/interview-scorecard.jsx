@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview, updateScorecard, } from "../../store/interviews/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import { routeReports } from "../../components/utils/route";
+import { routeInterviewReport, routeReports } from "../../components/utils/route";
 import { findInterview, findQuestionInGroups } from "../../components/utils/converters";
 
 import Spinner from "../../components/spinner/spinner";
@@ -21,7 +21,6 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
 /**
  *
  * @param {Interview[]} interviews
- * @param {Template[]} templates
  * @param {boolean} interviewsUploading
  * @param loadInterviews
  * @param updateScorecard
@@ -37,9 +36,8 @@ const InterviewScorecard = ({
     updateInterview,
 }) => {
     /**
-     * @type {Template}
+     * @type {Interview}
      */
-
     const [interview, setInterview] = useState();
 
     const { id } = useParams();
@@ -134,7 +132,7 @@ const InterviewScorecard = ({
                         ...interview,
                         status: Status.SUBMITTED,
                     });
-                    history.push(routeReports());
+                    history.push(routeInterviewReport(interview.interviewId));
                     personalEvent("Interview completed");
                 },
             });
