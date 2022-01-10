@@ -2,7 +2,6 @@ import { flatMap } from "lodash/collection";
 import { InterviewAssessment, QuestionAssessment } from "./constants";
 
 const COLOR_RED_5 = '#ff4d4f';
-const COLOR_GREEN_6 = '#52c41a';
 const COLOR_NEUTRAL_6 = '#bfbfbf';
 
 const COLOR_GREEN_DARK = '#16A34A'
@@ -21,21 +20,21 @@ const PERFORMANCE_SCORE_LOW_SKILLS = 0.4
 
 export const getDecisionText = (decision) => {
     if (decision === InterviewAssessment.YES) {
-        return 'yes';
+        return 'Yes';
     } else if (decision === InterviewAssessment.STRONG_YES) {
-        return 'strong yes';
+        return 'Strong Yes';
     } else if (decision === InterviewAssessment.NO) {
-        return 'no';
+        return 'No';
     } else if (decision === InterviewAssessment.STRONG_NO) {
-        return 'strong no';
+        return 'Strong No';
     }
 
-    return 'none'
+    return 'No Decision'
 }
 
 export const getDecisionColor = (decision) => {
     if (decision === InterviewAssessment.YES || decision === InterviewAssessment.STRONG_YES) {
-        return COLOR_GREEN_6;
+        return COLOR_GREEN_LIGHT;
     } else if (decision === InterviewAssessment.NO || decision === InterviewAssessment.STRONG_NO) {
         return COLOR_RED_5;
     }
