@@ -104,10 +104,10 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             return MENU_KEY_REPORTS
         } else if (location.pathname.includes(routeAccount())) {
             return MENU_KEY_PROFILE
-        } else if (location.pathname.includes(routeHome())) {
-            return MENU_KEY_HOME
         } else if (location.pathname.includes("settings")) {
             return "settings"
+        } else if (location.pathname.includes(routeHome())) {
+            return MENU_KEY_HOME
         }
     }
 
@@ -265,7 +265,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             </AntLayout.Sider>
             <AntLayout className="site-layout">
                 {pageHeader}
-                <AntLayout.Content className={contentStyle ? contentStyle : styles.pageContent}>
+                <AntLayout.Content className={`${styles.pageContent} ${contentStyle}`}>
                     <FeedbackModal
                         visible={feedbackVisible}
                         onClose={onFeedbackClose}

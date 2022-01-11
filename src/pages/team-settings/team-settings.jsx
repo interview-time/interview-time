@@ -1,17 +1,34 @@
 import Layout from "../../components/layout/layout";
-import { Card, Col, message, Spin, Tabs } from "antd";
+import { message, Table, Tag } from "antd";
 import Title from "antd/lib/typography/Title";
 import { connect } from "react-redux";
-import { SettingOutlined, UserAddOutlined } from "@ant-design/icons";
 import TeamDetails from "./team-details";
-import TeamMembers from "./team-members";
 import { useEffect, useState } from "react";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { deleteTeam, leaveTeam, loadProfile, loadTeamMembers, updateTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
 import { TEAM_ROLE_ADMIN } from "../../store/model";
+import Spinner from "../../components/spinner/spinner";
+import styles from "./team-settings.module.css";
+import TeamInvite from "./team-invite";
 
-const { TabPane } = Tabs;
+const columns = [
+    {
+        title: "Name",
+        dataIndex: "name",
+        key: "name",
+    },
+    {
+        title: "Email",
+        dataIndex: "email",
+        key: "email",
+    },
+    {
+        title: "Role",
+        key: "role",
+        render: (member) => member.roles.map((role) => <Tag>{role}</Tag>),
+    },
+];
 
 /**
  *
@@ -40,7 +57,6 @@ const TeamSettings = ({
     const [loading, setLoading] = useState(false);
     const [team, setTeam] = useState();
 
-    const location = useLocation();
     const history = useHistory();
     const { id } = useParams();
 
@@ -57,15 +73,6 @@ const TeamSettings = ({
         }
         // eslint-disable-next-line
     }, [id, teams]);
-
-    /**
-     *
-     * @returns {string|null}
-     */
-    const getTabParam = () => {
-        const params = new URLSearchParams(location.search);
-        return params.get("tab");
-    };
 
     const getTeamName = () => team ? team.teamName : "Team"
 
@@ -95,39 +102,42 @@ const TeamSettings = ({
     const isLoading = () => !team || loading
 
     return (
-        <Layout>
-            <Col span={24} xl={{ span: 12, offset: 6 }} xxl={{ span: 12, offset: 6 }}>
+        <Layout contentStyle={styles.rootContainer}>
+            {!isLoading() ? <div>
+                <Title level={4} style={{ marginBottom: 0 }}>Team settings</Title>
 
-                <Spin spinning={isLoading()} tip="Loading...">
-                    <Card style={{ marginTop: 12 }}>
-                        <Title level={4}>{getTeamName()}</Title>
-                        <Tabs defaultActiveKey={getTabParam()}>
-                            <TabPane
-                                tab={<span><SettingOutlined /> Settings </span>}
-                                key="settings"
-                            >
-                                <TeamDetails
-                                    teamName={getTeamName()}
-                                    isAdmin={isAdmin()}
-                                    onSaveClicked={onSaveClicked}
-                                    onDeleteClicked={onDeleteClicked}
-                                    onLeaveClicked={onLeaveClicked}
-                                />
-                            </TabPane>
-                            <TabPane
-                                tab={<span><UserAddOutlined /> Members</span>}
-                                key="members"
-                            >
-                                <TeamMembers
-                                    teamName={getTeamName()}
-                                    userName={userName}
-                                    teamMembers={teamMembers}
-                                    token={team ? team.token : null} />
-                            </TabPane>
-                        </Tabs>
-                    </Card>
-                </Spin>
-            </Col>
+                <div className={styles.card} style={{ marginTop: 12 }}>
+                    <TeamDetails
+                        teamName={getTeamName()}
+                        isAdmin={isAdmin()}
+                        onSaveClicked={onSaveClicked}
+                        onDeleteClicked={onDeleteClicked}
+                        onLeaveClicked={onLeaveClicked}
+                    />
+                </div>
+
+                <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>Your team members</Title>
+
+                <div className={styles.card} style={{ padding: 0, marginTop: 12 }}>
+                    <Table
+                        columns={columns}
+                        dataSource={teamMembers}
+                        pagination={false}
+                    />
+
+                </div>
+
+                <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>Invite your team</Title>
+
+                <div className={styles.card} style={{ marginTop: 12 }}>
+                    <TeamInvite
+                        teamName={getTeamName()}
+                        userName={userName}
+                        token={team ? team.token : null} />
+                </div>
+
+            </div> : <Spinner />}
+
         </Layout>
     );
 }

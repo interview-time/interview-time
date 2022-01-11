@@ -2,7 +2,7 @@
     --logo-height: 48px;
     --menu-height: calc(100% - var(--logo-height));
     --color-primary: #8C2BE3;
-    --color-background: #F0F2F5;
+    --color-background: #F1F5F9;
 }
 
 .pageHeader {
@@ -14,6 +14,7 @@
     padding-left: 24px;
     padding-right: 24px;
     overflow-y: auto;
+    background-color: var(--color-background);
 }
 
 .globalHeader {
