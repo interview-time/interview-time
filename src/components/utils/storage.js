@@ -8,6 +8,7 @@ const KEY_QUICKSTART_INTERVIEWS = 'quickstart-interviews'
 const KEY_QUICKSTART_TEMPLATES = 'quickstart-templates'
 const KEY_STICKY_NOTES_ENABLED = 'sticky-notes-enabled-v1'
 const KEY_ACTIVE_TEAM = 'selected-team-v3'
+const KEY_JOIN_TEAM = 'selected-team-v1'
 
 export function isUpdateAvailable() {
     const newsVisitTime = localStorage.getItem(KEY_NEWS_VISIT_TIME);
@@ -70,4 +71,17 @@ export function setCachedActiveTeam(team) {
     } else {
         localStorage.removeItem(KEY_ACTIVE_TEAM)
     }
+}
+
+export function setJoinTeam(team) {
+    if (team) {
+        localStorage.setItem(KEY_JOIN_TEAM, JSON.stringify(team))
+    } else {
+        localStorage.removeItem(KEY_JOIN_TEAM)
+    }
+}
+
+export function getJoinTeam() {
+    const value = localStorage.getItem(KEY_JOIN_TEAM);
+    return value ? JSON.parse(value) : undefined
 }

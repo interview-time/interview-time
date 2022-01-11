@@ -5,6 +5,7 @@ import React from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { routeHome } from "../../components/utils/route";
+import { setJoinTeam } from "../../components/utils/storage";
 
 const { Text, Link } = Typography;
 const JoinTeam = () => {
@@ -32,14 +33,27 @@ const JoinTeam = () => {
         return params.get("teamName");
     };
 
+    /**
+     *
+     * @returns {string|null}
+     */
+    const getRole = () => {
+        const params = new URLSearchParams(location.search);
+        return params.get("role");
+    };
+
     const onJoinClicked = () => {
-        sessionStorage.setItem("joinTeam", id);
+        setJoinTeam({
+            token: id,
+            role: getRole()
+        })
         history.push(routeHome());
     };
 
     const getText = () => {
         const userName = getUserName();
         const teamName = getTeamName();
+        const role = getRole();
 
         const userNameComponent = <Text strong>{userName}</Text>
         const teamNameComponent = <Text strong>{teamName}</Text>
