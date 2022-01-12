@@ -53,7 +53,6 @@ const JoinTeam = () => {
     const getText = () => {
         const userName = getUserName();
         const teamName = getTeamName();
-        const role = getRole();
 
         const userNameComponent = <Text strong>{userName}</Text>
         const teamNameComponent = <Text strong>{teamName}</Text>
