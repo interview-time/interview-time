@@ -226,10 +226,11 @@ const userReducer = (state = initialState, action) => {
 
         case JOIN_TEAM: {
             console.log(action.type);
-            const { token } = action.payload;
+            const { team } = action.payload;
 
             const data = {
-                token: token
+                token: team.token,
+                role: team.role,
             }
 
             getAccessTokenSilently()

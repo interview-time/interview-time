@@ -25,12 +25,14 @@ import {
 
 import { useAuth0 } from "../../react-auth0-spa";
 import Avatar from "antd/es/avatar/avatar";
+import { truncate } from "lodash/string";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
 import { joinTeam, setActiveTeam } from "../../store/user/actions";
 import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
+import { getJoinTeam, setJoinTeam } from "../utils/storage";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -67,21 +69,21 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     const [feedbackVisible, setFeedbackVisible] = React.useState(false)
 
     React.useEffect(() => {
-        let joinTeamToken = sessionStorage.getItem("joinTeam");
-        if (joinTeamToken) {
+        let team = getJoinTeam();
+        if (team) {
             openTeamJoinProgressNotification()
-            joinTeam(joinTeamToken)
+            joinTeam(team)
         }
         // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
-        let joinTeamToken = sessionStorage.getItem("joinTeam");
-        if (joinTeamToken) {
-            const joinedTeam = defaultTo(profile.teams, []).find(team => team.token === joinTeamToken)
+        let team = getJoinTeam();
+        if (team) {
+            const joinedTeam = defaultTo(profile.teams, []).find(t => t.token === team.token)
             if (joinedTeam) {
                 openTeamJoinSuccessNotification(joinedTeam);
-                sessionStorage.removeItem("joinTeam")
+                setJoinTeam(null)
             }
         }
         // eslint-disable-next-line
@@ -104,10 +106,10 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             return MENU_KEY_REPORTS
         } else if (location.pathname.includes(routeAccount())) {
             return MENU_KEY_PROFILE
-        } else if (location.pathname.includes(routeHome())) {
-            return MENU_KEY_HOME
         } else if (location.pathname.includes("settings")) {
             return "settings"
+        } else if (location.pathname.includes(routeHome())) {
+            return MENU_KEY_HOME
         }
     }
 
@@ -172,6 +174,10 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         label: team.teamName,
     }));
 
+    const getProfileName = () => truncate(profile.name, {
+        'length': 20
+    })
+
     return (
         <AntLayout className={styles.globalLayout}>
             <AntLayout.Sider
@@ -198,7 +204,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                             icon={<ProfileIcon />} />
                         <Text
                             className={styles.profileButton}
-                            type="text">{profile.name}</Text>
+                            type="text">{getProfileName()}</Text>
                     </Link>
                     <Select
                         placeholder="Select interview template"
@@ -265,7 +271,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             </AntLayout.Sider>
             <AntLayout className="site-layout">
                 {pageHeader}
-                <AntLayout.Content className={contentStyle ? contentStyle : styles.pageContent}>
+                <AntLayout.Content className={`${styles.pageContent} ${contentStyle}`}>
                     <FeedbackModal
                         visible={feedbackVisible}
                         onClose={onFeedbackClose}
