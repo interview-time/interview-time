@@ -27,11 +27,6 @@ export const routeInterviewScorecard = (id) => {
     return id ? url.replace(":id", id) : url;
 }
 
-export const routeInterviewCandidate = (id) => {
-    const url = "/interviews/evaluation/:id";
-    return id ? url.replace(":id", id) : url;
-}
-
 export const routeTemplates = () => "/templates"
 
 export const routeTemplateBlank = () => "/templates/user/blank/"

@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { Button, Card, Col, message, Row} from "antd";
-import Layout from "../../components/layout/layout";
-import styles from "./interview-scorecard.module.css";
+import { Modal, Row } from "antd";
 import { connect } from "react-redux";
-import { deleteInterview, loadInterviews, updateScorecard } from "../../store/interviews/actions";
+import { deleteInterview, loadInterviews, updateInterview, updateScorecard, } from "../../store/interviews/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import {
-    routeInterviewCandidate,
-    routeInterviewDetails,
-    routeInterviews,
-} from "../../components/utils/route";
+import { routeInterviewReport } from "../../components/utils/route";
 import { findInterview, findQuestionInGroups } from "../../components/utils/converters";
-import {
-    InterviewGroupsSection,
-    IntroSection,
-    SummarySection,
-    InterviewInformationSection,
-} from "./interview-sections";
-import NotesSection from "./notes-section";
-import TimeAgo from "../../components/time-ago/time-ago";
+
 import Spinner from "../../components/spinner/spinner";
+
+import { Status } from "../../components/utils/constants";
+import { personalEvent } from "../../analytics";
+import Assessment from "./assessment";
+import Evaluation from "./evaluation";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
 const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
@@ -29,25 +21,23 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
 /**
  *
  * @param {Interview[]} interviews
- * @param {Template[]} templates
  * @param {boolean} interviewsUploading
- * @param deleteInterview
  * @param loadInterviews
  * @param updateScorecard
+ * @param updateInterview
  * @returns {JSX.Element}
  * @constructor
  */
 const InterviewScorecard = ({
     interviews,
     interviewsUploading,
-    deleteInterview,
     loadInterviews,
     updateScorecard,
+    updateInterview,
 }) => {
     /**
-     * @type {Template}
+     * @type {Interview}
      */
-
     const [interview, setInterview] = useState();
 
     const { id } = useParams();
@@ -90,22 +80,6 @@ const InterviewScorecard = ({
         // eslint-disable-next-line
     }, [interview]);
 
-    const initialLoading = () => !interview.interviewId;
-
-    const onDeleteInterview = () => {
-        deleteInterview(interview.interviewId);
-        history.push(routeInterviews());
-    };
-
-    const onEditInterview = () => {
-        history.push(routeInterviewDetails(interview.interviewId));
-    };
-
-    const onBackClicked = () => {
-        // don't use back because of anchor links
-        history.push(routeInterviews());
-    };
-
     const onQuestionNotesChanged = (questionId, notes) => {
         setInterview((prevInterview) => {
             findQuestionInGroups(questionId, prevInterview.structure.groups).notes = notes;
@@ -116,7 +90,8 @@ const InterviewScorecard = ({
 
     const onQuestionAssessmentChanged = (questionId, assessment) => {
         setInterview((prevInterview) => {
-            findQuestionInGroups(questionId, prevInterview.structure.groups).assessment = assessment;
+            findQuestionInGroups(questionId, prevInterview.structure.groups).assessment =
+                assessment;
 
             return { ...prevInterview };
         });
@@ -126,94 +101,77 @@ const InterviewScorecard = ({
         setInterview({ ...interview, notes: e.target.value });
     };
 
-    const onCandidateEvaluationClicked = () => {
-        updateScorecard(interview);
-        message.success(`Interview '${interview.candidate}' updated.`);
-        history.push(routeInterviewCandidate(interview.interviewId));
+    const onAssessmentChanged = (assessment) => {
+        setInterview({
+            ...interview,
+            decision: assessment,
+        });
+    };
+
+    const onCompletedClicked = () => {
+        updateInterview({
+            ...interview,
+            status: Status.COMPLETED,
+        });
+        setInterview({
+            ...interview,
+            status: Status.COMPLETED,
+        });
+    };
+
+    const onSubmitClicked = () => {
+        if (interview.decision) {
+            Modal.confirm({
+                title: "Submit Candidate Evaluation",
+                content:
+                    "You will not be able to make changes to this interview-schedule anymore. Are you sure that you want to continue?",
+                okText: "Yes",
+                cancelText: "No",
+                onOk() {
+                    updateInterview({
+                        ...interview,
+                        status: Status.SUBMITTED,
+                    });
+                    history.push(routeInterviewReport(interview.interviewId));
+                    personalEvent("Interview completed");
+                },
+            });
+        } else {
+            Modal.warn({
+                title: "Submit Candidate Evaluation",
+                content: "Please select 'hiring recommendation'.",
+            });
+        }
     };
 
     return interview ? (
-        <Layout>
-            <Row className={styles.rootContainer}>
-                <Col
-                    xxl={{ span: 16, offset: 4 }}
-                    xl={{ span: 20 }}
-                    lg={{ span: 24 }}
-                    md={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    xs={{ span: 24 }}
-                >
-                    <div style={{ marginBottom: 12 }}>
-                        <InterviewInformationSection
-                            title="Interview"
-                            onBackClicked={onBackClicked}
-                            onDeleteInterview={onDeleteInterview}
-                            onEditInterview={onEditInterview}
-                            loading={initialLoading()}
-                            interview={interview}
-                        />
-                    </div>
-
-                    <Card style={{ marginBottom: 12 }}>
-                        <IntroSection interview={interview} hashStyle={styles.hash} />
-                    </Card>
-
-                    <InterviewGroupsSection
-                        interview={interview}
-                        onQuestionNotesChanged={onQuestionNotesChanged}
-                        onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                        hashStyle={styles.hash}
-                    />
-
-                    <Card style={{ marginTop: 12 }}>
-                        <SummarySection interview={interview} />
-                    </Card>
-
-                    <NotesSection
-                        notes={interview.notes}
-                        status={interview.status}
-                        onChange={onNoteChanges}
-                    />
-
-                    <Card style={{ marginTop: 12, marginBottom: 12 }}>
-                        <div className={styles.divSpaceBetween}>
-                            <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
-                            <Button type="primary" onClick={onCandidateEvaluationClicked}>
-                                Next to Candidate Evaluation
-                            </Button>
-                        </div>
-                    </Card>
-                </Col>
-                <Col
-                    xxl={{ span: 4 }}
-                    xl={{ span: 4 }}
-                    lg={{ span: 0 }}
-                    md={{ span: 0 }}
-                    sm={{ span: 0 }}
-                    xs={{ span: 0 }}
-                >
-                    <div className={styles.toc}>
-                        <a href={"#intro"} className={styles.anchorLink}>
-                            Intro
-                        </a>
-                        {interview.structure.groups.map((group) => (
-                            <a key={group.groupId} href={`#${group.name}`} className={styles.anchorLink}>
-                                {group.name}
-                            </a>
-                        ))}
-                        <a href={"#summary"} className={styles.anchorLink}>
-                            End of interview
-                        </a>
-                    </div>
-                </Col>
-            </Row>
-        </Layout>
+        <Row>
+            {(interview.status === Status.NEW || interview.status === Status.STARTED) && (
+                <Assessment
+                    interview={interview}
+                    onCompletedClicked={onCompletedClicked}
+                    onQuestionNotesChanged={onQuestionNotesChanged}
+                    onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                    onNoteChanges={onNoteChanges}
+                    interviewsUploading={interviewsUploading}
+                />
+            )}
+            {interview.status === Status.COMPLETED && (
+                <Evaluation
+                    interview={interview}
+                    onSubmitClicked={onSubmitClicked}
+                    onNoteChanges={onNoteChanges}
+                    onAssessmentChanged={onAssessmentChanged}
+                    interviewsUploading={interviewsUploading}
+                />
+            )}
+        </Row>
     ) : (
         <Spinner />
     );
 };
 
-const mapDispatch = { deleteInterview, loadInterviews, updateScorecard };
+const mapDispatch = { deleteInterview, loadInterviews, updateScorecard, updateInterview };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
     return {

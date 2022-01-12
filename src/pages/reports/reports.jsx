@@ -25,6 +25,7 @@ import { routeInterviewReport } from "../../components/utils/route";
 import { TrophyTwoTone } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
+import { filterOptionLabel } from "../../components/utils/filters";
 
 const { Search } = Input;
 
@@ -196,9 +197,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
                             }
                             showSearch
                             allowClear
-                            filterOption={(inputValue, option) =>
-                                option.value.toLocaleLowerCase().includes(inputValue)
-                            }
+                            filterOption={filterOptionLabel}
                         />
                     </Space>
                 </div>
@@ -228,7 +227,7 @@ const mapState = (state) => {
     const interviewsState = state.interviews || {};
 
     const interviews = reverse(sortBy(cloneDeep(
-        interviewsState.interviews.filter(interview => interview.status === Status.COMPLETED)
+        interviewsState.interviews.filter(interview => interview.status === Status.SUBMITTED)
     ), ['interviewDateTime']))
 
     return {

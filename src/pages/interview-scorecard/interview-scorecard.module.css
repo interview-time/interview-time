@@ -31,7 +31,16 @@
 }
 
 .rootContainer {
-    margin-top: 24px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #F9FAFB;
+}
+
+.card {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
+    border-radius: 8px;
+    padding: 24px;
 }
 
 .summary {
@@ -44,13 +53,37 @@
 
 .space {
     width: 100%;
-    padding-top: 24px;
 }
 
 .divSpaceBetween {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.divHorizontalCenter {
+    display: flex;
+    align-items: center;
+}
+
+.divVerticalCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.divVertical {
+    display: flex;
+    flex-direction: column;
+}
+
+.dotSmall {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 16px;
+    margin-right: 16px;
 }
 
 .toc {
@@ -68,4 +101,112 @@
 
 .hash {
     scroll-margin-top: var(--header-height-with-padding);
+}
+
+.stepDescription {
+    white-space: nowrap;
+}
+
+.stepInterview {
+    max-width: 50%;
+}
+
+.stepFeedback {
+    width: 50%;
+}
+
+.scoreHolder {
+    display: flex;
+    flex-direction: column;
+}
+
+.scoreText {
+    font-weight: bold;
+    font-size: 52px;
+    margin-bottom: 0;
+}
+
+.scoreLabel {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.guidingLine {
+    height: 30px;
+    border-left: 2px dashed #D1D5DB;
+}
+
+.divider {
+    width: 100%;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.competenceAreaRow {
+    padding: 16px 24px;
+}
+
+.noPaddingCard {
+    width: 100%;
+    padding: 0;
+}
+
+.decisionCard {
+    border-top: 6px solid #8C2BE3;
+}
+
+.questionNotes {
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.notesTextArea {
+    resize: none;
+    padding: 24px;
+}
+
+.decisionLabel {
+    font-size: 14px;
+}
+
+.tagOrange {
+    font-size: 14px;
+    font-weight: 500;
+    color: #B45309;
+    background: #FFFBEB;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+}
+
+.tagRed {
+    font-size: 14px;
+    font-weight: 500;
+    color: #B91C1C;
+    background: #FEF2F2;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+}
+
+.tagGreen {
+    font-size: 14px;
+    font-weight: 500;
+    color: #15803D;
+    background: #F0FDF4;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+}
+
+.tag {
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 24px;
+}
+
+.decisionTextHolder{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 24px;
 }

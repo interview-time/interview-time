@@ -1,8 +1,8 @@
 :root {
-    --logo-height: 70px;
+    --logo-height: 48px;
     --menu-height: calc(100% - var(--logo-height));
-    --color-primary: #1890ff;
-    --color-background: #F0F2F5;
+    --color-primary: #8C2BE3;
+    --color-background: #F1F5F9;
 }
 
 .pageHeader {
@@ -13,6 +13,8 @@
 .pageContent {
     padding-left: 24px;
     padding-right: 24px;
+    overflow-y: auto;
+    background-color: var(--color-background);
 }
 
 .globalHeader {
@@ -21,6 +23,7 @@
 }
 
 .globalSider {
+    padding-top: 20px;
     border-right: 1px solid rgb(235, 237, 240);
     z-index: 999;
 }
@@ -29,19 +32,35 @@
     height: 100vh
 }
 
+.divider {
+    background-color: #E5E7EB;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
 .logo {
     height: var(--logo-height);
-    margin-left: 4px;
-    margin-right: 4px;
+}
+
+.logoText {
+    font-family: "Inter var", "system-ui", serif;
+    font-weight: 600;
+    font-size: 20px;
+    margin-left: 12px;
+}
+
+.logoHolder {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
 }
 
 .menu {
     border: 0;
     display: flex;
-    height: var(--menu-height);
+    /*height: var(--menu-height);*/
     flex-direction: column;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding: 20px 20px;
 }
 
 .space {
@@ -50,68 +69,34 @@
 
 .menuItem {
     display: flex;
-    align-items: center
+    align-items: center;
+    font-weight: 500;
+    border-radius: 6px;
 }
 
-.menuTeam {
+.menuItemProfile {
     display: flex;
     align-items: center;
+    font-weight: 400;
+    border-radius: 6px;
+    padding-left: 0;
+    margin-left: 0;
 }
 
-.selectedTeam {
+.newInterviewButton {
+    font-weight: 500;
+    margin-bottom: 24px;
+}
+
+.profileHolder {
     display: flex;
     align-items: center;
-    cursor: pointer;
-    padding: 16px 12px;
+    margin-bottom: 16px;
 }
 
-.menuTeamText {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin-left: 16px;
-    margin-right: 16px;
+.profileButton {
+    margin-left: 12px;
 }
-
-.menuTeamCreate {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin-left: 16px;
-    margin-right: 16px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-}
-
-.selectedTeamText {
-    flex-grow: 1;
-    margin-left: 8px;
-}
-
-.progressContainer {
-    margin-bottom: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    line-height: 1;
-}
-
-.progress {
-    margin-left: 18px;
-    margin-right: 8px;
-}
-
-.progressTextContainer {
-    display: flex;
-    flex-direction: column;
-}
-
-.progressTextSecondary {
-    font-size: 12px;
-    margin-top: 4px;
-    color: #666666;
-}
-
 .avatar {
     background-color: var(--color-primary);
 }

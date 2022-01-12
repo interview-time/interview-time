@@ -116,12 +116,12 @@ export const setTeamMembers = (members) => ({
 
 /**
  *
- * @param {String} token
+ * @param {Object} team
  * @returns {{payload: {token}, type: String}}
  */
-export const joinTeam = (token) => ({
+export const joinTeam = (team) => ({
     type: JOIN_TEAM,
     payload: {
-        token
+        team
     }
 });

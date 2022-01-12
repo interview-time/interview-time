@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Button, Divider, Dropdown, Layout as AntLayout, Menu, notification } from "antd";
+import { Button, Divider, Layout as AntLayout, Menu, notification, Select } from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
@@ -9,18 +9,13 @@ import {
     HomeIcon,
     InterviewIcon,
     ProfileIcon,
-    SettingsIcon,
-    TeamCircleIcon,
-    TeamCreateIcon,
-    TeamIcon,
-    TeamSelectedIcon,
-    TeamSwitcherIcon
+    SettingsIcon
 } from "../utils/icons";
 import {
     routeAccount,
     routeHome,
+    routeInterviewAdd,
     routeInterviews,
-    routeNews,
     routeReports,
     routeTeamNew,
     routeTeamSettings,
@@ -34,11 +29,10 @@ import { truncate } from "lodash/string";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
 import { joinTeam, setActiveTeam } from "../../store/user/actions";
 import { connect } from "react-redux";
-import Text from "antd/lib/typography/Text";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
-
-const menuIconStyle = { fontSize: '24px' }
+import Text from "antd/lib/typography/Text";
+import { getJoinTeam, setJoinTeam } from "../utils/storage";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -66,24 +60,30 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     const history = useHistory();
     const { user } = useAuth0();
 
+    const MENU_KEY_PROFILE = "PROFILE"
+    const MENU_KEY_HOME = "HOME"
+    const MENU_KEY_TEMPLATES = "TEMPLATES"
+    const MENU_KEY_INTERVIEWS = "INTERVIEWS"
+    const MENU_KEY_REPORTS = "REPORTS"
+
     const [feedbackVisible, setFeedbackVisible] = React.useState(false)
 
     React.useEffect(() => {
-        let joinTeamToken = sessionStorage.getItem("joinTeam");
-        if (joinTeamToken) {
+        let team = getJoinTeam();
+        if (team) {
             openTeamJoinProgressNotification()
-            joinTeam(joinTeamToken)
+            joinTeam(team)
         }
         // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
-        let joinTeamToken = sessionStorage.getItem("joinTeam");
-        if (joinTeamToken) {
-            const joinedTeam = defaultTo(profile.teams, []).find(team => team.token === joinTeamToken)
+        let team = getJoinTeam();
+        if (team) {
+            const joinedTeam = defaultTo(profile.teams, []).find(t => t.token === team.token)
             if (joinedTeam) {
                 openTeamJoinSuccessNotification(joinedTeam);
-                sessionStorage.removeItem("joinTeam")
+                setJoinTeam(null)
             }
         }
         // eslint-disable-next-line
@@ -94,31 +94,22 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
      * @returns {ActiveTeam}
      */
     const getActiveTeam = () => {
-        return activeTeam ? activeTeam : {
-            teamName: user.name,
-            picture: user.picture
-        };
+        return activeTeam ? activeTeam : profile.teams[0];
     }
 
-    const getActiveTeamName = () => truncate(getActiveTeam().teamName, {
-        'length': 14
-    })
-
-    const getSelectedKey = () => {
-        if (location.pathname.includes(routeTemplates())) {
-            return routeTemplates()
+    const getSelectedMenuKey = () => {
+        if (location.pathname.includes(routeTemplates()) || location.pathname.includes(routeTemplateNew())) {
+            return MENU_KEY_TEMPLATES
         } else if (location.pathname.includes(routeInterviews())) {
-            return routeInterviews()
-        } else if (location.pathname.includes(routeNews())) {
-            return routeNews()
-        } else if (location.pathname.includes(routeTemplateNew())) {
-            return routeTemplateNew()
+            return MENU_KEY_INTERVIEWS
         } else if (location.pathname.includes(routeReports())) {
-            return routeReports()
-        } else if (location.pathname.includes("settings") || location.pathname.includes("account")) {
+            return MENU_KEY_REPORTS
+        } else if (location.pathname.includes(routeAccount())) {
+            return MENU_KEY_PROFILE
+        } else if (location.pathname.includes("settings")) {
             return "settings"
         } else if (location.pathname.includes(routeHome())) {
-            return routeHome()
+            return MENU_KEY_HOME
         }
     }
 
@@ -168,61 +159,24 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         }
     }
 
-    const onUserSelected = () => {
-        const selected = {
-            teamName: user.name,
-            picture: user.picture
-        };
-        if (selected.teamName !== getActiveTeam().teamName) {
-            setActiveTeam(selected);
-            history.push(routeHome());
-        }
-    }
+    const onTeamChange = (value) => onTeamSelected(profile.teams.find(team => team.teamId === value))
 
     const onCreateTeam = () => {
         history.push(routeTeamNew())
     }
 
-    const teamMenu = (
-        <Menu>
-            <Menu.Item onClick={() => onUserSelected()}>
-                <div className={styles.menuTeam}>
-                    <Avatar
-                        src={user ? user.picture : null}
-                        className={styles.avatar}
-                        size={24}
-                        icon={<ProfileIcon />} />
-                    <div className={styles.menuTeamText}>
-                        <Text>{profile.name}</Text>
-                        <Text type="secondary">Personal</Text>
-                    </div>
-                    {!getActiveTeam().teamId && <TeamSelectedIcon />}
-                </div>
-            </Menu.Item>
-            <Menu.Divider />
-            {defaultTo(profile.teams, []).map(team => <>
-                <Menu.Item onClick={() => onTeamSelected(team)}>
-                    <div className={styles.menuTeam}>
-                        <TeamIcon style={menuIconStyle} />
-                        <div className={styles.menuTeamText}>
-                            <Text>{team.teamName}</Text>
-                            <Text type="secondary">Team</Text>
-                        </div>
-                        {getActiveTeam().teamId === team.teamId && <TeamSelectedIcon />}
-                    </div>
-                </Menu.Item>
-                <Menu.Divider />
-            </>)}
-            <Menu.Item onClick={() => onCreateTeam()}>
-                <div className={styles.menuTeam}>
-                    <TeamCreateIcon style={menuIconStyle} />
-                    <div className={styles.menuTeamCreate}>
-                        <Link>Create Team</Link>
-                    </div>
-                </div>
-            </Menu.Item>
-        </Menu>
-    );
+    const onNewInterviewClicked = () => {
+        history.push(routeInterviewAdd());
+    }
+
+    const teamOptions = defaultTo(profile.teams, []).map(team => ({
+        value: team.teamId,
+        label: team.teamName,
+    }));
+
+    const getProfileName = () => truncate(profile.name, {
+        'length': 20
+    })
 
     return (
         <AntLayout className={styles.globalLayout}>
@@ -230,71 +184,94 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                 theme='light'
                 breakpoint="lg"
                 collapsedWidth="0"
+                width={280}
                 className={styles.globalSider}>
-                <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo+text.png'} className={styles.logo} />
+                <div className={styles.logoHolder}>
+                    <img alt="Interviewer" src={process.env.PUBLIC_URL + '/logo192.png'} className={styles.logo} />
+                    <span className={styles.logoText}>Interviewer</span>
+                </div>
                 <Menu theme="light"
                       mode="vertical"
                       defaultSelectedKeys={[routeHome()]}
-                      selectedKeys={[getSelectedKey()]}
+                      selectedKeys={[getSelectedMenuKey()]}
                       className={styles.menu}
                 >
-                    <Menu.Item key={routeHome()} className={styles.menuItem}
-                               icon={<HomeIcon style={menuIconStyle} />}>
+                    <Link to={routeAccount()} className={styles.profileHolder}>
+                        <Avatar
+                            src={user ? user.picture : null}
+                            className={styles.avatar}
+                            size={32}
+                            icon={<ProfileIcon />} />
+                        <Text
+                            className={styles.profileButton}
+                            type="text">{getProfileName()}</Text>
+                    </Link>
+                    <Select
+                        placeholder="Select interview template"
+                        onChange={onTeamChange}
+                        defaultValue={getActiveTeam().teamId}
+                        options={teamOptions}
+                        dropdownRender={(menu) => (
+                            <div>
+                                {menu}
+                                <Divider style={{ margin: "4px 0" }} />
+                                <Button
+                                    style={{ paddingLeft: 12 }}
+                                    type="link"
+                                    onClick={onCreateTeam}
+                                >
+                                    Create New Team
+                                </Button>
+                            </div>
+                        )}
+                    />
+                    <Divider className={styles.divider} />
+                    <Button type="primary"
+                            icon={<PlusOutlined style={{ fontSize: "18px" }} />}
+                            onClick={onNewInterviewClicked}
+                            className={styles.newInterviewButton}>New Interview</Button>
+                    <Menu.Item key={MENU_KEY_HOME} className={styles.menuItem}
+                               icon={<HomeIcon />}>
                         <Link to={routeHome()}>
-                            <span className="nav-text">Home</span>
+                            <span className="nav-text">Dashboard</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={routeTemplates()} className={styles.menuItem}
-                               icon={<GuideIcon style={menuIconStyle} />}>
-                        <Link to={routeTemplates()}>
-                            <span className="nav-text">Templates</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key={routeInterviews()} className={styles.menuItem}
-                               icon={<InterviewIcon style={menuIconStyle} />}>
+                    <Menu.Item key={MENU_KEY_INTERVIEWS} className={styles.menuItem}
+                               icon={<InterviewIcon />}>
                         <Link to={routeInterviews()}>
                             <span className="nav-text">Interviews</span>
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key={routeReports()} className={styles.menuItem}
-                               icon={<CandidatesIcon style={menuIconStyle} />}>
+                    <Menu.Item key={MENU_KEY_TEMPLATES} className={styles.menuItem}
+                               icon={<GuideIcon />}>
+                        <Link to={routeTemplates()}>
+                            <span className="nav-text">Templates</span>
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key={MENU_KEY_REPORTS} className={styles.menuItem}
+                               icon={<CandidatesIcon />}>
                         <Link to={routeReports()}>
                             <span className="nav-text">Reports</span>
                         </Link>
                     </Menu.Item>
-                    <div className={styles.space} />
-                    <Menu.Item key="feedback" className={styles.menuItem}
-                               icon={<FeedbackIcon style={menuIconStyle} />}
-                               onClick={onFeedbackClicked}>
-                        <span className="nav-text">Feedback</span>
-                    </Menu.Item>
-                    <Divider style={{ margin: 8 }} />
+                    <Divider className={styles.divider} />
                     <Menu.Item key="settings" className={styles.menuItem}
-                               icon={<SettingsIcon style={menuIconStyle} />}>
-                        <Link to={getActiveTeam().teamId ? routeTeamSettings(getActiveTeam().teamId) : routeAccount()}>
-                            <span
-                                className="nav-text">{getActiveTeam().teamId ? "Team Settings" : "User Settings"}</span>
+                               icon={<SettingsIcon />}>
+                        <Link to={routeTeamSettings(getActiveTeam().teamId)}>
+                            <span className="nav-text">Team settings</span>
                         </Link>
                     </Menu.Item>
-                    <div>
-                        <Dropdown overlay={teamMenu}>
-                            <div className={styles.selectedTeam}>
-                                {!getActiveTeam().teamId && <Avatar
-                                    src={getActiveTeam().picture}
-                                    className={styles.avatar}
-                                    size={28}
-                                    icon={<ProfileIcon />} />}
-                                {getActiveTeam().teamId && <TeamCircleIcon />}
-                                <Text className={styles.selectedTeamText}>{getActiveTeamName()}</Text>
-                                <TeamSwitcherIcon />
-                            </div>
-                        </Dropdown>
-                    </div>
+                    <Menu.Item key="feedback" className={styles.menuItem}
+                               icon={<FeedbackIcon />}
+                               onClick={onFeedbackClicked}>
+                        <span className="nav-text">Provide feedback</span>
+                    </Menu.Item>
+                    {/*<div className={styles.space} />*/}
                 </Menu>
             </AntLayout.Sider>
             <AntLayout className="site-layout">
                 {pageHeader}
-                <AntLayout.Content className={contentStyle ? contentStyle : styles.pageContent}>
+                <AntLayout.Content className={`${styles.pageContent} ${contentStyle}`}>
                     <FeedbackModal
                         visible={feedbackVisible}
                         onClose={onFeedbackClose}

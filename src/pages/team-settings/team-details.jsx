@@ -22,7 +22,6 @@ const TeamDetails = ({ teamName, isAdmin, onSaveClicked, onDeleteClicked, onLeav
     }
 
     return <Form
-        style={{ marginTop: 24 }}
         name="basic"
         layout="vertical"
         onFinish={() => onSaveClicked(team.teamName)}

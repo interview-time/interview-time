@@ -14,6 +14,7 @@ const AssessmentCheckbox = ({ defaultValue, disabled, onChange }) => {
     return (
         <Rate
             count={3}
+            style={{minWidth: 76}}
             defaultValue={defaultTo(defaultValue, 0)}            
             disabled={disabled}
             onChange={onChange}

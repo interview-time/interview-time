@@ -7,6 +7,7 @@ export const Status = {
     NEW: "NEW",
     STARTED: "STARTED",
     COMPLETED: "COMPLETED",
+    SUBMITTED: "SUBMITTED"
 }
 
 export const Difficulty = {
@@ -142,4 +143,26 @@ export const createTagColors = (tags) => {
     return tagColorsMap
 }
 
-export const getAvatarText = (text) => text.split(' ').slice(0, 3).map(item => item.charAt(0)).join('')
+export const POSITIONS = [
+    { value: "Software Engineer" },
+    { value: "Site Reliability Engineer" },
+    { value: "Back-End Developer" },
+    { value: "Front-End Developer" },
+    { value: "Full-Stack Developer" },
+    { value: "Android Developer" },
+    { value: "iOS Developer" },
+    { value: "QA Engineer" },
+    { value: "Machine Learning Engineer" },
+    { value: "Data Scientist" },
+    { value: "Data Engineer" },
+    { value: "Data Analyst" },
+    { value: "Cloud Engineer" },
+    { value: "Cloud Security Engineer" },
+    { value: "Product manager" },
+    { value: "Project manager" },
+    { value: "Program manager" },
+    { value: "Portfolio manager" },
+    { value: "System administrator" },
+    { value: "UI Designer" },
+    { value: "UX Designer" },
+]

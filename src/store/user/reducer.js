@@ -30,7 +30,7 @@ const initialState = {
     profile: null,
     loading: false,
     activeTeam: getCachedActiveTeam(),
-    teamMembers: null
+    teamMembers: []
 };
 
 const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
@@ -110,7 +110,7 @@ const userReducer = (state = initialState, action) => {
                 return {
                     ...state,
                     activeTeam: team,
-                    teamMembers: null
+                    teamMembers: []
                 };
             }
 
@@ -208,7 +208,7 @@ const userReducer = (state = initialState, action) => {
 
             getAccessTokenSilently()
                 .then(token => axios.get(`${URL_TEAMS}/members/${teamId}`, config(token)))
-                .then((res) => store.dispatch(setTeamMembers(res.data)))
+                .then((res) => store.dispatch(setTeamMembers(res.data || [])))
                 .catch(reason => console.error(reason));
 
             return state;
@@ -220,16 +220,17 @@ const userReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                teamMembers: members
+                teamMembers: members || []
             };
         }
 
         case JOIN_TEAM: {
             console.log(action.type);
-            const { token } = action.payload;
+            const { team } = action.payload;
 
             const data = {
-                token: token
+                token: team.token,
+                role: team.role,
             }
 
             getAccessTokenSilently()

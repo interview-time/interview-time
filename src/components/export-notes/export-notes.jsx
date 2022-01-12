@@ -1,43 +1,83 @@
-import React, { useState, useEffect } from "react";
-import { Input, Button } from "antd";
-import { CopyOutlined, CheckOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { Button, Input } from "antd";
+import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import {
+    getGroupAssessmentEmoji,
     getGroupAssessmentPercent,
     getGroupAssessmentText,
     getOverallPerformancePercent,
-} from "../../components/utils/assessment";
+    getQuestionsWithAssessment,
+} from "../utils/assessment";
 import styles from "./export-notes.module.css";
+import moment from "moment";
+import { InterviewAssessment } from "../utils/constants";
+import { defaultTo } from "lodash/util";
 
 const { TextArea } = Input;
 
+export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a"
+
 const ExportNotes = ({ interview }) => {
+
+    const isCandidateQualified =
+        interview.decision === InterviewAssessment.YES ||
+        interview.decision === InterviewAssessment.STRONG_YES;
+
     const [notes, setNotes] = useState(() => {
-        var questionNotes = `${interview.candidate}\n`;
-        questionNotes += "---------------------------------\n";
-        questionNotes += `Overall Performance Score: ${getOverallPerformancePercent(
-            interview.structure.groups
-        )}%\n`;
-        questionNotes += "---------------------------------\n";
-
+        let competenceAreas = ""
         if (interview.structure.groups && interview.structure.groups.length > 1) {
-            interview.structure.groups.forEach((group) => {
-                questionNotes += `${group.name}: ${getGroupAssessmentPercent(
-                    group
-                )}% (${getGroupAssessmentText(group)})\n`;
+            let longestName = 0;
+            interview.structure.groups.forEach(group => {
+                if (group.name.length > longestName) {
+                    longestName = group.name.length;
+                }
+            })
+            interview.structure.groups.forEach((group, index) => {
+                const percent = getGroupAssessmentPercent(group)
+                const emoji = getGroupAssessmentEmoji(group)
+                const text = getGroupAssessmentText(group);
+                if (index !== 0) {
+                    competenceAreas += "\n";
+                }
+                competenceAreas += `${group.name.padEnd(longestName + 5, ' ')} ${percent}% ${emoji} ${text}`;
             });
-
-            questionNotes += "---------------------------------\n\n";
         }
 
-        interview.structure.groups.forEach((group) => {
-            group.questions.forEach((q) => {
+        let notes = "There are no notes.";
+        if (interview.notes && interview.notes.length > 0) {
+            notes = interview.notes;
+        }
+
+        let questionNotes = ""
+        defaultTo(interview.structure.groups, []).forEach((group) => {
+            group.questions.forEach(q => {
                 if (q.notes) {
                     questionNotes += `- ${q.question}\n${q.notes}\n\n`;
                 }
             });
         });
-        return `${questionNotes} == General Notes== \n${interview.notes}`;
+
+        return `
+Candidate Report
+
+Candidate Name: ${interview.candidate}
+Position: ${interview.position}
+Interview Date: ${moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}
+
+Overall Performance Score: ${getOverallPerformancePercent(interview.structure.groups)}%
+Total questions asked: ${getQuestionsWithAssessment(interview.structure.groups).length}
+Recommendation: ${isCandidateQualified ? "qualified for the position" : "not qualified for the position"}
+
+Competence Areas
+${competenceAreas}
+
+Notes
+${notes}
+
+Question Notes
+${questionNotes}
+        `.trim();
     });
 
     const [copied, setCopied] = useState(false);
@@ -65,6 +105,7 @@ const ExportNotes = ({ interview }) => {
         <div>
             <TextArea
                 className="fs-mask"
+                style={{ fontFamily: 'monospace' }}
                 autoSize={{ minRows: 10, maxRows: 20 }}
                 onChange={(e) => setNotes(e.target.value)}
                 defaultValue={notes}

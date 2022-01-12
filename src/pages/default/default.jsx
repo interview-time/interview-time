@@ -11,7 +11,11 @@ import { cloneDeep } from "lodash/lang";
 import moment from "moment";
 import { DATE_FORMAT_DISPLAY } from "../../components/utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
-import { routeInterviewAdd, routeInterviewScorecard, routeTemplateNew } from "../../components/utils/route";
+import {
+    routeInterviewAdd,
+    routeInterviewScorecard,
+    routeTemplateNew,
+} from "../../components/utils/route";
 import styles from "./default.module.css";
 import scheduleIcon from "../../assets/schedule.svg";
 import templateIcon from "../../assets/template.svg";
@@ -26,7 +30,7 @@ const columns = [
         render: (candidate, interview) => (
             <>
                 <span className="fs-mask">{candidate}</span>
-                <DemoTag isDemo={interview.isDemo}/>
+                <DemoTag isDemo={interview.isDemo} />
             </>
         ),
     },
@@ -78,9 +82,11 @@ const Default = ({
         <Layout>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                 <div className={styles.header}>
-                    <Title level={2} style={{ margin: 0 }}>How would you like to start?</Title>
+                    <Title level={2} style={{ margin: 0 }}>
+                        How would you like to start?
+                    </Title>
                 </div>
-                <Row gutter={[32, 32]}>
+                <Row gutter={[32, 32]} className={styles.section}>
                     <Col span={24} lg={{ span: 8, offset: 4 }}>
                         <Card
                             hoverable
@@ -93,24 +99,24 @@ const Default = ({
                                 </div>
                                 <div className={styles.cardTitle}>
                                     <Title level={5}>Schedule interview</Title>
-                                    <Text type="secondary">Use one of your interview templates</Text>
+                                    <Text type="secondary">
+                                        Use one of your interview templates
+                                    </Text>
                                 </div>
                             </div>
                         </Card>
                     </Col>
                     <Col span={24} lg={{ span: 8 }}>
-                        <Card
-                            hoverable
-                            bodyStyle={{ padding: 0 }}
-                            onClick={onNewInterviewClicked}
-                        >
+                        <Card hoverable bodyStyle={{ padding: 0 }} onClick={onNewInterviewClicked}>
                             <div className={styles.card}>
                                 <div className={styles.cardIcon}>
                                     <img alt="Create template" src={templateIcon} width={50} />
                                 </div>
                                 <div className={styles.cardTitle}>
                                     <Title level={5}>Create template</Title>
-                                    <Text type="secondary">Blank or from public library of templates</Text>
+                                    <Text type="secondary">
+                                        Blank or from public library of templates
+                                    </Text>
                                 </div>
                             </div>
                         </Card>
@@ -118,7 +124,7 @@ const Default = ({
                 </Row>
 
                 <Title level={5}>Upcoming Interviews</Title>
-                <Row gutter={[32, 32]}>
+                <Row gutter={[32, 32]} className={styles.section}>
                     <Col span={24}>
                         <Table
                             pagination={false}
@@ -128,7 +134,8 @@ const Default = ({
                             loading={loadingInterviews}
                             rowClassName={styles.row}
                             onRow={(record) => ({
-                                onClick: () => history.push(routeInterviewScorecard(record.interviewId)),
+                                onClick: () =>
+                                    history.push(routeInterviewScorecard(record.interviewId)),
                             })}
                         />
                     </Col>
@@ -152,7 +159,9 @@ const mapState = (state) => {
     const interviewsState = state.interviews || {};
     const templateState = state.templates || {};
 
-    const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"]));
+    const interviews = reverse(
+        sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"])
+    );
 
     const templates = sortBy(templateState.templates, ["title"]).slice(0, 3);
 
