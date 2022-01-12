@@ -116,8 +116,8 @@ export const setTeamMembers = (members) => ({
 
 /**
  *
- * @param {Object} team
- * @returns {{payload: {token}, type: String}}
+ * @param {{token: string, role: string}} team
+ * @returns {{payload: {token: string, role: string}, type: String}}
  */
 export const joinTeam = (team) => ({
     type: JOIN_TEAM,

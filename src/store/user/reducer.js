@@ -1,7 +1,8 @@
 import {
     CREATE_TEAM,
     DELETE_TEAM,
-    JOIN_TEAM, LEAVE_TEAM,
+    JOIN_TEAM,
+    LEAVE_TEAM,
     LOAD_PROFILE,
     LOAD_TEAM_MEMBERS,
     SET_ACTIVE_TEAM,
@@ -24,7 +25,7 @@ import { loadInterviews, setInterviews } from "../interviews/actions";
 
 /**
  *
- * @type {{profile: UserProfile, activeTeam: any, loading: boolean, teamMembers: TeamMember[]}}
+ * @type {{profile: UserProfile, activeTeam: {teamName: string,teamId: string}, loading: boolean, teamMembers: TeamMember[]}}
  */
 const initialState = {
     profile: null,
@@ -82,6 +83,16 @@ const userReducer = (state = initialState, action) => {
         case SET_PROFILE: {
             console.log(action.type);
             const { profile } = action.payload;
+
+            if (state.activeTeam && !profile.teams.find(team => team.teamId === state.activeTeam.teamId)) {
+                // case when user switched account and has previously cached active team
+                return {
+                    ...state,
+                    profile: profile,
+                    activeTeam: profile.teams[0],
+                    loading: false,
+                };
+            }
 
             return {
                 ...state,
@@ -195,7 +206,7 @@ const userReducer = (state = initialState, action) => {
                         teams: state.profile.teams.filter(team => team.teamId !== teamId)
                     }
                     store.dispatch(setProfile(profile));
-                    store.dispatch(setActiveTeam(null, false))
+                    store.dispatch(setActiveTeam(state.profile.teams[0], true))
                 })
                 .catch(reason => console.error(reason));
 
@@ -269,7 +280,7 @@ const userReducer = (state = initialState, action) => {
                         teams: state.profile.teams.filter(team => team.teamId !== teamId)
                     }
                     store.dispatch(setProfile(profile));
-                    store.dispatch(setActiveTeam(null, false))
+                    store.dispatch(setActiveTeam(state.profile.teams[0], true))
                 })
                 .catch(reason => console.error(reason));
 

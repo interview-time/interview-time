@@ -153,10 +153,8 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             teamName: team.teamName,
             teamId: team.teamId
         };
-        if (selected.teamId !== getActiveTeam().teamId) {
-            setActiveTeam(selected);
-            history.push(routeHome());
-        }
+        setActiveTeam(selected);
+        history.push(routeHome());
     }
 
     const onTeamChange = (value) => onTeamSelected(profile.teams.find(team => team.teamId === value))
@@ -209,7 +207,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                     <Select
                         placeholder="Select interview template"
                         onChange={onTeamChange}
-                        defaultValue={getActiveTeam().teamId}
+                        value={getActiveTeam().teamId}
                         options={teamOptions}
                         dropdownRender={(menu) => (
                             <div>
