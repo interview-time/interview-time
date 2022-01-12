@@ -8,6 +8,7 @@ import styles from "./interview-scorecard.module.css";
 import { BackIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
+import { routeInterviewDetails } from "../../components/utils/route";
 
 const Assessment = ({
     interview,
@@ -21,6 +22,10 @@ const Assessment = ({
     const history = useHistory();
 
     const interviewStarted = () => moment() > moment(interview.interviewDateTime);
+
+    const onEditClicked = () => {
+        history.push(routeInterviewDetails(interview.interviewId))
+    }
 
     return (
         <div className={styles.rootContainer}>
@@ -42,6 +47,9 @@ const Assessment = ({
                         <Tag className={interviewStarted() ? styles.tagOrange : styles.tagRed}>
                             {interviewStarted() ? "In Progress" : "Upcoming"}
                         </Tag>
+                        {!interviewStarted() && <Button onClick={onEditClicked}>
+                            Edit
+                        </Button>}
                         <Button type="primary" onClick={onCompletedClicked}>
                             Complete Interview
                         </Button>
