@@ -1,5 +1,30 @@
+.rootContainer {
+    padding: 40px;
+}
+
 .row {
     cursor: pointer;
+}
+
+.rowText {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.label {
+    font-size: 14px;
+    color: #6B7280;
+}
+
+.iconHolder {
+    border: 1px solid #E5E7EB;
+    box-sizing: border-box;
+    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .header {
@@ -11,11 +36,11 @@
     font-size: 18px;
     color: rgba(0, 0, 0, 0.45);
 }
-.divSpaceBetween {
+.divRight {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
+    justify-content: right;
+    margin-bottom: 12px;
 }
 
 .headerSearch {

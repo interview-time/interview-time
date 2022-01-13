@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Col, Progress, Space, Tag, Typography } from "antd";
+import { Button, Col, Progress, Space, Typography } from "antd";
 import { InterviewAssessmentButtons } from "./interview-sections";
 import {
     getGroupAssessmentColor,
@@ -19,6 +19,7 @@ import { filterGroupsWithAssessment, filterQuestionsWithAssessment } from "../..
 import { CloseIcon } from "../../components/utils/icons";
 import { routeInterviews } from "../../components/utils/route";
 import { useHistory } from "react-router-dom";
+import InterviewStatusTag from "../../components/tags/interview-status-tags";
 
 const { Text } = Typography;
 
@@ -48,7 +49,7 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                 }
                 rightComponent={
                     <Space size={16}>
-                        <Tag className={styles.tagOrange}>Finalizing...</Tag>
+                        <InterviewStatusTag interview={interview} />
                         <Button type="primary" onClick={onSubmitClicked}>
                             Submit Evaluation
                         </Button>

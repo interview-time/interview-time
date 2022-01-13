@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
-import { loadInterviews } from "../../store/interviews/actions";
+import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import { Badge, Button, Card, Col, Input, Table } from "antd";
+import commonStyles from "../../components/layout/common.module.css";
+import { Button, Col, Dropdown, Input, Menu, Modal, Row, Space, Table } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import { orderBy } from "lodash/collection";
 import { DATE_FORMAT_DISPLAY, Status } from "../../components/utils/constants";
 import { localeCompare } from "../../components/utils/comparators";
-import { routeInterviewAdd, routeInterviewScorecard } from "../../components/utils/route";
+import { routeInterviewDetails, routeInterviewReport, routeInterviewScorecard } from "../../components/utils/route";
 import Title from "antd/lib/typography/Title";
 import DemoTag from "../../components/demo/demo-tag";
 import Text from "antd/lib/typography/Text";
 import { getFormattedDate, orderByInterviewDate } from "../../components/utils/utils";
 import { defaultTo } from "lodash/util";
+import InterviewStatusTag from "../../components/tags/interview-status-tags";
+import { ArchiveIcon, CalendarIcon, IdeaIcon, MoreIcon } from "../../components/utils/icons";
 
 const { Search } = Input;
 
-const Interviews = ({ interviewsData, interviewsLoading, loadInterviews }) => {
+const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteInterview }) => {
     const history = useHistory();
     const [interviews, setInterviews] = useState([]);
 
@@ -33,35 +36,11 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews }) => {
     }, [interviewsData]);
 
     const onRowClicked = (record) => {
-        history.push(routeInterviewScorecard(record.interviewId));
-    };
-
-    const isCompleted = (interview) => interview.status === Status.COMPLETED;
-
-    const textType = (interview) => (isCompleted(interview) ? "secondary" : null);
-
-    const getStatusColor = (interview) => {
-        if (isCompleted(interview)) {
-            return "success";
-        } else if (moment() > moment(interview.interviewDateTime)) {
-            return "error";
+        if (record.status === Status.SUBMITTED) {
+            history.push(routeInterviewReport(record.interviewId));
         } else {
-            return "processing";
+            history.push(routeInterviewScorecard(record.interviewId));
         }
-    };
-
-    const getStatusText = (interview) => {
-        if (isCompleted(interview)) {
-            return "completed";
-        } else if (moment() > moment(interview.interviewDateTime)) {
-            return "not completed";
-        } else {
-            return "upcoming";
-        }
-    };
-
-    const onScheduleInterviewClicked = () => {
-        history.push(routeInterviewAdd());
     };
 
     const onSearchTextChanged = (e) => {
@@ -76,24 +55,50 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews }) => {
                 item.position.toLocaleLowerCase().includes(lowerCaseText) ||
                 item.interviewDateTime !== null
                     ? moment(item.interviewDateTime)
-                          .format(DATE_FORMAT_DISPLAY)
-                          .toLocaleLowerCase()
-                          .includes(lowerCaseText)
+                        .format(DATE_FORMAT_DISPLAY)
+                        .toLocaleLowerCase()
+                        .includes(lowerCaseText)
                     : false
             )
         );
     };
 
+    const showDeleteDialog = interview => {
+        Modal.confirm({
+            title: "Delete Interview",
+            content: `Are you sure you want to delete interview with '${interview.candidate}' ?`,
+            okText: "Yes",
+            cancelText: "No",
+            onOk() {
+                deleteInterview(interview.interviewId);
+            },
+        });
+    };
+
+    const createMenu = (interview) => (
+        <Menu>
+            {(interview.status !== Status.SUBMITTED && interview.status !== Status.COMPLETED)
+                && <Menu.Item onClick={e => {
+                    e.domEvent.stopPropagation()
+                    history.push(routeInterviewDetails(interview.interviewId));
+                }}>Edit</Menu.Item>}
+            <Menu.Item danger onClick={e => {
+                e.domEvent.stopPropagation()
+                showDeleteDialog(interview)
+            }}>Delete</Menu.Item>
+        </Menu>
+    );
+
     const columns = [
         {
-            title: "Candidate Name",
+            title: <Text className={commonStyles.tableHeader}>CANDIDATE</Text>,
             key: "candidate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
             render: (interview) => {
                 return (
                     <>
-                        <Text type={textType(interview)} className="fs-mask">
+                        <Text className={`${styles.rowText} fs-mask`}>
                             {interview.candidate}
                         </Text>
                         <DemoTag isDemo={interview.isDemo} />
@@ -102,52 +107,107 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews }) => {
             },
         },
         {
-            title: "Interview Type",
+            title: <Text className={commonStyles.tableHeader}>INTERVIEW</Text>,
             key: "position",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
             render: (interview) => (
-                <Text type={textType(interview)} className="fs-mask">
+                <Text className={`${styles.rowText} fs-mask`}>
                     {defaultTo(interview.position, "-")}
                 </Text>
             ),
         },
         {
-            title: "Date",
+            title: <Text className={commonStyles.tableHeader}>START DATE</Text>,
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: (interview) => (
-                <Text type={textType(interview)} className="fs-mask">
+                <Text className={`${styles.rowText} fs-mask`}>
                     {getFormattedDate(interview.interviewDateTime, "-")}
                 </Text>
             ),
         },
         {
-            title: "Status",
+            title: <Text className={commonStyles.tableHeader}>STATUS</Text>,
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: (interview) => (
-                <Badge
-                    status={getStatusColor(interview)}
-                    text={<Text type={textType(interview)}>{getStatusText(interview)}</Text>}
+            render: (interview) => <InterviewStatusTag interview={interview} />
+        },
+        {
+            key: "actions",
+            render: (interview) => <Dropdown overlay={createMenu(interview)} placement="bottomLeft">
+                <Button
+                    icon={<MoreIcon />}
+                    style={{ width: 36, height: 36 }}
+                    onClick={e => e.stopPropagation()}
                 />
-            ),
+            </Dropdown>
         },
     ];
 
-    return (
-        <Layout>
-            <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                <div className={styles.header}>
-                    <Title level={2}>Interviews</Title>
-                    <span className={styles.subTitle}>
-                        Schedule new interview or fill and submit existing interview scorecard
-                    </span>
-                </div>
+    const interviewStarted = (interview) => moment() > moment(interview.interviewDateTime);
 
-                <div className={styles.divSpaceBetween}>
+    const getNewInterviews = () => interviews.filter(interview =>
+        interview.status === Status.NEW && !interviewStarted(interview)
+    ).length
+
+    const getInProgressInterviews = () => interviews.filter(interview =>
+        (interview.status === Status.NEW || interview.status === Status.COMPLETED) && interviewStarted(interview)
+    ).length
+
+    const getCompletedInterviews = () => interviews.filter(interview => interview.status === Status.SUBMITTED).length
+
+    return (
+        <Layout contentStyle={styles.rootContainer}>
+            <div>
+                <Title level={4} style={{ marginBottom: 20 }}>Interviews</Title>
+
+                <Row gutter={32} style={{ marginBottom: 32 }}>
+                    <Col span={8}>
+                        <div className={commonStyles.card}>
+                            <Space size={24}>
+                                <div className={styles.iconHolder}>
+                                    <CalendarIcon />
+                                </div>
+                                <div>
+                                    <Title level={5} style={{ marginBottom: 0 }}>{getNewInterviews()}</Title>
+                                    <Text className={styles.label}>Upcoming</Text>
+                                </div>
+                            </Space>
+                        </div>
+                    </Col>
+                    <Col span={8}>
+                        <div className={commonStyles.card}>
+                            <Space size={24}>
+                                <div className={styles.iconHolder}>
+                                    <IdeaIcon />
+                                </div>
+                                <div>
+                                    <Title level={5} style={{ marginBottom: 0 }}>{getInProgressInterviews()}</Title>
+                                    <Text className={styles.label}>In-progress</Text>
+                                </div>
+                            </Space>
+                        </div>
+                    </Col>
+                    <Col span={8}>
+                        <div className={commonStyles.card}>
+                            <Space size={24}>
+                                <div className={styles.iconHolder}>
+                                    <ArchiveIcon />
+                                </div>
+                                <div>
+                                    <Title level={5}
+                                           style={{ marginBottom: 0 }}>{getCompletedInterviews()}</Title>
+                                    <Text className={styles.label}>Completed</Text>
+                                </div>
+                            </Space>
+                        </div>
+                    </Col>
+                </Row>
+
+                <div className={styles.divRight}>
                     <Search
                         placeholder="Search"
                         key="search"
@@ -156,12 +216,9 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews }) => {
                         onSearch={onSearchClicked}
                         onChange={onSearchTextChanged}
                     />
-                    <Button type="primary" onClick={onScheduleInterviewClicked}>
-                        Schedule New Interview
-                    </Button>
                 </div>
 
-                <Card bodyStyle={{ padding: 0 }}>
+                <div className={commonStyles.card} style={{ padding: 0 }}>
                     <Table
                         pagination={false}
                         scroll={{
@@ -175,20 +232,20 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews }) => {
                             onClick: () => onRowClicked(record),
                         })}
                     />
-                </Card>
-            </Col>
+                </div>
+            </div>
         </Layout>
     );
 };
 
-const mapDispatch = { loadInterviews };
+const mapDispatch = { loadInterviews, deleteInterview };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
 
     const interviews = orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]);
 
     return {
-        interviewsData: interviews.filter((i) => i.status !== Status.SUBMITTED),
+        interviewsData: interviews,
         interviewsLoading: interviewsState.loading,
     };
 };
