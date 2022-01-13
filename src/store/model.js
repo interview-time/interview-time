@@ -116,6 +116,8 @@
  * @typedef {Object} UserProfile
  * @property {string} name
  * @property {string} email
+ * @property {string} userId
+ * @property {number} timezoneOffset
  * @property {Team[]} teams
  */
 

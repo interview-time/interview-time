@@ -21,7 +21,23 @@ import { ArchiveIcon, CalendarIcon, IdeaIcon, MoreIcon } from "../../components/
 
 const { Search } = Input;
 
-const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteInterview }) => {
+/**
+ *
+ * @param {UserProfile} profile
+ * @param {Interview[]} interviewsData
+ * @param {boolean} interviewsLoading
+ * @param loadInterviews
+ * @param deleteInterview
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Interviews = ({
+    profile,
+    interviewsData,
+    interviewsLoading,
+    loadInterviews,
+    deleteInterview
+}) => {
     const history = useHistory();
     const [interviews, setInterviews] = useState([]);
 
@@ -35,11 +51,11 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
         // eslint-disable-next-line
     }, [interviewsData]);
 
-    const onRowClicked = (record) => {
-        if (record.status === Status.SUBMITTED) {
-            history.push(routeInterviewReport(record.interviewId));
+    const onRowClicked = (interview) => {
+        if (interview.status === Status.SUBMITTED || interview.userId !== profile.userId) {
+            history.push(routeInterviewReport(interview.interviewId));
         } else {
-            history.push(routeInterviewScorecard(record.interviewId));
+            history.push(routeInterviewScorecard(interview.interviewId));
         }
     };
 
@@ -241,12 +257,12 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
 const mapDispatch = { loadInterviews, deleteInterview };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-
-    const interviews = orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]);
+    const profileState = state.user || {};
 
     return {
-        interviewsData: interviews,
+        interviewsData: orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]),
         interviewsLoading: interviewsState.loading,
+        profile: profileState.profile
     };
 };
 
