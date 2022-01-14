@@ -1,6 +1,8 @@
 import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
 
 export const DATE_FORMAT_DISPLAY = "ddd DD, MMM • hh:mm a"
+export const DATE_FORMAT_DISPLAY_LONG = "ddd DD, MMM YYYY"
+export const DATE_FORMAT_DISPLAY_TIME = "hh:mm a"
 export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ"
 
 export const Status = {
@@ -17,6 +19,7 @@ export const Difficulty = {
 }
 
 export const InterviewAssessment = {
+    NONE: 0,
     YES: 1,
     NO: 2,
     STRONG_YES: 3,

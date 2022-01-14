@@ -24,6 +24,8 @@ import { truncate } from "lodash/string";
 
 const { Search } = Input;
 
+const iconStyle = { fontSize: 24, color: '#8C2BE3' }
+
 /**
  *
  * @param {UserProfile} profile
@@ -213,7 +215,7 @@ const Interviews = ({
                         <Card>
                             <Space size={24}>
                                 <div className={styles.iconHolder}>
-                                    <CalendarIcon />
+                                    <CalendarIcon style={iconStyle} />
                                 </div>
                                 <div>
                                     <Title level={5} style={{ marginBottom: 0 }}>{getNewInterviews()}</Title>

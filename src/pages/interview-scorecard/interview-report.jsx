@@ -26,6 +26,7 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import ExportNotes from "../../components/export-notes/export-notes";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
+import { CandidateInfoSection, InterviewInfoSection } from "./interview-sections";
 
 const { Text } = Typography;
 
@@ -116,23 +117,27 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                     </Card>
                 </div>
 
-                <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
-                    <Progress
-                        type="circle"
-                        status="active"
-                        strokeLinecap="square"
-                        trailColor="#E5E7EB"
-                        width={160}
-                        strokeWidth={8}
-                        strokeColor={getOverallPerformanceColor(interview.structure.groups)}
-                        percent={getOverallPerformancePercent(interview.structure.groups)}
-                        format={(percent) => {
-                            return <div className={styles.scoreHolder}>
-                                <Text className={styles.scoreText}>{percent}</Text>
-                                <Text className={styles.scoreLabel} type="secondary">Score</Text>
-                            </div>
-                        }}
-                    />
+                <div className={styles.reportInterviewInfoHolder} style={{ paddingTop: 30, paddingBottom: 30 }}>
+                    <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
+                    <div className={styles.reportInterviewCenter}>
+                        {getOverallPerformancePercent(interview.structure.groups) > 0 && <Progress
+                            type="circle"
+                            status="active"
+                            strokeLinecap="square"
+                            trailColor="#E5E7EB"
+                            width={160}
+                            strokeWidth={8}
+                            strokeColor={getOverallPerformanceColor(interview.structure.groups)}
+                            percent={getOverallPerformancePercent(interview.structure.groups)}
+                            format={(percent) => {
+                                return <div className={styles.scoreHolder}>
+                                    <Text className={styles.scoreText}>{percent}</Text>
+                                    <Text className={styles.scoreLabel} type="secondary">Score</Text>
+                                </div>
+                            }}
+                        />}
+                    </div>
+                    <CandidateInfoSection className={styles.reportInterviewRight} interview={interview} />
                 </div>
                 <Card withPadding={false}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>

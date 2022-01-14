@@ -186,6 +186,25 @@
     margin-left: 4px;
 }
 
+.reportLabel {
+    color: #374151;
+    font-size: 14px;
+    line-height: 20px;
+    margin-left: 8px;
+}
+
+.divHorizontal {
+    display: flex;
+    align-items: center;
+}
+
+.avatar {
+    color: #8C2BE3;
+    background-color: #F4EAFC;
+    font-weight: 500;
+    font-size: 14px;
+}
+
 .quickNotesLabelSmallHolder {
     display: flex;
     align-items: center;

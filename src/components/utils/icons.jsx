@@ -21,13 +21,13 @@ const HomeSvg = () => (
 
 export const QuestionBankIcon = props => <Icon component={QuestionBankSvg} {...props} />;
 
-const GuideSvg = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+const TextNoteSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
         <path d="M9 12H15M9 16H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 );
 
-export const GuideIcon = props => <Icon component={GuideSvg} {...props} />;
+export const TextNoteIcon = props => <Icon component={TextNoteSvg} {...props} />;
 
 const InterviewSvg = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -359,12 +359,20 @@ const CheckSvg = () => (
 export const CheckIcon = props => <Icon component={CheckSvg} {...props} />;
 
 const CalendarSvg = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="#8C2BE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 );
 
 export const CalendarIcon = props => <Icon component={CalendarSvg} {...props} />;
+
+const TimeSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M12 8.5V12.5L15 15.5M21 12.5C21 17.4706 16.9706 21.5 12 21.5C7.02944 21.5 3 17.4706 3 12.5C3 7.52944 7.02944 3.5 12 3.5C16.9706 3.5 21 7.52944 21 12.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const TimeIcon = props => <Icon component={TimeSvg} {...props} />;
 
 const IdeaSvg = () => (
     <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
@@ -389,3 +397,27 @@ const MoreSvg = () => (
 );
 
 export const MoreIcon = props => <Icon component={MoreSvg} {...props} />;
+
+const MailSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M3 8L10.8906 13.2604C11.5624 13.7083 12.4376 13.7083 13.1094 13.2604L21 8M5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const MailIcon = props => <Icon component={MailSvg} {...props} />;
+
+const LinkSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M13.8284 10.1716C12.2663 8.60948 9.73367 8.60948 8.17157 10.1716L4.17157 14.1716C2.60948 15.7337 2.60948 18.2663 4.17157 19.8284C5.73367 21.3905 8.26633 21.3905 9.82843 19.8284L10.93 18.7269M10.1716 13.8284C11.7337 15.3905 14.2663 15.3905 15.8284 13.8284L19.8284 9.82843C21.3905 8.26633 21.3905 5.73367 19.8284 4.17157C18.2663 2.60948 15.7337 2.60948 14.1716 4.17157L13.072 5.27118" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const LinkIcon = props => <Icon component={LinkSvg} {...props} />;
+
+const UsersSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M12 4.35418C12.7329 3.52375 13.8053 3 15 3C17.2091 3 19 4.79086 19 7C19 9.20914 17.2091 11 15 11C13.8053 11 12.7329 10.4762 12 9.64582M15 21H3V20C3 16.6863 5.68629 14 9 14C12.3137 14 15 16.6863 15 20V21ZM15 21H21V20C21 16.6863 18.3137 14 15 14C13.9071 14 12.8825 14.2922 12 14.8027M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const UsersIcon = props => <Icon component={UsersSvg} {...props} />;

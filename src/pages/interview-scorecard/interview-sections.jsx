@@ -1,6 +1,21 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Switch, Table, Tag, Tooltip, } from "antd";
+import {
+    Avatar,
+    Col,
+    Dropdown,
+    Grid,
+    Input,
+    Menu,
+    message,
+    Modal,
+    Row,
+    Space,
+    Switch,
+    Table,
+    Tag,
+    Tooltip,
+} from "antd";
 import { createTagColors, InterviewAssessment, Status, } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -8,9 +23,21 @@ import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import { CloseOutlined, DeleteOutlined, EditOutlined, } from "@ant-design/icons";
-import { NoteIcon, StarEmphasisIcon, StarFilledIcon, StarHalfIcon, StarIcon, } from "../../components/utils/icons";
+import {
+    CalendarIcon,
+    LinkIcon,
+    MailIcon,
+    NoteIcon,
+    StarEmphasisIcon,
+    StarFilledIcon,
+    StarHalfIcon,
+    StarIcon,
+    TextNoteIcon,
+    TimeIcon,
+    UsersIcon,
+} from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
-import { getFormattedDate, isEmpty } from "../../components/utils/utils";
+import { getFormattedDate, getFormattedDateLong, getFormattedTime, isEmpty } from "../../components/utils/utils";
 import Card from "../../components/card/card";
 
 const { TextArea } = Input;
@@ -71,6 +98,89 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
         </div>
     );
 };
+/**
+ *
+ * @param {Interview} interview
+ * @param {TeamMember[]}  teamMembers
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const InterviewInfoSection = ({
+    interview,
+    teamMembers
+}) => {
+
+    const iconStyle = { fontSize: 20, color: '#374151' }
+
+    const getInterviewerName = (userId) => {
+        return teamMembers && teamMembers.length > 0
+            ? teamMembers.find(member => member.userId === userId).name : "";
+    }
+
+    const getInterviewerNameShort = (name) => {
+        let names = name.split(' ')
+        if (names.length >= 2) {
+            // Dmytro Danylyk -> DD
+            return names[0].charAt(0).toUpperCase() + names[1].charAt(0).toUpperCase()
+        } else if (name.length > 0) {
+            // dmytrodanylyk -> D
+            return name.charAt(0).toUpperCase()
+        } else {
+            return ""
+        }
+    }
+
+    return <Space direction='vertical'>
+        <div className={styles.divHorizontal}>
+            <CalendarIcon style={iconStyle} />
+            <Text className={styles.reportLabel}>{getFormattedDateLong(interview.interviewDateTime)}</Text>
+        </div>
+        <div className={styles.divHorizontal}>
+            <TimeIcon style={iconStyle} />
+            <Text className={styles.reportLabel}>{getFormattedTime(interview.interviewDateTime)}</Text>
+        </div>
+        <div className={styles.divHorizontal}>
+            <UsersIcon style={iconStyle} />
+            <Avatar.Group size={36} style={{ marginLeft: 8 }}>
+                {interview.interviewers
+                    .map(userId => getInterviewerName(userId))
+                    .map(name => <Tooltip title={name} placement="top">
+                        <Avatar className={styles.avatar} gap={8}>{getInterviewerNameShort(name)}</Avatar>
+                    </Tooltip>)}
+            </Avatar.Group>
+        </div>
+    </Space>
+}
+
+/**
+ *
+ * @param {Interview} interview
+ * @param {string} className
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export const CandidateInfoSection = ({
+    interview,
+    className
+}) => {
+
+    const iconStyle = { fontSize: 20, color: '#374151' }
+
+    return <Space className={className} direction='vertical'>
+        {interview.candidateEmail && <div className={styles.divHorizontal}>
+            <MailIcon style={iconStyle} />
+            <Text className={styles.reportLabel}>test@gmail.com</Text>
+        </div>}
+        {interview.candidateLinkedIn && <div className={styles.divHorizontal}>
+            <LinkIcon style={iconStyle} />
+            <Text className={styles.reportLabel}>test.linkedin.com</Text>
+        </div>}
+        {interview.candidateResume && <div className={styles.divHorizontal}>
+            <TextNoteIcon style={iconStyle} />
+            <Text className={styles.reportLabel}>test.pdf</Text>
+        </div>}
+    </Space>
+}
 
 /**
  *
@@ -229,7 +339,7 @@ const InterviewQuestionsCard = ({
             shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
             render: (question) => {
-                return <span className="fs-mask" style={{paddingLeft: 8 }}>{question}</span>;
+                return <span className="fs-mask" style={{ paddingLeft: 8 }}>{question}</span>;
             },
         },
         {
@@ -289,7 +399,7 @@ const InterviewQuestionsCard = ({
         setCollapsed(!collapsed);
     };
     return (
-        <Card withPadding={false} style={{marginTop: 32}}>
+        <Card withPadding={false} style={{ marginTop: 32 }}>
             <div className={styles.questionsHeaderContainer}>
                 <Space>
                     <Title
