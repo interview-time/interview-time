@@ -24,6 +24,7 @@ import { findInterview } from "../../components/utils/converters";
 import Spinner from "../../components/spinner/spinner";
 import Paragraph from "antd/lib/typography/Paragraph";
 import ExportNotes from "../../components/export-notes/export-notes";
+import InterviewStatusTag from "../../components/tags/interview-status-tags";
 
 const { Text } = Typography;
 
@@ -91,7 +92,7 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                 }
                 rightComponent={
                     <Space size={16}>
-                        <Tag className={styles.tagGreen}>Complete</Tag>
+                        <InterviewStatusTag interview={interview} />
                         <Button onClick={onExportClicked}>
                             Export
                         </Button>
