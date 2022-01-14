@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import commonStyles from "../../components/layout/common.module.css";
 import { Button, Col, Dropdown, Input, Menu, Modal, Row, Space, Table } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
@@ -19,24 +18,33 @@ import { defaultTo } from "lodash/util";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import { ArchiveIcon, CalendarIcon, IdeaIcon, MoreIcon } from "../../components/utils/icons";
 import Card from "../../components/card/card";
+import TableHeader from "../../components/table/table-header";
+import { loadTeamMembers } from "../../store/user/actions";
+import { truncate } from "lodash/string";
 
 const { Search } = Input;
 
 /**
  *
  * @param {UserProfile} profile
+ * @param {Team} activeTeam
+ * @param {TeamMember[]} teamMembers
  * @param {Interview[]} interviewsData
  * @param {boolean} interviewsLoading
  * @param loadInterviews
+ * @param loadTeamMembers
  * @param deleteInterview
  * @returns {JSX.Element}
  * @constructor
  */
 const Interviews = ({
     profile,
+    activeTeam,
+    teamMembers,
     interviewsData,
     interviewsLoading,
     loadInterviews,
+    loadTeamMembers,
     deleteInterview
 }) => {
     const history = useHistory();
@@ -44,6 +52,7 @@ const Interviews = ({
 
     React.useEffect(() => {
         loadInterviews();
+        loadTeamMembers(activeTeam.teamId);
         // eslint-disable-next-line
     }, []);
 
@@ -106,9 +115,16 @@ const Interviews = ({
         </Menu>
     );
 
+    const getInterviewerName = (interview) => {
+        let teamMember = teamMembers.find(member => member.userId === interview.userId)
+        return teamMember ? truncate(teamMember.name, {
+            'length': 20
+        }) : null;
+    }
+
     const columns = [
         {
-            title: <Text className={commonStyles.tableHeader}>CANDIDATE</Text>,
+            title: <TableHeader>CANDIDATE</TableHeader>,
             key: "candidate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
@@ -124,7 +140,7 @@ const Interviews = ({
             },
         },
         {
-            title: <Text className={commonStyles.tableHeader}>INTERVIEW</Text>,
+            title: <TableHeader>INTERVIEW</TableHeader>,
             key: "position",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
@@ -135,7 +151,7 @@ const Interviews = ({
             ),
         },
         {
-            title: <Text className={commonStyles.tableHeader}>START DATE</Text>,
+            title: <TableHeader>START DATE</TableHeader>,
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
@@ -146,7 +162,18 @@ const Interviews = ({
             ),
         },
         {
-            title: <Text className={commonStyles.tableHeader}>STATUS</Text>,
+            title: <TableHeader>INTERVIEWER</TableHeader>,
+            key: "position",
+            sortDirections: ["descend", "ascend"],
+            sorter: (a, b) => localeCompare(a.position, b.position),
+            render: (interview) => (
+                <Text className={`${styles.rowText} fs-mask`}>
+                    {getInterviewerName(interview)}
+                </Text>
+            ),
+        },
+        {
+            title: <TableHeader>STATUS</TableHeader>,
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
@@ -255,15 +282,17 @@ const Interviews = ({
     );
 };
 
-const mapDispatch = { loadInterviews, deleteInterview };
+const mapDispatch = { loadInterviews, deleteInterview, loadTeamMembers };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-    const profileState = state.user || {};
+    const userState = state.user || {};
 
     return {
         interviewsData: orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]),
         interviewsLoading: interviewsState.loading,
-        profile: profileState.profile
+        teamMembers: userState.teamMembers || [],
+        profile: userState.profile,
+        activeTeam: userState.activeTeam
     };
 };
 
