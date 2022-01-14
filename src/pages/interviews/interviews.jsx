@@ -18,6 +18,7 @@ import { getFormattedDate, orderByInterviewDate } from "../../components/utils/u
 import { defaultTo } from "lodash/util";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import { ArchiveIcon, CalendarIcon, IdeaIcon, MoreIcon } from "../../components/utils/icons";
+import Card from "../../components/card/card";
 
 const { Search } = Input;
 
@@ -182,7 +183,7 @@ const Interviews = ({
 
                 <Row gutter={32} style={{ marginBottom: 32 }}>
                     <Col span={8}>
-                        <div className={commonStyles.card}>
+                        <Card>
                             <Space size={24}>
                                 <div className={styles.iconHolder}>
                                     <CalendarIcon />
@@ -192,10 +193,10 @@ const Interviews = ({
                                     <Text className={styles.label}>Upcoming</Text>
                                 </div>
                             </Space>
-                        </div>
+                        </Card>
                     </Col>
                     <Col span={8}>
-                        <div className={commonStyles.card}>
+                        <Card>
                             <Space size={24}>
                                 <div className={styles.iconHolder}>
                                     <IdeaIcon />
@@ -205,10 +206,10 @@ const Interviews = ({
                                     <Text className={styles.label}>In-progress</Text>
                                 </div>
                             </Space>
-                        </div>
+                        </Card>
                     </Col>
                     <Col span={8}>
-                        <div className={commonStyles.card}>
+                        <Card>
                             <Space size={24}>
                                 <div className={styles.iconHolder}>
                                     <ArchiveIcon />
@@ -219,7 +220,7 @@ const Interviews = ({
                                     <Text className={styles.label}>Completed</Text>
                                 </div>
                             </Space>
-                        </div>
+                        </Card>
                     </Col>
                 </Row>
 
@@ -234,7 +235,7 @@ const Interviews = ({
                     />
                 </div>
 
-                <div className={commonStyles.card} style={{ padding: 0 }}>
+                <Card withPadding={false}>
                     <Table
                         pagination={false}
                         scroll={{
@@ -248,7 +249,7 @@ const Interviews = ({
                             onClick: () => onRowClicked(record),
                         })}
                     />
-                </div>
+                </Card>
             </div>
         </Layout>
     );

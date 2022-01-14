@@ -25,6 +25,7 @@ import Spinner from "../../components/spinner/spinner";
 import Paragraph from "antd/lib/typography/Paragraph";
 import ExportNotes from "../../components/export-notes/export-notes";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
+import Card from "../../components/card/card";
 
 const { Text } = Typography;
 
@@ -104,15 +105,15 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
                 <div className={styles.divVerticalCenter} style={{ paddingTop: 60 }}>
-                    <div className={`${styles.card} ${styles.noPaddingCard} ${styles.decisionCard}`}
-                         style={{ borderColor: getDecisionColor(interview.decision) }}>
+                    <Card className={styles.decisionCard}
+                          style={{ borderColor: getDecisionColor(interview.decision), width: '100%' }}>
                         <div className={styles.decisionTextHolder}>
                             <Title level={4} style={{ margin: 0 }}>🎉 {getInterviewerName()} scored a...</Title>
                             <Tag color={getDecisionColor(interview.decision)}
                                  style={{ marginLeft: 20 }}
                                  className={styles.tag}>{getDecisionText(interview.decision)}</Tag>
                         </div>
-                    </div>
+                    </Card>
                 </div>
 
                 <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
@@ -133,7 +134,7 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                         }}
                     />
                 </div>
-                <div className={styles.card} style={{ padding: 0 }}>
+                <Card withPadding={false}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
                         <Title level={4} style={{ marginBottom: 0 }}>Competence areas</Title>
                         {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
@@ -179,16 +180,16 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                                     </>)}
                             </>
                         ))}
-                </div>
+                </Card>
 
                 <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
-                    <div className={`${styles.card} ${styles.noPaddingCard}`}>
+                    <Card withPadding={false} style={{ width: '100%' }}>
                         <Title level={4} style={{ margin: 24 }}>Summary notes</Title>
                         <div className={styles.divider} />
                         <Paragraph className={`${styles.notesTextArea} fs-mask`}>
                             {interview.notes ? interview.notes : "No summary was left"}
                         </Paragraph>
-                    </div>
+                    </Card>
                 </div>
             </Col>
             <Modal

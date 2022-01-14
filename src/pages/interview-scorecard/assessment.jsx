@@ -8,6 +8,7 @@ import styles from "./interview-scorecard.module.css";
 import { BackIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
+import Card from "../../components/card/card";
 
 const Assessment = ({
     interview,
@@ -49,9 +50,9 @@ const Assessment = ({
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
 
-                <div className={styles.card} style={{ marginTop: 32 }}>
+                <Card style={{ marginTop: 32 }}>
                     <IntroSection interview={interview} hashStyle={styles.hash} />
-                </div>
+                </Card>
 
                 <InterviewGroupsSection
                     interview={interview}
@@ -60,9 +61,9 @@ const Assessment = ({
                     hashStyle={styles.hash}
                 />
 
-                <div className={styles.card} style={{ marginBottom: 32, marginTop: 32 }}>
+                <Card style={{ marginBottom: 32, marginTop: 32 }}>
                     <SummarySection interview={interview} />
-                </div>
+                </Card>
 
             </Col>
 

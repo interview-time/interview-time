@@ -1,6 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Card, Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Switch, Table, Tag, Tooltip, } from "antd";
+import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Switch, Table, Tag, Tooltip, } from "antd";
 import { createTagColors, InterviewAssessment, Status, } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -11,6 +11,7 @@ import { CloseOutlined, DeleteOutlined, EditOutlined, } from "@ant-design/icons"
 import { NoteIcon, StarEmphasisIcon, StarFilledIcon, StarHalfIcon, StarIcon, } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
 import { getFormattedDate, isEmpty } from "../../components/utils/utils";
+import Card from "../../components/card/card";
 
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;
@@ -288,7 +289,7 @@ const InterviewQuestionsCard = ({
         setCollapsed(!collapsed);
     };
     return (
-        <div className={styles.tableContainer}>
+        <Card withPadding={false} style={{marginTop: 32}}>
             <div className={styles.questionsHeaderContainer}>
                 <Space>
                     <Title
@@ -367,7 +368,7 @@ const InterviewQuestionsCard = ({
                     />
                 </div>
             )}
-        </div>
+        </Card>
     );
 };
 

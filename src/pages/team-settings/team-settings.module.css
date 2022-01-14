@@ -2,13 +2,6 @@
     padding: 40px;
 }
 
-.card {
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
-    border-radius: 8px;
-    padding: 24px;
-}
-
 .divRight {
     display: flex;
     align-items: center;
