@@ -12,6 +12,8 @@ module.exports = {
                             "@text-color": "#1F2937",
                             "@text-color-secondary": "#4B5563",
                             "@input-placeholder-color": "#9CA3AF",
+                            "@table-header-color" : "#6B7280",
+                            "@table-header-bg" : "#FFFFFF",
                             "@border-radius-base": "6px",
                             "@font-size-base": "16px",
                             "@font-family": "'Inter', 'system-ui'",

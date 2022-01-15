@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Col, Space, Tag } from "antd";
+import { Button, Col, Space} from "antd";
 import { InterviewGroupsSection, IntroSection, SummarySection } from "./interview-sections";
 import NotesSection from "./notes-section";
 import TimeAgo from "../../components/time-ago/time-ago";
@@ -7,7 +7,7 @@ import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
 import { BackIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
-import moment from "moment";
+import InterviewStatusTag from "../../components/tags/interview-status-tags";
 
 const Assessment = ({
     interview,
@@ -19,8 +19,6 @@ const Assessment = ({
 }) => {
 
     const history = useHistory();
-
-    const interviewStarted = () => moment() > moment(interview.interviewDateTime);
 
     return (
         <div className={styles.rootContainer}>
@@ -39,9 +37,7 @@ const Assessment = ({
                 }
                 rightComponent={
                     <Space size={16}>
-                        <Tag className={interviewStarted() ? styles.tagOrange : styles.tagRed}>
-                            {interviewStarted() ? "In Progress" : "Upcoming"}
-                        </Tag>
+                        <InterviewStatusTag interview={interview} />
                         <Button type="primary" onClick={onCompletedClicked}>
                             Complete Interview
                         </Button>

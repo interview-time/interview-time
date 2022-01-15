@@ -173,7 +173,7 @@
 }
 
 .iconNotesSmall {
-    color: #F9FAFB;
+    color: var(--color-background);
     font-size: 12px;
 }
 
@@ -189,7 +189,7 @@
 .quickNotesLabelSmall {
     font-size: 14px;
     font-weight: 500;
-    color: #F9FAFB;
+    color: var(--color-background);
     margin-left: 4px;
 }
 

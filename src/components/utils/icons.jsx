@@ -357,3 +357,35 @@ const CheckSvg = () => (
 );
 
 export const CheckIcon = props => <Icon component={CheckSvg} {...props} />;
+
+const CalendarSvg = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="#8C2BE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const CalendarIcon = props => <Icon component={CalendarSvg} {...props} />;
+
+const IdeaSvg = () => (
+    <svg width="21" height="20" viewBox="0 0 21 20" fill="none">
+        <path d="M8.33144 15H13.0044M10.6679 1V2M17.0319 3.63604L16.3248 4.34315M19.668 9.99995H18.668M2.66797 9.99995H1.66797M5.01106 4.34315L4.30395 3.63604M7.13238 13.5356C5.17976 11.5829 5.17976 8.41711 7.13238 6.46449C9.085 4.51187 12.2508 4.51187 14.2034 6.46449C16.1561 8.41711 16.1561 11.5829 14.2034 13.5356L13.6564 14.0827C13.0235 14.7155 12.6679 15.5739 12.6679 16.469V17C12.6679 18.1046 11.7725 19 10.6679 19C9.56335 19 8.66792 18.1046 8.66792 17V16.469C8.66792 15.5739 8.31236 14.7155 7.67948 14.0827L7.13238 13.5356Z" stroke="#8C2BE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const IdeaIcon = props => <Icon component={IdeaSvg} {...props} />;
+
+const ArchiveSvg = () => (
+    <svg width="21" height="18" viewBox="0 0 21 18" fill="none">
+        <path d="M3.33203 5H17.332M3.33203 5C2.22746 5 1.33203 4.10457 1.33203 3C1.33203 1.89543 2.22746 1 3.33203 1H17.332C18.4366 1 19.332 1.89543 19.332 3C19.332 4.10457 18.4366 5 17.332 5M3.33203 5L3.33203 15C3.33203 16.1046 4.22746 17 5.33203 17H15.332C16.4366 17 17.332 16.1046 17.332 15V5M8.33203 9H12.332" stroke="#8C2BE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const ArchiveIcon = props => <Icon component={ArchiveSvg} {...props} />;
+
+const MoreSvg = () => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" >
+        <path d="M3.875 10H3.88375M10 10H10.0088M16.125 10H16.1338M4.75 10C4.75 10.4832 4.35825 10.875 3.875 10.875C3.39175 10.875 3 10.4832 3 10C3 9.51675 3.39175 9.125 3.875 9.125C4.35825 9.125 4.75 9.51675 4.75 10ZM10.875 10C10.875 10.4832 10.4832 10.875 10 10.875C9.51675 10.875 9.125 10.4832 9.125 10C9.125 9.51675 9.51675 9.125 10 9.125C10.4832 9.125 10.875 9.51675 10.875 10ZM17 10C17 10.4832 16.6082 10.875 16.125 10.875C15.6418 10.875 15.25 10.4832 15.25 10C15.25 9.51675 15.6418 9.125 16.125 9.125C16.6082 9.125 17 9.51675 17 10Z" stroke="#374151" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const MoreIcon = props => <Icon component={MoreSvg} {...props} />;
