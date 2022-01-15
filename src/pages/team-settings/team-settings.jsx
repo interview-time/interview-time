@@ -11,6 +11,7 @@ import { TEAM_ROLE_ADMIN } from "../../store/model";
 import Spinner from "../../components/spinner/spinner";
 import styles from "./team-settings.module.css";
 import TeamInvite from "./team-invite";
+import Card from "../../components/card/card";
 
 const columns = [
     {
@@ -106,7 +107,7 @@ const TeamSettings = ({
             {!isLoading() ? <div>
                 <Title level={4} style={{ marginBottom: 0 }}>Team settings</Title>
 
-                <div className={styles.card} style={{ marginTop: 12 }}>
+                <Card style={{ marginTop: 12 }}>
                     <TeamDetails
                         teamName={getTeamName()}
                         isAdmin={isAdmin()}
@@ -114,27 +115,27 @@ const TeamSettings = ({
                         onDeleteClicked={onDeleteClicked}
                         onLeaveClicked={onLeaveClicked}
                     />
-                </div>
+                </Card>
 
                 <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>Your team members</Title>
 
-                <div className={styles.card} style={{ padding: 0, marginTop: 12 }}>
+                <Card withPadding={false} style={{ marginTop: 12 }}>
                     <Table
                         columns={columns}
                         dataSource={teamMembers}
                         pagination={false}
                     />
 
-                </div>
+                </Card>
 
                 <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>Invite your team</Title>
 
-                <div className={styles.card} style={{ marginTop: 12 }}>
+                <Card style={{ marginTop: 12 }}>
                     <TeamInvite
                         teamName={getTeamName()}
                         userName={userName}
                         token={team ? team.token : null} />
-                </div>
+                </Card>
 
             </div> : <Spinner />}
 

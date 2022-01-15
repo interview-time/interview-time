@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import commonStyles from "../../components/layout/common.module.css";
 import { Button, Col, Dropdown, Input, Menu, Modal, Row, Space, Table } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
@@ -18,15 +17,44 @@ import { getFormattedDate, orderByInterviewDate } from "../../components/utils/u
 import { defaultTo } from "lodash/util";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import { ArchiveIcon, CalendarIcon, IdeaIcon, MoreIcon } from "../../components/utils/icons";
+import Card from "../../components/card/card";
+import TableHeader from "../../components/table/table-header";
+import { loadTeamMembers } from "../../store/user/actions";
+import { truncate } from "lodash/string";
 
 const { Search } = Input;
 
-const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteInterview }) => {
+const iconStyle = { fontSize: 24, color: '#8C2BE3' }
+
+/**
+ *
+ * @param {UserProfile} profile
+ * @param {Team} activeTeam
+ * @param {TeamMember[]} teamMembers
+ * @param {Interview[]} interviewsData
+ * @param {boolean} interviewsLoading
+ * @param loadInterviews
+ * @param loadTeamMembers
+ * @param deleteInterview
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Interviews = ({
+    profile,
+    activeTeam,
+    teamMembers,
+    interviewsData,
+    interviewsLoading,
+    loadInterviews,
+    loadTeamMembers,
+    deleteInterview
+}) => {
     const history = useHistory();
     const [interviews, setInterviews] = useState([]);
 
     React.useEffect(() => {
         loadInterviews();
+        loadTeamMembers(activeTeam.teamId);
         // eslint-disable-next-line
     }, []);
 
@@ -35,11 +63,11 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
         // eslint-disable-next-line
     }, [interviewsData]);
 
-    const onRowClicked = (record) => {
-        if (record.status === Status.SUBMITTED) {
-            history.push(routeInterviewReport(record.interviewId));
+    const onRowClicked = (interview) => {
+        if (interview.status === Status.SUBMITTED || interview.userId !== profile.userId) {
+            history.push(routeInterviewReport(interview.interviewId));
         } else {
-            history.push(routeInterviewScorecard(record.interviewId));
+            history.push(routeInterviewScorecard(interview.interviewId));
         }
     };
 
@@ -89,9 +117,16 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
         </Menu>
     );
 
+    const getInterviewerName = (interview) => {
+        let teamMember = teamMembers.find(member => member.userId === interview.userId)
+        return teamMember ? truncate(teamMember.name, {
+            'length': 20
+        }) : null;
+    }
+
     const columns = [
         {
-            title: <Text className={commonStyles.tableHeader}>CANDIDATE</Text>,
+            title: <TableHeader>CANDIDATE</TableHeader>,
             key: "candidate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
@@ -107,7 +142,7 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
             },
         },
         {
-            title: <Text className={commonStyles.tableHeader}>INTERVIEW</Text>,
+            title: <TableHeader>INTERVIEW</TableHeader>,
             key: "position",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
@@ -118,7 +153,7 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
             ),
         },
         {
-            title: <Text className={commonStyles.tableHeader}>START DATE</Text>,
+            title: <TableHeader>START DATE</TableHeader>,
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
@@ -129,7 +164,18 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
             ),
         },
         {
-            title: <Text className={commonStyles.tableHeader}>STATUS</Text>,
+            title: <TableHeader>INTERVIEWER</TableHeader>,
+            key: "position",
+            sortDirections: ["descend", "ascend"],
+            sorter: (a, b) => localeCompare(a.position, b.position),
+            render: (interview) => (
+                <Text className={`${styles.rowText} fs-mask`}>
+                    {getInterviewerName(interview)}
+                </Text>
+            ),
+        },
+        {
+            title: <TableHeader>STATUS</TableHeader>,
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
@@ -166,20 +212,20 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
 
                 <Row gutter={32} style={{ marginBottom: 32 }}>
                     <Col span={8}>
-                        <div className={commonStyles.card}>
+                        <Card>
                             <Space size={24}>
                                 <div className={styles.iconHolder}>
-                                    <CalendarIcon />
+                                    <CalendarIcon style={iconStyle} />
                                 </div>
                                 <div>
                                     <Title level={5} style={{ marginBottom: 0 }}>{getNewInterviews()}</Title>
                                     <Text className={styles.label}>Upcoming</Text>
                                 </div>
                             </Space>
-                        </div>
+                        </Card>
                     </Col>
                     <Col span={8}>
-                        <div className={commonStyles.card}>
+                        <Card>
                             <Space size={24}>
                                 <div className={styles.iconHolder}>
                                     <IdeaIcon />
@@ -189,10 +235,10 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
                                     <Text className={styles.label}>In-progress</Text>
                                 </div>
                             </Space>
-                        </div>
+                        </Card>
                     </Col>
                     <Col span={8}>
-                        <div className={commonStyles.card}>
+                        <Card>
                             <Space size={24}>
                                 <div className={styles.iconHolder}>
                                     <ArchiveIcon />
@@ -203,7 +249,7 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
                                     <Text className={styles.label}>Completed</Text>
                                 </div>
                             </Space>
-                        </div>
+                        </Card>
                     </Col>
                 </Row>
 
@@ -218,7 +264,7 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
                     />
                 </div>
 
-                <div className={commonStyles.card} style={{ padding: 0 }}>
+                <Card withPadding={false}>
                     <Table
                         pagination={false}
                         scroll={{
@@ -232,21 +278,23 @@ const Interviews = ({ interviewsData, interviewsLoading, loadInterviews, deleteI
                             onClick: () => onRowClicked(record),
                         })}
                     />
-                </div>
+                </Card>
             </div>
         </Layout>
     );
 };
 
-const mapDispatch = { loadInterviews, deleteInterview };
+const mapDispatch = { loadInterviews, deleteInterview, loadTeamMembers };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
-
-    const interviews = orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]);
+    const userState = state.user || {};
 
     return {
-        interviewsData: interviews,
+        interviewsData: orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]),
         interviewsLoading: interviewsState.loading,
+        teamMembers: userState.teamMembers || [],
+        profile: userState.profile,
+        activeTeam: userState.activeTeam
     };
 };
 

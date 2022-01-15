@@ -42,7 +42,7 @@ import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
 import TeamSettings from "./pages/team-settings/team-settings";
 import JoinTeam from "./pages/team-join/team-join";
-import InterviewReport from "./pages/interview-scorecard/report";
+import InterviewReport from "./pages/interview-scorecard/interview-report";
 
 function App({ history }) {
     useEffect(() => {

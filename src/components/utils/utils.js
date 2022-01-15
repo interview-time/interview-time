@@ -1,5 +1,5 @@
 import moment from "moment";
-import { DATE_FORMAT_DISPLAY } from "./constants";
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_DISPLAY_LONG, DATE_FORMAT_DISPLAY_TIME } from "./constants";
 
 export const isEmpty = (data) => !data || data.length === 0;
 
@@ -14,6 +14,36 @@ export const getFormattedDate = (dateTime, defaultValue = "") => {
     if (dateTime) {
         const date = moment(dateTime);
         return date.year() > 1 ? date.format(DATE_FORMAT_DISPLAY) : defaultValue;
+    }
+    return defaultValue;
+};
+
+/**
+ * Empty dates stored on backend as '0001-01-01T00:00:00+00:00'
+ *
+ * @param {string} dateTime
+ * @param {string} defaultValue
+ * @returns {string}
+ */
+export const getFormattedDateLong = (dateTime, defaultValue = "") => {
+    if (dateTime) {
+        const date = moment(dateTime);
+        return date.year() > 1 ? date.format(DATE_FORMAT_DISPLAY_LONG) : defaultValue;
+    }
+    return defaultValue;
+};
+
+/**
+ * Empty dates stored on backend as '0001-01-01T00:00:00+00:00'
+ *
+ * @param {string} dateTime
+ * @param {string} defaultValue
+ * @returns {string}
+ */
+export const getFormattedTime = (dateTime, defaultValue = "") => {
+    if (dateTime) {
+        const date = moment(dateTime);
+        return date.year() > 1 ? date.format(DATE_FORMAT_DISPLAY_TIME) : defaultValue;
     }
     return defaultValue;
 };
