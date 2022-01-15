@@ -138,13 +138,9 @@
     padding: 16px 24px;
 }
 
-.noPaddingCard {
-    width: 100%;
-    padding: 0;
-}
-
 .decisionCard {
     border-top: 6px solid #8C2BE3;
+    width: 100%
 }
 
 .questionNotes {

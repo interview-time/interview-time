@@ -6,11 +6,6 @@
     cursor: pointer;
 }
 
-.rowText {
-    font-size: 14px;
-    font-weight: 500;
-}
-
 .label {
     font-size: 14px;
     color: #6B7280;
@@ -44,5 +39,5 @@
 }
 
 .headerSearch {
-    width: 260px;
+    width: 300px;
 }
