@@ -26,37 +26,23 @@ namespace CafApi.Services
 
         public async Task<List<Candidate>> GetCandidates(string userId, string teamId)
         {
-            if (teamId != null)
-            {
-                var team = await _context.LoadAsync<Team>(teamId);
-                if (team != null && team.OwnerId == userId) // Team admin can see all candidates
-                {
-                    var searchByTeam = _context.FromQueryAsync<Candidate>(new QueryOperationConfig()
-                    {
-                        IndexName = "TeamId-index",
-                        Filter = new QueryFilter(nameof(Candidate.TeamId), QueryOperator.Equal, teamId)
-                    });
+            var candidates = new List<Candidate>();
 
-                    return await searchByTeam.GetRemainingAsync();
-                }
+            var canCreateCandidate = await BelongsToTeam(userId, teamId);
+            if (canCreateCandidate)
+            {
+                candidates = await _context.QueryAsync<Candidate>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
             }
 
-            // get candidates visible to this user
-            var searchByUser = _context.FromQueryAsync<Candidate>(new QueryOperationConfig()
-            {
-                IndexName = "UserId-index",
-                Filter = new QueryFilter(nameof(Candidate.UserId), QueryOperator.Equal, userId)
-            });
-
-            return await searchByUser.GetRemainingAsync();
+            return candidates;
         }
 
         public async Task<Candidate> CreateCandidate(string userId, Candidate candidate)
         {
-            var canCreateCandidate = await CanCreateCandidate(userId, candidate.TeamId);
+            var canCreateCandidate = await BelongsToTeam(userId, candidate.TeamId);
             if (canCreateCandidate)
             {
-                candidate.UserId = userId;
+                candidate.CreatedByUserId = userId;
                 candidate.CandidateId = Guid.NewGuid().ToString();
                 candidate.Status = CandidateStatus.NEW.ToString();
                 candidate.ModifiedDate = DateTime.UtcNow;
@@ -158,24 +144,15 @@ namespace CafApi.Services
             var candidate = await _context.LoadAsync<Candidate>(candidateId);
             if (candidate != null)
             {
-                if (candidate.UserId == userId)
-                {
-                    return true;
-                }
-                else if (candidate.TeamId != null)
-                {
-                    var team = await _context.LoadAsync<Team>(candidate.TeamId);
-                    if (team != null && team.OwnerId == userId)
-                    {
-                        return true;
-                    }
-                }
+                var isBelongToTeam = await _userService.IsBelongInTeam(userId, candidate.TeamId);
+
+                return isBelongToTeam;
             }
 
             return false;
         }
 
-        private async Task<bool> CanCreateCandidate(string userId, string teamId)
+        private async Task<bool> BelongsToTeam(string userId, string teamId)
         {
             if (!string.IsNullOrWhiteSpace(teamId))
             {
