@@ -22,7 +22,12 @@ import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, POSITIONS, Status, } from "../../components/utils/constants";
+import {
+    DATE_FORMAT_DISPLAY,
+    DATE_FORMAT_SERVER,
+    POSITIONS,
+    Status,
+} from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import arrayMove from "array-move";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
@@ -32,6 +37,7 @@ import {
     loadInterviews,
     updateInterview,
 } from "../../store/interviews/actions";
+import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template-edit/template-group-modal";
 import TemplateQuestionsCard from "../template-edit/template-questions-card";
@@ -44,6 +50,7 @@ import { filterOptionLabel } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { loadTeamMembers } from "../../store/user/actions";
 import { useAuth0 } from "../../react-auth0-spa";
+import CreateCandidate from "./create-candidate";
 
 const { TextArea } = Input;
 
@@ -58,6 +65,7 @@ const { TextArea } = Input;
  * @param loadInterviews
  * @param updateInterview
  * @param loadTemplates
+ * @param loadCandidates
  * @param loadTeamMembers
  * @returns {JSX.Element}
  * @constructor
@@ -65,6 +73,7 @@ const { TextArea } = Input;
 const InterviewSchedule = ({
     interviews,
     templates,
+    candidates,
     teamMembers,
     activeTeam,
     addInterview,
@@ -72,9 +81,9 @@ const InterviewSchedule = ({
     loadInterviews,
     updateInterview,
     loadTemplates,
+    loadCandidates,
     loadTeamMembers,
 }) => {
-
     const history = useHistory();
 
     const { id } = useParams();
@@ -99,8 +108,10 @@ const InterviewSchedule = ({
     };
 
     const [interview, setInterview] = useState(emptyInterview);
+    const [candidatesOptions, setCandidateOptions] = useState([]);
     const [selectedTemplateCollapsed, setSelectedTemplateCollapsed] = useState(true);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [createCandidate, setCreateCandidate] = useState(false);
     const [templateOptions, setTemplateOptions] = useState([]);
     const [interviewersOptions, setInterviewersOptions] = useState([]);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -151,24 +162,42 @@ const InterviewSchedule = ({
     }, [templates]);
 
     React.useEffect(() => {
-        if(isTeamSpace() && teamMembers.length !== 0) {
-            // interviewers selector
-            const currentUser = teamMembers.find(member => member.email === user.email)
-            setInterviewersOptions(teamMembers.map(member =>
-                member.userId === currentUser.userId ? {
-                    label: `${member.name} (you)`,
-                    value: member.userId,
-                } : {
-                    label: member.name,
-                    value: member.userId,
+        // templates selector
+        if (candidates.length !== 0) {
+            setCandidateOptions(
+                candidates.map((candidate) => ({
+                    value: candidate.candidateId,
+                    label: candidate.candidateName,
                 }))
+            );
+        }
+        // eslint-disable-next-line
+    }, [candidates]);
+
+    React.useEffect(() => {
+        if (isTeamSpace() && teamMembers.length !== 0) {
+            // interviewers selector
+            const currentUser = teamMembers.find((member) => member.email === user.email);
+            setInterviewersOptions(
+                teamMembers.map((member) =>
+                    member.userId === currentUser.userId
+                        ? {
+                              label: `${member.name} (you)`,
+                              value: member.userId,
+                          }
+                        : {
+                              label: member.name,
+                              value: member.userId,
+                          }
+                )
+            );
 
             if (!isExistingInterviewFlow()) {
                 // pre-select current user as interviewer
                 setInterview({
                     ...interview,
-                    interviewers: [currentUser.userId]
-                })
+                    interviewers: [currentUser.userId],
+                });
             }
         }
         // eslint-disable-next-line
@@ -176,12 +205,13 @@ const InterviewSchedule = ({
 
     React.useEffect(() => {
         loadTemplates();
+        loadCandidates();
 
         if (isExistingInterviewFlow()) {
             loadInterviews();
         }
 
-        if(isTeamSpace()) {
+        if (isTeamSpace()) {
             loadTeamMembers(activeTeam.teamId);
         }
 
@@ -211,17 +241,13 @@ const InterviewSchedule = ({
         history.goBack();
     };
 
-    const onCandidateChange = (e) => {
-        interview.candidate = e.target.value;
-    };
-
     const onPositionChange = (value) => {
         interview.position = value;
     };
 
     const onInterviewersChange = (values) => {
-        interview.interviewers = values
-    }
+        interview.interviewers = values;
+    };
 
     const onDateChange = (date) => {
         interview.interviewDateTime = date.utc().format(DATE_FORMAT_SERVER);
@@ -238,17 +264,18 @@ const InterviewSchedule = ({
         updatedInterview.structure.groups
             .find((group) => group.groupId === groupId)
             .questions.push({
-            questionId: questionId,
-            question: "",
-            tags: [],
-        });
+                questionId: questionId,
+                question: "",
+                tags: [],
+            });
         setInterview(updatedInterview);
     };
 
     const onRemoveQuestionClicked = (questionId) => {
         const updatedInterview = cloneDeep(interview);
         updatedInterview.structure.groups.forEach(
-            (group) => (group.questions = group.questions.filter((q) => q.questionId !== questionId))
+            (group) =>
+                (group.questions = group.questions.filter((q) => q.questionId !== questionId))
         );
         setInterview(updatedInterview);
     };
@@ -271,7 +298,9 @@ const InterviewSchedule = ({
 
     const onDeleteGroupClicked = (id) => {
         const updatedInterview = cloneDeep(interview);
-        updatedInterview.structure.groups = updatedInterview.structure.groups.filter((g) => g.groupId !== id);
+        updatedInterview.structure.groups = updatedInterview.structure.groups.filter(
+            (g) => g.groupId !== id
+        );
         setInterview(updatedInterview);
     };
 
@@ -333,7 +362,11 @@ const InterviewSchedule = ({
         const updatedInterview = cloneDeep(interview);
         const fromIndex = updatedInterview.structure.groups.findIndex((g) => g.groupId === id);
         const toIndex = fromIndex - 1;
-        updatedInterview.structure.groups = arrayMove(updatedInterview.structure.groups, fromIndex, toIndex);
+        updatedInterview.structure.groups = arrayMove(
+            updatedInterview.structure.groups,
+            fromIndex,
+            toIndex
+        );
         setInterview(updatedInterview);
     };
 
@@ -341,7 +374,11 @@ const InterviewSchedule = ({
         const updatedInterview = cloneDeep(interview);
         const fromIndex = updatedInterview.structure.groups.findIndex((g) => g.groupId === id);
         const toIndex = fromIndex + 1;
-        updatedInterview.structure.groups = arrayMove(updatedInterview.structure.groups, fromIndex, toIndex);
+        updatedInterview.structure.groups = arrayMove(
+            updatedInterview.structure.groups,
+            fromIndex,
+            toIndex
+        );
         setInterview(updatedInterview);
     };
 
@@ -394,7 +431,9 @@ const InterviewSchedule = ({
                 <Title level={4} style={{ margin: 0 }}>
                     Template - {selectedTemplate.title}
                 </Title>
-                <Text type="secondary">Customize an interview template to match any of your processes.</Text>
+                <Text type="secondary">
+                    Customize an interview template to match any of your processes.
+                </Text>
 
                 {selectedTemplateCollapsed && (
                     <Button onClick={onCollapseClicked}>Show template details</Button>
@@ -411,8 +450,8 @@ const InterviewSchedule = ({
             <Card style={marginTop12}>
                 <Title level={4}>Intro</Title>
                 <Text type="secondary">
-                    This section serves as a reminder for what interviewer must do at the beginning of the
-                    interview.
+                    This section serves as a reminder for what interviewer must do at the beginning
+                    of the interview.
                 </Text>
                 <TextArea
                     style={marginTop16}
@@ -439,8 +478,8 @@ const InterviewSchedule = ({
                     </Popover>
                 </Space>
                 <Text type="secondary">
-                    Grouping questions helps to evaluate skills in a particular competence area and make a
-                    more granular assessment.
+                    Grouping questions helps to evaluate skills in a particular competence area and
+                    make a more granular assessment.
                 </Text>
                 <div>
                     {interview.structure.groups.map((group) => (
@@ -485,6 +524,8 @@ const InterviewSchedule = ({
         </div>
     );
 
+    const [form] = Form.useForm();
+
     const InterviewDetails = () => (
         <Card style={marginTop12} key={interview.interviewId}>
             <div className={styles.header} style={{ marginBottom: 12 }}>
@@ -496,17 +537,20 @@ const InterviewSchedule = ({
                 </div>
             </div>
             <Text type="secondary">
-                Enter interview details information so you can easily discover it among other interviews.
+                Enter interview details information so you can easily discover it among other
+                interviews.
             </Text>
             <Form
                 name="basic"
+                form={form}
                 layout="vertical"
                 initialValues={{
                     template: interview.templateId || interview.libraryId,
+                    candidateId: interview.candidateId,
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime, undefined),
                     position: interview.position ? interview.position : undefined,
-                    interviewers: interview.interviewers || []
+                    interviewers: interview.interviewers || [],
                 }}
                 onFinish={onSaveClicked}
             >
@@ -547,72 +591,108 @@ const InterviewSchedule = ({
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item
-                            name="candidate"
-                            label={<Text strong>Candidate</Text>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter candidate name",
-                                },
-                            ]}
-                        >
-                            <Input
-                                className="fs-mask"
-                                placeholder="Enter candidate full name"
-                                onChange={onCandidateChange}
-                            />
-                        </Form.Item>
+                        {isExistingInterviewFlow() && !interview.candidateId ? (
+                            <Form.Item
+                                name="candidate"
+                                label={<Text strong>Candidate</Text>}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please enter candidate name",
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    className="fs-mask"
+                                    placeholder="Enter candidate full name"
+                                    onChange={(e) => (interview.candidate = e.target.value)}
+                                />
+                            </Form.Item>
+                        ) : (
+                            <Form.Item
+                                name="candidateId"
+                                label={<Text strong>Candidate</Text>}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please enter candidate name",
+                                    },
+                                ]}
+                            >
+                                <Select
+                                    showSearch
+                                    allowClear
+                                    placeholder="Select candidate"
+                                    onChange={(value, option) => {
+                                        interview.candidateId = value;
+                                        interview.candidate = option.label;
+                                    }}
+                                    options={candidatesOptions}
+                                    filterOption={filterOptionLabel}
+                                    notFoundContent={<Text>No candidate found.</Text>}
+                                    dropdownRender={(menu) => (
+                                        <div>
+                                            {menu}
+                                            <Divider style={{ margin: "4px 0" }} />
+                                            <Button
+                                                style={{ paddingLeft: 12 }}
+                                                onClick={() => setCreateCandidate(true)}
+                                                type="link"
+                                            >
+                                                Create new candidate
+                                            </Button>
+                                        </div>
+                                    )}
+                                />
+                            </Form.Item>
+                        )}
                     </Col>
                 </Row>
-                {isTeamSpace() && <Row gutter={16}>
-                    <Col span={24}>
-                        <Form.Item
-                            name="interviewers"
-                            label={<Text strong>Interviewers</Text>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please select at least 1 interviewer",
-                                },
-                            ]}
-                        >
-                            <Select
-                                mode="multiple"
-                                placeholder="Select interviewers"
-                                disabled={isExistingInterviewFlow()}
-                                options={interviewersOptions}
-                                filterOption={filterOptionLabel}
-                                onChange={onInterviewersChange}
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>}
+                {isTeamSpace() && (
+                    <Row gutter={16}>
+                        <Col span={24}>
+                            <Form.Item
+                                name="interviewers"
+                                label={<Text strong>Interviewers</Text>}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please select at least 1 interviewer",
+                                    },
+                                ]}
+                            >
+                                <Select
+                                    mode="multiple"
+                                    placeholder="Select interviewers"
+                                    disabled={isExistingInterviewFlow()}
+                                    options={interviewersOptions}
+                                    filterOption={filterOptionLabel}
+                                    onChange={onInterviewersChange}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                )}
                 <Row gutter={16}>
                     <Col span={12}>
-                        <Form.Item
-                            name="position"
-                            label={<Text strong>Position</Text>}
-                        >
+                        <Form.Item name="position" label={<Text strong>Position</Text>}>
                             <AutoComplete
                                 allowClear
                                 placeholder="Select position you are hiring for"
                                 options={sortBy(POSITIONS, ["value"])}
                                 filterOption={(inputValue, option) =>
-                                    option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                                    option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
+                                    -1
                                 }
                                 onChange={onPositionChange}
                             />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item
-                            name="date"
-                            label={<Text strong>Interview Date</Text>}
-                        >
+                        <Form.Item name="date" label={<Text strong>Interview Date</Text>}>
                             <DatePicker
                                 showTime={{
-                                    minuteStep: 15
+                                    minuteStep: 15,
                                 }}
                                 allowClear={false}
                                 format={DATE_FORMAT_DISPLAY}
@@ -638,17 +718,39 @@ const InterviewSchedule = ({
 
     return (
         <Layout>
-            {isInitialLoading() ? <Spinner /> :
+            {isInitialLoading() ? (
+                <Spinner />
+            ) : (
                 <Row className={styles.rootContainer}>
                     <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                        <InterviewDetails />
+                        {!createCandidate && <InterviewDetails />}
 
+                        {createCandidate && (
+                            <CreateCandidate
+                                onSave={(candidateName) => {
+                                    var selectedCandidates = candidates.filter(
+                                        (c) => c.candidateName === candidateName
+                                    );
+                                  
+                                    if (selectedCandidates.length > 0) {
+                                        interview.candidateId = selectedCandidates[0].candidateId;
+                                        interview.candidate = selectedCandidates[0].candidateName;
+
+                                        form.setFieldsValue({
+                                            candidateId: selectedCandidates[0].candidateId,
+                                        });
+                                    }
+                                    setCreateCandidate(false);
+                                }}
+                                onCancel={() => setCreateCandidate(false)}
+                            />
+                        )}
                         {selectedTemplate && isExistingInterviewFlow() && <TemplateInformation />}
 
                         {!selectedTemplateCollapsed && <TemplateDetails />}
                     </Col>
                 </Row>
-            }
+            )}
 
             <TemplateGroupModal
                 visible={questionGroupModal.visible}
@@ -682,16 +784,20 @@ const mapDispatch = {
     loadInterviews,
     updateInterview,
     loadTemplates,
-    loadTeamMembers
+    loadCandidates,
+    loadTeamMembers,
 };
+
 const mapState = (state) => {
     const interviewState = state.interviews || {};
     const templateState = state.templates || {};
+    const candidatesState = state.candidates || {};
     const userState = state.user || {};
 
     return {
         interviews: interviewState.interviews,
         templates: templateState.templates,
+        candidates: candidatesState.candidates,
         teamMembers: userState.teamMembers || [],
         activeTeam: userState.activeTeam,
     };

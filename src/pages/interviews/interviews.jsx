@@ -289,7 +289,7 @@ const mapState = (state) => {
     const userState = state.user || {};
 
     return {
-        interviewsData: orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]),
+        interviewsData: orderBy(interviewsState.interviews, orderByInterviewDate, ["asc"]),
         interviewsLoading: interviewsState.loading,
         teamMembers: userState.teamMembers || [],
         profile: userState.profile,
