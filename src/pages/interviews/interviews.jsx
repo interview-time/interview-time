@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import { Button, Col, Dropdown, Input, Menu, Modal, Row, Space, Table } from "antd";
+import { Button, Col, Dropdown, Input, Menu, Modal, Row, Table } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import { orderBy } from "lodash/collection";
