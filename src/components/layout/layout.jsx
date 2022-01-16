@@ -9,7 +9,7 @@ import {
     HomeIcon,
     InterviewIcon,
     ProfileIcon,
-    SettingsIcon
+    UserAddIcon
 } from "../utils/icons";
 import {
     routeAccount,
@@ -254,7 +254,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                     </Menu.Item>
                     <Divider className={styles.divider} />
                     <Menu.Item key="settings" className={styles.menuItem}
-                               icon={<SettingsIcon />}>
+                               icon={<UserAddIcon />}>
                         <Link to={routeTeamSettings(getActiveTeam().teamId)}>
                             <span className="nav-text">Team settings</span>
                         </Link>

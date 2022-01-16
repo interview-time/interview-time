@@ -292,13 +292,13 @@ const TeamSwitcherSvg = () => (
 
 export const TeamSwitcherIcon = props => <Icon component={TeamSwitcherSvg} {...props} />;
 
-const SettingsSvg = () => (
+const UserAddSvg = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M18 9V12M18 12V15M18 12H21M18 12H15M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7ZM3 20C3 16.6863 5.68629 14 9 14C12.3137 14 15 16.6863 15 20V21H3V20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
 );
 
-export const SettingsIcon = props => <Icon component={SettingsSvg} {...props} />;
+export const UserAddIcon = props => <Icon component={UserAddSvg} {...props} />;
 
 const BackSvg = () => (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -421,3 +421,11 @@ const UsersSvg = () => (
 );
 
 export const UsersIcon = props => <Icon component={UsersSvg} {...props} />;
+
+const NewFileSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M9.66797 13H15.668M12.668 10L12.668 16M17.668 21H7.66797C6.5634 21 5.66797 20.1046 5.66797 19V5C5.66797 3.89543 6.5634 3 7.66797 3H13.2538C13.519 3 13.7733 3.10536 13.9609 3.29289L19.3751 8.70711C19.5626 8.89464 19.668 9.149 19.668 9.41421V19C19.668 20.1046 18.7725 21 17.668 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const NewFileIcon = props => <Icon component={NewFileSvg} {...props} />;
