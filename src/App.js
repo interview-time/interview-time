@@ -22,7 +22,7 @@ import {
     routeTeamSettings,
     routeTeamJoin,
 } from "./components/utils/route";
-import Default from "./pages/default/default";
+import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
 import InterviewScorecard from "./pages/interview-scorecard/interview-scorecard";
 import InterviewSchedule from "./pages/interview-schedule/interview-schedule";

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import { Button, Col, Dropdown, Input, Menu, Modal, Row, Space, Table } from "antd";
+import { Button, Col, Dropdown, Input, Menu, Modal, Row, Table } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import { orderBy } from "lodash/collection";
@@ -12,7 +12,6 @@ import { localeCompare } from "../../components/utils/comparators";
 import { routeInterviewDetails, routeInterviewReport, routeInterviewScorecard } from "../../components/utils/route";
 import Title from "antd/lib/typography/Title";
 import DemoTag from "../../components/demo/demo-tag";
-import Text from "antd/lib/typography/Text";
 import { getFormattedDate, orderByInterviewDate } from "../../components/utils/utils";
 import { defaultTo } from "lodash/util";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
@@ -22,6 +21,7 @@ import TableHeader from "../../components/table/table-header";
 import { loadTeamMembers } from "../../store/user/actions";
 import { truncate } from "lodash/string";
 import TableText from "../../components/table/table-text";
+import CardHero from "../../components/card/card-hero";
 
 const { Search } = Input;
 
@@ -211,44 +211,25 @@ const Interviews = ({
 
                 <Row gutter={32} style={{ marginBottom: 32 }}>
                     <Col span={8}>
-                        <Card>
-                            <Space size={24}>
-                                <div className={styles.iconHolder}>
-                                    <CalendarIcon style={iconStyle} />
-                                </div>
-                                <div>
-                                    <Title level={5} style={{ marginBottom: 0 }}>{getNewInterviews()}</Title>
-                                    <Text className={styles.label}>Upcoming</Text>
-                                </div>
-                            </Space>
-                        </Card>
+                        <CardHero
+                            icon={<CalendarIcon style={iconStyle} />}
+                            title={getNewInterviews()}
+                            text="Upcoming"
+                        />
                     </Col>
                     <Col span={8}>
-                        <Card>
-                            <Space size={24}>
-                                <div className={styles.iconHolder}>
-                                    <IdeaIcon />
-                                </div>
-                                <div>
-                                    <Title level={5} style={{ marginBottom: 0 }}>{getInProgressInterviews()}</Title>
-                                    <Text className={styles.label}>In-progress</Text>
-                                </div>
-                            </Space>
-                        </Card>
+                        <CardHero
+                            icon={<IdeaIcon style={iconStyle} />}
+                            title={getInProgressInterviews()}
+                            text="In-progress"
+                        />
                     </Col>
                     <Col span={8}>
-                        <Card>
-                            <Space size={24}>
-                                <div className={styles.iconHolder}>
-                                    <ArchiveIcon />
-                                </div>
-                                <div>
-                                    <Title level={5}
-                                           style={{ marginBottom: 0 }}>{getCompletedInterviews()}</Title>
-                                    <Text className={styles.label}>Completed</Text>
-                                </div>
-                            </Space>
-                        </Card>
+                        <CardHero
+                            icon={<ArchiveIcon style={iconStyle} />}
+                            title={getCompletedInterviews()}
+                            text="Completed"
+                        />
                     </Col>
                 </Row>
 
