@@ -21,6 +21,7 @@ import Card from "../../components/card/card";
 import TableHeader from "../../components/table/table-header";
 import { loadTeamMembers } from "../../store/user/actions";
 import { truncate } from "lodash/string";
+import TableText from "../../components/table/table-text";
 
 const { Search } = Input;
 
@@ -133,9 +134,7 @@ const Interviews = ({
             render: (interview) => {
                 return (
                     <>
-                        <Text className={`${styles.rowText} fs-mask`}>
-                            {interview.candidate}
-                        </Text>
+                        <TableText className={`fs-mask`}>{interview.candidate}</TableText>
                         <DemoTag isDemo={interview.isDemo} />
                     </>
                 );
@@ -147,20 +146,20 @@ const Interviews = ({
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
             render: (interview) => (
-                <Text className={`${styles.rowText} fs-mask`}>
+                <TableText className={`fs-mask`}>
                     {defaultTo(interview.position, "-")}
-                </Text>
+                </TableText>
             ),
         },
         {
-            title: <TableHeader>START DATE</TableHeader>,
+            title: <TableHeader>DATE</TableHeader>,
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: (interview) => (
-                <Text className={`${styles.rowText} fs-mask`}>
+                <TableText className={`fs-mask`}>
                     {getFormattedDate(interview.interviewDateTime, "-")}
-                </Text>
+                </TableText>
             ),
         },
         {
@@ -169,9 +168,9 @@ const Interviews = ({
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
             render: (interview) => (
-                <Text className={`${styles.rowText} fs-mask`}>
+                <TableText className={`fs-mask`}>
                     {getInterviewerName(interview)}
-                </Text>
+                </TableText>
             ),
         },
         {

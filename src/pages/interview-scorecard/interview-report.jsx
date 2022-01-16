@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Modal, Progress, Space, Tag, Typography } from "antd";
+import { Button, Col, Modal, Progress, Space, Typography } from "antd";
 import {
     getDecisionColor,
-    getDecisionText,
     getGroupAssessmentColor,
     getGroupAssessmentPercent,
     getGroupAssessmentText,
@@ -15,7 +14,6 @@ import Title from "antd/lib/typography/Title";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import { filterGroupsWithAssessment, filterQuestionsWithAssessment } from "../../components/utils/filters";
 import { CloseIcon } from "../../components/utils/icons";
-import { routeInterviews } from "../../components/utils/route";
 import { useHistory, useParams } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";
@@ -27,6 +25,7 @@ import ExportNotes from "../../components/export-notes/export-notes";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 import { CandidateInfoSection, InterviewInfoSection } from "./interview-sections";
+import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 
 const { Text } = Typography;
 
@@ -89,7 +88,7 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                     <Button
                         icon={<CloseIcon />}
                         size="large"
-                        onClick={() => history.push(routeInterviews())}
+                        onClick={() => history.goBack()}
                     />
                 }
                 rightComponent={
@@ -110,9 +109,7 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                           style={{ borderColor: getDecisionColor(interview.decision), width: '100%' }}>
                         <div className={styles.decisionTextHolder}>
                             <Title level={4} style={{ margin: 0 }}>🎉 {getInterviewerName()} scored a...</Title>
-                            <Tag color={getDecisionColor(interview.decision)}
-                                 style={{ marginLeft: 20 }}
-                                 className={styles.tag}>{getDecisionText(interview.decision)}</Tag>
+                            <InterviewDecisionTag decision={interview.decision} />
                         </div>
                     </Card>
                 </div>

@@ -131,7 +131,7 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
 
                 <div className={styles.divVerticalCenter}>
                     <span className={styles.guidingLine} />
-                    <Card withPadding={false}>
+                    <Card withPadding={false} style={{ width: '100%' }}>
                         <Title level={4} style={{ margin: 24 }}>Summary notes</Title>
                         <div className={styles.divider} />
                         <TextArea
