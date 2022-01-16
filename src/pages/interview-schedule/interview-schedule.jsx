@@ -163,7 +163,7 @@ const InterviewSchedule = ({
 
     React.useEffect(() => {
         // templates selector
-        if (candidates.length !== 0 && candidatesOptions.length === 0) {
+        if (candidates.length !== 0) {
             setCandidateOptions(
                 candidates.map((candidate) => ({
                     value: candidate.candidateId,
@@ -524,6 +524,8 @@ const InterviewSchedule = ({
         </div>
     );
 
+    const [form] = Form.useForm();
+
     const InterviewDetails = () => (
         <Card style={marginTop12} key={interview.interviewId}>
             <div className={styles.header} style={{ marginBottom: 12 }}>
@@ -540,10 +542,12 @@ const InterviewSchedule = ({
             </Text>
             <Form
                 name="basic"
+                form={form}
                 layout="vertical"
                 initialValues={{
                     template: interview.templateId || interview.libraryId,
                     candidateId: interview.candidateId,
+                    candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime, undefined),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
@@ -587,56 +591,61 @@ const InterviewSchedule = ({
                         </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <Form.Item
-                            name="candidateId"
-                            label={<Text strong>Candidate</Text>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter candidate name",
-                                },
-                            ]}
-                        >
-                            <Select
-                                showSearch
-                                allowClear
-                                placeholder="Select candidate"
-                                onChange={(value, option) => {
-                                    console.log(option);
-                                    interview.candidateId = value;
-                                    interview.candidate = option.label;
-                                }}
-                                options={candidatesOptions}
-                                filterOption={filterOptionLabel}
-                                notFoundContent={<Text>No candidate found.</Text>}
-                                dropdownRender={(menu) => (
-                                    <div>
-                                        {menu}
-                                        <Divider style={{ margin: "4px 0" }} />
-                                        <Button
-                                            style={{ paddingLeft: 12 }}
-                                            onClick={() => setCreateCandidate(true)}
-                                            type="link"
-                                        >
-                                            Create new candidate
-                                        </Button>
-                                    </div>
-                                )}
-                            />
-
-                            {/* <AutoComplete
-                                allowClear
-                                options={candidatesOptions}
-                                //onChange={onCandidateChange}
-                                onSearch={onSearch}
-                                placeholder="Enter candidate full name"
-                            /> */}
-                            {/* <Input
-                                className="fs-mask"
-                                placeholder="Enter candidate full name"
-                                onChange={onCandidateChange}
-                            /> */}
-                        </Form.Item>
+                        {isExistingInterviewFlow() && !interview.candidateId ? (
+                            <Form.Item
+                                name="candidate"
+                                label={<Text strong>Candidate</Text>}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please enter candidate name",
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    className="fs-mask"
+                                    placeholder="Enter candidate full name"
+                                    onChange={(e) => (interview.candidate = e.target.value)}
+                                />
+                            </Form.Item>
+                        ) : (
+                            <Form.Item
+                                name="candidateId"
+                                label={<Text strong>Candidate</Text>}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please enter candidate name",
+                                    },
+                                ]}
+                            >
+                                <Select
+                                    showSearch
+                                    allowClear
+                                    placeholder="Select candidate"
+                                    onChange={(value, option) => {
+                                        interview.candidateId = value;
+                                        interview.candidate = option.label;
+                                    }}
+                                    options={candidatesOptions}
+                                    filterOption={filterOptionLabel}
+                                    notFoundContent={<Text>No candidate found.</Text>}
+                                    dropdownRender={(menu) => (
+                                        <div>
+                                            {menu}
+                                            <Divider style={{ margin: "4px 0" }} />
+                                            <Button
+                                                style={{ paddingLeft: 12 }}
+                                                onClick={() => setCreateCandidate(true)}
+                                                type="link"
+                                            >
+                                                Create new candidate
+                                            </Button>
+                                        </div>
+                                    )}
+                                />
+                            </Form.Item>
+                        )}
                     </Col>
                 </Row>
                 {isTeamSpace() && (
@@ -718,7 +727,21 @@ const InterviewSchedule = ({
 
                         {createCandidate && (
                             <CreateCandidate
-                                onSave={() => setCreateCandidate(false)}
+                                onSave={(candidateName) => {
+                                    var selectedCandidates = candidates.filter(
+                                        (c) => c.candidateName === candidateName
+                                    );
+                                                                       
+                                    if (selectedCandidates.length > 0) {
+                                        interview.candidateId = selectedCandidates[0].candidateId;
+                                        interview.candidate = selectedCandidates[0].candidateName;
+
+                                        form.setFieldsValue({
+                                            candidateId: selectedCandidates[0].candidateId,
+                                        });
+                                    }
+                                    setCreateCandidate(false);
+                                }}
                                 onCancel={() => setCreateCandidate(false)}
                             />
                         )}

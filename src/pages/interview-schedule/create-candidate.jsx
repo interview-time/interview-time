@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Button, Card, Col, Divider, Form, Input, Row, Space } from "antd";
 import Title from "antd/lib/typography/Title";
@@ -8,6 +8,15 @@ import Spinner from "../../components/spinner/spinner";
 import styles from "./interview-schedule.module.css";
 
 const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCancel }) => {
+    const [onSaveClicked, setOnSaveClicked] = useState(false);
+    const [candidateName, setCandidateName] = useState(false);
+
+    React.useEffect(() => {
+        if (!loading && onSaveClicked && onSave !== null) {
+            onSave(candidateName);
+        }
+    }, [loading, onSaveClicked]);
+
     return loading ? (
         <Spinner />
     ) : (
@@ -28,12 +37,13 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                     github: "",
                 }}
                 onFinish={(values) => {
-                    createCandidate(values);
-                    onSave();
+                    setCandidateName(values.candidateName);
+                    createCandidate(values);                    
+                    setOnSaveClicked(true);
                 }}
             >
                 <Row gutter={16} style={{ marginTop: 16 }}>
-                    <Col>
+                    <Col span={12}>
                         <Form.Item
                             name="candidateName"
                             label={<Text strong>Candidate</Text>}
@@ -49,7 +59,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
-                    <Col>
+                    <Col span={12}>
                         <Form.Item
                             name="linkedin"
                             label={<Text strong>LinkedIn</Text>}
@@ -64,7 +74,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
-                    <Col>
+                    <Col span={12}>
                         <Form.Item
                             name="github"
                             label={<Text strong>GitHub</Text>}
@@ -82,6 +92,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                 <Divider />
 
                 <div className={styles.divSpaceBetween}>
+                    <Text />
                     <Space>
                         <Button onClick={onCancel}>Cancel</Button>
                         <Button type="primary" htmlType="submit">

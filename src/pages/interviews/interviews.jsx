@@ -242,7 +242,7 @@ const mapDispatch = { loadInterviews, deleteInterview };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
 
-    const interviews = orderBy(interviewsState.interviews, orderByInterviewDate, ["desc"]);
+    const interviews = orderBy(interviewsState.interviews, orderByInterviewDate, ["asc"]);
 
     return {
         interviewsData: interviews,
