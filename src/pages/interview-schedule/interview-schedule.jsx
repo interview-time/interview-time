@@ -731,7 +731,7 @@ const InterviewSchedule = ({
                                     var selectedCandidates = candidates.filter(
                                         (c) => c.candidateName === candidateName
                                     );
-                                                                       
+                                  
                                     if (selectedCandidates.length > 0) {
                                         interview.candidateId = selectedCandidates[0].candidateId;
                                         interview.candidate = selectedCandidates[0].candidateName;

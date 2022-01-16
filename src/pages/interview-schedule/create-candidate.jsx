@@ -8,14 +8,13 @@ import Spinner from "../../components/spinner/spinner";
 import styles from "./interview-schedule.module.css";
 
 const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCancel }) => {
-    const [onSaveClicked, setOnSaveClicked] = useState(false);
-    const [candidateName, setCandidateName] = useState(false);
+    const [candidateName, setCandidateName] = useState();
 
     React.useEffect(() => {
-        if (!loading && onSaveClicked && onSave !== null) {
+        if (!loading && candidateName && onSave !== null) {            
             onSave(candidateName);
         }
-    }, [loading, onSaveClicked]);
+    }, [loading, candidateName, onSave]);
 
     return loading ? (
         <Spinner />
@@ -36,10 +35,9 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                     linkedin: "",
                     github: "",
                 }}
-                onFinish={(values) => {
+                onFinish={(values) => {                    
+                    createCandidate(values);
                     setCandidateName(values.candidateName);
-                    createCandidate(values);                    
-                    setOnSaveClicked(true);
                 }}
             >
                 <Row gutter={16} style={{ marginTop: 16 }}>
