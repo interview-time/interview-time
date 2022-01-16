@@ -7,6 +7,9 @@ namespace CafApi.Models
     public class Candidate
     {
         [DynamoDBHashKey]
+        public string TeamId { get; set; }
+
+        [DynamoDBRangeKey]
         public string CandidateId { get; set; }
 
         public string CandidateName { get; set; }
@@ -21,11 +24,9 @@ namespace CafApi.Models
 
         public string CodingRepo { get; set; }
 
-        public string UserId { get; set; }
-
-        public string TeamId { get; set; }
-
         public string Status { get; set; }
+
+        public string CreatedByUserId { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
