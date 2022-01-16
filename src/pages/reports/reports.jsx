@@ -3,33 +3,28 @@ import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import styles from "./reports.module.css";
-import { Card, Col, Input, Popover, Row, Select, Space, Table, Tag } from 'antd';
+import { Input, Select, Table } from 'antd';
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
-import {
-    getStatusText,
-    Status
-} from "../../components/utils/constants";
-import {
-    getGroupAssessmentColor,
-    getDecisionColor,
-    getDecisionText,
-    getGroupAssessmentText,
-    getOverallPerformancePercent,
-} from "../../components/utils/assessment";
+import { getStatusText, Status } from "../../components/utils/constants";
+import { getDecisionText, getOverallPerformancePercent, } from "../../components/utils/assessment";
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse, sortedUniq } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import { routeInterviewReport } from "../../components/utils/route";
-import { TrophyTwoTone } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
 import { filterOptionLabel } from "../../components/utils/filters";
+import Card from "../../components/card/card";
+import TableHeader from "../../components/table/table-header";
+import TableText from "../../components/table/table-text";
+import { getFormattedDate } from "../../components/utils/utils";
+import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
+import InterviewScoreTag from "../../components/tags/interview-score-tags";
+import InterviewCompetenceTag from "../../components/tags/interview-competence-tags";
 
 const { Search } = Input;
 
-const TOP_PERFORMANCE = 80;
 const Reports = ({ interviews, loading, loadInterviews }) => {
 
     const history = useHistory();
@@ -87,122 +82,94 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
 
     const columns = [
         {
-            title: 'Candidate Name',
+            title: <TableHeader>CANDIDATE</TableHeader>,
             key: 'candidate',
             dataIndex: 'candidate',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
             render: (candidate) => {
                 return (
-                    <span className="fs-mask">{candidate}</span>
+                    <TableText className="fs-mask">{candidate}</TableText>
                 );
             },
         },
         {
-            title: 'Position',
+            title: <TableHeader>INTERVIEW</TableHeader>,
             key: 'position',
             dataIndex: 'position',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => localeCompare(a.position, b.position),
             render: (position) => {
                 return (
-                    <span className="fs-mask">{position}</span>
+                    <TableText className="fs-mask">{position}</TableText>
                 );
             },
         },
         {
-            title: 'Performance',
+            title: <TableHeader>DATE</TableHeader>,
+            key: "interviewDateTime",
+            sortDirections: ["descend", "ascend"],
+            sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
+            render: (interview) => (
+                <TableText className={`fs-mask`}>
+                    {getFormattedDate(interview.interviewDateTime, "-")}
+                </TableText>
+            ),
+        },
+        {
+            title: <TableHeader>SCORE</TableHeader>,
             key: 'position',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => getOverallPerformancePercent(a.structure.groups) - getOverallPerformancePercent(b.structure.groups),
-            render: interview => {
-                const overallPerformance = getOverallPerformancePercent(interview.structure.groups);
-
-                return <Space>
-                    {overallPerformance + '%'}
-                    {overallPerformance >= TOP_PERFORMANCE &&
-                    <TrophyTwoTone style={{ fontSize: 16 }} twoToneColor='#faad14' />}
-                </Space>;
-            }
+            render: interview => <InterviewScoreTag interview={interview} />
         },
         {
-            title: 'Competence Areas',
+            title: <TableHeader>COMPETENCE</TableHeader>,
             key: 'status',
-            render: interview => <Popover title="Competence Areas" content={
-                <Space direction="vertical" className={styles.assessmentPopup}>
-                    {interview.structure.groups.map(group => {
-                        let color = getGroupAssessmentColor(group)
-                        return <Row gutter={16}>
-                            <Col span={12}>{group.name}</Col>
-                            <Col span={12}>
-                                <span className={styles.dotSmall} style={{ backgroundColor: color }} />
-                                <span>{getGroupAssessmentText(group)}</span>
-                            </Col>
-                        </Row>
-                    })}
-                </Space>
-            }><Space>
-                {
-                    interview.structure.groups.map(group => {
-                        let color = getGroupAssessmentColor(group)
-                        return <span className={styles.dot} style={{ backgroundColor: color }} />
-                    })
-                }
-            </Space></Popover>,
+            render: interview => <InterviewCompetenceTag interview={interview} />,
         },
         {
-            title: 'Recommendation',
+            title: <TableHeader>DECISION</TableHeader>,
             key: 'decision',
             dataIndex: 'decision',
             sortDirections: ['descend', 'ascend'],
             sorter: (a, b) => localeCompare(a.decision, b.decision),
-            render: decision => (
-                <>
-                    {<Tag color={getDecisionColor(decision)} key={decision}>
-                        {getDecisionText(decision)}
-                    </Tag>}
-                </>
-            ),
+            render: decision => <InterviewDecisionTag decision={decision} />,
         }
     ];
 
     return (
-        <Layout>
-            <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
+        <Layout contentStyle={styles.rootContainer}>
+            <div>
+                <Title level={4} style={{ marginBottom: 20 }}>Reports</Title>
 
-                <div className={styles.header}>
-                    <Title level={2}>Reports</Title>
-                    <span className={styles.subTitle}>
-                        Compare multiple candidates and focus on the best person for the role
-                    </span>
-                </div>
-
-                <div className={styles.divSpaceBetween}>
-                    <Search placeholder="Search" key="search" className={styles.headerSearch} allowClear
-                            onSearch={onSearchClicked} onChange={onSearchTextChanged} />
-                    <Space>
-                        <Text>Filter</Text>
-                        <Select
-                            className={styles.select}
-                            placeholder="Position"
-                            onSelect={onPositionChange}
-                            onClear={onPositionClear}
-                            options={
-                                sortedUniq(interviews.map(interview => interview.position)).map(position => {
-                                    return {
-                                        label: position,
-                                        value: position,
-                                    }
-                                })
-                            }
-                            showSearch
+                <div className={styles.divRight}>
+                    <Search placeholder="Search"
+                            key="search"
+                            className={styles.headerSearch}
                             allowClear
-                            filterOption={filterOptionLabel}
-                        />
-                    </Space>
+                            onSearch={onSearchClicked}
+                            onChange={onSearchTextChanged} />
+                    <Select
+                        className={styles.select}
+                        placeholder="Position"
+                        onSelect={onPositionChange}
+                        onClear={onPositionClear}
+                        options={
+                            sortedUniq(interviews.map(interview => interview.position)).map(position => {
+                                return {
+                                    label: position,
+                                    value: position,
+                                }
+                            })
+                        }
+                        showSearch
+                        allowClear
+                        filterOption={filterOptionLabel}
+                    />
                 </div>
 
-                <Card bodyStyle={{ padding: 0 }}>
+                <Card withPadding={false}>
                     <Table
                         pagination={false}
                         scroll={{
@@ -217,7 +184,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
                         })}
                     />
                 </Card>
-            </Col>
+            </div>
         </Layout>
     )
 }

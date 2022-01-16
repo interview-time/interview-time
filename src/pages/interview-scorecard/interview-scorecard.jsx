@@ -132,7 +132,8 @@ const InterviewScorecard = ({
                         ...interview,
                         status: Status.SUBMITTED,
                     });
-                    history.push(routeInterviewReport(interview.interviewId));
+                    // use replace instead of push because we don't want user to go back to scorecard screen
+                    history.replace(routeInterviewReport(interview.interviewId));
                     personalEvent("Interview completed");
                 },
             });

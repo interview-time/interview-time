@@ -20,6 +20,7 @@ import { CloseIcon } from "../../components/utils/icons";
 import { routeInterviews } from "../../components/utils/route";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
+import Card from "../../components/card/card";
 
 const { Text } = Typography;
 
@@ -80,7 +81,7 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                     />
                     <span className={styles.guidingLine} />
                 </div>
-                <div className={styles.card} style={{ padding: 0 }}>
+                <Card withPadding={false}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
                         <Title level={4} style={{ marginBottom: 0 }}>Competence areas</Title>
                         {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
@@ -126,11 +127,11 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                                     </>)}
                             </>
                         ))}
-                </div>
+                </Card>
 
                 <div className={styles.divVerticalCenter}>
                     <span className={styles.guidingLine} />
-                    <div className={`${styles.card} ${styles.noPaddingCard}`}>
+                    <Card withPadding={false} style={{ width: '100%' }}>
                         <Title level={4} style={{ margin: 24 }}>Summary notes</Title>
                         <div className={styles.divider} />
                         <TextArea
@@ -142,12 +143,12 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                             onChange={onNoteChanges}
                             defaultValue={interview.notes}
                         />
-                    </div>
+                    </Card>
                 </div>
 
                 <div className={styles.divVerticalCenter} style={{ marginBottom: 32 }}>
                     <span className={styles.guidingLine} />
-                    <div className={`${styles.card} ${styles.noPaddingCard} ${styles.decisionCard}`}>
+                    <Card withPadding={false} className={`${styles.decisionCard}`}>
                         <div style={{ margin: 24 }}>
                             <Title level={4}>Submit your hiring decision</Title>
                             <Text className={styles.decisionLabel}
@@ -163,7 +164,7 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                                 }}
                             />
                         </div>
-                    </div>
+                    </Card>
                 </div>
             </Col>
         </div>

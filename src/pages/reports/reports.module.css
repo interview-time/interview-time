@@ -1,3 +1,14 @@
+.rootContainer {
+    padding: 40px;
+}
+
+.divRight {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    margin-bottom: 12px;
+}
+
 .pageContent {
     margin-top: var(--header-height-with-padding);
     margin-left: 24px;
@@ -5,7 +16,7 @@
 }
 
 .headerSearch {
-    width: 260px;
+    width: 300px;
 }
 
 .infoAlert {
@@ -17,28 +28,9 @@
     cursor: pointer;
 }
 
-.dot {
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.dotSmall {
-    height: 12px;
-    width: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-left: 16px;
-    margin-right: 16px;
-}
-
 .select {
-    min-width: 180px;
-}
-
-.assessmentPopup {
-    min-width: 400px;
+    min-width: 230px;
+    margin-left: 16px;
 }
 
 .header {

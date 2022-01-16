@@ -3,6 +3,7 @@ import { InterviewAssessment, QuestionAssessment } from "./constants";
 
 const COLOR_RED_5 = '#ff4d4f';
 const COLOR_NEUTRAL_6 = '#bfbfbf';
+const COLOR_MAIN = '#8C2BE3';
 
 const COLOR_GREEN_DARK = '#16A34A'
 const COLOR_ORANGE_DARK = '#FFA940'
@@ -39,7 +40,7 @@ export const getDecisionColor = (decision) => {
         return COLOR_RED_5;
     }
 
-    return COLOR_NEUTRAL_6
+    return COLOR_MAIN
 }
 
 /**

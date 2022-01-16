@@ -1,0 +1,9 @@
+.assessmentPopup {
+    min-width: 400px;
+}
+
+.dot {
+    height: 12px;
+    width: 12px;
+    display: inline-block;
+}

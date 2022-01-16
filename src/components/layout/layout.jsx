@@ -5,7 +5,7 @@ import styles from "./layout.module.css";
 import {
     CandidatesIcon,
     FeedbackIcon,
-    GuideIcon,
+    TextNoteIcon,
     HomeIcon,
     InterviewIcon,
     ProfileIcon,
@@ -241,7 +241,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                         </Link>
                     </Menu.Item>
                     <Menu.Item key={MENU_KEY_TEMPLATES} className={styles.menuItem}
-                               icon={<GuideIcon />}>
+                               icon={<TextNoteIcon style={{ fontSize: 24 }} />}>
                         <Link to={routeTemplates()}>
                             <span className="nav-text">Templates</span>
                         </Link>
