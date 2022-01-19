@@ -1,4 +1,4 @@
-import { Button, Card, Col, Divider, Dropdown, Menu, message, Row } from "antd";
+import { Button, Divider, Dropdown, Menu, message } from "antd";
 import styles from "./template-preview.module.css";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
@@ -22,6 +22,7 @@ import confirm from "antd/lib/modal/confirm";
 import { routeInterviewAddFromTemplate, routeTemplateEdit, routeTemplates } from "../../components/utils/route";
 import { cloneDeep } from "lodash/lang";
 import TemplateShareModal from "./template-share-modal";
+import Card from "../../components/card/card";
 
 /**
  *
@@ -117,42 +118,40 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
     );
 
     return template ? (
-        <Layout>
-            <Row className={styles.rootContainer}>
-                <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                    <Card className={styles.row}>
-                        <div className={styles.header} style={{ marginBottom: 24 }}>
-                            <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                                <ArrowLeftOutlined />
-                                <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                                    Interview Template - {template.title}
-                                </Title>
-                            </div>
+        <Layout contentStyle={styles.rootContainer}>
+            <div>
+                <Card>
+                    <div className={styles.header} style={{ marginBottom: 24 }}>
+                        <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                            <ArrowLeftOutlined />
+                            <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
+                                Interview Template - {template.title}
+                            </Title>
                         </div>
-
-                        <Text>Use this template to schedule new interview and customize as you go.</Text>
-
-                        <Divider />
-
-                        <div className={styles.divSpaceBetween}>
-                            <Button type="primary" onClick={onScheduleInterviewClicked}>Schedule interview</Button>
-
-                            <Dropdown.Button overlay={menu} onClick={onEditClicked}>
-                                <EditOutlined /> Edit
-                            </Dropdown.Button>
-                        </div>
-                    </Card>
-                    <Card className={styles.row}>
-                        <IntroSection interview={template} />
-                    </Card>
-                    <div className={styles.row}>
-                        <TemplateGroupsSection template={template} />
                     </div>
-                    <Card className={styles.rowEnd}>
-                        <SummarySection interview={template} />
-                    </Card>
-                </Col>
-            </Row>
+
+                    <Text>Use this template to schedule new interview and customize as you go.</Text>
+
+                    <Divider />
+
+                    <div className={styles.divSpaceBetween}>
+                        <Button type="primary" onClick={onScheduleInterviewClicked}>Schedule interview</Button>
+
+                        <Dropdown.Button overlay={menu} onClick={onEditClicked}>
+                            <EditOutlined /> Edit
+                        </Dropdown.Button>
+                    </div>
+                </Card>
+                <Card className={styles.cardSpace}>
+                    <IntroSection interview={template} />
+                </Card>
+                <div className={styles.cardSpace}>
+                    <TemplateGroupsSection template={template} />
+                </div>
+                <Card className={styles.cardSpace}>
+                    <SummarySection interview={template} />
+                </Card>
+            </div>
             <TemplateShareModal
                 shared={template.isShared}
                 token={template.token}

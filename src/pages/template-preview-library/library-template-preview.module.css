@@ -1,6 +1,9 @@
 .rootContainer {
-    background-color: var(--color-background);
-    height: 100%;
+    padding: 40px;
+}
+
+.cardSpace {
+    margin-top: 32px;
 }
 
 .headerContainer {
@@ -20,15 +23,6 @@
 
 .headerImage {
     margin-left: 24px;
-}
-
-.row {
-    margin-top: 12px;
-}
-
-.rowEnd {
-    margin-top: 12px;
-    margin-bottom: 12px;
 }
 
 .buttonContainer {
