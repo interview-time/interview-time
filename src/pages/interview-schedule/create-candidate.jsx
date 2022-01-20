@@ -1,20 +1,84 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Col, Divider, Form, Input, Row, Space } from "antd";
+import axios from "axios";
+import { Button, Card, Col, Divider, Form, Input, Row, Space, Upload, message } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { createCandidate } from "../../store/candidates/actions";
+import { createCandidate, getUploadUrl } from "../../store/candidates/actions";
 import Spinner from "../../components/spinner/spinner";
+import { InboxOutlined } from "@ant-design/icons";
+import { v4 as uuidv4 } from "uuid";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
+import { config, getActiveTeamId } from "../../store/common";
 import styles from "./interview-schedule.module.css";
 
-const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCancel }) => {
+const { Dragger } = Upload;
+
+const CreateCandidate = ({
+    candidates,
+    uploadUrl,
+    loading,
+    createCandidate,
+    getUploadUrl,
+    onSave,
+    onCancel,
+}) => {
     const [candidateName, setCandidateName] = useState();
+    const [candidateId, setCandidateId] = useState();
+    const [resumeFile, setResumeFile] = useState();
+
+    // React.useEffect(() => {
+    //     const candidateIdUuid = uuidv4();
+    //     const resumeFileUuid = uuidv4();
+
+    //     setCandidateId(candidateIdUuid);
+    //     setResumeFile(resumeFileUuid);
+
+    //     //getUploadUrl(candidateIdUuid, resumeFileUuid);
+    //     // eslint-disable-next-line
+    // }, []);
 
     React.useEffect(() => {
-        if (!loading && candidateName && onSave !== null) {            
+        if (!loading && candidateName && onSave !== null) {
             onSave(candidateName);
         }
     }, [loading, candidateName, onSave]);
+
+    const [progress, setProgress] = useState(0);
+
+    const uploadFile = async (options) => {
+        const { onSuccess, onError, file, onProgress } = options;
+        console.log(file);
+        const candidateIdUuid = uuidv4();
+        const resumeFileUuid = uuidv4();
+
+        setCandidateId(candidateIdUuid);
+        setResumeFile(resumeFileUuid);
+
+        const config = {
+            onUploadProgress: (event) => {
+                const percent = Math.floor((event.loaded / event.total) * 100);
+                setProgress(percent);
+                if (percent === 100) {
+                    setTimeout(() => setProgress(0), 1000);
+                }
+                onProgress({ percent: (event.loaded / event.total) * 100 });
+            },
+        };
+
+        const teamId = getActiveTeamId();
+        const url = `${process.env.REACT_APP_API_URL}/upload-signed-url/${teamId}/${candidateIdUuid}/${resumeFileUuid}`;
+
+        getAccessTokenSilently()
+            .then((token) => axios.get(url, config(token)))
+            .then((res) => {
+                axios
+                    .put(res.data, file, config)
+                    .then((res) => console.log("Upload Completed", res))
+                    .catch((err) => console.log("Upload Interrupted", err));
+            })
+            .catch((reason) => console.error(reason));
+    };
 
     return loading ? (
         <Spinner />
@@ -35,8 +99,12 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                     linkedin: "",
                     github: "",
                 }}
-                onFinish={(values) => {                    
-                    createCandidate(values);
+                onFinish={(values) => {
+                    createCandidate({
+                        ...values,
+                        candidateId: candidateId,
+                        resumeFile: resumeFile,
+                    });
                     setCandidateName(values.candidateName);
                 }}
             >
@@ -86,6 +154,38 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                         </Form.Item>
                     </Col>
                 </Row>
+                <Row gutter={16} style={{ marginTop: 16 }}>
+                    <Col span={12}>
+                        <Dragger
+                            name="file"
+                            multiple={false}
+                            customRequest={uploadFile}
+                            onChange={(info) => {
+                                const { status } = info.file;
+                                if (status !== "uploading") {
+                                    console.log(info.file, info.fileList);
+                                }
+                                if (status === "done") {
+                                    message.success(
+                                        `${info.file.name} file uploaded successfully.`
+                                    );
+                                } else if (status === "error") {
+                                    message.error(`${info.file.name} file upload failed.`);
+                                }
+                            }}
+                            onDrop={(e) => {
+                                console.log("Dropped files", e.dataTransfer.files);
+                            }}
+                        >
+                            <p className="ant-upload-drag-icon">
+                                <InboxOutlined />
+                            </p>
+                            <p className="ant-upload-text">
+                                Click or drag file to this area to upload
+                            </p>
+                        </Dragger>
+                    </Col>
+                </Row>
 
                 <Divider />
 
@@ -105,6 +205,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
 
 const mapDispatch = {
     createCandidate,
+    getUploadUrl,
 };
 
 const mapState = (state) => {
@@ -112,6 +213,7 @@ const mapState = (state) => {
 
     return {
         candidates: candidatesState.candidates,
+        uploadUrl: candidatesState.uploadUrl,
         loading: candidatesState.loading,
     };
 };

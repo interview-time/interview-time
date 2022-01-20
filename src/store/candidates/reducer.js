@@ -4,7 +4,10 @@ import {
     CREATE_CANDIDATE,
     UPDATE_CANDIDATE,
     DELETE_CANDIDATE,
+    GET_UPLOAD_URL,
+    SET_UPLOAD_URL,
     setCandidates,
+    setUploadUrl,
     loadCandidates,
 } from "./actions";
 import axios from "axios";
@@ -18,6 +21,7 @@ import { config, getActiveTeamId } from "../common";
  */
 const initialState = {
     candidates: [],
+    uploadUrl: null,
     loading: false,
 };
 
@@ -53,6 +57,36 @@ const candidatesReducer = (state = initialState, action) => {
                 candidates: candidates,
                 loading: false,
             };
+        }
+
+        case SET_UPLOAD_URL: {
+            console.log(action.type);
+            const { uploadUrl } = action.payload;
+
+            return {
+                ...state,
+                uploadUrl: uploadUrl,
+                loading: false,
+            };
+        }
+
+        case GET_UPLOAD_URL: {
+            console.log(action.type);
+            const { candidateId, filename } = action.payload;
+
+            const teamId = getActiveTeamId();
+            const url = `${URL}/upload-signed-url/${teamId}/${candidateId}/${filename}`;
+
+            if (!state.loading) {
+                getAccessTokenSilently()
+                    .then((token) => axios.get(url, config(token)))
+                    .then((res) => store.dispatch(setUploadUrl(res.data)))
+                    .catch((reason) => console.error(reason));
+
+                return { ...state, loading: true };
+            }
+
+            return { ...state };
         }
 
         case CREATE_CANDIDATE: {
