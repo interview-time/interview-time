@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Col, Progress, Space, Typography } from "antd";
-import { InterviewAssessmentButtons } from "./interview-sections";
+import { CandidateInfoSection, InterviewAssessmentButtons, InterviewInfoSection } from "./interview-sections";
 import {
     getGroupAssessmentColor,
     getGroupAssessmentPercent,
@@ -24,7 +24,27 @@ import Card from "../../components/card/card";
 
 const { Text } = Typography;
 
-const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteChanges, onAssessmentChanged }) => {
+/**
+ *
+ * @param {Interview} interview
+ * @param {TeamMember[]} teamMembers
+ * @param {Candidate} candidate
+ * @param {boolean} interviewsUploading
+ * @param onSubmitClicked
+ * @param onNoteChanges
+ * @param onAssessmentChanged
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Evaluation = ({
+    interview,
+    teamMembers,
+    candidate,
+    interviewsUploading,
+    onSubmitClicked,
+    onNoteChanges,
+    onAssessmentChanged
+}) => {
 
     const [expanded, setExpanded] = useState(false)
     const history = useHistory();
@@ -58,27 +78,32 @@ const Evaluation = ({ interview, interviewsUploading, onSubmitClicked, onNoteCha
                 }
             />
 
-            <Col span={24}
+            <Col span={22} offset={1}
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
                 <div className={styles.divVerticalCenter}>
                     <span className={styles.guidingLine} />
-                    <Progress
-                        type="circle"
-                        status="active"
-                        strokeLinecap="square"
-                        trailColor="#E5E7EB"
-                        width={160}
-                        strokeWidth={8}
-                        strokeColor={getOverallPerformanceColor(interview.structure.groups)}
-                        percent={getOverallPerformancePercent(interview.structure.groups)}
-                        format={(percent) => {
-                            return <div className={styles.scoreHolder}>
-                                <Text className={styles.scoreText}>{percent}</Text>
-                                <Text className={styles.scoreLabel} type="secondary">Score</Text>
-                            </div>
-                        }}
-                    />
+                    <div className={styles.reportInterviewInfoHolder}>
+                        <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
+                        <Progress
+                            className={styles.reportInterviewCenter}
+                            type="circle"
+                            status="active"
+                            strokeLinecap="square"
+                            trailColor="#E5E7EB"
+                            width={160}
+                            strokeWidth={8}
+                            strokeColor={getOverallPerformanceColor(interview.structure.groups)}
+                            percent={getOverallPerformancePercent(interview.structure.groups)}
+                            format={(percent) => {
+                                return <div className={styles.scoreHolder}>
+                                    <Text className={styles.scoreText}>{percent}</Text>
+                                    <Text className={styles.scoreLabel} type="secondary">Score</Text>
+                                </div>
+                            }}
+                        />
+                        <CandidateInfoSection className={styles.reportInterviewRight} candidate={candidate} />
+                    </div>
                     <span className={styles.guidingLine} />
                 </div>
                 <Card withPadding={false}>

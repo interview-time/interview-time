@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import {
     AutoComplete,
     Button,
-    Card,
     Col,
     DatePicker,
     Divider,
@@ -51,6 +50,7 @@ import Spinner from "../../components/spinner/spinner";
 import { loadTeamMembers } from "../../store/user/actions";
 import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "./create-candidate";
+import Card from "../../components/card/card";
 
 const { TextArea } = Input;
 
@@ -717,11 +717,11 @@ const InterviewSchedule = ({
     );
 
     return (
-        <Layout>
+        <Layout contentStyle={styles.rootContainer}>
             {isInitialLoading() ? (
                 <Spinner />
             ) : (
-                <Row className={styles.rootContainer}>
+                <Row>
                     <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                         {!createCandidate && <InterviewDetails />}
 

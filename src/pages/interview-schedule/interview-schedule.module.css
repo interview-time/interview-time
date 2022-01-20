@@ -1,6 +1,5 @@
 .rootContainer {
-    background-color: var(--color-background);
-    height: 100%;
+    padding: 40px;
 }
 
 .divSpaceBetween {

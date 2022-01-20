@@ -1,6 +1,12 @@
 import React from "react";
 import { Button, Col, Space} from "antd";
-import { InterviewGroupsSection, IntroSection, SummarySection } from "./interview-sections";
+import {
+    CandidateInfoSection,
+    InterviewGroupsSection,
+    InterviewInfoSection,
+    IntroSection,
+    SummarySection
+} from "./interview-sections";
 import NotesSection from "./notes-section";
 import TimeAgo from "../../components/time-ago/time-ago";
 import Header from "../../components/header/header";
@@ -10,8 +16,23 @@ import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 
+/**
+ *
+ * @param {Interview} interview
+ * @param {TeamMember[]} teamMembers
+ * @param {Candidate} candidate
+ * @param onCompletedClicked
+ * @param onQuestionNotesChanged
+ * @param onQuestionAssessmentChanged
+ * @param onNoteChanges
+ * @param {boolean} interviewsUploading
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const Assessment = ({
     interview,
+    teamMembers,
+    candidate,
     onCompletedClicked,
     onQuestionNotesChanged,
     onQuestionAssessmentChanged,
@@ -46,9 +67,14 @@ const Assessment = ({
                 }
             />
 
-            <Col span={24}
+            <Col span={22} offset={1}
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
+
+                <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
+                    <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
+                    <CandidateInfoSection candidate={candidate} />
+                </div>
 
                 <Card style={{ marginTop: 32 }}>
                     <IntroSection interview={interview} hashStyle={styles.hash} />

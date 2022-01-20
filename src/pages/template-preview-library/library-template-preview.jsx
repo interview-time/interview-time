@@ -1,4 +1,4 @@
-import { Button, Card, Col, Divider, Row, Space } from "antd";
+import { Button, Divider, Space } from "antd";
 import styles from "./library-template-preview.module.css";
 import defaultIcon from "../../assets/layout.png";
 import Title from "antd/lib/typography/Title";
@@ -12,6 +12,7 @@ import { findLibraryTemplate } from "../../components/utils/converters";
 import Layout from "../../components/layout/layout";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { routeTemplateBlankFromLibrary } from "../../components/utils/route";
+import Card from "../../components/card/card";
 
 /**
  *
@@ -20,7 +21,7 @@ import { routeTemplateBlankFromLibrary } from "../../components/utils/route";
  * @returns {JSX.Element}
  * @constructor
  */
-const LibraryTemplatePreview = ({ library , loadLibrary}) => {
+const LibraryTemplatePreview = ({ library, loadLibrary }) => {
 
     /**
      *
@@ -65,44 +66,42 @@ const LibraryTemplatePreview = ({ library , loadLibrary}) => {
     const isInitialLoading = () => !template.libraryId;
 
     return (
-        <Layout>
-            <Row className={styles.rootContainer}>
-                <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                    <Card className={styles.row} loading={isInitialLoading()}>
-                        <div className={styles.headerContainer}>
-                            <Space size={16} direction='vertical' className={styles.headerDescriptionContainer}>
-                                <div className={styles.headerTextContainer} onClick={onBackClicked}>
-                                    <ArrowLeftOutlined />
-                                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                                        {template.title}
-                                    </Title>
-                                </div>
-                                <Text>{template.description}</Text>
-                            </Space>
+        <Layout contentStyle={styles.rootContainer}>
+            <div>
+                <Card loading={isInitialLoading()}>
+                    <div className={styles.headerContainer}>
+                        <Space size={16} direction='vertical' className={styles.headerDescriptionContainer}>
+                            <div className={styles.headerTextContainer} onClick={onBackClicked}>
+                                <ArrowLeftOutlined />
+                                <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
+                                    {template.title}
+                                </Title>
+                            </div>
+                            <Text>{template.description}</Text>
+                        </Space>
 
-                            <img
-                                className={styles.headerImage}
-                                alt={template.title}
-                                src={template.image ? template.image : defaultIcon}
-                                height={50}
-                            />
-                        </div>
-                        <Divider/>
-                        <div className={styles.buttonContainer}>
-                            <Button type="primary" onClick={onUseTemplateClicked}>Use template</Button>
-                        </div>
-                    </Card>
-                    <Card className={styles.row} loading={isInitialLoading()}>
-                        <IntroSection interview={template} />
-                    </Card>
-                    <div className={styles.row}>
-                        <TemplateGroupsSection template={template} />
+                        <img
+                            className={styles.headerImage}
+                            alt={template.title}
+                            src={template.image ? template.image : defaultIcon}
+                            height={50}
+                        />
                     </div>
-                    <Card className={styles.rowEnd} loading={isInitialLoading()}>
-                        <SummarySection interview={template} />
-                    </Card>
-                </Col>
-            </Row>
+                    <Divider />
+                    <div className={styles.buttonContainer}>
+                        <Button type="primary" onClick={onUseTemplateClicked}>Use template</Button>
+                    </div>
+                </Card>
+                <Card className={styles.cardSpace} loading={isInitialLoading()}>
+                    <IntroSection interview={template} />
+                </Card>
+                <div className={styles.cardSpace}>
+                    <TemplateGroupsSection template={template} />
+                </div>
+                <Card className={styles.cardSpace} loading={isInitialLoading()}>
+                    <SummarySection interview={template} />
+                </Card>
+            </div>
         </Layout>
     );
 };

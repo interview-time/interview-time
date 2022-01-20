@@ -22,11 +22,9 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { CloseOutlined, DeleteOutlined, EditOutlined, } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined, EditOutlined, GithubFilled, LinkedinFilled, } from "@ant-design/icons";
 import {
     CalendarIcon,
-    LinkIcon,
-    MailIcon,
     NoteIcon,
     StarEmphasisIcon,
     StarFilledIcon,
@@ -79,7 +77,6 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
  * @constructor
  */
 export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
-    const marginTop12 = { marginTop: 12 };
     return (
         <div>
             <div className={styles.divSpaceBetween}>
@@ -88,11 +85,11 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
                 </Title>
                 <CloseOutlined onClick={onCloseClicked} style={{ cursor: "pointer" }} />
             </div>
-            <Card style={{ marginTop: 12, marginBottom: 12 }}>
+            <Card style={{ marginTop: 32, marginBottom: 32 }}>
                 <IntroSection interview={template} />
             </Card>
             <TemplateGroupsSection template={template} />
-            <Card style={marginTop12}>
+            <Card style={{marginTop: 32}}>
                 <SummarySection interview={template} />
             </Card>
         </div>
@@ -154,30 +151,44 @@ export const InterviewInfoSection = ({
 
 /**
  *
- * @param {Interview} interview
+ * @param {Candidate|undefined} candidate
  * @param {string} className
  * @returns {JSX.Element}
  * @constructor
  */
 export const CandidateInfoSection = ({
-    interview,
+    candidate,
     className
 }) => {
 
     const iconStyle = { fontSize: 20, color: '#374151' }
 
+    const getUrlPathname = (url) => {
+        try {
+            return new URL(candidate.linkedIn).pathname
+        } catch (e) {
+            return url
+        }
+    }
+
     return <Space className={className} direction='vertical'>
-        {interview.candidateEmail && <div className={styles.divHorizontal}>
-            <MailIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>test@gmail.com</Text>
+        {candidate && candidate.linkedIn && <div className={styles.divHorizontal}>
+            <LinkedinFilled style={iconStyle} />
+            <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
+                {getUrlPathname(candidate.linkedIn)}
+            </a>
         </div>}
-        {interview.candidateLinkedIn && <div className={styles.divHorizontal}>
-            <LinkIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>test.linkedin.com</Text>
+        {candidate && candidate.gitHub && <div className={styles.divHorizontal}>
+            <GithubFilled style={iconStyle} />
+            <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
+                {getUrlPathname(candidate.gitHub)}
+            </a>
         </div>}
-        {interview.candidateResume && <div className={styles.divHorizontal}>
+        {candidate && candidate.resumeUrl && <div className={styles.divHorizontal}>
             <TextNoteIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>test.pdf</Text>
+            <a className={styles.reportLabel} href={candidate.resumeUrl} target="_blank" rel="noreferrer">
+                resume.pdf
+            </a>
         </div>}
     </Space>
 }

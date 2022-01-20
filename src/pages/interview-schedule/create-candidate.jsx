@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config, getActiveTeamId } from "../../store/common";
 import styles from "./interview-schedule.module.css";
+import Card from "../../components/card/card";
 
 const { Dragger } = Upload;
 
