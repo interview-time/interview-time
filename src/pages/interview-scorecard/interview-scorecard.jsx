@@ -166,6 +166,8 @@ const InterviewScorecard = ({
             {(interview.status === Status.NEW || interview.status === Status.STARTED) && (
                 <Assessment
                     interview={interview}
+                    teamMembers={teamMembers}
+                    candidate={getCandidate()}
                     onCompletedClicked={onCompletedClicked}
                     onQuestionNotesChanged={onQuestionNotesChanged}
                     onQuestionAssessmentChanged={onQuestionAssessmentChanged}
