@@ -3,6 +3,8 @@ import { useHistory, useParams } from "react-router-dom";
 import { Modal, Row } from "antd";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview, updateScorecard, } from "../../store/interviews/actions";
+import { loadTeamMembers } from "../../store/user/actions";
+import { loadCandidates } from "../../store/candidates/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
 import { routeInterviewReport } from "../../components/utils/route";
@@ -21,8 +23,12 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
 /**
  *
  * @param {Interview[]} interviews
+ * @param {TeamMember[]} teamMembers
+ * @param {Candidate[]} candidates
  * @param {boolean} interviewsUploading
  * @param loadInterviews
+ * @param loadTeamMembers
+ * @param loadCandidates
  * @param updateScorecard
  * @param updateInterview
  * @returns {JSX.Element}
@@ -30,15 +36,19 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  */
 const InterviewScorecard = ({
     interviews,
+    teamMembers,
+    candidates,
     interviewsUploading,
     loadInterviews,
+    loadTeamMembers,
+    loadCandidates,
     updateScorecard,
     updateInterview,
 }) => {
     /**
      * @type {Interview}
      */
-    const [interview, setInterview] = useState();
+    const [interview, setInterview] = useState(/** @type {Interview|undefined} */undefined);
 
     const { id } = useParams();
 
@@ -47,13 +57,16 @@ const InterviewScorecard = ({
     useEffect(() => {
         // initial data loading
         if (interviews.length > 0 && !interview) {
-            setInterview(cloneDeep(findInterview(id, interviews)));
+            const currentInterview = cloneDeep(findInterview(id, interviews));
+            setInterview(currentInterview);
+            loadTeamMembers(currentInterview.teamId)
         }
         // eslint-disable-next-line
     }, [interviews]);
 
     useEffect(() => {
         loadInterviews();
+        loadCandidates();
 
         return () => {
             onInterviewChangeDebounce.cancel();
@@ -79,6 +92,9 @@ const InterviewScorecard = ({
         }
         // eslint-disable-next-line
     }, [interview]);
+
+    const getCandidate = () => interview && candidates ?
+        candidates.find(candidate => candidate.candidateId === interview.candidateId) : undefined
 
     const onQuestionNotesChanged = (questionId, notes) => {
         setInterview((prevInterview) => {
@@ -160,6 +176,8 @@ const InterviewScorecard = ({
             {interview.status === Status.COMPLETED && (
                 <Evaluation
                     interview={interview}
+                    teamMembers={teamMembers}
+                    candidate={getCandidate()}
                     onSubmitClicked={onSubmitClicked}
                     onNoteChanges={onNoteChanges}
                     onAssessmentChanged={onAssessmentChanged}
@@ -172,11 +190,22 @@ const InterviewScorecard = ({
     );
 };
 
-const mapDispatch = { deleteInterview, loadInterviews, updateScorecard, updateInterview };
+const mapDispatch = {
+    deleteInterview,
+    loadInterviews,
+    updateScorecard,
+    updateInterview,
+    loadTeamMembers,
+    loadCandidates
+};
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
+    const userState = state.user || {};
+    const candidatesState = state.candidates || {};
     return {
         interviews: interviewsState.interviews,
+        teamMembers: userState.teamMembers,
+        candidates: candidatesState.candidates,
         interviewsUploading: interviewsState.uploading,
     };
 };
