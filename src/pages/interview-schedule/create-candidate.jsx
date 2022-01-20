@@ -55,11 +55,12 @@ const CreateCandidate = ({
         var re = /(?:\.([^.]+))?$/;
 
         var ext = re.exec(file.name)[1];
+        const filename = `${resumeFileUuid}${ext ? `.${ext}` : ""}`;
 
         setCandidateId(candidateIdUuid);
-        setResumeFile(`resumeFileUuid${ext ? `.${ext}` : ""}`);
+        setResumeFile(filename);
 
-        const config = {
+        const axiosConfig = {
             onUploadProgress: (event) => {
                 const percent = Math.floor((event.loaded / event.total) * 100);
                 setProgress(percent);
@@ -71,13 +72,13 @@ const CreateCandidate = ({
         };
 
         const teamId = getActiveTeamId();
-        const url = `${process.env.REACT_APP_API_URL}/upload-signed-url/${teamId}/${candidateIdUuid}/${resumeFileUuid}`;
+        const url = `${process.env.REACT_APP_API_URL}/candidate/upload-signed-url/${teamId}/${candidateIdUuid}/${filename}`;
 
         getAccessTokenSilently()
             .then((token) => axios.get(url, config(token)))
             .then((res) => {
                 axios
-                    .put(res.data, file, config)
+                    .put(res.data, file, axiosConfig)
                     .then((res) => console.log("Upload Completed", res))
                     .catch((err) => console.log("Upload Interrupted", err));
             })
