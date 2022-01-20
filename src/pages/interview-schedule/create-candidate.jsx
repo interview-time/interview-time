@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Card, Col, Divider, Form, Input, Row, Space } from "antd";
+import { Button, Col, Divider, Form, Input, Row, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { createCandidate } from "../../store/candidates/actions";
 import Spinner from "../../components/spinner/spinner";
 import styles from "./interview-schedule.module.css";
+import Card from "../../components/card/card";
 
 const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCancel }) => {
     const [candidateName, setCandidateName] = useState();
