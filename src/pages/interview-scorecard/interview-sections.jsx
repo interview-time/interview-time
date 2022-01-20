@@ -163,17 +163,25 @@ export const CandidateInfoSection = ({
 
     const iconStyle = { fontSize: 20, color: '#374151' }
 
+    const getUrlPathname = (url) => {
+        try {
+            return new URL(candidate.linkedIn).pathname
+        } catch (e) {
+            return url
+        }
+    }
+
     return <Space className={className} direction='vertical'>
         {candidate && candidate.linkedIn && <div className={styles.divHorizontal}>
             <LinkedinFilled style={iconStyle} />
             <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
-                {new URL(candidate.linkedIn).pathname}
+                {getUrlPathname(candidate.linkedIn)}
             </a>
         </div>}
         {candidate && candidate.gitHub && <div className={styles.divHorizontal}>
             <GithubFilled style={iconStyle} />
             <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
-                {new URL(candidate.gitHub).pathname}
+                {getUrlPathname(candidate.gitHub)}
             </a>
         </div>}
         {candidate && candidate.resumeUrl && <div className={styles.divHorizontal}>
