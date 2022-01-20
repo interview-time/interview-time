@@ -46,7 +46,7 @@ const Assessment = ({
                 }
             />
 
-            <Col span={24}
+            <Col span={22} offset={1}
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
 

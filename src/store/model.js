@@ -121,4 +121,16 @@
  * @property {Team[]} teams
  */
 
+/**
+ * @typedef {Object} Candidate
+ * @property {string} candidateId
+ * @property {string} candidateName
+ * @property {string} position
+ * @property {string} resumeUrl
+ * @property {string} status
+ * @property {string} codingRepo
+ * @property {string} gitHub
+ * @property {string} linkedIn
+ */
+
 export const TEAM_ROLE_ADMIN = "ADMIN";

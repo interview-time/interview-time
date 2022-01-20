@@ -17,6 +17,7 @@ import { CloseIcon } from "../../components/utils/icons";
 import { useHistory, useParams } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";
+import { loadCandidates } from "../../store/candidates/actions";
 import { connect } from "react-redux";
 import { findInterview } from "../../components/utils/converters";
 import Spinner from "../../components/spinner/spinner";
@@ -33,17 +34,23 @@ const { Text } = Typography;
  *
  * @param {Interview[]} interviews
  * @param {TeamMember[]} teamMembers
+ * @param {Candidate[]} candidates
  * @param loadInterviews
  * @param loadTeamMembers
+ * @param loadCandidates
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMembers }) => {
+const InterviewReport = ({
+    interviews,
+    teamMembers,
+    candidates,
+    loadInterviews,
+    loadTeamMembers,
+    loadCandidates
+}) => {
 
-    /**
-     * @type {Interview}
-     */
-    const [interview, setInterview] = useState();
+    const [interview, setInterview] = useState(/** @type {Interview|undefined} */undefined);
     const [expanded, setExpanded] = useState(false)
     const [showExportNotes, setShowExportNotes] = useState(false);
 
@@ -63,6 +70,7 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
 
     useEffect(() => {
         loadInterviews();
+        loadCandidates();
         // eslint-disable-next-line
     }, []);
 
@@ -78,6 +86,9 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
     const onExportClicked = () => {
         setShowExportNotes(true)
     }
+
+    const getCandidate = () => interview && candidates ?
+        candidates.find(candidate => candidate.candidateId === interview.candidateId) : undefined
 
     return interview ? (
         <div className={styles.rootContainer}>
@@ -101,7 +112,7 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                 }
             />
 
-            <Col span={24}
+            <Col span={22} offset={1}
                  xl={{ span: 20, offset: 2 }}
                  xxl={{ span: 16, offset: 4 }}>
                 <div className={styles.divVerticalCenter} style={{ paddingTop: 60 }}>
@@ -134,7 +145,7 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
                             }}
                         />}
                     </div>
-                    <CandidateInfoSection className={styles.reportInterviewRight} interview={interview} />
+                    <CandidateInfoSection className={styles.reportInterviewRight} candidate={getCandidate()} />
                 </div>
                 <Card withPadding={false}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
@@ -209,13 +220,15 @@ const InterviewReport = ({ interviews, teamMembers, loadInterviews, loadTeamMemb
     );
 };
 
-const mapDispatch = { loadInterviews, loadTeamMembers };
+const mapDispatch = { loadInterviews, loadTeamMembers, loadCandidates };
 const mapState = (state) => {
     const interviewsState = state.interviews || {};
     const userState = state.user || {};
+    const candidatesState = state.candidates || {};
     return {
         interviews: interviewsState.interviews,
-        teamMembers: userState.teamMembers
+        teamMembers: userState.teamMembers,
+        candidates: candidatesState.candidates,
     };
 };
 

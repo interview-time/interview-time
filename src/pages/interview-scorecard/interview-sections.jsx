@@ -22,11 +22,9 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { CloseOutlined, DeleteOutlined, EditOutlined, } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined, EditOutlined, GithubFilled, LinkedinFilled, } from "@ant-design/icons";
 import {
     CalendarIcon,
-    LinkIcon,
-    MailIcon,
     NoteIcon,
     StarEmphasisIcon,
     StarFilledIcon,
@@ -154,30 +152,36 @@ export const InterviewInfoSection = ({
 
 /**
  *
- * @param {Interview} interview
+ * @param {Candidate|undefined} candidate
  * @param {string} className
  * @returns {JSX.Element}
  * @constructor
  */
 export const CandidateInfoSection = ({
-    interview,
+    candidate,
     className
 }) => {
 
     const iconStyle = { fontSize: 20, color: '#374151' }
 
     return <Space className={className} direction='vertical'>
-        {interview.candidateEmail && <div className={styles.divHorizontal}>
-            <MailIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>test@gmail.com</Text>
+        {candidate && candidate.linkedIn && <div className={styles.divHorizontal}>
+            <LinkedinFilled style={iconStyle} />
+            <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
+                {new URL(candidate.linkedIn).pathname}
+            </a>
         </div>}
-        {interview.candidateLinkedIn && <div className={styles.divHorizontal}>
-            <LinkIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>test.linkedin.com</Text>
+        {candidate && candidate.gitHub && <div className={styles.divHorizontal}>
+            <GithubFilled style={iconStyle} />
+            <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
+                {new URL(candidate.gitHub).pathname}
+            </a>
         </div>}
-        {interview.candidateResume && <div className={styles.divHorizontal}>
+        {candidate && candidate.resumeUrl && <div className={styles.divHorizontal}>
             <TextNoteIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>test.pdf</Text>
+            <a className={styles.reportLabel} href={candidate.resumeUrl} target="_blank" rel="noreferrer">
+                resume.pdf
+            </a>
         </div>}
     </Space>
 }
