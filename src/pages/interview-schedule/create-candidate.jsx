@@ -52,8 +52,12 @@ const CreateCandidate = ({
         const candidateIdUuid = uuidv4();
         const resumeFileUuid = uuidv4();
 
+        var re = /(?:\.([^.]+))?$/;
+
+        var ext = re.exec(file.name)[1];
+
         setCandidateId(candidateIdUuid);
-        setResumeFile(resumeFileUuid);
+        setResumeFile(`resumeFileUuid${ext ? `.${ext}` : ""}`);
 
         const config = {
             onUploadProgress: (event) => {
