@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
-import { Button, Card, Col, Divider, Form, Input, Row, Space, Upload, message } from "antd";
+import { Button, Col, Divider, Form, Input, Row, Space, Upload, message } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { createCandidate, getUploadUrl } from "../../store/candidates/actions";
+import { createCandidate } from "../../store/candidates/actions";
 import Spinner from "../../components/spinner/spinner";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
@@ -15,37 +15,16 @@ import Card from "../../components/card/card";
 
 const { Dragger } = Upload;
 
-const CreateCandidate = ({
-    candidates,
-    uploadUrl,
-    loading,
-    createCandidate,
-    getUploadUrl,
-    onSave,
-    onCancel,
-}) => {
+const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCancel }) => {
     const [candidateName, setCandidateName] = useState();
     const [candidateId, setCandidateId] = useState();
     const [resumeFile, setResumeFile] = useState();
-
-    // React.useEffect(() => {
-    //     const candidateIdUuid = uuidv4();
-    //     const resumeFileUuid = uuidv4();
-
-    //     setCandidateId(candidateIdUuid);
-    //     setResumeFile(resumeFileUuid);
-
-    //     //getUploadUrl(candidateIdUuid, resumeFileUuid);
-    //     // eslint-disable-next-line
-    // }, []);
 
     React.useEffect(() => {
         if (!loading && candidateName && onSave !== null) {
             onSave(candidateName);
         }
     }, [loading, candidateName, onSave]);
-
-    const [progress, setProgress] = useState(0);
 
     const uploadFile = async (options) => {
         const { onSuccess, onError, file, onProgress } = options;
@@ -63,11 +42,6 @@ const CreateCandidate = ({
 
         const axiosConfig = {
             onUploadProgress: (event) => {
-                const percent = Math.floor((event.loaded / event.total) * 100);
-                setProgress(percent);
-                if (percent === 100) {
-                    setTimeout(() => setProgress(0), 1000);
-                }
                 onProgress({ percent: (event.loaded / event.total) * 100 });
             },
         };
@@ -80,10 +54,16 @@ const CreateCandidate = ({
             .then((res) => {
                 axios
                     .put(res.data, file, axiosConfig)
-                    .then((res) => console.log("Upload Completed", res))
-                    .catch((err) => console.log("Upload Interrupted", err));
+                    .then((res) => onSuccess("Ok"))
+                    .catch((err) => {
+                        onError({ err });
+                        setResumeFile(null);
+                    });
             })
-            .catch((reason) => console.error(reason));
+            .catch((reason) => {
+                console.error(reason);
+                setResumeFile(null);
+            });
     };
 
     return loading ? (
@@ -115,7 +95,7 @@ const CreateCandidate = ({
                 }}
             >
                 <Row gutter={16} style={{ marginTop: 16 }}>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             name="candidateName"
                             label={<Text strong>Candidate</Text>}
@@ -131,7 +111,7 @@ const CreateCandidate = ({
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             name="linkedin"
                             label={<Text strong>LinkedIn</Text>}
@@ -146,7 +126,7 @@ const CreateCandidate = ({
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Form.Item
                             name="github"
                             label={<Text strong>GitHub</Text>}
@@ -161,10 +141,13 @@ const CreateCandidate = ({
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
-                    <Col span={12}>
+                    <Col span={24}>
                         <Dragger
                             name="file"
+                            maxCount={1}
+                            style={{ display: resumeFile ? "none" : "block" }}
                             multiple={false}
+                            listType="picture"
                             customRequest={uploadFile}
                             onChange={(info) => {
                                 const { status } = info.file;
@@ -179,6 +162,9 @@ const CreateCandidate = ({
                                     message.error(`${info.file.name} file upload failed.`);
                                 }
                             }}
+                            onRemove={(file) => {
+                                setResumeFile(null);
+                            }}
                             onDrop={(e) => {
                                 console.log("Dropped files", e.dataTransfer.files);
                             }}
@@ -187,7 +173,7 @@ const CreateCandidate = ({
                                 <InboxOutlined />
                             </p>
                             <p className="ant-upload-text">
-                                Click or drag file to this area to upload
+                                Click to upload or drag and drop a PDF, DOC or DOCX upto 10 MB
                             </p>
                         </Dragger>
                     </Col>
@@ -211,7 +197,6 @@ const CreateCandidate = ({
 
 const mapDispatch = {
     createCandidate,
-    getUploadUrl,
 };
 
 const mapState = (state) => {
@@ -219,7 +204,6 @@ const mapState = (state) => {
 
     return {
         candidates: candidatesState.candidates,
-        uploadUrl: candidatesState.uploadUrl,
         loading: candidatesState.loading,
     };
 };

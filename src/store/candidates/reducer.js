@@ -91,8 +91,7 @@ const candidatesReducer = (state = initialState, action) => {
 
         case CREATE_CANDIDATE: {
             console.log(action.type);
-            const { candidate } = action.payload;
-            candidate.candidateId = Date.now().toString();
+            const { candidate } = action.payload;         
             candidate.teamId = getActiveTeamId();
 
             getAccessTokenSilently()
