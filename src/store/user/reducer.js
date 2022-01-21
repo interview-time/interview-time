@@ -30,7 +30,7 @@ import { loadInterviews, setInterviews } from "../interviews/actions";
 const initialState = {
     profile: null,
     loading: false,
-    activeTeam: getCachedActiveTeam(),
+    activeTeam: null,
     teamMembers: []
 };
 
@@ -40,6 +40,7 @@ const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_PROFILE: {
+            console.log(action.type);
             const { name, email, forceFetch } = action.payload;
 
             if (forceFetch || (!state.profile && !state.loading)) {
@@ -84,12 +85,26 @@ const userReducer = (state = initialState, action) => {
             console.log(action.type);
             const { profile } = action.payload;
 
-            if (state.activeTeam && !profile.teams.find(team => team.teamId === state.activeTeam.teamId)) {
-                // case when user switched account and has previously cached active team
+            // active team is not set, all other requests rely on getActiveTeamId
+            if (!state.activeTeam) {
+                let cachedActiveTeam = getCachedActiveTeam()
+                if (cachedActiveTeam && profile.teams.find(team => team.teamId === cachedActiveTeam.teamId)) {
+                    // cached team found and user is member of that team
+                    return {
+                        ...state,
+                        profile: profile,
+                        activeTeam: cachedActiveTeam,
+                        loading: false,
+                    };
+                }
+
+                // initial profile loading or user setup
+                let activeTeam = profile.teams[0]
+                setCachedActiveTeam(activeTeam)
                 return {
                     ...state,
                     profile: profile,
-                    activeTeam: profile.teams[0],
+                    activeTeam: activeTeam,
                     loading: false,
                 };
             }
