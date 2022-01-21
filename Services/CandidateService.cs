@@ -43,7 +43,7 @@ namespace CafApi.Services
             if (canCreateCandidate)
             {
                 candidate.CreatedByUserId = userId;
-                candidate.CandidateId = Guid.NewGuid().ToString();
+                candidate.CandidateId = candidate.CandidateId ?? Guid.NewGuid().ToString();
                 candidate.Status = CandidateStatus.NEW.ToString();
                 candidate.ModifiedDate = DateTime.UtcNow;
                 candidate.CreatedDate = DateTime.UtcNow;
@@ -107,17 +107,17 @@ namespace CafApi.Services
             }
         }
 
-        public async Task<string> GetUploadSignedUrl(string userId, string candidateId, string filename)
+        public async Task<string> GetUploadSignedUrl(string userId, string teamId, string candidateId, string filename)
         {
-            var canAccessCandidate = await CanUserAccessCandidate(userId, candidateId);
-            if (canAccessCandidate)
+            var belongsToTeam = await BelongsToTeam(userId, teamId);
+            if (belongsToTeam)
             {
                 var request = new GetPreSignedUrlRequest
                 {
                     BucketName = "interviewer-space",
                     Key = $"candidates/{candidateId}/{filename}",
                     Verb = HttpVerb.PUT,
-                    Expires = DateTime.Now.AddMinutes(30)
+                    Expires = DateTime.Now.AddHours(1)
                 };
 
                 return _s3Client.GetPreSignedURL(request);
