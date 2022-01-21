@@ -136,7 +136,7 @@ export const InterviewInfoSection = ({
             <TimeIcon style={iconStyle} />
             <Text className={styles.reportLabel}>{getFormattedTime(interview.interviewDateTime)}</Text>
         </div>
-        <div className={styles.divHorizontal}>
+        {interview.interviewers && <div className={styles.divHorizontal}>
             <UsersIcon style={iconStyle} />
             <Avatar.Group size={36} style={{ marginLeft: 8 }}>
                 {interview.interviewers
@@ -145,7 +145,7 @@ export const InterviewInfoSection = ({
                         <Avatar className={styles.avatar} gap={8}>{getInterviewerNameShort(name)}</Avatar>
                     </Tooltip>)}
             </Avatar.Group>
-        </div>
+        </div>}
     </Space>
 }
 
