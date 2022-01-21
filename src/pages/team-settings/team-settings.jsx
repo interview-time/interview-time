@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import TeamDetails from "./team-details";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { deleteTeam, leaveTeam, loadProfile, loadTeamMembers, updateTeam } from "../../store/user/actions";
+import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
 import { TEAM_ROLE_ADMIN } from "../../store/model";
 import Spinner from "../../components/spinner/spinner";
@@ -35,8 +35,7 @@ const columns = [
  *
  * @param {String} userName
  * @param {Team[]} teams
- * @param {TeamMembers[]} teamMembers
- * @param loadProfile
+ * @param {TeamMember[]} teamMembers
  * @param updateTeam
  * @param deleteTeam
  * @param leaveTeam
@@ -48,7 +47,6 @@ const TeamSettings = ({
     userName,
     teams,
     teamMembers,
-    loadProfile,
     updateTeam,
     deleteTeam,
     leaveTeam,
@@ -56,21 +54,17 @@ const TeamSettings = ({
 }) => {
 
     const [loading, setLoading] = useState(false);
-    const [team, setTeam] = useState();
+    const [team, setTeam] = useState(/** @type {Team|undefined} */undefined);
 
     const history = useHistory();
     const { id } = useParams();
 
     useEffect(() => {
-        if (teams.length === 0) {
-            loadProfile()
-        } else {
-            const currentTeam = teams.find(team => team.teamId === id);
-            if (currentTeam) {
-                setTeam(currentTeam);
-                setLoading(false)
-                loadTeamMembers(currentTeam.teamId)
-            }
+        const currentTeam = teams.find(team => team.teamId === id);
+        if (currentTeam) {
+            setTeam(currentTeam);
+            setLoading(false)
+            loadTeamMembers(currentTeam.teamId)
         }
         // eslint-disable-next-line
     }, [id, teams]);
@@ -143,7 +137,7 @@ const TeamSettings = ({
     );
 }
 
-const mapDispatch = { updateTeam, deleteTeam, loadProfile, leaveTeam, loadTeamMembers };
+const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers };
 
 const mapState = (state) => {
     const userState = state.user || {};
