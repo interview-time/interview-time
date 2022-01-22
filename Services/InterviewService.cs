@@ -31,8 +31,8 @@ namespace CafApi.Services
         {
             if (teamId != null)
             {
-                var isBelongInTeam = await _userService.IsBelongInTeam(userId, teamId);
-                if (isBelongInTeam)
+                var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
+                if (teamMember != null)
                 {
                     var team = await _context.LoadAsync<Team>(teamId);
                     if (team != null) // Team admin gets to see all the interviews
@@ -44,7 +44,10 @@ namespace CafApi.Services
                         });
                         var interviews = await search.GetRemainingAsync();
 
-                        if (team.OwnerId != userId) // Not Admin
+                        // Admin, Hiring Manager and HR can see all interviews conducted by any member of the team
+                        if (teamMember.Roles.Any(r => !r.Equals(TeamRole.ADMIN.ToString())
+                            && !r.Equals(TeamRole.HIRING_MANAGER.ToString())
+                            && !r.Equals(TeamRole.HR.ToString())))
                         {
                             return interviews.Where(i => i.UserId == userId).ToList();
                         }
@@ -73,7 +76,7 @@ namespace CafApi.Services
         }
 
         public async Task<Interview> AddInterview(Interview interview)
-        {           
+        {
             interview.InterviewId = Guid.NewGuid().ToString();
             interview.CreatedDate = DateTime.UtcNow;
             interview.ModifiedDate = DateTime.UtcNow;
