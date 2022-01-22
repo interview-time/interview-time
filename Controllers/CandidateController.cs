@@ -43,7 +43,7 @@ namespace CafApi.Controllers
                 CandidateId = c.CandidateId,
                 CandidateName = c.CandidateName,
                 Position = c.Position,
-                ResumeUrl = _candidateService.GetDownloadSignedUrl(c.CandidateId, c.ResumeFile),
+                ResumeUrl = c.ResumeFile != null ? _candidateService.GetDownloadSignedUrl(c.CandidateId, c.ResumeFile) : null,
                 LinkedIn = c.LinkedIn,
                 GitHub = c.GitHub,
                 CodingRepo = c.CodingRepo,
@@ -69,10 +69,10 @@ namespace CafApi.Controllers
             await _candidateService.DeleteCandidate(UserId, candidateId);
         }
 
-        [HttpGet("upload-signed-url/{candidateId}/{filename}")]
-        public async Task<string> GetUploadSignedUrl(string candidateId, string filename)
+        [HttpGet("upload-signed-url/{teamId}/{candidateId}/{filename}")]
+        public async Task<string> GetUploadSignedUrl(string teamId, string candidateId, string filename)
         {
-            return await _candidateService.GetUploadSignedUrl(UserId, candidateId, filename);
+            return await _candidateService.GetUploadSignedUrl(UserId, teamId, candidateId, filename);
         }
     }
 }
