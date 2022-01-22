@@ -23,9 +23,9 @@ import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import Spinner from "../../components/spinner/spinner";
 import { filterOptionLabel } from "../../components/utils/filters";
 import Card from "../../components/card/card";
+import Spinner from "../../components/spinner/spinner";
 
 const { TextArea } = Input;
 
@@ -257,8 +257,8 @@ const TemplateEdit = ({
     const marginTop12 = { marginTop: 12 };
     const marginTop16 = { marginTop: 16 };
 
-    return template ? (
-        <Layout contentStyle={styles.rootContainer}>
+    return <Layout contentStyle={styles.rootContainer}>
+        {template ? <>
             <div>
                 <Form
                     name="basic"
@@ -440,10 +440,8 @@ const TemplateEdit = ({
             >
                 <TemplateDetailsPreviewCard template={template} onCloseClicked={onPreviewClosed} />
             </Modal>
-        </Layout>
-    ) : (
-        <Spinner />
-    );
+        </> : <Spinner />}
+    </Layout>
 };
 
 const mapDispatch = { addTemplate, loadTemplates, loadLibrary, updateTemplate, loadSharedTemplate };

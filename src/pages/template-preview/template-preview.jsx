@@ -117,8 +117,8 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
         </Menu>
     );
 
-    return template ? (
-        <Layout contentStyle={styles.rootContainer}>
+    return <Layout contentStyle={styles.rootContainer}>
+        {template ? <>
             <div>
                 <Card>
                     <div className={styles.header} style={{ marginBottom: 24 }}>
@@ -159,10 +159,8 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
                 onShareChange={onShareChange}
                 onClose={onShareClosed}
             />
-        </Layout>
-    ) : (
-        <Spinner />
-    );
+        </> : <Spinner />}
+    </Layout>
 };
 
 const mapDispatch = { loadTemplates, deleteTemplate, addTemplate, shareTemplate };
