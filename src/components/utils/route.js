@@ -50,7 +50,7 @@ export const routeLibraryTemplatePreview = (id) => {
     return id ? url.replace(":id", id) : url;
 }
 
-export const routeTemplateNew = () => "/templates/new/"
+export const routeTemplateLibrary = () => "/templates/library/"
 
 export const routeQuestionBankCategory = (id) => `/question-bank/${id}`
 

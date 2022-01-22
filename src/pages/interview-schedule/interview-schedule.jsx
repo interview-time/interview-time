@@ -41,7 +41,7 @@ import { loadTemplates } from "../../store/templates/actions";
 import TemplateGroupModal from "../template-edit/template-group-modal";
 import TemplateQuestionsCard from "../template-edit/template-questions-card";
 import { personalEvent } from "../../analytics";
-import { routeInterviews, routeTemplateNew } from "../../components/utils/route";
+import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
 import { getDate } from "../../components/utils/utils";
@@ -418,7 +418,7 @@ const InterviewSchedule = ({
     };
 
     const onCreateTemplateClicked = () => {
-        history.push(routeTemplateNew());
+        history.push(routeTemplateLibrary());
     };
 
     const marginTop12 = { marginTop: 12 };

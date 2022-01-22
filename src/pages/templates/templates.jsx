@@ -3,14 +3,17 @@ import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadTemplates } from "../../store/templates/actions";
-import { Col, Row, Skeleton } from "antd";
+import { Col, Modal, Row, Skeleton } from "antd";
 import { sortBy } from "lodash/collection";
 import TemplateCard from "../../components/template-card/template-card";
 import Title from "antd/lib/typography/Title";
-import { routeTemplateNew } from "../../components/utils/route";
-import plusIcon from "../../assets/blank.png";
+import { routeTemplateBlank, routeTemplateLibrary } from "../../components/utils/route";
 import styles from "./templates.module.css";
-import Card from "../../components/card/card";
+import CardHero from "../../components/card/card-hero";
+import { DuplicateIcon, NewFileIcon, UploadIcon } from "../../components/utils/icons";
+import { createEvent } from "../../analytics";
+
+const iconStyle = { fontSize: 24, color: '#8C2BE3' }
 
 /**
  *
@@ -36,18 +39,63 @@ const Templates = ({
     const initialTemplatesLoading = () => templates.length === 0 && loadingTemplates
 
     const onAddTemplateClicked = () => {
-        history.push(routeTemplateNew())
+        history.push(routeTemplateBlank())
+    };
+
+    const onFromLibraryClicked = () => {
+        history.push(routeTemplateLibrary())
+    };
+
+    const onImportClicked = () => {
+        createEvent("Import from CSV", "Clicked");
+        Modal.info({
+            title: "Import from CSV",
+            content: (
+                <div>
+                    <p>Coming soon...</p>
+                </div>
+            ),
+            onOk() {
+            },
+        });
     };
 
     return (
         <Layout contentStyle={styles.rootContainer}>
             <div>
-                <Title level={4} style={{ marginBottom: 20 }}>Interview Templates</Title>
+                <Title level={4} style={{ marginBottom: 20 }}>Templates</Title>
+
+                <Row gutter={32} style={{ marginBottom: 32 }}>
+                    <Col span={8}>
+                        <CardHero
+                            onClick={onAddTemplateClicked}
+                            icon={<NewFileIcon style={iconStyle} />}
+                            title="Blank"
+                            text="Start from scratch"
+                        />
+                    </Col>
+                    <Col span={8}>
+                        <CardHero
+                            onClick={onFromLibraryClicked}
+                            icon={<DuplicateIcon style={iconStyle} />}
+                            title="From public library "
+                            text="Find & customize a template"
+                        />
+                    </Col>
+                    <Col span={8}>
+                        <CardHero
+                            onClick={onImportClicked}
+                            icon={<UploadIcon style={iconStyle} />}
+                            title="Import questions"
+                            text="From a CSV"
+                        />
+                    </Col>
+                </Row>
+
+                <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>Your templates</Title>
+
                 {initialTemplatesLoading() && (
                     <Row gutter={[32, 32]}>
-                        <Col span={24} lg={{ span: 8 }}>
-                            <Skeleton active />
-                        </Col>
                         <Col span={24} lg={{ span: 8 }}>
                             <Skeleton active />
                         </Col>
@@ -73,14 +121,6 @@ const Templates = ({
                                 />
                             </Col>
                         ))}
-                        <Col span={24}
-                             xl={{ span: 8 }}
-                             md={{ span: 12 }}
-                        >
-                            <Card className={styles.addTemplateCard} onClick={() => onAddTemplateClicked()}>
-                                <img alt="Add Template" src={plusIcon} width={50} />
-                            </Card>
-                        </Col>
                     </Row>
                 )}
             </div>
