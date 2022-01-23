@@ -1,9 +1,9 @@
 import React from "react";
-import { Card} from "antd";
 import { useHistory } from "react-router-dom";
 import { routeLibraryTemplatePreview } from "../utils/route";
 import defaultIcon from "../../assets/layout.png";
 import styles from "./library-card.module.css";
+import Card from "../card/card";
 
 const LibraryCard = ({ template }) => {
     const history = useHistory();
@@ -18,8 +18,7 @@ const LibraryCard = ({ template }) => {
 
     return (
         <Card
-            hoverable
-            bodyStyle={{ padding: 0 }}
+            className={styles.card}
             onClick={onCardClicked}
             key={template.id}
         >

@@ -19,7 +19,7 @@ import {
     routeReports,
     routeTeamNew,
     routeTeamSettings,
-    routeTemplateNew,
+    routeTemplateLibrary,
     routeTemplates
 } from "../utils/route";
 
@@ -98,7 +98,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     }
 
     const getSelectedMenuKey = () => {
-        if (location.pathname.includes(routeTemplates()) || location.pathname.includes(routeTemplateNew())) {
+        if (location.pathname.includes(routeTemplates()) || location.pathname.includes(routeTemplateLibrary())) {
             return MENU_KEY_TEMPLATES
         } else if (location.pathname.includes(routeInterviews())) {
             return MENU_KEY_INTERVIEWS

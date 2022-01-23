@@ -429,3 +429,19 @@ const NewFileSvg = () => (
 );
 
 export const NewFileIcon = props => <Icon component={NewFileSvg} {...props} />;
+
+const DuplicateSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M8 16H6C4.89543 16 4 15.1046 4 14V6C4 4.89543 4.89543 4 6 4H14C15.1046 4 16 4.89543 16 6V8M10 20H18C19.1046 20 20 19.1046 20 18V10C20 8.89543 19.1046 8 18 8H10C8.89543 8 8 8.89543 8 10V18C8 19.1046 8.89543 20 10 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const DuplicateIcon = props => <Icon component={DuplicateSvg} {...props} />;
+
+const UploadSvg = () => (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none">
+        <path d="M4 16L4 17C4 18.6569 5.34315 20 7 20L17 20C18.6569 20 20 18.6569 20 17L20 16M16 8L12 4M12 4L8 8M12 4L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const UploadIcon = props => <Icon component={UploadSvg} {...props} />;

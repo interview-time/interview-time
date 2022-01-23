@@ -14,7 +14,7 @@ import {
     routeReports,
     routeTemplateBlank,
     routeTemplateEdit,
-    routeTemplateNew,
+    routeTemplateLibrary,
     routeTemplatePreview,
     routeTemplates,
     routeSharedTemplate,
@@ -34,7 +34,7 @@ import Account from "./pages/account/account";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import ReactGA from "react-ga";
-import TemplateNew from "./pages/template-new/tempalte-new";
+import TemplateNew from "./pages/template-library/template-library";
 import LibraryTemplatePreview from "./pages/template-preview-library/library-template-preview";
 import { useAuth0 } from "./react-auth0-spa";
 import TemplatePreview from "./pages/template-preview/template-preview";
@@ -77,7 +77,7 @@ function App({ history }) {
             <PrivateRoute path={routeInterviewReport()} exact component={InterviewReport} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
             <PrivateRoute path={routeTemplateBlank()} exact component={TemplateEdit} />
-            <PrivateRoute path={routeTemplateNew()} exact component={TemplateNew} />
+            <PrivateRoute path={routeTemplateLibrary()} exact component={TemplateNew} />
             <PrivateRoute path={routeTemplateEdit()} exact component={TemplateEdit} />
             <PrivateRoute path={routeTemplatePreview()} exact component={TemplatePreview} />
             <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />

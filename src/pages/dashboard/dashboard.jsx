@@ -14,7 +14,7 @@ import {
     routeInterviewAdd,
     routeInterviewScorecard,
     routeTeamSettings,
-    routeTemplateNew,
+    routeTemplates,
 } from "../../components/utils/route";
 import styles from "./dashboard.module.css";
 import DemoTag from "../../components/demo/demo-tag";
@@ -60,7 +60,7 @@ const Dashboard = ({
         // eslint-disable-next-line
     }, []);
 
-    const onNewInterviewClicked = () => history.push(routeTemplateNew());
+    const onNewTemplateClicked = () => history.push(routeTemplates());
 
     const onScheduleInterviewClicked = () => history.push(routeInterviewAdd());
 
@@ -130,7 +130,7 @@ const Dashboard = ({
                     </Col>
                     <Col span={8}>
                         <CardHero
-                            onClick={onNewInterviewClicked}
+                            onClick={onNewTemplateClicked}
                             icon={<NewFileIcon style={iconStyle} />}
                             title="Create template"
                             text="Blank or from public library of templates"
