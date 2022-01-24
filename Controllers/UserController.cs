@@ -76,13 +76,23 @@ namespace CafApi.Controllers
         }
 
         [HttpPost]
-        public async Task<Profile> SetupUser(SetupUserRequest request)
+        public async Task<ProfileResponse> SetupUser(SetupUserRequest request)
         {
             var profile = await _userService.GetProfile(UserId);
+            var teams = new List<TeamResponse>();
+
             if (profile == null)
             {
                 profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset);
                 var team = await _teamService.CreateTeam(UserId, "My Team");
+
+                teams.Add(new TeamResponse
+                {
+                    TeamId = team.TeamId,
+                    TeamName = team.Name,
+                    Token = team.Token,
+                    Roles = new List<string> { TeamRole.ADMIN.ToString() }
+                });
 
                 // populate demo data            
                 var demoInterviews = await _interviewService.GetInterviews(_demoUserId);
@@ -103,7 +113,14 @@ namespace CafApi.Controllers
                 }
             }
 
-            return profile;
+            return new ProfileResponse
+            {
+                UserId = profile.UserId,
+                Name = profile.Name,
+                Email = profile.Email,
+                TimezoneOffset = profile.TimezoneOffset,
+                Teams = teams
+            };
         }
     }
 }
