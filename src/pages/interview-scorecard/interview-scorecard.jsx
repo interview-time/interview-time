@@ -7,7 +7,7 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import { routeInterviewReport } from "../../components/utils/route";
+import { routeInterviewReport, routeInterviewScorecard } from "../../components/utils/route";
 import { findInterview, findQuestionInGroups } from "../../components/utils/converters";
 
 import Spinner from "../../components/spinner/spinner";
@@ -135,6 +135,13 @@ const InterviewScorecard = ({
         });
     };
 
+    const onEditClicked = () => {
+        setInterview({
+            ...interview,
+            status: Status.STARTED,
+        });
+    }
+
     const onSubmitClicked = () => {
         if (interview.decision) {
             Modal.confirm({
@@ -181,6 +188,7 @@ const InterviewScorecard = ({
                     teamMembers={teamMembers}
                     candidate={getCandidate()}
                     onSubmitClicked={onSubmitClicked}
+                    onEditClicked={onEditClicked}
                     onNoteChanges={onNoteChanges}
                     onAssessmentChanged={onAssessmentChanged}
                     interviewsUploading={interviewsUploading}
