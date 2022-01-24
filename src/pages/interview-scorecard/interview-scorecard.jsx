@@ -7,7 +7,7 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import { routeInterviewReport, routeInterviewScorecard } from "../../components/utils/route";
+import { routeInterviewReport } from "../../components/utils/route";
 import { findInterview, findQuestionInGroups } from "../../components/utils/converters";
 
 import Spinner from "../../components/spinner/spinner";
