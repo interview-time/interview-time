@@ -42,6 +42,7 @@ const Evaluation = ({
     candidate,
     interviewsUploading,
     onSubmitClicked,
+    onEditClicked,
     onNoteChanges,
     onAssessmentChanged
 }) => {
@@ -56,8 +57,8 @@ const Evaluation = ({
     return (
         <div className={styles.rootContainer}>
             <Header
-                title="Final step"
-                subtitle="Submit your evaluation"
+                title={interview.candidate}
+                subtitle={interview.position}
                 leftComponent={
                     <Space size={16}>
                         <Button
@@ -71,6 +72,9 @@ const Evaluation = ({
                 rightComponent={
                     <Space size={16}>
                         <InterviewStatusTag interview={interview} />
+                        <Button onClick={onEditClicked}>
+                            Edit
+                        </Button>
                         <Button type="primary" onClick={onSubmitClicked}>
                             Submit Evaluation
                         </Button>

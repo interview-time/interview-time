@@ -135,6 +135,13 @@ const InterviewScorecard = ({
         });
     };
 
+    const onEditClicked = () => {
+        setInterview({
+            ...interview,
+            status: Status.STARTED,
+        });
+    }
+
     const onSubmitClicked = () => {
         if (interview.decision) {
             Modal.confirm({
@@ -181,6 +188,7 @@ const InterviewScorecard = ({
                     teamMembers={teamMembers}
                     candidate={getCandidate()}
                     onSubmitClicked={onSubmitClicked}
+                    onEditClicked={onEditClicked}
                     onNoteChanges={onNoteChanges}
                     onAssessmentChanged={onAssessmentChanged}
                     interviewsUploading={interviewsUploading}
