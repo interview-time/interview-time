@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview, updateScorecard, } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
+import { loadTemplates } from "../../store/templates/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
 import { routeInterviewReport } from "../../components/utils/route";
@@ -25,10 +26,12 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  * @param {Interview[]} interviews
  * @param {TeamMember[]} teamMembers
  * @param {Candidate[]} candidates
+ * @param {Templates[]} templates
  * @param {boolean} interviewsUploading
  * @param loadInterviews
  * @param loadTeamMembers
- * @param loadCandidates
+ * @param loadCandidates,
+ * @param loadTemplates,
  * @param updateScorecard
  * @param updateInterview
  * @returns {JSX.Element}
@@ -38,10 +41,12 @@ const InterviewScorecard = ({
     interviews,
     teamMembers,
     candidates,
+    templates,
     interviewsUploading,
     loadInterviews,
     loadTeamMembers,
     loadCandidates,
+    loadTemplates,
     updateScorecard,
     updateInterview,
 }) => {
@@ -67,6 +72,7 @@ const InterviewScorecard = ({
     useEffect(() => {
         loadInterviews();
         loadCandidates();
+        loadTemplates();
 
         return () => {
             onInterviewChangeDebounce.cancel();
@@ -112,6 +118,37 @@ const InterviewScorecard = ({
             return { ...prevInterview };
         });
     };
+
+    /**
+     * @param {Template} template
+     */
+    const onQuestionsAdded = (template) => {
+        let newStructure = cloneDeep(interview.structure)
+        template.structure.groups.forEach(group => {
+            newStructure.groups.push({
+                ...group,
+                name: `${template.title} - ${group.name}`
+            })
+        })
+
+        setInterview({
+            ...interview,
+            structure: newStructure,
+        });
+    }
+
+    /**
+     * @param {InterviewGroup} group
+     */
+    const onQuestionsRemoved = (group) => {
+        let newStructure = cloneDeep(interview.structure)
+        newStructure.groups = newStructure.groups.filter(g => g.groupId !== group.groupId)
+
+        setInterview({
+            ...interview,
+            structure: newStructure,
+        });
+    }
 
     const onNoteChanges = (e) => {
         setInterview({ ...interview, notes: e.target.value });
@@ -174,11 +211,14 @@ const InterviewScorecard = ({
                 <Assessment
                     interview={interview}
                     teamMembers={teamMembers}
+                    templates={templates}
                     candidate={getCandidate()}
                     onCompletedClicked={onCompletedClicked}
                     onQuestionNotesChanged={onQuestionNotesChanged}
                     onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                     onNoteChanges={onNoteChanges}
+                    onQuestionsAdded={onQuestionsAdded}
+                    onQuestionsRemoved={onQuestionsRemoved}
                     interviewsUploading={interviewsUploading}
                 />
             )}
@@ -203,6 +243,7 @@ const InterviewScorecard = ({
 const mapDispatch = {
     deleteInterview,
     loadInterviews,
+    loadTemplates,
     updateScorecard,
     updateInterview,
     loadTeamMembers,
@@ -212,10 +253,12 @@ const mapState = (state) => {
     const interviewsState = state.interviews || {};
     const userState = state.user || {};
     const candidatesState = state.candidates || {};
+    const templatesState = state.templates || {};
     return {
         interviews: interviewsState.interviews,
         teamMembers: userState.teamMembers,
         candidates: candidatesState.candidates,
+        templates: templatesState.templates,
         interviewsUploading: interviewsState.uploading,
     };
 };

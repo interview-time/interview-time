@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, Col, Space} from "antd";
+import React, { useState } from "react";
+import { Button, Col, Select, Space } from "antd";
 import {
     CandidateInfoSection,
     InterviewGroupsSection,
@@ -15,16 +15,21 @@ import { BackIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
+import Text from "antd/lib/typography/Text";
+import { PlusOutlined } from "@ant-design/icons";
 
 /**
  *
  * @param {Interview} interview
  * @param {TeamMember[]} teamMembers
+ * @param {Template[]} templates
  * @param {Candidate} candidate
  * @param onCompletedClicked
  * @param onQuestionNotesChanged
  * @param onQuestionAssessmentChanged
  * @param onNoteChanges
+ * @param onQuestionsAdded
+ * @param onQuestionsRemoved
  * @param {boolean} interviewsUploading
  * @returns {JSX.Element}
  * @constructor
@@ -32,15 +37,44 @@ import Card from "../../components/card/card";
 const Assessment = ({
     interview,
     teamMembers,
+    templates,
     candidate,
     onCompletedClicked,
     onQuestionNotesChanged,
     onQuestionAssessmentChanged,
     onNoteChanges,
+    onQuestionsAdded,
+    onQuestionsRemoved,
     interviewsUploading,
 }) => {
 
     const history = useHistory();
+    const [templateOptions, setTemplateOptions] = useState([]);
+    const [selectedTemplate, setSelectedTemplate] = useState(/** @type {Template|undefined} */undefined);
+
+    React.useEffect(() => {
+        // templates selector
+        if (templates.length !== 0 && templateOptions.length === 0) {
+            setTemplateOptions(
+                templates.map((template) => ({
+                    value: template.templateId,
+                    label: template.title,
+                }))
+            );
+        }
+        // eslint-disable-next-line
+    }, [templates]);
+
+    const onTemplateSelect = (value) => {
+        let template = templates.find((template) => template.templateId === value);
+        setSelectedTemplate(template)
+    }
+
+    const onAddQuestions = () => {
+        if (selectedTemplate) {
+            onQuestionsAdded(selectedTemplate)
+        }
+    }
 
     return (
         <div className={styles.rootContainer}>
@@ -84,13 +118,33 @@ const Assessment = ({
                     interview={interview}
                     onQuestionNotesChanged={onQuestionNotesChanged}
                     onQuestionAssessmentChanged={onQuestionAssessmentChanged}
+                    onRemoveGroupClicked={onQuestionsRemoved}
                     hashStyle={styles.hash}
                 />
 
-                <Card style={{ marginBottom: 32, marginTop: 32 }}>
-                    <SummarySection interview={interview} />
+                <Card style={{ marginTop: 32, padding: 16 }}>
+                    <div className={styles.divSpaceBetween}>
+                        <Text type="secondary">Need more questions? Import questions from your templates.</Text>
+                        <Space>
+                            <Select
+                                style={{ width: "200px" }}
+                                showSearch
+                                allowClear
+                                placeholder="Select template"
+                                onChange={onTemplateSelect}
+                                options={templateOptions} />
+
+                            <Button
+                                icon={<PlusOutlined />}
+                                disabled={!selectedTemplate}
+                                onClick={onAddQuestions}>Import questions</Button>
+                        </Space>
+                    </div>
                 </Card>
 
+                <Card style={{ marginTop: 32 }}>
+                    <SummarySection interview={interview} />
+                </Card>
             </Col>
 
             <NotesSection

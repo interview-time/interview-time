@@ -30,6 +30,7 @@ const { Text } = Typography;
  * @param {TeamMember[]} teamMembers
  * @param {Candidate} candidate
  * @param {boolean} interviewsUploading
+ * @param onEditClicked
  * @param onSubmitClicked
  * @param onNoteChanges
  * @param onAssessmentChanged

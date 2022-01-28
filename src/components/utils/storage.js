@@ -3,7 +3,7 @@ import { updatesData } from "../../pages/news/news";
 
 const KEY_NEWS_VISIT_TIME = 'news-visit-time'
 const KEY_QUICKSTART_QUESTION_BANK = 'quickstart-question-bank'
-const KEY_STICKY_NOTES_ENABLED = 'sticky-notes-enabled-v1'
+const KEY_NOTES_EXPANDED = 'sticky-notes-enabled-v1'
 const KEY_ACTIVE_TEAM = 'selected-team-v3'
 const KEY_JOIN_TEAM = 'selected-team-v1'
 
@@ -20,13 +20,13 @@ export function isQuestionBankClicked() {
     return localStorage.getItem(KEY_QUICKSTART_QUESTION_BANK) !== null
 }
 
-export function isStickyNotesEnabled() {
-    const value = localStorage.getItem(KEY_STICKY_NOTES_ENABLED);
+export function isNotesExpanded() {
+    const value = localStorage.getItem(KEY_NOTES_EXPANDED);
     return value === "true"
 }
 
-export function setStickyNotesEnabled(enabled) {
-    localStorage.setItem(KEY_STICKY_NOTES_ENABLED, enabled)
+export function setNotesExpanded(enabled) {
+    localStorage.setItem(KEY_NOTES_EXPANDED, enabled)
 }
 
 /**
