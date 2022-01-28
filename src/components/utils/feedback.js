@@ -1,4 +1,5 @@
 import axios from "axios";
+import { log } from "./log";
 
 export function sendFeedback(name, email, message, callback) {
     setSlackMessage(
@@ -25,7 +26,7 @@ function setSlackMessage(text, callback) {
         }
     })
         .then(res => {
-            console.log(res.data)
+            log(res.data)
             callback()
         })
         .catch(reason => {

@@ -14,6 +14,7 @@ import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config, getActiveTeamId } from "../common";
+import { log } from "../../components/utils/log";
 
 /**
  *
@@ -30,7 +31,6 @@ const URL = `${process.env.REACT_APP_API_URL}/candidate`;
 const candidatesReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_CANDIDATES: {
-            console.log(action.type);
             const { forceFetch } = action.payload;
 
             const teamId = getActiveTeamId();
@@ -49,7 +49,6 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case SET_CANDIDATES: {
-            console.log(action.type);
             const { candidates } = action.payload;
 
             return {
@@ -60,7 +59,6 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case SET_UPLOAD_URL: {
-            console.log(action.type);
             const { uploadUrl } = action.payload;
 
             return {
@@ -71,7 +69,6 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case GET_UPLOAD_URL: {
-            console.log(action.type);
             const { candidateId, filename } = action.payload;
 
             const teamId = getActiveTeamId();
@@ -90,13 +87,12 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case CREATE_CANDIDATE: {
-            console.log(action.type);
-            const { candidate } = action.payload;         
+            const { candidate } = action.payload;
             candidate.teamId = getActiveTeamId();
 
             getAccessTokenSilently()
                 .then((token) => axios.post(URL, candidate, config(token)))
-                .then(() => console.log(`Candidate created: ${JSON.stringify(candidate)}`))
+                .then(() => log(`Candidate created: ${JSON.stringify(candidate)}`))
                 .then(() => {
                     store.dispatch(loadCandidates(true));
                 })
@@ -106,12 +102,11 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case UPDATE_CANDIDATE: {
-            console.log(action.type);
             const { candidate } = action.payload;
 
             getAccessTokenSilently()
                 .then((token) => axios.put(URL, candidate, config(token)))
-                .then(() => console.log(`Candidate updated: ${JSON.stringify(candidate)}`))
+                .then(() => log(`Candidate updated: ${JSON.stringify(candidate)}`))
                 .then(() => store.dispatch(loadCandidates(true)))
                 .catch((reason) => console.error(reason));
 
@@ -133,13 +128,12 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case DELETE_CANDIDATE: {
-            console.log(action.type);
             const { candidateId } = action.payload;
 
             getAccessTokenSilently()
                 .then((token) => axios.delete(`${URL}/${candidateId}`, config(token)))
                 .then(() => {
-                    console.log("Candidate removed.");
+                    log("Candidate removed.");
                     store.dispatch(
                         setCandidates(
                             state.candidates.filter((item) => item.candidateId !== candidateId)

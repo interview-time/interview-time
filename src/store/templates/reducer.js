@@ -18,6 +18,7 @@ import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config, getActiveTeamId } from "../common";
+import { log } from "../../components/utils/log";
 
 /**
  *
@@ -36,7 +37,6 @@ const URL = `${process.env.REACT_APP_API_URL}/template`;
 const templatesReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_TEMPLATES: {
-            console.log(action.type);
             const { forceFetch } = action.payload;
 
             const teamId = getActiveTeamId();
@@ -55,7 +55,6 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case LOAD_LIBRARY: {
-            console.log(action.type);
             const { forceFetch } = action.payload;
 
             if (forceFetch || (state.library.length === 0 && !state.loadingLibrary)) {
@@ -71,7 +70,6 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case SET_TEMPLATES: {
-            console.log(action.type);
             const { templates } = action.payload;
 
             // helps to avoid dealing with null collections
@@ -90,7 +88,6 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case SET_LIBRARY: {
-            console.log(action.type);
             const { library } = action.payload;
 
             // helps to avoid dealing with null collections
@@ -109,14 +106,13 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case ADD_TEMPLATE: {
-            console.log(action.type);
             const { template } = action.payload;
             template.templateId = Date.now().toString();
             template.teamId = getActiveTeamId();
 
             getAccessTokenSilently()
                 .then((token) => axios.post(URL, template, config(token)))
-                .then(() => console.log(`Template added: ${JSON.stringify(template)}`))
+                .then(() => log(`Template added: ${JSON.stringify(template)}`))
                 .then(() => {
                     store.dispatch(loadTemplates(true));
                 })
@@ -126,12 +122,11 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case UPDATE_TEMPLATE: {
-            console.log(action.type);
             const { template } = action.payload;
 
             getAccessTokenSilently()
                 .then((token) => axios.put(URL, template, config(token)))
-                .then(() => console.log(`Template updated: ${JSON.stringify(template)}`))
+                .then(() => log(`Template updated: ${JSON.stringify(template)}`))
                 .then(() => store.dispatch(loadTemplates(true)))
                 .catch((reason) => console.error(reason));
 
@@ -153,13 +148,12 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case DELETE_TEMPLATE: {
-            console.log(action.type);
             const { templateId } = action.payload;
 
             getAccessTokenSilently()
                 .then((token) => axios.delete(`${URL}/${templateId}`, config(token)))
                 .then(() => {
-                    console.log("Template removed.");
+                    log("Template removed.");
                     store.dispatch(
                         setTemplates(state.templates.filter((item) => item.templateId !== templateId))
                     );
@@ -170,7 +164,6 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case LOAD_SHARED_TEMPLATE: {
-            console.log(action.type);
             const { token } = action.payload;
 
             if (!state.loading) {
@@ -189,7 +182,6 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case SET_SHARED_TEMPLATE: {
-            console.log(action.type);
             const { template } = action.payload;
 
             return {
@@ -200,7 +192,6 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case SHARE_TEMPLATE: {
-            console.log(action.type);
             const { templateId, share } = action.payload;
 
             const data = {
@@ -211,7 +202,7 @@ const templatesReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then((token) => axios.patch(`${URL}/share`, data, config(token)))
                 .then(() => {
-                    console.log(`Template shared: ${share}`);
+                    log(`Template shared: ${share}`);
                     store.dispatch(
                         setTemplates(
                             state.templates.map((template) => {

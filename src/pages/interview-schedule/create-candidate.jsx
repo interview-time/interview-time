@@ -12,6 +12,7 @@ import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config, getActiveTeamId } from "../../store/common";
 import styles from "./interview-schedule.module.css";
 import Card from "../../components/card/card";
+import { log } from "../../components/utils/log";
 
 const { Dragger } = Upload;
 
@@ -28,7 +29,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
 
     const uploadFile = async (options) => {
         const { onSuccess, onError, file, onProgress } = options;
-        console.log(file);
+        log(file);
         const candidateIdUuid = uuidv4();
         const resumeFileUuid = uuidv4();
 
@@ -152,7 +153,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                             onChange={(info) => {
                                 const { status } = info.file;
                                 if (status !== "uploading") {
-                                    console.log(info.file, info.fileList);
+                                    log(info.file, info.fileList);
                                 }
                                 if (status === "done") {
                                     message.success(
@@ -166,7 +167,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                                 setResumeFile(null);
                             }}
                             onDrop={(e) => {
-                                console.log("Dropped files", e.dataTransfer.files);
+                                log("Dropped files", e.dataTransfer.files);
                             }}
                         >
                             <p className="ant-upload-drag-icon">

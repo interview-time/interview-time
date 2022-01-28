@@ -15,6 +15,7 @@ import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config, getActiveTeamId } from "../common";
 import { loadTemplates } from "../templates/actions";
+import { log } from "../../components/utils/log";
 
 /**
  *
@@ -33,7 +34,6 @@ const interviewsReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case LOAD_INTERVIEWS: {
-            console.log(action.type)
             const { forceFetch } = action.payload
 
             const teamId = getActiveTeamId();
@@ -52,7 +52,6 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case SET_INTERVIEWS: {
-            console.log(action.type)
             const { interviews } = action.payload;
             return {
                 ...state,
@@ -62,7 +61,6 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case SET_UPLOADING: {
-            console.log(action.type)
             const { uploading } = action.payload;
             return {
                 ...state,
@@ -71,14 +69,13 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case ADD_INTERVIEW: {
-            console.log(action.type)
             const { interview } = action.payload;
             interview.interviewId = Date.now().toString()
             interview.teamId = getActiveTeamId();
 
             getAccessTokenSilently()
                 .then(token => axios.post(URL, interview, config(token)))
-                .then(() => console.log(`Interview added: ${JSON.stringify(interview)}`))
+                .then(() => log(`Interview added: ${JSON.stringify(interview)}`))
                 .then(() => store.dispatch(loadInterviews(true)))
                 .catch(reason => console.error(reason));
 
@@ -89,7 +86,6 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case ADD_INTERVIEW_WITH_TEMPLATE: {
-            console.log(action.type)
             const template = action.payload.template;
             const interview = action.payload.interview;
 
@@ -111,7 +107,7 @@ const interviewsReducer = (state = initialState, action) => {
                     interview.templateId = template.templateId
                     return axios.post(URL, interview, config(token))
                 })
-                .then(() => console.log(`Interview added: ${JSON.stringify(interview)}`))
+                .then(() => log(`Interview added: ${JSON.stringify(interview)}`))
                 .then(() => store.dispatch(loadInterviews(true)))
                 .then(() => store.dispatch(loadTemplates(true)))
                 .catch(reason => console.error(reason));
@@ -123,14 +119,13 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case UPDATE_SCORECARD: {
-            console.log(action.type)
             const { interview } = action.payload;
 
             interview.modifiedDate = new Date();
             
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))
-                .then(() => console.log(`SCORECARD updated: ${JSON.stringify(interview)}`))
+                .then(() => log(`SCORECARD updated: ${JSON.stringify(interview)}`))
                 .then(() => {
                     store.dispatch(setUploading(false))
                 })
@@ -157,12 +152,11 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case UPDATE_INTERVIEW: {
-            console.log(action.type)
             const { interview } = action.payload;
 
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))
-                .then(() => console.log(`Interview updated: ${JSON.stringify(interview)}`))
+                .then(() => log(`Interview updated: ${JSON.stringify(interview)}`))
                 .then(() => {
                     store.dispatch(setUploading(false))
                     store.dispatch(loadInterviews(true))
@@ -190,12 +184,11 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case DELETE_INTERVIEW: {
-            console.log(action.type)
             const { interviewId } = action.payload;
 
             getAccessTokenSilently()
                 .then(token => axios.delete(`${URL}/${interviewId}`, config(token)))
-                .then(() => console.log("Interview removed."))
+                .then(() => log("Interview removed."))
                 .catch(reason => console.error(reason));
 
             const interviews = state.interviews.filter(item => item.interviewId !== interviewId);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
+import { log } from "./components/utils/log";
 
 const DEFAULT_REDIRECT_CALLBACK = () =>
     window.history.replaceState({}, document.title, window.location.pathname);
@@ -45,7 +46,7 @@ export const Auth0Provider = ({
     useEffect(() => {
         const initAuth0 = async () => {
             _initOptions = initOptions;
-            console.log(initOptions);
+            log(initOptions);
             _client = await createAuth0Client(initOptions);
             setAuth0(_client);
 
