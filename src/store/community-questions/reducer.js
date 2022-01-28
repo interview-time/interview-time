@@ -18,7 +18,6 @@ const communityQuestionsReducer = (state = initialState, action) => {
     switch (action.type) {
 
         case LOAD_COMMUNITY_CATEGORIES: {
-            console.log(action.type)
             const { forceFetch } = action.payload;
 
             if(forceFetch || (state.categories.length === 0 && !state.loading)) {
@@ -37,7 +36,6 @@ const communityQuestionsReducer = (state = initialState, action) => {
         }
 
         case SET_COMMUNITY_CATEGORIES: {
-            console.log(action.type)
             const { categories } = action.payload;
             return {
                 ...state,

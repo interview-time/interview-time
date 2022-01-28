@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Auth0Provider } from "./react-auth0-spa";
 import config from "./auth_config.json";
+import { log } from "./components/utils/log";
 
 const Auth0ProviderWithHistory = ({ children }) => {
     const history = useHistory();
 
     const onRedirectCallback = (appState) => {
-        console.log(appState);
+        log(appState);
         let newPath = sessionStorage.getItem("forwardUrl");
         if (newPath) {
             sessionStorage.removeItem("forwardUrl");
@@ -18,7 +19,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
     };
 
     useEffect(() => {
-        console.log(config);
+        log(config);
     });
     return (
         <Auth0Provider

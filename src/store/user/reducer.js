@@ -22,6 +22,7 @@ import { config } from "../common";
 import { getCachedActiveTeam, setCachedActiveTeam } from "../../components/utils/storage";
 import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
+import { log } from "../../components/utils/log";
 
 /**
  *
@@ -40,7 +41,6 @@ const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_PROFILE: {
-            console.log(action.type);
             const { name, email, forceFetch } = action.payload;
 
             if (forceFetch || (!state.profile && !state.loading)) {
@@ -67,7 +67,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case SETUP_USER: {
-            console.log(action.type);
             const { profile } = action.payload;
 
             getAccessTokenSilently()
@@ -75,14 +74,13 @@ const userReducer = (state = initialState, action) => {
                 .then((res) => {
                     store.dispatch(setProfile(res.data));
                 })
-                .then(() => console.log(`Profile added: ${JSON.stringify(profile)}`))
+                .then(() => log(`Profile added: ${JSON.stringify(profile)}`))
                 .catch((reason) => console.error(reason));
 
             return { ...state, loading: true };
         }
 
         case SET_PROFILE: {
-            console.log(action.type);
             const { profile } = action.payload;
 
             // active team is not set, all other requests rely on getActiveTeamId
@@ -117,7 +115,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case SET_ACTIVE_TEAM: {
-            console.log(action.type);
             const { team, reloadData } = action.payload;
 
             setCachedActiveTeam(team);
@@ -147,7 +144,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case CREATE_TEAM: {
-            console.log(action.type);
             const { team } = action.payload;
 
             getAccessTokenSilently()
@@ -181,7 +177,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case UPDATE_TEAM: {
-            console.log(action.type);
             const { team } = action.payload;
 
             getAccessTokenSilently()
@@ -209,13 +204,12 @@ const userReducer = (state = initialState, action) => {
         }
 
         case DELETE_TEAM: {
-            console.log(action.type);
             const { teamId } = action.payload;
 
             getAccessTokenSilently()
                 .then(token => axios.delete(`${URL_TEAMS}/${teamId}`, config(token)))
                 .then(() => {
-                    console.log("Team removed.");
+                    log("Team removed.");
                     const profile = {
                         ...state.profile,
                         teams: state.profile.teams.filter(team => team.teamId !== teamId)
@@ -229,7 +223,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case LOAD_TEAM_MEMBERS: {
-            console.log(action.type);
             const { teamId } = action.payload;
 
             getAccessTokenSilently()
@@ -241,7 +234,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case SET_TEAM_MEMBERS: {
-            console.log(action.type);
             const { members } = action.payload;
 
             return {
@@ -251,7 +243,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case JOIN_TEAM: {
-            console.log(action.type);
             const { team } = action.payload;
 
             const data = {
@@ -279,7 +270,6 @@ const userReducer = (state = initialState, action) => {
         }
 
         case LEAVE_TEAM: {
-            console.log(action.type);
             const { teamId } = action.payload;
 
             const data = {
@@ -289,7 +279,7 @@ const userReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then(token => axios.put(`${URL_TEAMS}/leave`, data, config(token)))
                 .then(() => {
-                    console.log("Team left.");
+                    log("Team left.");
                     const profile = {
                         ...state.profile,
                         teams: state.profile.teams.filter(team => team.teamId !== teamId)
