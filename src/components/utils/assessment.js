@@ -1,5 +1,6 @@
 import { flatMap } from "lodash/collection";
 import { InterviewAssessment, QuestionAssessment } from "./constants";
+import { filterQuestionsWithAssessment } from "./filters";
 
 const COLOR_RED_5 = '#ff4d4f';
 const COLOR_NEUTRAL_6 = '#bfbfbf';
@@ -50,7 +51,7 @@ export const getDecisionColor = (decision) => {
  */
 export const getQuestionsWithAssessment = (groups) => {
     return flatMap(groups, (item) => item.questions)
-        .filter(question => question.assessment !== 0)
+        .filter(question => question.assessment && question.assessment !== 0)
 }
 
 /**
@@ -173,7 +174,7 @@ export const getGroupAssessmentPercent = (group) => {
  * @returns {number} - [0, 1.0]
  */
 export const getGroupAssessmentNumber = (group) => {
-    let questions = group.questions.filter(question => question.assessment !== 0)
+    let questions = filterQuestionsWithAssessment(group)
     let total = 0;
     questions.forEach(question => {
         total += getQuestionAssessmentNumber(question.assessment)

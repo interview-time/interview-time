@@ -4,14 +4,21 @@ import { Status } from "../../components/utils/constants";
 import styles from "./interview-sections.module.css";
 import { LightingIcon, LightingSmallIcon } from "../../components/utils/icons";
 import Text from "antd/lib/typography/Text";
+import { isNotesExpanded, setNotesExpanded } from "../../components/utils/storage";
 
 const { TextArea } = Input;
 
 const NotesSection = ({ notes, status, onChange }) => {
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(isNotesExpanded());
 
     const onExpandClicked = () => {
         setIsExpanded(true)
+        setNotesExpanded(true)
+    }
+
+    const onCollapseClicked = () => {
+        setIsExpanded(false)
+        setNotesExpanded(false)
     }
 
     const CollapsedNotes = () => <div className={styles.notesCollapsed} onClick={onExpandClicked}>
@@ -35,7 +42,7 @@ const NotesSection = ({ notes, status, onChange }) => {
                     <Switch
                         className={styles.notesSwitch}
                         defaultChecked={!isExpanded}
-                        onChange={checked => setIsExpanded(!checked)}
+                        onChange={() => onCollapseClicked()}
                     />
                     <Text type="secondary">Minimize</Text>
                 </Space>

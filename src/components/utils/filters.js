@@ -57,7 +57,7 @@ export const filterOptionValue = (inputValue, option) =>
  * @returns {Question[]}
  */
 export const filterQuestionsWithAssessment = (inputValue) =>
-    inputValue.questions.filter(question => question.assessment !== 0)
+    inputValue.questions.filter(question => question.assessment && question.assessment !== 0)
 
 /**
  *

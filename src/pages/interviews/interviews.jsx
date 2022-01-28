@@ -164,9 +164,9 @@ const Interviews = ({
         },
         {
             title: <TableHeader>INTERVIEWER</TableHeader>,
-            key: "position",
+            key: "interviewer",
             sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.position, b.position),
+            sorter: (a, b) => localeCompare(getInterviewerName(a), getInterviewerName(b)),
             render: (interview) => (
                 <TableText className={`fs-mask`}>
                     {getInterviewerName(interview)}

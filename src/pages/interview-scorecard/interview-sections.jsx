@@ -1,21 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import {
-    Avatar,
-    Col,
-    Dropdown,
-    Grid,
-    Input,
-    Menu,
-    message,
-    Modal,
-    Row,
-    Space,
-    Switch,
-    Table,
-    Tag,
-    Tooltip,
-} from "antd";
+import { Avatar, Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip, } from "antd";
 import { createTagColors, InterviewAssessment, Status, } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -25,6 +10,7 @@ import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import { CloseOutlined, DeleteOutlined, EditOutlined, GithubFilled, LinkedinFilled, } from "@ant-design/icons";
 import {
     CalendarIcon,
+    MenuIcon,
     NoteIcon,
     StarEmphasisIcon,
     StarFilledIcon,
@@ -127,15 +113,7 @@ export const InterviewInfoSection = ({
         }
     }
 
-    return <Space direction='vertical'>
-        <div className={styles.divHorizontal}>
-            <CalendarIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>{getFormattedDateLong(interview.interviewDateTime)}</Text>
-        </div>
-        <div className={styles.divHorizontal}>
-            <TimeIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>{getFormattedTime(interview.interviewDateTime)}</Text>
-        </div>
+    return <Space direction='vertical' size={12}>
         {interview.interviewers && <div className={styles.divHorizontal}>
             <UsersIcon style={iconStyle} />
             <Avatar.Group size={36} style={{ marginLeft: 8 }}>
@@ -146,6 +124,14 @@ export const InterviewInfoSection = ({
                     </Tooltip>)}
             </Avatar.Group>
         </div>}
+        <div className={styles.divHorizontal}>
+            <CalendarIcon style={iconStyle} />
+            <Text className={styles.reportLabel}>{getFormattedDateLong(interview.interviewDateTime)}</Text>
+        </div>
+        <div className={styles.divHorizontal}>
+            <TimeIcon style={iconStyle} />
+            <Text className={styles.reportLabel}>{getFormattedTime(interview.interviewDateTime)}</Text>
+        </div>
     </Space>
 }
 
@@ -171,7 +157,7 @@ export const CandidateInfoSection = ({
         }
     }
 
-    return <Space className={className} direction='vertical'>
+    return <Space className={className} direction='vertical' size={12}>
         {candidate && candidate.linkedIn && <div className={styles.divHorizontal}>
             <LinkedinFilled style={iconStyle} />
             <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
@@ -324,6 +310,7 @@ export const SummarySection = ({ interview, hashStyle }) => {
  * @param {boolean} disabled
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
+ * @param onRemoveGroupClicked
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -335,9 +322,11 @@ const InterviewQuestionsCard = ({
     disabled,
     onQuestionNotesChanged,
     onQuestionAssessmentChanged,
+    onRemoveGroupClicked,
     hashStyle,
 }) => {
     const [collapsed, setCollapsed] = React.useState(false);
+    const [tagsVisible, setTagsVisible] = React.useState(true);
     const screens = useBreakpoint();
 
     const columns = [
@@ -357,7 +346,7 @@ const InterviewQuestionsCard = ({
             title: "Tags",
             key: "tags",
             dataIndex: "tags",
-            responsive: ['lg'], // hide tags for 'lg' devices
+            responsive: [tagsVisible ? 'lg' : 'xxl'], // hide tags for 'lg' devices
             width: 250,
             shouldCellUpdate: (record, prevRecord) => record.tags !== prevRecord.tags,
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
@@ -409,6 +398,22 @@ const InterviewQuestionsCard = ({
     const onCollapseClicked = () => {
         setCollapsed(!collapsed);
     };
+
+    const onTagsClicked = () => {
+        setTagsVisible(!tagsVisible);
+    };
+
+    const menu = (
+        <Menu>
+            <Menu.Item onClick={onCollapseClicked}>{!collapsed ? "Collapse section" : "Expand section"}</Menu.Item>
+            <Menu.Item onClick={onTagsClicked}>{tagsVisible ? "Hide tags" : "Show tags"}</Menu.Item>
+            {onRemoveGroupClicked && <>
+                <Menu.Divider />
+                <Menu.Item danger onClick={() => onRemoveGroupClicked(group)}>Remove section</Menu.Item>
+            </>}
+        </Menu>
+    );
+
     return (
         <Card withPadding={false} style={{ marginTop: 32 }}>
             <div className={styles.questionsHeaderContainer}>
@@ -426,9 +431,9 @@ const InterviewQuestionsCard = ({
                         ({group.questions.length} questions)
                     </span>
                 </Space>
-                <Tooltip title={!collapsed ? "Included in interview" : "Excluded from interview"}>
-                    <Switch checked={!collapsed} onClick={onCollapseClicked} />
-                </Tooltip>
+                <Dropdown overlay={menu}>
+                    <MenuIcon style={{ cursor: "pointer"}} />
+                </Dropdown>
             </div>
             {!collapsed && (
                 <div>
@@ -569,6 +574,7 @@ export const InterviewAssessmentButtons = ({ assessment, disabled, onAssessmentC
  * @param {Interview} interview
  * @param onGroupAssessmentChanged
  * @param onQuestionAssessmentChanged
+ * @param onRemoveGroupClicked
  * @param hashStyle
  * @returns {JSX.Element}
  * @constructor
@@ -577,6 +583,7 @@ export const InterviewGroupsSection = ({
     interview,
     onQuestionNotesChanged,
     onQuestionAssessmentChanged,
+    onRemoveGroupClicked,
     hashStyle,
 }) => {
     const isCompletedStatus = () => interview.status === Status.COMPLETED;
@@ -591,6 +598,7 @@ export const InterviewGroupsSection = ({
                     tagColors={tagColors}
                     group={group}
                     disabled={isCompletedStatus()}
+                    onRemoveGroupClicked={onRemoveGroupClicked}
                     onQuestionNotesChanged={onQuestionNotesChanged}
                     onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                     hashStyle={hashStyle}
