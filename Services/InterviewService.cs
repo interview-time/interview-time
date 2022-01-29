@@ -75,6 +75,18 @@ namespace CafApi.Services
             return await _context.QueryAsync<Interview>(templateId, config).GetRemainingAsync();
         }
 
+        public async Task<List<Interview>> GetInterviewsByCandidate(string candidateId)
+        {
+            var searchByCandidate = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
+            {
+                IndexName = "CandidateId-index",
+                Filter = new QueryFilter(nameof(Interview.CandidateId), QueryOperator.Equal, candidateId)
+            });
+            var interviews = await searchByCandidate.GetRemainingAsync();
+
+            return interviews;
+        }
+
         public async Task<Interview> AddInterview(Interview interview)
         {
             interview.InterviewId = Guid.NewGuid().ToString();

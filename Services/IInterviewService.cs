@@ -13,6 +13,8 @@ namespace CafApi.Services
 
         Task<List<Interview>> GetInterviewsByTemplate(string templateId);
 
+        Task<List<Interview>> GetInterviewsByCandidate(string candidateId);
+
         Task<Interview> AddInterview(Interview interview);
 
         Task UpdateInterview(Interview interview);
