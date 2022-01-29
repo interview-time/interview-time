@@ -4,6 +4,7 @@ import { Button, Divider, Layout as AntLayout, Menu, notification, Select } from
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
+    ReportsIcon,
     FeedbackIcon,
     TextNoteIcon,
     HomeIcon,
@@ -20,7 +21,8 @@ import {
     routeTeamNew,
     routeTeamSettings,
     routeTemplateLibrary,
-    routeTemplates
+    routeTemplates,
+    routeCandidates
 } from "../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
@@ -65,6 +67,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
     const MENU_KEY_TEMPLATES = "TEMPLATES"
     const MENU_KEY_INTERVIEWS = "INTERVIEWS"
     const MENU_KEY_REPORTS = "REPORTS"
+    const MENU_KEY_CANDIDATES = "CANDIDATES"
 
     const [feedbackVisible, setFeedbackVisible] = React.useState(false)
 
@@ -104,6 +107,8 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             return MENU_KEY_INTERVIEWS
         } else if (location.pathname.includes(routeReports())) {
             return MENU_KEY_REPORTS
+        } else if (location.pathname.includes(routeCandidates())) {
+            return MENU_KEY_CANDIDATES
         } else if (location.pathname.includes(routeAccount())) {
             return MENU_KEY_PROFILE
         } else if (location.pathname.includes("settings")) {
@@ -247,9 +252,15 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                         </Link>
                     </Menu.Item>
                     <Menu.Item key={MENU_KEY_REPORTS} className={styles.menuItem}
-                               icon={<CandidatesIcon />}>
+                               icon={<ReportsIcon />}>
                         <Link to={routeReports()}>
                             <span className="nav-text">Reports</span>
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem}
+                               icon={<CandidatesIcon />}>
+                        <Link to={routeCandidates()}>
+                            <span className="nav-text">Candidates</span>
                         </Link>
                     </Menu.Item>
                     <Divider className={styles.divider} />
