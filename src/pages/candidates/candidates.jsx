@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../components/layout/layout";
-import { Tag, Table } from "antd";
+import { Table } from "antd";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import { localeCompare } from "../../components/utils/comparators";
@@ -8,9 +8,10 @@ import TableText from "../../components/table/table-text";
 import { orderBy } from "lodash/collection";
 import Title from "antd/lib/typography/Title";
 import { getFormattedDateSimple } from "../../components/utils/utils";
-import { LinkedinFilled } from "@ant-design/icons";
+import { LinkedinFilled, GithubFilled } from "@ant-design/icons";
 import TableHeader from "../../components/table/table-header";
 import { loadCandidates } from "../../store/candidates/actions";
+import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import styles from "./candidates.module.css";
 
 const Candidates = ({ loadCandidates, candidates, loading }) => {
@@ -32,17 +33,25 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             ),
         },
         {
-            title: <TableHeader>LINKEDIN</TableHeader>,
+            title: <TableHeader>SOCIALS</TableHeader>,
             key: "linkedin",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.linkedin, b.linkedin),
-            render: (candidate) =>
-                candidate.linkedIn &&
-                candidate.linkedIn.includes("linkedin.com/") && (
-                    <a href={candidate.linkedIn} target="_blank" rel="noreferrer">
-                        <LinkedinFilled style={iconStyle} />
-                    </a>
-                ),
+            render: (candidate) => (
+                <>
+                    {candidate.linkedIn && candidate.linkedIn.includes("linkedin.com/") && (
+                        <a href={candidate.linkedIn} target="_blank" rel="noreferrer">
+                            <LinkedinFilled style={iconStyle} />
+                        </a>
+                    )}
+                    {' '}
+                    {candidate.gitHub && candidate.gitHub.includes("github.com/") && (
+                        <a href={candidate.gitHub} target="_blank" rel="noreferrer">
+                            <GithubFilled style={iconStyle} />
+                        </a>
+                    )}
+                </>
+            ),
         },
         {
             title: <TableHeader>CREATED DATE</TableHeader>,
@@ -69,7 +78,7 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: (candidate) => <Tag>{candidate.status}</Tag>,
+            render: (candidate) => <CandidateStatusTag status={candidate.status} />,
         },
     ];
 

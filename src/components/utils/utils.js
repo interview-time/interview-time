@@ -3,7 +3,6 @@ import {
     DATE_FORMAT_DISPLAY,
     DATE_FORMAT_DISPLAY_LONG,
     DATE_FORMAT_DISPLAY_TIME,
-    DATE_FORMAT,
 } from "./constants";
 
 export const isEmpty = (data) => !data || data.length === 0;
