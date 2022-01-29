@@ -575,3 +575,11 @@ const CandidatesSvg = () => (
 );
 
 export const CandidatesIcon = (props) => <Icon component={CandidatesSvg} {...props} />;
+
+const MenuSvg = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+);
+
+export const MenuIcon = props => <Icon component={MenuSvg} {...props} />;

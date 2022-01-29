@@ -8,7 +8,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import Meta from "antd/lib/card/Meta";
 import StickyHeader from "../../components/layout/header-sticky";
 import Text from "antd/lib/typography/Text";
-import { isStickyNotesEnabled, setStickyNotesEnabled } from "../../components/utils/storage";
+import { isNotesExpanded, setNotesExpanded } from "../../components/utils/storage";
 import Title from "antd/lib/typography/Title";
 
 const Account = () => {
@@ -34,7 +34,7 @@ const Account = () => {
     }
 
     const onStickyNotesChange = (checked) => {
-        setStickyNotesEnabled(checked)
+        setNotesExpanded(checked)
     }
 
     return (
@@ -60,7 +60,7 @@ const Account = () => {
                             <Title level={4}>Settings</Title>
                             <Space>
                                 <Text>Sticky notes enabled</Text>
-                                <Switch defaultChecked={isStickyNotesEnabled()} onChange={onStickyNotesChange} />
+                                <Switch defaultChecked={isNotesExpanded()} onChange={onStickyNotesChange} />
                             </Space>
                         </div>
                     </Card>
