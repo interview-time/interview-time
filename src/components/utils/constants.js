@@ -6,10 +6,18 @@ export const DATE_FORMAT_DISPLAY_TIME = "hh:mm a"
 export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ"
 
 export const Status = {
-    NEW: "NEW",
+    NEW: "NEW",    
     STARTED: "STARTED",
     COMPLETED: "COMPLETED",
     SUBMITTED: "SUBMITTED"
+}
+
+export const CandidateStatus = {
+    NEW: "NEW",
+    INTERVIEWING: "INTERVIEWING",
+    HIRE: "HIRE",
+    NO_HIRE: "NO_HIRE",
+    ARCHIVED: "ARCHIVED"
 }
 
 export const Difficulty = {

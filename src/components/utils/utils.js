@@ -1,7 +1,26 @@
 import moment from "moment";
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_DISPLAY_LONG, DATE_FORMAT_DISPLAY_TIME } from "./constants";
+import {
+    DATE_FORMAT_DISPLAY,
+    DATE_FORMAT_DISPLAY_LONG,
+    DATE_FORMAT_DISPLAY_TIME,
+} from "./constants";
 
 export const isEmpty = (data) => !data || data.length === 0;
+
+/**
+ * Empty dates stored on backend as '0001-01-01T00:00:00+00:00'
+ *
+ * @param {string} dateTime
+ * @param {string} defaultValue
+ * @returns {string}
+ */
+export const getFormattedDateSimple = (dateTime, defaultValue = "") => {
+    if (dateTime) {
+        const date = moment(dateTime);
+        return date.year() > 1 ? date.format("ll") : defaultValue;
+    }
+    return defaultValue;
+};
 
 /**
  * Empty dates stored on backend as '0001-01-01T00:00:00+00:00'
@@ -74,7 +93,7 @@ export const orderByInterviewDate = (interview) => {
 };
 
 export const getParameterByName = (name, url = window.location.href) => {
-    name = name.replace(/[[\]]/g, '\\$&')
+    name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
     if (!results) return null;
