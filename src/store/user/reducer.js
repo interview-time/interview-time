@@ -23,6 +23,7 @@ import { getCachedActiveTeam, setCachedActiveTeam } from "../../components/utils
 import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { log } from "../../components/utils/log";
+import { loadCandidates, setCandidates } from "../candidates/actions";
 
 /**
  *
@@ -124,10 +125,12 @@ const userReducer = (state = initialState, action) => {
                     // clean data for current team
                     store.dispatch(setTemplates([]));
                     store.dispatch(setInterviews([]));
+                    store.dispatch(setCandidates([]));
 
                     // load new data for current team
                     store.dispatch(loadTemplates());
                     store.dispatch(loadInterviews());
+                    store.dispatch(loadCandidates());
                 })
 
                 return {
