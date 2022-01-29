@@ -18,6 +18,7 @@ namespace CafApi.Controllers
     {
         private readonly ILogger<CandidateController> _logger;
         private readonly ICandidateService _candidateService;
+        private readonly IInterviewService _interviewService;
 
         private string UserId
         {
@@ -27,16 +28,24 @@ namespace CafApi.Controllers
             }
         }
 
-        public CandidateController(ILogger<CandidateController> logger, ICandidateService candidateService)
+        public CandidateController(ILogger<CandidateController> logger, ICandidateService candidateService, IInterviewService interviewService)
         {
             _logger = logger;
             _candidateService = candidateService;
+            _interviewService = interviewService;
         }
 
-        [HttpGet("{teamId?}")]
+        [HttpGet("{teamId}")]
         public async Task<List<CandidateResponse>> GetCandidates(string teamId)
         {
             var candidates = await _candidateService.GetCandidates(UserId, teamId);
+
+            var candidateInterviews = new Dictionary<string, int>();
+            foreach (var candidate in candidates)
+            {
+                var interviews = await _interviewService.GetInterviewsByCandidate(candidate.CandidateId);
+                candidateInterviews.Add(candidate.CandidateId, interviews.Count());
+            }
 
             return candidates.Select(c => new CandidateResponse
             {
@@ -47,6 +56,8 @@ namespace CafApi.Controllers
                 LinkedIn = c.LinkedIn,
                 GitHub = c.GitHub,
                 CodingRepo = c.CodingRepo,
+                CreatedDate = c.CreatedDate,
+                TotalInterviews = candidateInterviews.GetValueOrDefault(c.CandidateId),
                 Status = c.Status
             }).ToList();
         }

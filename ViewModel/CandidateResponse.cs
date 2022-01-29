@@ -1,3 +1,5 @@
+using System;
+
 namespace CafApi.ViewModel
 {
     public class CandidateResponse
@@ -15,6 +17,10 @@ namespace CafApi.ViewModel
         public string GitHub { get; set; }
 
         public string CodingRepo { get; set; }
+
+        public int TotalInterviews { get; set; }
+
+        public DateTime CreatedDate { get; set; }
 
         public string Status { get; set; }
     }
