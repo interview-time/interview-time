@@ -1,5 +1,5 @@
 import Layout from "../../components/layout/layout";
-import { Button, Col, message, Modal, Row, Space, Table } from "antd";
+import { Button, message, Modal, Space, Table } from "antd";
 import Title from "antd/lib/typography/Title";
 import { connect } from "react-redux";
 import TeamDetails from "./team-details";
