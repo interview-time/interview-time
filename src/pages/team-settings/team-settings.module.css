@@ -18,3 +18,14 @@
 .buttonPrimaryLight {
     background-color: #F4EAFC;
 }
+
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rolesButton {
+    font-size: 14px;
+    color: #6B7280;
+}

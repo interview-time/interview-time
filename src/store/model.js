@@ -132,5 +132,3 @@
  * @property {string} gitHub
  * @property {string} linkedIn
  */
-
-export const TEAM_ROLE_ADMIN = "ADMIN";

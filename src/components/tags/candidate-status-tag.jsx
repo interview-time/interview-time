@@ -1,7 +1,7 @@
 import React from "react";
 import { Tag } from "antd";
 import { CandidateStatus } from "../utils/constants";
-import styles from "./interview-status-tags.module.css";
+import styles from "./status-tags.module.css";
 
 const CandidateStatusTag = ({ status }) => {
     const getClass = () => {
@@ -16,7 +16,19 @@ const CandidateStatusTag = ({ status }) => {
         }
     };
 
-    return <Tag className={getClass()}>{status}</Tag>;
+    const getText = () => {
+        if (status === CandidateStatus.HIRE) {
+            return "Hired";
+        } else if (status === CandidateStatus.INTERVIEWING) {
+            return "Interviewing";
+        } else if (status === CandidateStatus.NO_HIRE) {
+            return "No Hire";
+        } else {
+            return "New";
+        }
+    };
+
+    return <Tag className={getClass()}>{getText()}</Tag>;
 };
 
 export default CandidateStatusTag;

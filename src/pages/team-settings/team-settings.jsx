@@ -1,33 +1,43 @@
 import Layout from "../../components/layout/layout";
-import { message, Table, Tag } from "antd";
+import { Button, Col, message, Modal, Row, Space, Table } from "antd";
 import Title from "antd/lib/typography/Title";
 import { connect } from "react-redux";
 import TeamDetails from "./team-details";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
-import { TEAM_ROLE_ADMIN } from "../../store/model";
 import Spinner from "../../components/spinner/spinner";
 import styles from "./team-settings.module.css";
 import TeamInvite from "./team-invite";
 import Card from "../../components/card/card";
+import TeamRoleTag from "../../components/tags/team-role-tags";
+import TableHeader from "../../components/table/table-header";
+import { localeCompare } from "../../components/utils/comparators";
+import TableText from "../../components/table/table-text";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Roles } from "../../components/utils/constants";
+import Text from "antd/lib/typography/Text";
 
 const columns = [
     {
-        title: "Name",
+        title: <TableHeader>NAME</TableHeader>,
         dataIndex: "name",
         key: "name",
+        render: (name) => <TableText className={`fs-mask`}>{name}</TableText>,
     },
     {
-        title: "Email",
+        title: <TableHeader>EMAIL</TableHeader>,
         dataIndex: "email",
         key: "email",
+        render: (email) => <TableText className={`fs-mask`}>{email}</TableText>,
     },
     {
-        title: "Role",
+        title: <TableHeader>ROLE</TableHeader>,
         key: "role",
-        render: (member) => member.roles.map((role) => <Tag>{role}</Tag>),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => localeCompare(a.roles[0], b.roles[0]),
+        render: (member) => <TeamRoleTag role={member.roles[0]} />,
     },
 ];
 
@@ -71,7 +81,7 @@ const TeamSettings = ({
 
     const getTeamName = () => team ? team.teamName : "Team"
 
-    const isAdmin = () => team ? team.roles.some((role) => role === TEAM_ROLE_ADMIN) : false
+    const isAdmin = () => team ? team.roles.some(role => role === Roles.ADMIN) : false
 
     const onSaveClicked = (teamName) => {
         const newTeam = {
@@ -94,6 +104,42 @@ const TeamSettings = ({
         history.push("/")
     }
 
+    function rolesInfoDialog() {
+        const data = [
+            {
+                role: Roles.ADMIN,
+                text: "can update and delete team."
+            },
+            {
+                role: Roles.HR,
+                text: "can view all interviews."
+            },
+            {
+                role: Roles.HIRING_MANAGER,
+                text: "can view all interviews."
+            },
+            {
+                role: Roles.INTERVIEWER,
+                text: "can only view interviews assigned to them."
+            },
+        ];
+
+        Modal.info({
+            title: 'Roles permissions',
+            width: 800,
+            content: (
+                <Space direction='vertical'>
+                    {data.map(item =><div>
+                        <TeamRoleTag role={item.role}/>
+                        <Text>- {item.text}</Text>
+                    </div>)}
+                </Space>
+            ),
+            onOk() {
+            },
+        });
+    }
+
     const isLoading = () => !team || loading
 
     return (
@@ -111,7 +157,13 @@ const TeamSettings = ({
                     />
                 </Card>
 
-                <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>Your team members</Title>
+                <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
+                    <Title level={5} style={{ marginBottom: 0 }}>Your team members</Title>
+                    <Button type="text"
+                            className={styles.rolesButton}
+                            onClick={rolesInfoDialog}
+                            icon={<InfoCircleOutlined />}>Roles permissions</Button>
+                </div>
 
                 <Card withPadding={false} style={{ marginTop: 12 }}>
                     <Table
