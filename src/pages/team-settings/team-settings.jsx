@@ -108,19 +108,19 @@ const TeamSettings = ({
         const data = [
             {
                 role: Roles.ADMIN,
-                text: "can update and delete team."
+                text: "Same as Hiring Manager plus can manage its team."
             },
             {
                 role: Roles.HR,
-                text: "can view all interviews."
+                text: "Can view all interviews and assign new interviews to others."
             },
             {
                 role: Roles.HIRING_MANAGER,
-                text: "can view all interviews."
+                text: "Can view all interviews and assign new interviews to others."
             },
             {
                 role: Roles.INTERVIEWER,
-                text: "can only view interviews assigned to them."
+                text: "Can view and run interviews assigned to them."
             },
         ];
 
