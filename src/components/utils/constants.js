@@ -5,6 +5,13 @@ export const DATE_FORMAT_DISPLAY_LONG = "ddd DD, MMM YYYY"
 export const DATE_FORMAT_DISPLAY_TIME = "hh:mm a"
 export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ"
 
+export const Roles = {
+    HR: "HR",
+    HIRING_MANAGER: "HIRING_MANAGER",
+    INTERVIEWER: "INTERVIEWER",
+    ADMIN: "ADMIN",
+}
+
 export const Status = {
     NEW: "NEW",    
     STARTED: "STARTED",
