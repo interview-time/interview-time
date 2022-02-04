@@ -43,8 +43,8 @@ export const InterviewAssessment = {
 
 export const QuestionAssessment = {
     POOR: 1,
-    AVERAGE: 2,
-    GOOD: 3,
+    GOOD: 2,
+    EXCELLENT: 3,
 }
 
 export const TemplateCategories = [
