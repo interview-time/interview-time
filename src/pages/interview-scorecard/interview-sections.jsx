@@ -23,6 +23,7 @@ import {
 import { interviewToTags } from "../../components/utils/converters";
 import { getFormattedDate, getFormattedDateLong, getFormattedTime, isEmpty } from "../../components/utils/utils";
 import Card from "../../components/card/card";
+import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;
@@ -331,6 +332,19 @@ const InterviewQuestionsCard = ({
 
     const columns = [
         {
+            dataIndex: "difficulty",
+            key: "difficulty",
+            width: 48,
+            render: difficulty => {
+                return {
+                    props: {
+                        style: { padding: 0, }
+                    },
+                    children: <QuestionDifficultyTag difficulty={difficulty} />
+                };
+            }
+        },
+        {
             title: "Question",
             dataIndex: "question",
             key: "question",
@@ -338,9 +352,14 @@ const InterviewQuestionsCard = ({
             className: styles.questionCell,
             shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
-            render: (question) => {
-                return <span className="fs-mask" style={{ paddingLeft: 8 }}>{question}</span>;
-            },
+            render: question => {
+                return {
+                    props: {
+                        style: { padding: 0, }
+                    },
+                    children: <span className="fs-mask">{question}</span>
+                };
+            }
         },
         {
             title: "Tags",
@@ -364,7 +383,6 @@ const InterviewQuestionsCard = ({
         },
         {
             title: "Assessment",
-            width: 140,
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: (question) => (
                 <AssessmentCheckbox
@@ -452,7 +470,7 @@ const InterviewQuestionsCard = ({
                         expandable={
                             !disabled
                                 ? {
-                                    expandIconColumnIndex: 4,
+                                    expandIconColumnIndex: 5,
                                     expandRowByClick: true,
                                     defaultExpandedRowKeys: group.questions.map((question, index) => {
                                         if (question.notes) return index;

@@ -73,9 +73,10 @@
     align-items: center;
 }
 
-.divVertical {
+.questionHolder {
     display: flex;
     flex-direction: column;
+    flex-grow: 2;
 }
 
 .dotSmall {
@@ -144,6 +145,12 @@
 
 .competenceAreaRow {
     padding: 16px 24px;
+}
+
+.questionAreaRow {
+    padding: 8px 24px 8px 0;
+    display: flex;
+    align-items: center;
 }
 
 .decisionCard {

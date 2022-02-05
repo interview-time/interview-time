@@ -25,6 +25,7 @@ import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 import { CandidateInfoSection, InterviewInfoSection } from "./interview-sections";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
+import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
 const { Text } = Typography;
 
@@ -181,8 +182,9 @@ const InterviewReport = ({
                                 {expanded && filterQuestionsWithAssessment(group)
                                     .map(question => <>
                                         <div className={styles.divider} />
-                                        <div className={`${styles.competenceAreaRow} ${styles.divSpaceBetween}`}>
-                                            <div className={styles.divVertical}>
+                                        <div className={styles.questionAreaRow}>
+                                            <QuestionDifficultyTag difficulty={question.difficulty} />
+                                            <div className={styles.questionHolder}>
                                                 <Text>{question.question}</Text>
                                                 <Text className={styles.questionNotes}
                                                       type="secondary">{question.notes}</Text>
