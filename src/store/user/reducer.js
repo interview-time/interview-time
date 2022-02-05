@@ -53,6 +53,7 @@ const userReducer = (state = initialState, action) => {
                                 name: name,
                                 email: email,
                                 timezoneOffset: new Date().getTimezoneOffset(),
+                                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                             };
                             store.dispatch(setupUser(profile));
                         } else {
