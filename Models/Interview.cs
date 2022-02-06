@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
+using CafApi.Utils;
 
 namespace CafApi.Models
 {
@@ -21,6 +22,7 @@ namespace CafApi.Models
 
         public string Position { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime InterviewDateTime { get; set; }
 
         [DynamoDBGlobalSecondaryIndexHashKey]
@@ -45,8 +47,10 @@ namespace CafApi.Models
 
         public List<string> Interviewers { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime ModifiedDate { get; set; }
     }
 

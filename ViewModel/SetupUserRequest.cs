@@ -7,5 +7,7 @@ namespace CafApi.ViewModel
         public string Name { get; set; }
 
         public int TimezoneOffset { get; set; }
+
+        public string Timezone { get; set; }
     }
 }

@@ -21,6 +21,7 @@ namespace CafApi.Controllers
         private readonly IInterviewService _interviewService;
         private readonly IUserService _userService;
         private readonly ILogger<InterviewController> _logger;
+        private readonly IEmailService _emailService;
         private readonly string _demoUserId;
 
         private string UserId
@@ -34,11 +35,13 @@ namespace CafApi.Controllers
         public InterviewController(ILogger<InterviewController> logger,
             IInterviewService interviewService,
             IUserService userService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IEmailService emailService)
         {
             _logger = logger;
             _interviewService = interviewService;
             _userService = userService;
+            _emailService = emailService;
 
             _demoUserId = configuration["DemoUserId"];
         }
@@ -52,20 +55,30 @@ namespace CafApi.Controllers
         }
 
         [HttpPost()]
-        public async Task<Interview> AddInterview([FromBody] Interview interview)
+        public async Task<Interview> ScheduleInterview([FromBody] Interview interview)
         {
             if (interview.Interviewers != null && interview.Interviewers.Any() && !string.IsNullOrWhiteSpace(interview.TeamId))
             {
                 Interview mainInterview = null;
-                foreach (var interviewer in interview.Interviewers)
+                var interviews = new Dictionary<string, Interview>();
+
+                foreach (var interviewerId in interview.Interviewers)
                 {
-                    var isBelongInTeam = await _userService.IsBelongInTeam(interviewer, interview.TeamId);
+                    var isBelongInTeam = await _userService.IsBelongInTeam(interviewerId, interview.TeamId);
                     if (isBelongInTeam)
                     {
                         var newInterview = interview.Clone();
-                        newInterview.UserId = interviewer;
+                        newInterview.UserId = interviewerId;
+
+                        // Demo account
+                        if (UserId == _demoUserId)
+                        {
+                            interview.IsDemo = true;
+                        }
 
                         newInterview = await _interviewService.AddInterview(newInterview);
+                        interviews.Add(interviewerId, newInterview);
+
                         if (newInterview.UserId == UserId)
                         {
                             mainInterview = newInterview;
@@ -73,21 +86,23 @@ namespace CafApi.Controllers
                     }
                 }
 
+                // Send email notification
+                var profiles = await _userService.GetUserProfiles(interview.Interviewers);
+                foreach (var profile in profiles)
+                {
+                    var interviewId = interviews.GetValueOrDefault(profile.UserId)?.InterviewId;
+                    await _emailService.SendNewInterviewInvitation(profile.Email, profile.Name, interview.Candidate, interview.InterviewDateTime, interviewId, profile.Timezone);
+                }
+
                 return mainInterview;
             }
 
-            interview.UserId = UserId;
-            if (UserId == _demoUserId)
-            {
-                interview.IsDemo = true;
-            }
-
-            return await _interviewService.AddInterview(interview);
+            return null;
         }
 
         [HttpPut()]
         public async Task UpdateInterview([FromBody] Interview interview)
-        {          
+        {
             interview.UserId = UserId;
             if (UserId == _demoUserId)
             {
