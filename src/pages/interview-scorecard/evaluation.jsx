@@ -19,6 +19,7 @@ import { routeInterviews } from "../../components/utils/route";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
+import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
 const { Text } = Typography;
 
@@ -145,8 +146,9 @@ const Evaluation = ({
                                 {expanded && filterQuestionsWithAssessment(group)
                                     .map(question => <>
                                         <div className={styles.divider} />
-                                        <div className={`${styles.competenceAreaRow} ${styles.divSpaceBetween}`}>
-                                            <div className={styles.divVertical}>
+                                        <div className={styles.questionAreaRow}>
+                                            <QuestionDifficultyTag difficulty={question.difficulty} />
+                                            <div className={styles.questionHolder}>
                                                 <Text>{question.question}</Text>
                                                 <Text className={styles.questionNotes}
                                                       type="secondary">{question.notes}</Text>

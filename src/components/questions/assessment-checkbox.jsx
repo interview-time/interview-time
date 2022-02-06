@@ -18,7 +18,7 @@ const AssessmentCheckbox = ({ defaultValue, disabled, onChange }) => {
             defaultValue={defaultTo(defaultValue, 0)}            
             disabled={disabled}
             onChange={onChange}
-            tooltips={["Poor answer", "Average answer", "Good answer"]}
+            tooltips={["Poor answer", "Good answer", "Excellent answer"]}
         />
     );
 };
