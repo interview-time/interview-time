@@ -14,7 +14,7 @@ import Text from "antd/lib/typography/Text";
  */
 const QuestionDifficultyTag = ({ difficulty: difficultyParam, onChange, editable = false }) => {
 
-    const [difficulty, setDifficulty] = React.useState(difficultyParam ? difficultyParam : Difficulty.EASY);
+    const [difficulty, setDifficulty] = React.useState(difficultyParam ? difficultyParam : Difficulty.DEFAULT);
 
     const getDotStyle = (difficulty) => {
         switch (difficulty) {
