@@ -18,7 +18,7 @@ namespace CafApi.Services
         public EmailService(ISendGridClient client, IConfiguration configuration, ILogger<EmailService> logger)
         {
             _client = client;
-            _fromAddress = new EmailAddress("info@interviewer.space", "Interviewer.Space");
+            _fromAddress = new EmailAddress("noreply@interviewer.space", "Interviewer.Space");
             _configuration = configuration;
             _logger = logger;
         }
