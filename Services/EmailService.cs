@@ -43,7 +43,7 @@ namespace CafApi.Services
                 dynamic templateData = new
                 {
                     candidateName = candidateName,
-                    interviewerName = interviewerName,
+                    interviewerName = !interviewerName.Equals(toEmail) ? interviewerName : "there",
                     interviewDate = interviewDateTime.ToString("d"),
                     interviewTime = $"{interviewDateTime.ToString("t")} ({timezone ?? "UTC"})",
                     interviewScorecard = $"https://app.interviewer.space/interviews/scorecard/{interviewId}"
