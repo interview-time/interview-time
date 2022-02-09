@@ -31,6 +31,7 @@ export const Difficulty = {
     EASY: "Easy",
     MEDIUM: "Medium",
     HARD: "Hard",
+    DEFAULT: "Medium"
 }
 
 export const InterviewAssessment = {

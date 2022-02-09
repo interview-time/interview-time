@@ -185,7 +185,7 @@ export const getQuestionsAssessment = (questions) => {
     // handle case when questions difficulty is not set
     let allQuestions = questions.filter(question => hasAssessment(question)).map(question => {
         if (!question.difficulty || question.difficulty === "") {
-            question.difficulty = Difficulty.EASY
+            question.difficulty = Difficulty.DEFAULT
         }
         return question
     })
