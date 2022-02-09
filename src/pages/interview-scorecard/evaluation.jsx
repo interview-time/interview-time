@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { Button, Col, Progress, Space, Typography } from "antd";
 import { CandidateInfoSection, InterviewAssessmentButtons, InterviewInfoSection } from "./interview-sections";
 import {
-    getGroupAssessmentColor,
-    getGroupAssessmentPercent,
-    getGroupAssessmentText,
+    getGroupAssessment,
     getOverallPerformanceColor,
     getOverallPerformancePercent,
 } from "../../components/utils/assessment";
@@ -21,6 +19,7 @@ import { routeInterviews } from "../../components/utils/route";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
+import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
 const { Text } = Typography;
 
@@ -118,7 +117,11 @@ const Evaluation = ({
                         {expanded && <Button onClick={onCollapseClicked}>Collapse</Button>}
                     </div>
                     {filterGroupsWithAssessment(interview.structure.groups)
-                        .map((group) => (
+                        .map(group => ({
+                            group: group,
+                            assessment: getGroupAssessment(group.questions)
+                        }))
+                        .map(({assessment, group}) => (
                             <>
                                 <div className={styles.divider} />
                                 <div className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}
@@ -126,16 +129,16 @@ const Evaluation = ({
                                     <Text strong>{group.name}</Text>
                                     <div className={styles.divHorizontalCenter}>
                                         <Text type="secondary"
-                                              style={{ marginRight: 12 }}>{getGroupAssessmentText(group)}</Text>
+                                              style={{ marginRight: 12 }}>{assessment.text}</Text>
                                         <Progress
                                             type="line"
                                             status="active"
                                             strokeLinecap="square"
-                                            strokeColor={getGroupAssessmentColor(group)}
+                                            strokeColor={assessment.color}
                                             trailColor="#E5E7EB"
                                             steps={10}
                                             strokeWidth={16}
-                                            percent={getGroupAssessmentPercent(group)}
+                                            percent={assessment.score}
                                             format={(percent) => <Text type="secondary">{percent}%</Text>}
                                         />
                                     </div>
@@ -143,8 +146,9 @@ const Evaluation = ({
                                 {expanded && filterQuestionsWithAssessment(group)
                                     .map(question => <>
                                         <div className={styles.divider} />
-                                        <div className={`${styles.competenceAreaRow} ${styles.divSpaceBetween}`}>
-                                            <div className={styles.divVertical}>
+                                        <div className={styles.questionAreaRow}>
+                                            <QuestionDifficultyTag difficulty={question.difficulty} />
+                                            <div className={styles.questionHolder}>
                                                 <Text>{question.question}</Text>
                                                 <Text className={styles.questionNotes}
                                                       type="secondary">{question.notes}</Text>

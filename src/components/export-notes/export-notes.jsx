@@ -3,9 +3,8 @@ import { Button, Input } from "antd";
 import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import {
+    getGroupAssessment,
     getGroupAssessmentEmoji,
-    getGroupAssessmentPercent,
-    getGroupAssessmentText,
     getOverallPerformancePercent,
     getQuestionsWithAssessment,
 } from "../utils/assessment";
@@ -13,6 +12,7 @@ import styles from "./export-notes.module.css";
 import moment from "moment";
 import { InterviewAssessment } from "../utils/constants";
 import { defaultTo } from "lodash/util";
+import { filterGroupsWithAssessment } from "../utils/filters";
 
 const { TextArea } = Input;
 
@@ -29,19 +29,24 @@ const ExportNotes = ({ interview }) => {
         if (interview.structure.groups && interview.structure.groups.length > 1) {
             let longestName = 0;
             interview.structure.groups.forEach(group => {
-                if (group.name.length > longestName) {
-                    longestName = group.name.length;
+                let name = group.name.substring(0, 12);
+                if (name.length > longestName) {
+                    longestName = name.length;
                 }
             })
-            interview.structure.groups.forEach((group, index) => {
-                const percent = getGroupAssessmentPercent(group)
-                const emoji = getGroupAssessmentEmoji(group)
-                const text = getGroupAssessmentText(group);
-                if (index !== 0) {
-                    competenceAreas += "\n";
-                }
-                competenceAreas += `${group.name.padEnd(longestName + 5, ' ')} ${percent}% ${emoji} ${text}`;
-            });
+            filterGroupsWithAssessment(interview.structure.groups)
+                .map(group => ({
+                    group: group,
+                    assessment: getGroupAssessment(group.questions)
+                }))
+                .forEach(({ group, assessment }, index) => {
+                    const emoji = getGroupAssessmentEmoji(assessment.score);
+                    let name = group.name.substring(0, 20);
+                    if (index !== 0) {
+                        competenceAreas += "\n";
+                    }
+                    competenceAreas += `${name.padEnd(longestName + 5, ' ')} ${assessment.score}% ${emoji} ${assessment.text}`;
+                })
         }
 
         let notes = "There are no notes.";

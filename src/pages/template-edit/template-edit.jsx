@@ -33,10 +33,12 @@ const { TextArea } = Input;
  *
  * @param {Template[]} templates
  * @param {Template[]} library
+ * @param {Template} sharedTemplate
  * @param addTemplate
  * @param loadTemplates
  * @param loadLibrary
  * @param updateTemplate
+ * @param loadSharedTemplate
  * @returns {JSX.Element}
  * @constructor
  */

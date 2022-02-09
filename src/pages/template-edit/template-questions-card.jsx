@@ -11,6 +11,7 @@ import { isEmpty } from "../../components/utils/utils";
 import { flatten, sortedUniq } from "lodash/array";
 import { createTagColors } from "../../components/utils/constants";
 import { TemplateTags } from "./template-tags";
+import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
 const { TextArea } = Input;
 
@@ -116,6 +117,12 @@ const TemplateQuestionsCard = ({
         group.questions.find(q => q.questionId === questionId).question = question
     }
 
+    const onDifficultyChange = (questionId, difficulty) => {
+        // no need to propagate to parent to re-render
+        questions.find(q => q.questionId === questionId).difficulty = difficulty
+        group.questions.find(q => q.questionId === questionId).difficulty = difficulty
+    }
+
     const onTagsChange = (questionId, tags) => {
         // no need to propagate to parent to re-render
         questions.find(q => q.questionId === questionId).tags = tags
@@ -134,6 +141,21 @@ const TemplateQuestionsCard = ({
             dataIndex: 'sort',
             className: styles.dragVisible,
             render: () => <DragHandle />,
+        },
+        {
+            key: 'difficulty',
+            width: 48,
+            render: question => {
+                return {
+                    props: {
+                        style: { padding: 0, }
+                    },
+                    children: <QuestionDifficultyTag
+                        difficulty={question.difficulty}
+                        onChange={difficulty => onDifficultyChange(question.questionId, difficulty)}
+                        editable={true} />
+                };
+            }
         },
         {
             key: 'question',

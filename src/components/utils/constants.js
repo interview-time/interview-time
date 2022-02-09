@@ -31,6 +31,7 @@ export const Difficulty = {
     EASY: "Easy",
     MEDIUM: "Medium",
     HARD: "Hard",
+    DEFAULT: "Medium"
 }
 
 export const InterviewAssessment = {
@@ -43,8 +44,8 @@ export const InterviewAssessment = {
 
 export const QuestionAssessment = {
     POOR: 1,
-    AVERAGE: 2,
-    GOOD: 3,
+    GOOD: 2,
+    EXCELLENT: 3,
 }
 
 export const TemplateCategories = [
