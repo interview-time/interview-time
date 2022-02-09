@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
+using CafApi.Utils;
 
 namespace CafApi.Models
 {
@@ -15,8 +16,10 @@ namespace CafApi.Models
 
         public List<string> Roles { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime ModifiedDate { get; set; }
     }
 }

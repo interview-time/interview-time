@@ -11,6 +11,7 @@ using Amazon.Extensions.NETCore.Setup;
 using Amazon;
 using CafApi.Services;
 using Amazon.S3;
+using SendGrid.Extensions.DependencyInjection;
 
 namespace CafApi
 {
@@ -83,6 +84,11 @@ namespace CafApi
                 UseAccelerateEndpoint = true
             };
 
+            services.AddSendGrid(options =>
+            {
+                options.ApiKey = Configuration["SendGridApiKey"];
+            });
+
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Config));
 
             services.AddSingleton<IUserService, UserService>();
@@ -91,6 +97,7 @@ namespace CafApi
             services.AddSingleton<ITeamService, TeamService>();
             services.AddSingleton<ICandidateService, CandidateService>();
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
+            services.AddSingleton<IEmailService, EmailService>();        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
