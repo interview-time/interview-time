@@ -1,5 +1,8 @@
 using System;
+using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
+using CafApi.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SendGrid;
@@ -44,20 +47,70 @@ namespace CafApi.Services
                 {
                     candidateName = candidateName,
                     interviewerName = !interviewerName.Equals(toEmail) ? interviewerName : "there",
-                    interviewDate = interviewDateTime.ToString("d"),
-                    interviewTime = $"{interviewDateTime.ToString("t")} ({timezone ?? "UTC"})",
+                    interviewDate = interviewDateTime.ToString("dd MMM yyyy h:mm tt"),
+                    interviewTime = $"({timezone ?? "UTC"})",
                     interviewScorecard = $"https://app.interviewer.space/interviews/scorecard/{interviewId}"
+                };            
+
+                var description = $"You have a new interview scheduled for {templateData.interviewDate} {templateData.interviewTime} with {candidateName}.\\n\\nHere is the link to the interview scorecard: {templateData.interviewScorecard}";
+
+                var invite = CreateInvite(interviewDateTime, interviewDateTime.AddHours(1), timezone, $"Interview with {candidateName}", description);
+                var attachment = new Attachment
+                {
+                    Filename = "invite.ics",
+                    Content = StringHelper.Base64Encode(invite),
+                    ContentId = Guid.NewGuid().ToString(),
+                    Disposition = "attachment",
+                    Type = "text/calendar; method=REQUEST"
                 };
 
                 var templateId = _configuration["EmailTemplates:ScheduleInterview"];
-                var message = MailHelper.CreateSingleTemplateEmail(_fromAddress, to, templateId, templateData);
+                SendGridMessage message = MailHelper.CreateSingleTemplateEmail(_fromAddress, to, templateId, templateData);
+                message.AddAttachment(attachment);
 
                 var response = await _client.SendEmailAsync(message).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorReason = await response.Body.ReadAsStringAsync();
+                    _logger.LogError($"Error sending email SendNewInterviewInvitation: {errorReason}");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError("Error sending email SendNewInterviewInvitation", ex);
             }
+        }
+
+        private string CreateInvite(DateTime startDate, DateTime endDate, string timezone, string summary, string description)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("BEGIN:VCALENDAR");
+
+            sb.AppendLine("VERSION:2.0");
+            sb.AppendLine("PRODID:stackoverflow.com");
+            sb.AppendLine("CALSCALE:GREGORIAN");
+            sb.AppendLine("METHOD:PUBLISH");
+
+            sb.AppendLine("BEGIN:VTIMEZONE");
+            sb.AppendLine($"TZID:{timezone}");
+            sb.AppendLine("BEGIN:STANDARD");            
+            sb.AppendLine("END:STANDARD");
+            sb.AppendLine("END:VTIMEZONE");
+
+            sb.AppendLine("BEGIN:VEVENT");
+            sb.AppendLine($"ORGANIZER;CN=Interviewer.Space;EMAIL={_fromAddress.Email}:mailto:{_fromAddress.Email}");
+            sb.AppendLine($"DTSTART;TZID={timezone}:" + startDate.ToString("yyyyMMddTHHmm00"));
+            sb.AppendLine($"DTEND;TZID={timezone}:" + endDate.ToString("yyyyMMddTHHmm00"));
+            sb.AppendLine($"SUMMARY:{summary}");
+            sb.AppendLine($"LOCATION:");
+            sb.AppendLine($"DESCRIPTION:{description}");            
+            sb.AppendLine("PRIORITY:3");
+            sb.AppendLine("END:VEVENT");
+
+            sb.AppendLine("END:VCALENDAR");
+
+            return sb.ToString();
         }
     }
 }
