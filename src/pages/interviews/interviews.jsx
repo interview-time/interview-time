@@ -73,11 +73,23 @@ const Interviews = ({
                 value: position,
             }))
         )
+
+        let profileName = truncate(profile.name, {
+            'length': 18
+        }) + ' (You)'
+
         setInterviewers(
-            sortBy(uniqBy(interviewsData, interview => interview.userId).map(interview => ({
-                label: interview.userName,
-                value: interview.userId,
-            })), [item => item.label])
+            [{
+                label: profileName,
+                value: profile.userId
+            }].concat(
+                sortBy(uniqBy(interviewsData, interview => interview.userId)
+                    .filter(interview => interview.userId !== profile.userId)
+                    .map(interview => ({
+                        label: interview.userName,
+                        value: interview.userId,
+                    })), [item => item.label])
+            )
         )
         // eslint-disable-next-line
     }, [interviewsData]);
