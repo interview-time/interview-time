@@ -38,6 +38,11 @@
     margin-bottom: 12px;
 }
 
+.select {
+    min-width: 230px;
+    margin-left: 16px;
+}
+
 .headerSearch {
     width: 300px;
 }
