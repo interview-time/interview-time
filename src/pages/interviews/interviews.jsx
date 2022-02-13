@@ -310,6 +310,7 @@ const Interviews = ({
                     <Table
                         pagination={{
                             style: { marginRight: 24 },
+                            defaultPageSize: 20,
                         }}
                         scroll={{
                             x: "max-content",
