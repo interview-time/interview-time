@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import { Modal, Row } from "antd";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview, updateScorecard } from "../../store/interviews/actions";
-import { loadTeamMembers } from "../../store/user/actions";
+import { loadTeamMembers, setActiveTeam } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { cloneDeep } from "lodash/lang";
@@ -17,6 +17,7 @@ import { Status } from "../../components/utils/constants";
 import { personalEvent } from "../../analytics";
 import Assessment from "./assessment";
 import Evaluation from "./evaluation";
+import { getActiveTeamId } from "../../store/common";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
 const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
@@ -49,6 +50,8 @@ const InterviewScorecard = ({
     loadTemplates,
     updateScorecard,
     updateInterview,
+    setActiveTeam,
+    teams,
 }) => {
     /**
      * @type {Interview}
@@ -56,8 +59,8 @@ const InterviewScorecard = ({
     const [interview, setInterview] = useState(/** @type {Interview|undefined} */ undefined);
 
     const { id } = useParams();
-
     const history = useHistory();
+    const { search } = useLocation();
 
     useEffect(() => {
         // initial data loading
@@ -70,6 +73,17 @@ const InterviewScorecard = ({
     }, [interviews]);
 
     useEffect(() => {
+        var currentTeamId = getActiveTeamId();
+        var paramTeamId = new URLSearchParams(search).get("teamId");
+
+        if (paramTeamId && currentTeamId !== paramTeamId) {
+            var filteredTeams = teams.filter(t => t.teamId === paramTeamId);
+
+            if (filteredTeams.length > 0) {
+                setActiveTeam(filteredTeams[0]);
+            }
+        }
+
         loadInterviews();
         loadCandidates();
         loadTemplates();
@@ -249,6 +263,7 @@ const mapDispatch = {
     updateInterview,
     loadTeamMembers,
     loadCandidates,
+    setActiveTeam,
 };
 const mapState = state => {
     const interviewsState = state.interviews || {};
@@ -261,6 +276,7 @@ const mapState = state => {
         candidates: candidatesState.candidates,
         templates: templatesState.templates,
         interviewsUploading: interviewsState.uploading,
+        teams: userState.profile.teams,
     };
 };
 
