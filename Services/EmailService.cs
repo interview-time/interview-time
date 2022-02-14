@@ -26,7 +26,7 @@ namespace CafApi.Services
             _logger = logger;
         }
 
-        public async Task SendNewInterviewInvitation(string toEmail, string interviewerName, string candidateName, DateTime interviewDateTime, string interviewId, string timezone)
+        public async Task SendNewInterviewInvitation(string toEmail, string interviewerName, string candidateName, DateTime interviewDateTime, string interviewId, string timezone, string teamId)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace CafApi.Services
                     interviewerName = !interviewerName.Equals(toEmail) ? interviewerName : "there",
                     interviewDate = interviewDateTime.ToString("dd MMM yyyy h:mm tt"),
                     interviewTime = $"({timezone ?? "UTC"})",
-                    interviewScorecard = $"https://app.interviewer.space/interviews/scorecard/{interviewId}"
+                    interviewScorecard = $"https://app.interviewer.space/interviews/scorecard/{interviewId}?teamId={teamId}"
                 };            
 
                 var description = $"You have a new interview scheduled for {templateData.interviewDate} {templateData.interviewTime} with {candidateName}.\\n\\nHere is the link to the interview scorecard: {templateData.interviewScorecard}";
