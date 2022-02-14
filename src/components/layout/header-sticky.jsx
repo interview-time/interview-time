@@ -11,24 +11,25 @@ import { useHistory } from "react-router-dom";
  * @returns {JSX.Element}
  * @constructor
  */
-const StickyHeader = ({title, backButton, children}) => {
-
+const StickyHeader = ({ title, backButton, children }) => {
     const history = useHistory();
 
     const onBackClicked = () => {
-        history.goBack()
-    }
+        history.goBack();
+    };
 
     return (
         <div className={styles.stickyHeader}>
-            {backButton && <div onClick={onBackClicked} style={{ cursor: 'pointer' }}>
-                <ArrowLeftOutlined />
-                <span className={styles.headerTitle}>{title}</span>
-            </div>}
+            {backButton && (
+                <div onClick={onBackClicked} style={{ cursor: "pointer" }}>
+                    <ArrowLeftOutlined />
+                    <span className={styles.headerTitle}>{title}</span>
+                </div>
+            )}
             {!backButton && <span className={styles.headerTitle}>{title}</span>}
             {children}
         </div>
     );
-}
+};
 
-export default StickyHeader
+export default StickyHeader;

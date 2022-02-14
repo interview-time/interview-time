@@ -25,7 +25,7 @@ import CardHero from "../../components/card/card-hero";
 import { uniq, uniqBy } from "lodash/array";
 import { filterOptionLabel } from "../../components/utils/filters";
 
-const iconStyle = { fontSize: 24, color: '#8C2BE3' }
+const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
 /**
  *
@@ -46,9 +46,8 @@ const Interviews = ({
     interviewsLoading,
     loadInterviews,
     loadTeamMembers,
-    deleteInterview
+    deleteInterview,
 }) => {
-
     const history = useHistory();
 
     const [interviews, setInterviews] = useState([]);
@@ -56,8 +55,8 @@ const Interviews = ({
     const [interviewers, setInterviewers] = useState([]);
     const [filter, setFilter] = useState({
         interviewer: null,
-        position: null
-    })
+        position: null,
+    });
 
     React.useEffect(() => {
         loadInterviews();
@@ -68,50 +67,59 @@ const Interviews = ({
     React.useEffect(() => {
         setInterviews(interviewsData);
         setPositions(
-            uniq(interviewsData.map(interview => interview.position)).sort().map(position => ({
-                label: position,
-                value: position,
-            }))
-        )
+            uniq(interviewsData.map(interview => interview.position))
+                .sort()
+                .map(position => ({
+                    label: position,
+                    value: position,
+                }))
+        );
 
-        let profileName = truncate(profile.name, {
-            'length': 18
-        }) + ' (You)'
+        let profileName =
+            truncate(profile.name, {
+                length: 18,
+            }) + " (You)";
 
         setInterviewers(
-            [{
-                label: profileName,
-                value: profile.userId
-            }].concat(
-                sortBy(uniqBy(interviewsData, interview => interview.userId)
-                    .filter(interview => interview.userId !== profile.userId)
-                    .map(interview => ({
-                        label: interview.userName,
-                        value: interview.userId,
-                    })), [item => item.label])
+            [
+                {
+                    label: profileName,
+                    value: profile.userId,
+                },
+            ].concat(
+                sortBy(
+                    uniqBy(interviewsData, interview => interview.userId)
+                        .filter(interview => interview.userId !== profile.userId)
+                        .map(interview => ({
+                            label: interview.userName,
+                            value: interview.userId,
+                        })),
+                    [item => item.label]
+                )
             )
-        )
+        );
         // eslint-disable-next-line
     }, [interviewsData]);
 
     React.useEffect(() => {
         let filteredInterviews = interviewsData;
 
-        if(filter.interviewer) {
-            filteredInterviews = filteredInterviews.filter(interview => interview.userId === filter.interviewer)
+        if (filter.interviewer) {
+            filteredInterviews = filteredInterviews.filter(interview => interview.userId === filter.interviewer);
         }
 
-        if(filter.position) {
-            filteredInterviews = filteredInterviews.filter(interview =>
-                interview.position && interview.position.includes(filter.position))
+        if (filter.position) {
+            filteredInterviews = filteredInterviews.filter(
+                interview => interview.position && interview.position.includes(filter.position)
+            );
         }
 
-        setInterviews(filteredInterviews)
+        setInterviews(filteredInterviews);
 
         // eslint-disable-next-line
     }, [filter]);
 
-    const onRowClicked = (interview) => {
+    const onRowClicked = interview => {
         if (interview.status === Status.SUBMITTED || interview.userId !== profile.userId) {
             history.push(routeInterviewReport(interview.interviewId));
         } else {
@@ -131,17 +139,27 @@ const Interviews = ({
         });
     };
 
-    const createMenu = (interview) => (
+    const createMenu = interview => (
         <Menu>
-            {(interview.status !== Status.SUBMITTED && interview.status !== Status.COMPLETED)
-                && <Menu.Item onClick={e => {
-                    e.domEvent.stopPropagation()
-                    history.push(routeInterviewDetails(interview.interviewId));
-                }}>Edit</Menu.Item>}
-            <Menu.Item danger onClick={e => {
-                e.domEvent.stopPropagation()
-                showDeleteDialog(interview)
-            }}>Delete</Menu.Item>
+            {interview.status !== Status.SUBMITTED && interview.status !== Status.COMPLETED && (
+                <Menu.Item
+                    onClick={e => {
+                        e.domEvent.stopPropagation();
+                        history.push(routeInterviewDetails(interview.interviewId));
+                    }}
+                >
+                    Edit
+                </Menu.Item>
+            )}
+            <Menu.Item
+                danger
+                onClick={e => {
+                    e.domEvent.stopPropagation();
+                    showDeleteDialog(interview);
+                }}
+            >
+                Delete
+            </Menu.Item>
         </Menu>
     );
 
@@ -151,7 +169,7 @@ const Interviews = ({
             key: "candidate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
-            render: (interview) => {
+            render: interview => {
                 return (
                     <>
                         <TableText className={`fs-mask`}>{interview.candidate}</TableText>
@@ -165,21 +183,15 @@ const Interviews = ({
             key: "position",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
-            render: (interview) => (
-                <TableText className={`fs-mask`}>
-                    {defaultTo(interview.position, "-")}
-                </TableText>
-            ),
+            render: interview => <TableText className={`fs-mask`}>{defaultTo(interview.position, "-")}</TableText>,
         },
         {
             title: <TableHeader>DATE</TableHeader>,
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: (interview) => (
-                <TableText className={`fs-mask`}>
-                    {getFormattedDate(interview.interviewDateTime, "-")}
-                </TableText>
+            render: interview => (
+                <TableText className={`fs-mask`}>{getFormattedDate(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {
@@ -187,10 +199,10 @@ const Interviews = ({
             key: "interviewer",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.userName, b.userName),
-            render: (interview) => (
+            render: interview => (
                 <TableText className={`fs-mask`}>
                     {truncate(interview.userName, {
-                        'length': 20
+                        length: 20,
                     })}
                 </TableText>
             ),
@@ -200,85 +212,87 @@ const Interviews = ({
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: (interview) => <InterviewStatusTag interview={interview} />
+            render: interview => <InterviewStatusTag interview={interview} />,
         },
         {
             key: "actions",
-            render: (interview) => <Dropdown overlay={createMenu(interview)} placement="bottomLeft">
-                <Button
-                    icon={<MoreIcon />}
-                    style={{ width: 36, height: 36 }}
-                    onClick={e => e.stopPropagation()}
-                />
-            </Dropdown>
+            render: interview => (
+                <Dropdown overlay={createMenu(interview)} placement='bottomLeft'>
+                    <Button icon={<MoreIcon />} style={{ width: 36, height: 36 }} onClick={e => e.stopPropagation()} />
+                </Dropdown>
+            ),
         },
     ];
 
     const onPositionFilterClear = () => {
         setFilter({
             ...filter,
-            position: null
-        })
-    }
+            position: null,
+        });
+    };
 
     const onPositionFilterChange = value => {
         setFilter({
             ...filter,
-            position: value
-        })
-    }
+            position: value,
+        });
+    };
 
     const onInterviewerFilterClear = () => {
         setFilter({
             ...filter,
-            interviewer: null
-        })
-    }
+            interviewer: null,
+        });
+    };
 
     const onInterviewerFilterChange = value => {
         setFilter({
             ...filter,
-            interviewer: value
-        })
-    }
+            interviewer: value,
+        });
+    };
 
-    const interviewStarted = (interview) => moment() > moment(interview.interviewDateTime);
+    const interviewStarted = interview => moment() > moment(interview.interviewDateTime);
 
-    const getNewInterviews = () => interviews.filter(interview =>
-        interview.status === Status.NEW && !interviewStarted(interview)
-    ).length
+    const getNewInterviews = () =>
+        interviews.filter(interview => interview.status === Status.NEW && !interviewStarted(interview)).length;
 
-    const getInProgressInterviews = () => interviews.filter(interview =>
-        (interview.status === Status.NEW || interview.status === Status.COMPLETED) && interviewStarted(interview)
-    ).length
+    const getInProgressInterviews = () =>
+        interviews.filter(
+            interview =>
+                (interview.status === Status.NEW || interview.status === Status.COMPLETED) &&
+                interviewStarted(interview)
+        ).length;
 
-    const getCompletedInterviews = () => interviews.filter(interview => interview.status === Status.SUBMITTED).length
+    const getCompletedInterviews = () => interviews.filter(interview => interview.status === Status.SUBMITTED).length;
 
     return (
         <Layout contentStyle={styles.rootContainer}>
             <div>
-                <Title level={4} style={{ marginBottom: 20 }}>Interviews</Title>
+                <Title level={4} style={{ marginBottom: 20 }}>
+                    Interviews
+                </Title>
 
                 <Row gutter={32} style={{ marginBottom: 32 }}>
                     <Col span={8}>
                         <CardHero
                             icon={<CalendarIcon style={iconStyle} />}
                             title={getNewInterviews()}
-                            text="Upcoming"
+                            text='Upcoming'
                         />
                     </Col>
                     <Col span={8}>
                         <CardHero
                             icon={<IdeaIcon style={iconStyle} />}
                             title={getInProgressInterviews()}
-                            text="In-progress"
+                            text='In-progress'
                         />
                     </Col>
                     <Col span={8}>
                         <CardHero
                             icon={<ArchiveIcon style={iconStyle} />}
                             title={getCompletedInterviews()}
-                            text="Completed"
+                            text='Completed'
                         />
                     </Col>
                 </Row>
@@ -286,7 +300,7 @@ const Interviews = ({
                 <div className={styles.divRight}>
                     <Select
                         className={styles.select}
-                        placeholder="Interviewer filter"
+                        placeholder='Interviewer filter'
                         onSelect={onInterviewerFilterChange}
                         onClear={onInterviewerFilterClear}
                         options={interviewers}
@@ -296,7 +310,7 @@ const Interviews = ({
                     />
                     <Select
                         className={styles.select}
-                        placeholder="Position filter"
+                        placeholder='Position filter'
                         onSelect={onPositionFilterChange}
                         onClear={onPositionFilterClear}
                         options={positions}
@@ -319,7 +333,7 @@ const Interviews = ({
                         dataSource={interviews}
                         loading={interviewsLoading}
                         rowClassName={styles.row}
-                        onRow={(record) => ({
+                        onRow={record => ({
                             onClick: () => onRowClicked(record),
                         })}
                     />
@@ -330,19 +344,20 @@ const Interviews = ({
 };
 
 const mapDispatch = { loadInterviews, deleteInterview, loadTeamMembers };
-const mapState = (state) => {
+const mapState = state => {
     const interviewsState = state.interviews || {};
     const userState = state.user || {};
 
     // sort interview by uncompleted first in chronological order
     let completedInterviews = interviewsState.interviews.filter(interview => interview.status === Status.SUBMITTED);
     let uncompletedInterview = interviewsState.interviews.filter(interview => interview.status !== Status.SUBMITTED);
-    let sortedInterviews = orderBy(uncompletedInterview, orderByInterviewDate, ["asc"])
-            .concat(orderBy(completedInterviews, orderByInterviewDate, ["asc"]))
+    let sortedInterviews = orderBy(uncompletedInterview, orderByInterviewDate, ["asc"]).concat(
+        orderBy(completedInterviews, orderByInterviewDate, ["asc"])
+    );
     sortedInterviews.forEach(interview => {
-        if(userState.teamMembers) {
-            interview.userName = userState.teamMembers
-                .find(member => member.userId === interview.userId)?.name || "Unknown user"
+        if (userState.teamMembers) {
+            interview.userName =
+                userState.teamMembers.find(member => member.userId === interview.userId)?.name || "Unknown user";
         }
     });
 
@@ -350,7 +365,7 @@ const mapState = (state) => {
         interviewsData: sortedInterviews,
         interviewsLoading: interviewsState.loading,
         profile: userState.profile,
-        activeTeam: userState.activeTeam
+        activeTeam: userState.activeTeam,
     };
 };
 

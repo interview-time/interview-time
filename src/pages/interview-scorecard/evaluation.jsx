@@ -44,15 +44,14 @@ const Evaluation = ({
     onSubmitClicked,
     onEditClicked,
     onNoteChanges,
-    onAssessmentChanged
+    onAssessmentChanged,
 }) => {
-
-    const [expanded, setExpanded] = useState(false)
+    const [expanded, setExpanded] = useState(false);
     const history = useHistory();
 
-    const onExpandClicked = () => setExpanded(true)
+    const onExpandClicked = () => setExpanded(true);
 
-    const onCollapseClicked = () => setExpanded(false)
+    const onCollapseClicked = () => setExpanded(false);
 
     return (
         <div className={styles.rootContainer}>
@@ -61,49 +60,45 @@ const Evaluation = ({
                 subtitle={interview.position}
                 leftComponent={
                     <Space size={16}>
-                        <Button
-                            icon={<CloseIcon />}
-                            size="large"
-                            onClick={() => history.push(routeInterviews())}
-                        />
+                        <Button icon={<CloseIcon />} size='large' onClick={() => history.push(routeInterviews())} />
                         <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
                     </Space>
                 }
                 rightComponent={
                     <Space size={16}>
                         <InterviewStatusTag interview={interview} />
-                        <Button onClick={onEditClicked}>
-                            Edit
-                        </Button>
-                        <Button type="primary" onClick={onSubmitClicked}>
+                        <Button onClick={onEditClicked}>Edit</Button>
+                        <Button type='primary' onClick={onSubmitClicked}>
                             Submit Evaluation
                         </Button>
                     </Space>
                 }
             />
 
-            <Col span={22} offset={1}
-                 xl={{ span: 20, offset: 2 }}
-                 xxl={{ span: 16, offset: 4 }}>
+            <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
                 <div className={styles.divVerticalCenter}>
                     <span className={styles.guidingLine} />
                     <div className={styles.reportInterviewInfoHolder}>
                         <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
                         <Progress
                             className={styles.reportInterviewCenter}
-                            type="circle"
-                            status="active"
-                            strokeLinecap="square"
-                            trailColor="#E5E7EB"
+                            type='circle'
+                            status='active'
+                            strokeLinecap='square'
+                            trailColor='#E5E7EB'
                             width={160}
                             strokeWidth={8}
                             strokeColor={getOverallPerformanceColor(interview.structure.groups)}
                             percent={getOverallPerformancePercent(interview.structure.groups)}
-                            format={(percent) => {
-                                return <div className={styles.scoreHolder}>
-                                    <Text className={styles.scoreText}>{percent}</Text>
-                                    <Text className={styles.scoreLabel} type="secondary">Score</Text>
-                                </div>
+                            format={percent => {
+                                return (
+                                    <div className={styles.scoreHolder}>
+                                        <Text className={styles.scoreText}>{percent}</Text>
+                                        <Text className={styles.scoreLabel} type='secondary'>
+                                            Score
+                                        </Text>
+                                    </div>
+                                );
                             }}
                         />
                         <CandidateInfoSection className={styles.reportInterviewRight} candidate={candidate} />
@@ -112,66 +107,76 @@ const Evaluation = ({
                 </div>
                 <Card withPadding={false}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
-                        <Title level={4} style={{ marginBottom: 0 }}>Competence areas</Title>
+                        <Title level={4} style={{ marginBottom: 0 }}>
+                            Competence areas
+                        </Title>
                         {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
                         {expanded && <Button onClick={onCollapseClicked}>Collapse</Button>}
                     </div>
                     {filterGroupsWithAssessment(interview.structure.groups)
                         .map(group => ({
                             group: group,
-                            assessment: getGroupAssessment(group.questions)
+                            assessment: getGroupAssessment(group.questions),
                         }))
-                        .map(({assessment, group}) => (
+                        .map(({ assessment, group }) => (
                             <>
                                 <div className={styles.divider} />
-                                <div className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}
-                                     style={{ backgroundColor: expanded ? "#F9FAFB" : "#FFFFFF" }}>
+                                <div
+                                    className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}
+                                    style={{ backgroundColor: expanded ? "#F9FAFB" : "#FFFFFF" }}
+                                >
                                     <Text strong>{group.name}</Text>
                                     <div className={styles.divHorizontalCenter}>
-                                        <Text type="secondary"
-                                              style={{ marginRight: 12 }}>{assessment.text}</Text>
+                                        <Text type='secondary' style={{ marginRight: 12 }}>
+                                            {assessment.text}
+                                        </Text>
                                         <Progress
-                                            type="line"
-                                            status="active"
-                                            strokeLinecap="square"
+                                            type='line'
+                                            status='active'
+                                            strokeLinecap='square'
                                             strokeColor={assessment.color}
-                                            trailColor="#E5E7EB"
+                                            trailColor='#E5E7EB'
                                             steps={10}
                                             strokeWidth={16}
                                             percent={assessment.score}
-                                            format={(percent) => <Text type="secondary">{percent}%</Text>}
+                                            format={percent => <Text type='secondary'>{percent}%</Text>}
                                         />
                                     </div>
                                 </div>
-                                {expanded && filterQuestionsWithAssessment(group)
-                                    .map(question => <>
-                                        <div className={styles.divider} />
-                                        <div className={styles.questionAreaRow}>
-                                            <QuestionDifficultyTag difficulty={question.difficulty} />
-                                            <div className={styles.questionHolder}>
-                                                <Text>{question.question}</Text>
-                                                <Text className={styles.questionNotes}
-                                                      type="secondary">{question.notes}</Text>
+                                {expanded &&
+                                    filterQuestionsWithAssessment(group).map(question => (
+                                        <>
+                                            <div className={styles.divider} />
+                                            <div className={styles.questionAreaRow}>
+                                                <QuestionDifficultyTag difficulty={question.difficulty} />
+                                                <div className={styles.questionHolder}>
+                                                    <Text>{question.question}</Text>
+                                                    <Text className={styles.questionNotes} type='secondary'>
+                                                        {question.notes}
+                                                    </Text>
+                                                </div>
+                                                <AssessmentCheckbox
+                                                    defaultValue={question.assessment}
+                                                    disabled={true}
+                                                />
                                             </div>
-                                            <AssessmentCheckbox
-                                                defaultValue={question.assessment}
-                                                disabled={true}
-                                            />
-                                        </div>
-                                    </>)}
+                                        </>
+                                    ))}
                             </>
                         ))}
                 </Card>
 
                 <div className={styles.divVerticalCenter}>
                     <span className={styles.guidingLine} />
-                    <Card withPadding={false} style={{ width: '100%' }}>
-                        <Title level={4} style={{ margin: 24 }}>Summary notes</Title>
+                    <Card withPadding={false} style={{ width: "100%" }}>
+                        <Title level={4} style={{ margin: 24 }}>
+                            Summary notes
+                        </Title>
                         <div className={styles.divider} />
                         <TextArea
                             {...(interview.status === Status.SUBMITTED ? { readonly: "true" } : {})}
                             className={`${styles.notesTextArea} fs-mask`}
-                            placeholder="No summary was left, you can still add notes now"
+                            placeholder='No summary was left, you can still add notes now'
                             bordered={false}
                             autoSize={{ minRows: 1 }}
                             onChange={onNoteChanges}
@@ -185,15 +190,16 @@ const Evaluation = ({
                     <Card withPadding={false} className={`${styles.decisionCard}`}>
                         <div style={{ margin: 24 }}>
                             <Title level={4}>Submit your hiring decision</Title>
-                            <Text className={styles.decisionLabel}
-                                  type="secondary">Based on the interview data, please evaluate if the candidate is
-                                qualified for the position.</Text>
+                            <Text className={styles.decisionLabel} type='secondary'>
+                                Based on the interview data, please evaluate if the candidate is qualified for the
+                                position.
+                            </Text>
                         </div>
                         <div className={styles.divider} />
                         <div className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}>
                             <InterviewAssessmentButtons
                                 assessment={interview.decision}
-                                onAssessmentChanged={(assessment) => {
+                                onAssessmentChanged={assessment => {
                                     onAssessmentChanged(assessment);
                                 }}
                             />

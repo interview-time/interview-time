@@ -31,7 +31,7 @@ import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
 
 const { Title } = Typography;
-const iconStyle = { fontSize: 24, color: '#8C2BE3' }
+const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
 /**
  *
@@ -44,14 +44,7 @@ const iconStyle = { fontSize: 24, color: '#8C2BE3' }
  * @returns {JSX.Element}
  * @constructor
  */
-const Dashboard = ({
-    interviews,
-    interviewsLoading,
-    templates,
-    activeTeam,
-    loadInterviews,
-    loadTemplates,
-}) => {
+const Dashboard = ({ interviews, interviewsLoading, templates, activeTeam, loadInterviews, loadTemplates }) => {
     const history = useHistory();
 
     React.useEffect(() => {
@@ -66,7 +59,7 @@ const Dashboard = ({
 
     const onInviteTeamMembers = () => history.push(routeTeamSettings(activeTeam.teamId));
 
-    const onRowClicked = (interview) => history.push(routeInterviewScorecard(interview.interviewId));
+    const onRowClicked = interview => history.push(routeInterviewScorecard(interview.interviewId));
 
     const columns = [
         {
@@ -74,7 +67,7 @@ const Dashboard = ({
             key: "candidate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
-            render: (interview) => {
+            render: interview => {
                 return (
                     <>
                         <TableText className={`fs-mask`}>{interview.candidate}</TableText>
@@ -88,21 +81,15 @@ const Dashboard = ({
             key: "position",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
-            render: (interview) => (
-                <TableText className={`fs-mask`}>
-                    {defaultTo(interview.position, "-")}
-                </TableText>
-            ),
+            render: interview => <TableText className={`fs-mask`}>{defaultTo(interview.position, "-")}</TableText>,
         },
         {
             title: <TableHeader>DATE</TableHeader>,
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: (interview) => (
-                <TableText className={`fs-mask`}>
-                    {getFormattedDate(interview.interviewDateTime, "-")}
-                </TableText>
+            render: interview => (
+                <TableText className={`fs-mask`}>{getFormattedDate(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {
@@ -110,49 +97,57 @@ const Dashboard = ({
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: (interview) => <InterviewStatusTag interview={interview} />
-        }
+            render: interview => <InterviewStatusTag interview={interview} />,
+        },
     ];
 
     return (
         <Layout contentStyle={styles.rootContainer}>
             <div>
-                <Title level={4} style={{ marginBottom: 20 }}>Dashboard</Title>
+                <Title level={4} style={{ marginBottom: 20 }}>
+                    Dashboard
+                </Title>
 
                 <Row gutter={32} style={{ marginBottom: 32 }}>
                     <Col span={8}>
                         <CardHero
                             onClick={onScheduleInterviewClicked}
                             icon={<CalendarIcon style={iconStyle} />}
-                            title="Schedule interview"
-                            text="Use one of your interview templates"
+                            title='Schedule interview'
+                            text='Use one of your interview templates'
                         />
                     </Col>
                     <Col span={8}>
                         <CardHero
                             onClick={onNewTemplateClicked}
                             icon={<NewFileIcon style={iconStyle} />}
-                            title="Create template"
-                            text="Blank or from public library of templates"
+                            title='Create template'
+                            text='Blank or from public library of templates'
                         />
                     </Col>
                     <Col span={8}>
                         <CardHero
                             onClick={onInviteTeamMembers}
                             icon={<UserAddIcon style={iconStyle} />}
-                            title="Invite team members"
-                            text="Anyone with the link can join your team"
+                            title='Invite team members'
+                            text='Anyone with the link can join your team'
                         />
                     </Col>
                 </Row>
             </div>
 
-            <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>Your interviews</Title>
+            <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>
+                Your interviews
+            </Title>
             <Card withPadding={false}>
-                <ConfigProvider renderEmpty={() => <Space direction="vertical" style={{ padding: 24 }}>
-                    <img src={emptyInterview} alt="No interviews" />
-                    <Text style={{ color: '#6B7280' }}>You currently don’t have any interviews.</Text>
-                </Space>}>
+                <ConfigProvider
+                    renderEmpty={() => (
+                        <Space direction='vertical' style={{ padding: 24 }}>
+                            <img src={emptyInterview} alt='No interviews' />
+                            <Text style={{ color: "#6B7280" }}>You currently don’t have any interviews.</Text>
+                        </Space>
+                    )}
+                >
                     <Table
                         scroll={{
                             x: "max-content",
@@ -162,16 +157,18 @@ const Dashboard = ({
                         dataSource={interviews}
                         loading={interviewsLoading}
                         rowClassName={styles.row}
-                        onRow={(record) => ({
+                        onRow={record => ({
                             onClick: () => onRowClicked(record),
                         })}
                     />
                 </ConfigProvider>
             </Card>
 
-            <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>Recent templates</Title>
+            <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>
+                Recent templates
+            </Title>
             <Row gutter={[32, 32]}>
-                {templates.map((template) => (
+                {templates.map(template => (
                     <Col span={24} lg={{ span: 8 }}>
                         <TemplateCard key={template.templateId} template={template} />
                     </Col>
@@ -182,14 +179,14 @@ const Dashboard = ({
 };
 
 const mapDispatch = { loadInterviews, loadTemplates };
-const mapState = (state) => {
+const mapState = state => {
     const userState = state.user || {};
     const interviewsState = state.interviews || {};
     const templateState = state.templates || {};
 
-    const interviews = reverse(
-        sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"])
-    ).filter(interview => interview.userId === userState.profile.userId && interview.status !== Status.SUBMITTED);
+    const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"])).filter(
+        interview => interview.userId === userState.profile.userId && interview.status !== Status.SUBMITTED
+    );
 
     const templates = sortBy(templateState.templates, ["title"]).slice(0, 3);
 

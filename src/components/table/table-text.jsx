@@ -9,7 +9,6 @@ import React from "react";
  * @returns {JSX.Element}
  * @constructor
  */
-const TableText = ({ className, children }) =>
-    <Text className={`${styles.text} ${className}`}>{children}</Text>
+const TableText = ({ className, children }) => <Text className={`${styles.text} ${className}`}>{children}</Text>;
 
-export default TableText
+export default TableText;

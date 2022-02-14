@@ -2,17 +2,17 @@ import {
     ADD_TEMPLATE,
     DELETE_TEMPLATE,
     LOAD_LIBRARY,
+    LOAD_SHARED_TEMPLATE,
     LOAD_TEMPLATES,
     loadTemplates,
     SET_LIBRARY,
+    SET_SHARED_TEMPLATE,
     SET_TEMPLATES,
     setLibrary,
-    UPDATE_TEMPLATE,
-    LOAD_SHARED_TEMPLATE,
-    SET_SHARED_TEMPLATE,
     setSharedTemplate,
     setTemplates,
     SHARE_TEMPLATE,
+    UPDATE_TEMPLATE
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -44,9 +44,9 @@ const templatesReducer = (state = initialState, action) => {
 
             if (forceFetch || (state.templates.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then((token) => axios.get(url, config(token)))
-                    .then((res) => store.dispatch(setTemplates(res.data || [])))
-                    .catch((reason) => console.error(reason));
+                    .then(token => axios.get(url, config(token)))
+                    .then(res => store.dispatch(setTemplates(res.data || [])))
+                    .catch(reason => console.error(reason));
 
                 return { ...state, loading: true };
             }
@@ -59,9 +59,9 @@ const templatesReducer = (state = initialState, action) => {
 
             if (forceFetch || (state.library.length === 0 && !state.loadingLibrary)) {
                 getAccessTokenSilently()
-                    .then((token) => axios.get(`${URL}/library`, config(token)))
-                    .then((res) => store.dispatch(setLibrary(res.data || [])))
-                    .catch((reason) => console.error(reason));
+                    .then(token => axios.get(`${URL}/library`, config(token)))
+                    .then(res => store.dispatch(setLibrary(res.data || [])))
+                    .catch(reason => console.error(reason));
 
                 return { ...state, loadingLibrary: true };
             }
@@ -73,8 +73,8 @@ const templatesReducer = (state = initialState, action) => {
             const { templates } = action.payload;
 
             // helps to avoid dealing with null collections
-            templates.forEach((template) => {
-                template.structure.groups.forEach((group) => {
+            templates.forEach(template => {
+                template.structure.groups.forEach(group => {
                     if (!group.questions) {
                         group.questions = [];
                     }
@@ -91,8 +91,8 @@ const templatesReducer = (state = initialState, action) => {
             const { library } = action.payload;
 
             // helps to avoid dealing with null collections
-            library.forEach((template) => {
-                template.structure.groups.forEach((group) => {
+            library.forEach(template => {
+                template.structure.groups.forEach(group => {
                     if (!group.questions) {
                         group.questions = [];
                     }
@@ -111,12 +111,12 @@ const templatesReducer = (state = initialState, action) => {
             template.teamId = getActiveTeamId();
 
             getAccessTokenSilently()
-                .then((token) => axios.post(URL, template, config(token)))
+                .then(token => axios.post(URL, template, config(token)))
                 .then(() => log(`Template added: ${JSON.stringify(template)}`))
                 .then(() => {
                     store.dispatch(loadTemplates(true));
                 })
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }
@@ -125,12 +125,12 @@ const templatesReducer = (state = initialState, action) => {
             const { template } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => axios.put(URL, template, config(token)))
+                .then(token => axios.put(URL, template, config(token)))
                 .then(() => log(`Template updated: ${JSON.stringify(template)}`))
                 .then(() => store.dispatch(loadTemplates(true)))
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
-            const templates = state.templates.map((item) => {
+            const templates = state.templates.map(item => {
                 if (item.templateId !== template.templateId) {
                     return item;
                 }
@@ -151,14 +151,12 @@ const templatesReducer = (state = initialState, action) => {
             const { templateId } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => axios.delete(`${URL}/${templateId}`, config(token)))
+                .then(token => axios.delete(`${URL}/${templateId}`, config(token)))
                 .then(() => {
                     log("Template removed.");
-                    store.dispatch(
-                        setTemplates(state.templates.filter((item) => item.templateId !== templateId))
-                    );
+                    store.dispatch(setTemplates(state.templates.filter(item => item.templateId !== templateId)));
                 })
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }
@@ -169,8 +167,8 @@ const templatesReducer = (state = initialState, action) => {
             if (!state.loading) {
                 axios
                     .get(`${URL}/shared/${token}`)
-                    .then((res) => store.dispatch(setSharedTemplate(res.data || [])))
-                    .catch((reason) => {
+                    .then(res => store.dispatch(setSharedTemplate(res.data || [])))
+                    .catch(reason => {
                         console.error(reason);
                         store.dispatch(setSharedTemplate(null));
                     });
@@ -200,12 +198,12 @@ const templatesReducer = (state = initialState, action) => {
             };
 
             getAccessTokenSilently()
-                .then((token) => axios.patch(`${URL}/share`, data, config(token)))
+                .then(token => axios.patch(`${URL}/share`, data, config(token)))
                 .then(() => {
                     log(`Template shared: ${share}`);
                     store.dispatch(
                         setTemplates(
-                            state.templates.map((template) => {
+                            state.templates.map(template => {
                                 if (template.templateId === templateId) {
                                     template.isShared = share;
                                 }
@@ -214,7 +212,7 @@ const templatesReducer = (state = initialState, action) => {
                         )
                     );
                 })
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }

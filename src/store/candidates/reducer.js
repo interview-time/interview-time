@@ -1,14 +1,14 @@
 import {
-    LOAD_CANDIDATES,
-    SET_CANDIDATES,
     CREATE_CANDIDATE,
-    UPDATE_CANDIDATE,
     DELETE_CANDIDATE,
     GET_UPLOAD_URL,
+    LOAD_CANDIDATES,
+    loadCandidates,
+    SET_CANDIDATES,
     SET_UPLOAD_URL,
     setCandidates,
     setUploadUrl,
-    loadCandidates,
+    UPDATE_CANDIDATE
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -38,9 +38,9 @@ const candidatesReducer = (state = initialState, action) => {
 
             if (forceFetch || (state.candidates.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then((token) => axios.get(url, config(token)))
-                    .then((res) => store.dispatch(setCandidates(res.data || [])))
-                    .catch((reason) => console.error(reason));
+                    .then(token => axios.get(url, config(token)))
+                    .then(res => store.dispatch(setCandidates(res.data || [])))
+                    .catch(reason => console.error(reason));
 
                 return { ...state, loading: true };
             }
@@ -76,9 +76,9 @@ const candidatesReducer = (state = initialState, action) => {
 
             if (!state.loading) {
                 getAccessTokenSilently()
-                    .then((token) => axios.get(url, config(token)))
-                    .then((res) => store.dispatch(setUploadUrl(res.data)))
-                    .catch((reason) => console.error(reason));
+                    .then(token => axios.get(url, config(token)))
+                    .then(res => store.dispatch(setUploadUrl(res.data)))
+                    .catch(reason => console.error(reason));
 
                 return { ...state, loading: true };
             }
@@ -91,12 +91,12 @@ const candidatesReducer = (state = initialState, action) => {
             candidate.teamId = getActiveTeamId();
 
             getAccessTokenSilently()
-                .then((token) => axios.post(URL, candidate, config(token)))
+                .then(token => axios.post(URL, candidate, config(token)))
                 .then(() => log(`Candidate created: ${JSON.stringify(candidate)}`))
                 .then(() => {
                     store.dispatch(loadCandidates(true));
                 })
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }
@@ -105,12 +105,12 @@ const candidatesReducer = (state = initialState, action) => {
             const { candidate } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => axios.put(URL, candidate, config(token)))
+                .then(token => axios.put(URL, candidate, config(token)))
                 .then(() => log(`Candidate updated: ${JSON.stringify(candidate)}`))
                 .then(() => store.dispatch(loadCandidates(true)))
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
-            const candidates = state.candidates.map((item) => {
+            const candidates = state.candidates.map(item => {
                 if (item.candidateId !== candidate.candidateId) {
                     return item;
                 }
@@ -131,16 +131,12 @@ const candidatesReducer = (state = initialState, action) => {
             const { candidateId } = action.payload;
 
             getAccessTokenSilently()
-                .then((token) => axios.delete(`${URL}/${candidateId}`, config(token)))
+                .then(token => axios.delete(`${URL}/${candidateId}`, config(token)))
                 .then(() => {
                     log("Candidate removed.");
-                    store.dispatch(
-                        setCandidates(
-                            state.candidates.filter((item) => item.candidateId !== candidateId)
-                        )
-                    );
+                    store.dispatch(setCandidates(state.candidates.filter(item => item.candidateId !== candidateId)));
                 })
-                .catch((reason) => console.error(reason));
+                .catch(reason => console.error(reason));
 
             return { ...state, loading: true };
         }

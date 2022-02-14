@@ -10,25 +10,17 @@ const LibraryCard = ({ template }) => {
 
     var totalQuestions = 0;
 
-    template.structure?.groups?.forEach((group) => (totalQuestions += group.questions.length));
+    template.structure?.groups?.forEach(group => (totalQuestions += group.questions.length));
 
     const onCardClicked = () => {
-        history.push(routeLibraryTemplatePreview(template.libraryId))
-    }
+        history.push(routeLibraryTemplatePreview(template.libraryId));
+    };
 
     return (
-        <Card
-            className={styles.card}
-            onClick={onCardClicked}
-            key={template.id}
-        >
+        <Card className={styles.card} onClick={onCardClicked} key={template.id}>
             <div className={styles.card}>
                 <div>
-                    <img
-                        alt={template.title}
-                        src={template.image ? template.image : defaultIcon}
-                        width={50}
-                    />
+                    <img alt={template.title} src={template.image ? template.image : defaultIcon} width={50} />
                 </div>
                 <div className={styles.cardTitle}>{template.title}</div>
                 <div className={styles.cardMetaTitle}>{totalQuestions} QUESTIONS</div>

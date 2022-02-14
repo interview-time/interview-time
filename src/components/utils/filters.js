@@ -1,5 +1,6 @@
 import { includes } from "./comparators";
 import { defaultTo } from "lodash/util";
+
 /**
  *
  * @param {Question[]} questions
@@ -7,9 +8,8 @@ import { defaultTo } from "lodash/util";
  * @returns {Question[]}
  */
 export const filterQuestionText = (questions, textFilter) => {
-    return defaultTo(questions, [])
-        .filter(question => includes(question.question, textFilter, true))
-}
+    return defaultTo(questions, []).filter(question => includes(question.question, textFilter, true));
+};
 
 /**
  *
@@ -18,9 +18,10 @@ export const filterQuestionText = (questions, textFilter) => {
  * @returns {Question[]}
  */
 export const filterQuestionTag = (questions, tagFilter) => {
-    return defaultTo(questions, [])
-        .filter(question => defaultTo(question.tags, []).find(tag => includes(tag, tagFilter)))
-}
+    return defaultTo(questions, []).filter(question =>
+        defaultTo(question.tags, []).find(tag => includes(tag, tagFilter))
+    );
+};
 
 /**
  *
@@ -29,9 +30,8 @@ export const filterQuestionTag = (questions, tagFilter) => {
  * @returns {Question[]}
  */
 export const filterQuestionDifficulty = (questions, difficultyFilter) => {
-    return defaultTo(questions, [])
-        .filter(question => difficultyFilter === question.difficulty)
-}
+    return defaultTo(questions, []).filter(question => difficultyFilter === question.difficulty);
+};
 
 /**
  *
@@ -39,8 +39,7 @@ export const filterQuestionDifficulty = (questions, difficultyFilter) => {
  * @param option
  * @returns {boolean}
  */
-export const filterOptionLabel = (inputValue, option) =>
-    option.label.toLowerCase().includes(inputValue.toLowerCase())
+export const filterOptionLabel = (inputValue, option) => option.label.toLowerCase().includes(inputValue.toLowerCase());
 
 /**
  *
@@ -48,21 +47,20 @@ export const filterOptionLabel = (inputValue, option) =>
  * @param option
  * @returns {boolean}
  */
-export const filterOptionValue = (inputValue, option) =>
-    option.value.toLowerCase().includes(inputValue.toLowerCase())
+export const filterOptionValue = (inputValue, option) => option.value.toLowerCase().includes(inputValue.toLowerCase());
 
 /**
  *
  * @param {InterviewGroup} inputValue
  * @returns {Question[]}
  */
-export const filterQuestionsWithAssessment = (inputValue) =>
-    inputValue.questions.filter(question => question.assessment && question.assessment !== 0)
+export const filterQuestionsWithAssessment = inputValue =>
+    inputValue.questions.filter(question => question.assessment && question.assessment !== 0);
 
 /**
  *
  * @param {InterviewGroup[]} inputValue
  * @returns {InterviewGroup[]}
  */
-export const filterGroupsWithAssessment = (inputValue) =>
-    inputValue.filter(group => filterQuestionsWithAssessment(group).length > 0)
+export const filterGroupsWithAssessment = inputValue =>
+    inputValue.filter(group => filterQuestionsWithAssessment(group).length > 0);

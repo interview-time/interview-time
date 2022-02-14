@@ -17,8 +17,15 @@ const TimeAgo = ({ timestamp, saving }) => {
         return () => clearInterval(interval);
     }, [timestamp]);
 
-    return saving ? <Text type="secondary" className={styles.text}>Saving...</Text> :
-        <Text type="secondary" className={styles.text}>{lastSaved ? `Last saved ${lastSaved}` : ""}</Text>;
+    return saving ? (
+        <Text type='secondary' className={styles.text}>
+            Saving...
+        </Text>
+    ) : (
+        <Text type='secondary' className={styles.text}>
+            {lastSaved ? `Last saved ${lastSaved}` : ""}
+        </Text>
+    );
 };
 
 export default TimeAgo;

@@ -40,17 +40,9 @@ const { Text } = Typography;
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewReport = ({
-    interviews,
-    teamMembers,
-    candidates,
-    loadInterviews,
-    loadTeamMembers,
-    loadCandidates
-}) => {
-
-    const [interview, setInterview] = useState(/** @type {Interview|undefined} */undefined);
-    const [expanded, setExpanded] = useState(false)
+const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, loadTeamMembers, loadCandidates }) => {
+    const [interview, setInterview] = useState(/** @type {Interview|undefined} */ undefined);
+    const [expanded, setExpanded] = useState(false);
     const [showExportNotes, setShowExportNotes] = useState(false);
 
     const { id } = useParams();
@@ -62,7 +54,7 @@ const InterviewReport = ({
         if (interviews.length > 0 && !interview) {
             const currentInterview = findInterview(id, interviews);
             setInterview(currentInterview);
-            loadTeamMembers(currentInterview.teamId)
+            loadTeamMembers(currentInterview.teamId);
         }
         // eslint-disable-next-line
     }, [interviews]);
@@ -73,52 +65,49 @@ const InterviewReport = ({
         // eslint-disable-next-line
     }, []);
 
-    const onExpandClicked = () => setExpanded(true)
+    const onExpandClicked = () => setExpanded(true);
 
-    const onCollapseClicked = () => setExpanded(false)
+    const onCollapseClicked = () => setExpanded(false);
 
     const getInterviewerName = () => {
         return teamMembers && teamMembers.length > 0
-            ? teamMembers.find(member => member.userId === interview.userId).name : "";
-    }
+            ? teamMembers.find(member => member.userId === interview.userId).name
+            : "";
+    };
 
     const onExportClicked = () => {
-        setShowExportNotes(true)
-    }
+        setShowExportNotes(true);
+    };
 
-    const getCandidate = () => interview && candidates ?
-        candidates.find(candidate => candidate.candidateId === interview.candidateId) : undefined
+    const getCandidate = () =>
+        interview && candidates
+            ? candidates.find(candidate => candidate.candidateId === interview.candidateId)
+            : undefined;
 
     return interview ? (
         <div className={styles.rootContainer}>
             <Header
                 title={interview.candidate}
                 subtitle={interview.position}
-                leftComponent={
-                    <Button
-                        icon={<CloseIcon />}
-                        size="large"
-                        onClick={() => history.goBack()}
-                    />
-                }
+                leftComponent={<Button icon={<CloseIcon />} size='large' onClick={() => history.goBack()} />}
                 rightComponent={
                     <Space size={16}>
                         <InterviewStatusTag interview={interview} />
-                        <Button onClick={onExportClicked}>
-                            Export
-                        </Button>
+                        <Button onClick={onExportClicked}>Export</Button>
                     </Space>
                 }
             />
 
-            <Col span={22} offset={1}
-                 xl={{ span: 20, offset: 2 }}
-                 xxl={{ span: 16, offset: 4 }}>
+            <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
                 <div className={styles.divVerticalCenter} style={{ paddingTop: 60 }}>
-                    <Card className={styles.decisionCard}
-                          style={{ borderColor: getDecisionColor(interview.decision), width: '100%' }}>
+                    <Card
+                        className={styles.decisionCard}
+                        style={{ borderColor: getDecisionColor(interview.decision), width: "100%" }}
+                    >
                         <div className={styles.decisionTextHolder}>
-                            <Title level={4} style={{ margin: 0 }}>🎉 {getInterviewerName()} scored a...</Title>
+                            <Title level={4} style={{ margin: 0 }}>
+                                🎉 {getInterviewerName()} scored a...
+                            </Title>
                             <InterviewDecisionTag decision={interview.decision} />
                         </div>
                     </Card>
@@ -127,81 +116,97 @@ const InterviewReport = ({
                 <div className={styles.reportInterviewInfoHolder} style={{ paddingTop: 30, paddingBottom: 30 }}>
                     <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
                     <div className={styles.reportInterviewCenter}>
-                        {getOverallPerformancePercent(interview.structure.groups) > 0 && <Progress
-                            type="circle"
-                            status="active"
-                            strokeLinecap="square"
-                            trailColor="#E5E7EB"
-                            width={160}
-                            strokeWidth={8}
-                            strokeColor={getOverallPerformanceColor(interview.structure.groups)}
-                            percent={getOverallPerformancePercent(interview.structure.groups)}
-                            format={(percent) => {
-                                return <div className={styles.scoreHolder}>
-                                    <Text className={styles.scoreText}>{percent}</Text>
-                                    <Text className={styles.scoreLabel} type="secondary">Score</Text>
-                                </div>
-                            }}
-                        />}
+                        {getOverallPerformancePercent(interview.structure.groups) > 0 && (
+                            <Progress
+                                type='circle'
+                                status='active'
+                                strokeLinecap='square'
+                                trailColor='#E5E7EB'
+                                width={160}
+                                strokeWidth={8}
+                                strokeColor={getOverallPerformanceColor(interview.structure.groups)}
+                                percent={getOverallPerformancePercent(interview.structure.groups)}
+                                format={percent => {
+                                    return (
+                                        <div className={styles.scoreHolder}>
+                                            <Text className={styles.scoreText}>{percent}</Text>
+                                            <Text className={styles.scoreLabel} type='secondary'>
+                                                Score
+                                            </Text>
+                                        </div>
+                                    );
+                                }}
+                            />
+                        )}
                     </div>
                     <CandidateInfoSection className={styles.reportInterviewRight} candidate={getCandidate()} />
                 </div>
                 <Card withPadding={false}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
-                        <Title level={4} style={{ marginBottom: 0 }}>Competence areas</Title>
+                        <Title level={4} style={{ marginBottom: 0 }}>
+                            Competence areas
+                        </Title>
                         {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
                         {expanded && <Button onClick={onCollapseClicked}>Collapse</Button>}
                     </div>
                     {filterGroupsWithAssessment(interview.structure.groups)
                         .map(group => ({
                             group: group,
-                            assessment: getGroupAssessment(group.questions)
+                            assessment: getGroupAssessment(group.questions),
                         }))
                         .map(({ assessment, group }) => (
                             <>
                                 <div className={styles.divider} />
-                                <div className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}
-                                     style={{ backgroundColor: expanded ? "#F9FAFB" : "#FFFFFF" }}>
+                                <div
+                                    className={`${styles.divSpaceBetween} ${styles.competenceAreaRow}`}
+                                    style={{ backgroundColor: expanded ? "#F9FAFB" : "#FFFFFF" }}
+                                >
                                     <Text strong>{group.name}</Text>
                                     <div className={styles.divHorizontalCenter}>
-                                        <Text type="secondary"
-                                              style={{ marginRight: 12 }}>{assessment.text}</Text>
+                                        <Text type='secondary' style={{ marginRight: 12 }}>
+                                            {assessment.text}
+                                        </Text>
                                         <Progress
-                                            type="line"
-                                            status="active"
-                                            strokeLinecap="square"
+                                            type='line'
+                                            status='active'
+                                            strokeLinecap='square'
                                             strokeColor={assessment.color}
-                                            trailColor="#E5E7EB"
+                                            trailColor='#E5E7EB'
                                             steps={10}
                                             strokeWidth={16}
                                             percent={assessment.score}
-                                            format={(percent) => <Text type="secondary">{percent}%</Text>}
+                                            format={percent => <Text type='secondary'>{percent}%</Text>}
                                         />
                                     </div>
                                 </div>
-                                {expanded && filterQuestionsWithAssessment(group)
-                                    .map(question => <>
-                                        <div className={styles.divider} />
-                                        <div className={styles.questionAreaRow}>
-                                            <QuestionDifficultyTag difficulty={question.difficulty} />
-                                            <div className={styles.questionHolder}>
-                                                <Text>{question.question}</Text>
-                                                <Text className={styles.questionNotes}
-                                                      type="secondary">{question.notes}</Text>
+                                {expanded &&
+                                    filterQuestionsWithAssessment(group).map(question => (
+                                        <>
+                                            <div className={styles.divider} />
+                                            <div className={styles.questionAreaRow}>
+                                                <QuestionDifficultyTag difficulty={question.difficulty} />
+                                                <div className={styles.questionHolder}>
+                                                    <Text>{question.question}</Text>
+                                                    <Text className={styles.questionNotes} type='secondary'>
+                                                        {question.notes}
+                                                    </Text>
+                                                </div>
+                                                <AssessmentCheckbox
+                                                    defaultValue={question.assessment}
+                                                    disabled={true}
+                                                />
                                             </div>
-                                            <AssessmentCheckbox
-                                                defaultValue={question.assessment}
-                                                disabled={true}
-                                            />
-                                        </div>
-                                    </>)}
+                                        </>
+                                    ))}
                             </>
                         ))}
                 </Card>
 
                 <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
-                    <Card withPadding={false} style={{ width: '100%' }}>
-                        <Title level={4} style={{ margin: 24 }}>Summary notes</Title>
+                    <Card withPadding={false} style={{ width: "100%" }}>
+                        <Title level={4} style={{ margin: 24 }}>
+                            Summary notes
+                        </Title>
                         <div className={styles.divider} />
                         <Paragraph className={`${styles.notesTextArea} fs-mask`}>
                             {interview.notes ? interview.notes : "No summary was left"}
@@ -225,7 +230,7 @@ const InterviewReport = ({
 };
 
 const mapDispatch = { loadInterviews, loadTeamMembers, loadCandidates };
-const mapState = (state) => {
+const mapState = state => {
     const interviewsState = state.interviews || {};
     const userState = state.user || {};
     const candidatesState = state.candidates || {};
