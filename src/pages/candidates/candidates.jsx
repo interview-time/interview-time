@@ -8,7 +8,7 @@ import TableText from "../../components/table/table-text";
 import { orderBy } from "lodash/collection";
 import Title from "antd/lib/typography/Title";
 import { getFormattedDateSimple } from "../../components/utils/utils";
-import { LinkedinFilled, GithubFilled } from "@ant-design/icons";
+import { GithubFilled, LinkedinFilled } from "@ant-design/icons";
 import TableHeader from "../../components/table/table-header";
 import { loadCandidates } from "../../store/candidates/actions";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
@@ -28,25 +28,22 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             key: "candidateName",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidateName, b.candidateName),
-            render: (candidate) => (
-                <TableText className={`fs-mask`}>{candidate.candidateName}</TableText>
-            ),
+            render: candidate => <TableText className={`fs-mask`}>{candidate.candidateName}</TableText>,
         },
         {
             title: <TableHeader>SOCIALS</TableHeader>,
             key: "linkedin",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.linkedin, b.linkedin),
-            render: (candidate) => (
+            render: candidate => (
                 <>
                     {candidate.linkedIn && candidate.linkedIn.includes("linkedin.com/") && (
-                        <a href={candidate.linkedIn} target="_blank" rel="noreferrer">
+                        <a href={candidate.linkedIn} target='_blank' rel='noreferrer'>
                             <LinkedinFilled style={iconStyle} />
                         </a>
-                    )}
-                    {' '}
+                    )}{" "}
                     {candidate.gitHub && candidate.gitHub.includes("github.com/") && (
-                        <a href={candidate.gitHub} target="_blank" rel="noreferrer">
+                        <a href={candidate.gitHub} target='_blank' rel='noreferrer'>
                             <GithubFilled style={iconStyle} />
                         </a>
                     )}
@@ -58,10 +55,8 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             key: "createdDate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.createdDate, b.createdDate),
-            render: (candidate) => (
-                <TableText className={`fs-mask`}>
-                    {getFormattedDateSimple(candidate.createdDate, "-")}
-                </TableText>
+            render: candidate => (
+                <TableText className={`fs-mask`}>{getFormattedDateSimple(candidate.createdDate, "-")}</TableText>
             ),
         },
         {
@@ -69,16 +64,14 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             key: "interviews",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviews, b.interviews),
-            render: (candidate) => (
-                <TableText className={`fs-mask`}>{candidate.totalInterviews}</TableText>
-            ),
+            render: candidate => <TableText className={`fs-mask`}>{candidate.totalInterviews}</TableText>,
         },
         {
             title: <TableHeader>STATUS</TableHeader>,
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: (candidate) => <CandidateStatusTag status={candidate.status} />,
+            render: candidate => <CandidateStatusTag status={candidate.status} />,
         },
     ];
 
@@ -106,7 +99,7 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
 
 const mapDispatch = { loadCandidates };
 
-const mapState = (state) => {
+const mapState = state => {
     const candidatesState = state.candidates || {};
 
     return {

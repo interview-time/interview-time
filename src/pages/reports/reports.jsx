@@ -3,12 +3,12 @@ import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadInterviews } from "../../store/interviews/actions";
 import styles from "./reports.module.css";
-import { Input, Select, Table } from 'antd';
+import { Input, Select, Table } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
 import { getStatusText, Status } from "../../components/utils/constants";
-import { getDecisionText, getOverallPerformancePercent, } from "../../components/utils/assessment";
+import { getDecisionText, getOverallPerformancePercent } from "../../components/utils/assessment";
 import { localeCompare } from "../../components/utils/comparators";
 import { reverse, sortedUniq } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
@@ -26,10 +26,9 @@ import InterviewCompetenceTag from "../../components/tags/interview-competence-t
 const { Search } = Input;
 
 const Reports = ({ interviews, loading, loadInterviews }) => {
-
     const history = useHistory();
-    const [interviewsData, setInterviews] = useState([])
-    const [position, setPosition] = useState()
+    const [interviewsData, setInterviews] = useState([]);
+    const [position, setPosition] = useState();
 
     React.useEffect(() => {
         loadInterviews();
@@ -37,72 +36,71 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
     }, []);
 
     React.useEffect(() => {
-        setInterviews(interviews)
+        setInterviews(interviews);
         // eslint-disable-next-line
     }, [interviews]);
 
     React.useEffect(() => {
         if (position) {
-            let lowerCaseText = position.toLocaleLowerCase()
-            setInterviews(interviews.filter(interview =>
-                interview.position.toLocaleLowerCase().includes(lowerCaseText))
-            )
+            let lowerCaseText = position.toLocaleLowerCase();
+            setInterviews(
+                interviews.filter(interview => interview.position.toLocaleLowerCase().includes(lowerCaseText))
+            );
         } else if (position === null) {
-            setInterviews(interviews)
+            setInterviews(interviews);
         }
         // eslint-disable-next-line
     }, [position]);
 
-    const onRowClicked = (record) => {
+    const onRowClicked = record => {
         history.push(routeInterviewReport(record.interviewId));
-    }
+    };
 
     const onSearchTextChanged = e => {
-        onSearchClicked(e.target.value)
+        onSearchClicked(e.target.value);
     };
 
     const onSearchClicked = text => {
-        let lowerCaseText = text.toLocaleLowerCase()
-        setInterviews(interviews.filter(item =>
-            item.candidate.toLocaleLowerCase().includes(lowerCaseText)
-            || item.position.toLocaleLowerCase().includes(lowerCaseText)
-            || moment(item.interviewDateTime).format('lll').toLocaleLowerCase().includes(lowerCaseText)
-            || getStatusText(item.status).toLocaleLowerCase().includes(lowerCaseText)
-            || getDecisionText(item.decision).toLocaleLowerCase().includes(lowerCaseText)
-        ))
+        let lowerCaseText = text.toLocaleLowerCase();
+        setInterviews(
+            interviews.filter(
+                item =>
+                    item.candidate.toLocaleLowerCase().includes(lowerCaseText) ||
+                    item.position.toLocaleLowerCase().includes(lowerCaseText) ||
+                    moment(item.interviewDateTime).format("lll").toLocaleLowerCase().includes(lowerCaseText) ||
+                    getStatusText(item.status).toLocaleLowerCase().includes(lowerCaseText) ||
+                    getDecisionText(item.decision).toLocaleLowerCase().includes(lowerCaseText)
+            )
+        );
     };
 
     const onPositionClear = () => {
-        setPosition(null)
-    }
+        setPosition(null);
+    };
 
     const onPositionChange = value => {
-        setPosition(value)
-    }
+        setPosition(value);
+    };
 
     const columns = [
         {
             title: <TableHeader>CANDIDATE</TableHeader>,
-            key: 'candidate',
-            dataIndex: 'candidate',
-            sortDirections: ['descend', 'ascend'],
+            key: "candidate",
+            dataIndex: "candidate",
+            sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.candidate, b.candidate),
-            render: (candidate) => {
-                return (
-                    <TableText className="fs-mask">{candidate}</TableText>
-                );
+            render: candidate => {
+                return <TableText className='fs-mask'>{candidate}</TableText>;
             },
         },
         {
             title: <TableHeader>INTERVIEW</TableHeader>,
-            key: 'position',
-            dataIndex: 'position',
-            sortDirections: ['descend', 'ascend'],
+            key: "position",
+            dataIndex: "position",
+            sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
-            render: (position) => {
-                return (
-                    <TableText className="fs-mask">{position}</TableText>
-                );
+            render: position => {
+                return <TableText className='fs-mask'>{position}</TableText>;
             },
         },
         {
@@ -110,59 +108,60 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: (interview) => (
-                <TableText className={`fs-mask`}>
-                    {getFormattedDate(interview.interviewDateTime, "-")}
-                </TableText>
+            render: interview => (
+                <TableText className={`fs-mask`}>{getFormattedDate(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {
             title: <TableHeader>SCORE</TableHeader>,
-            key: 'position',
-            sortDirections: ['descend', 'ascend'],
-            sorter: (a, b) => getOverallPerformancePercent(a.structure.groups) - getOverallPerformancePercent(b.structure.groups),
-            render: interview => <InterviewScoreTag interview={interview} />
+            key: "position",
+            sortDirections: ["descend", "ascend"],
+            sorter: (a, b) =>
+                getOverallPerformancePercent(a.structure.groups) - getOverallPerformancePercent(b.structure.groups),
+            render: interview => <InterviewScoreTag interview={interview} />,
         },
         {
             title: <TableHeader>COMPETENCE</TableHeader>,
-            key: 'status',
+            key: "status",
             render: interview => <InterviewCompetenceTag interview={interview} />,
         },
         {
             title: <TableHeader>DECISION</TableHeader>,
-            key: 'decision',
-            dataIndex: 'decision',
-            sortDirections: ['descend', 'ascend'],
+            key: "decision",
+            dataIndex: "decision",
+            sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.decision, b.decision),
             render: decision => <InterviewDecisionTag decision={decision} />,
-        }
+        },
     ];
 
     return (
         <Layout contentStyle={styles.rootContainer}>
             <div>
-                <Title level={4} style={{ marginBottom: 20 }}>Reports</Title>
+                <Title level={4} style={{ marginBottom: 20 }}>
+                    Reports
+                </Title>
 
                 <div className={styles.divRight}>
-                    <Search placeholder="Search"
-                            key="search"
-                            className={styles.headerSearch}
-                            allowClear
-                            onSearch={onSearchClicked}
-                            onChange={onSearchTextChanged} />
+                    <Search
+                        placeholder='Search'
+                        key='search'
+                        className={styles.headerSearch}
+                        allowClear
+                        onSearch={onSearchClicked}
+                        onChange={onSearchTextChanged}
+                    />
                     <Select
                         className={styles.select}
-                        placeholder="Position"
+                        placeholder='Position'
                         onSelect={onPositionChange}
                         onClear={onPositionClear}
-                        options={
-                            sortedUniq(interviews.map(interview => interview.position)).map(position => {
-                                return {
-                                    label: position,
-                                    value: position,
-                                }
-                            })
-                        }
+                        options={sortedUniq(interviews.map(interview => interview.position)).map(position => {
+                            return {
+                                label: position,
+                                value: position,
+                            };
+                        })}
                         showSearch
                         allowClear
                         filterOption={filterOptionLabel}
@@ -173,34 +172,36 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
                     <Table
                         pagination={false}
                         scroll={{
-                            x: 'max-content'
+                            x: "max-content",
                         }}
                         columns={columns}
                         dataSource={interviewsData}
                         loading={loading}
                         rowClassName={styles.row}
-                        onRow={(record) => ({
+                        onRow={record => ({
                             onClick: () => onRowClicked(record),
                         })}
                     />
                 </Card>
             </div>
         </Layout>
-    )
-}
+    );
+};
 
 const mapDispatch = { loadInterviews };
-const mapState = (state) => {
+const mapState = state => {
     const interviewsState = state.interviews || {};
 
-    const interviews = reverse(sortBy(cloneDeep(
-        interviewsState.interviews.filter(interview => interview.status === Status.SUBMITTED)
-    ), ['interviewDateTime']))
+    const interviews = reverse(
+        sortBy(cloneDeep(interviewsState.interviews.filter(interview => interview.status === Status.SUBMITTED)), [
+            "interviewDateTime",
+        ])
+    );
 
     return {
         interviews: interviews,
-        loading: interviewsState.loading
-    }
-}
+        loading: interviewsState.loading,
+    };
+};
 
-export default connect(mapState, mapDispatch)(Reports)
+export default connect(mapState, mapDispatch)(Reports);

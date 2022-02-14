@@ -13,30 +13,31 @@ import Text from "antd/lib/typography/Text";
  * @constructor
  */
 const QuestionDifficultyTag = ({ difficulty: difficultyParam, onChange, editable = false }) => {
-
     const [difficulty, setDifficulty] = React.useState(difficultyParam ? difficultyParam : Difficulty.DEFAULT);
 
-    const getDotStyle = (difficulty) => {
+    const getDotStyle = difficulty => {
         switch (difficulty) {
             case Difficulty.EASY:
-                return styles.dotEasy
+                return styles.dotEasy;
             case Difficulty.MEDIUM:
-                return styles.dotMedium
+                return styles.dotMedium;
             case Difficulty.HARD:
-                return styles.dotHard
+                return styles.dotHard;
             default:
-                return styles.dotEasy
+                return styles.dotEasy;
         }
-    }
+    };
 
-    const onDifficultyChange = (difficulty) => {
+    const onDifficultyChange = difficulty => {
         setDifficulty(difficulty);
         onChange(difficulty);
-    }
+    };
 
     const menu = (
         <Menu>
-            <Text type="secondary" className={styles.menuHeader}>Question difficulty</Text>
+            <Text type='secondary' className={styles.menuHeader}>
+                Question difficulty
+            </Text>
             <Menu.Divider />
             <Menu.Item onClick={() => onDifficultyChange(Difficulty.EASY)}>
                 <span className={getDotStyle(Difficulty.EASY)} />
@@ -53,18 +54,19 @@ const QuestionDifficultyTag = ({ difficulty: difficultyParam, onChange, editable
         </Menu>
     );
 
-    return editable ?
+    return editable ? (
         <Dropdown overlay={menu}>
             <div className={styles.dotHolder}>
                 <span className={getDotStyle(difficulty)} />
             </div>
         </Dropdown>
-        :
+    ) : (
         <Tooltip title={`${difficulty} question`}>
             <div className={styles.dotHolder}>
                 <span className={getDotStyle(difficulty)} />
             </div>
         </Tooltip>
+    );
 };
 
 export default QuestionDifficultyTag;

@@ -2,66 +2,66 @@ import { flatMap } from "lodash/collection";
 import { Difficulty, InterviewAssessment, QuestionAssessment } from "./constants";
 import { defaultTo } from "lodash/util";
 
-const COLOR_RED_5 = '#ff4d4f';
-const COLOR_NEUTRAL_6 = '#bfbfbf';
-const COLOR_MAIN = '#8C2BE3';
+const COLOR_RED_5 = "#ff4d4f";
+const COLOR_NEUTRAL_6 = "#bfbfbf";
+const COLOR_MAIN = "#8C2BE3";
 
-const COLOR_GREEN_DARK = '#16A34A'
-const COLOR_ORANGE_DARK = '#FFA940'
+const COLOR_GREEN_DARK = "#16A34A";
+const COLOR_ORANGE_DARK = "#FFA940";
 
-const COLOR_GREEN_LIGHT = '#22C55E'
-const COLOR_ORANGE_LIGHT = '#FFC300'
+const COLOR_GREEN_LIGHT = "#22C55E";
+const COLOR_ORANGE_LIGHT = "#FFC300";
 
 const Score = {
     MAX: 100,
     HIGHLY_SKILLED: 80,
     SKILLED: 60,
     LOW_SKILLS: 40,
-}
+};
 
 const DifficultyWeight = {
     EASY: 1.0,
     MEDIUM: 1.5,
-    HARD: 2.0
+    HARD: 2.0,
 };
 
 const QuestionAssessmentWeight = {
     POOR: 0.4,
     GOOD: 0.8,
-    EXCELLENT: 1.0
+    EXCELLENT: 1.0,
 };
 
-export const getDecisionText = (decision) => {
+export const getDecisionText = decision => {
     if (decision === InterviewAssessment.YES) {
-        return 'Yes';
+        return "Yes";
     } else if (decision === InterviewAssessment.STRONG_YES) {
-        return 'Strong Yes';
+        return "Strong Yes";
     } else if (decision === InterviewAssessment.NO) {
-        return 'No';
+        return "No";
     } else if (decision === InterviewAssessment.STRONG_NO) {
-        return 'Strong No';
+        return "Strong No";
     }
 
-    return 'No Decision'
-}
+    return "No Decision";
+};
 
-export const getDecisionColor = (decision) => {
+export const getDecisionColor = decision => {
     if (decision === InterviewAssessment.YES || decision === InterviewAssessment.STRONG_YES) {
         return COLOR_GREEN_LIGHT;
     } else if (decision === InterviewAssessment.NO || decision === InterviewAssessment.STRONG_NO) {
         return COLOR_RED_5;
     }
 
-    return COLOR_MAIN
-}
+    return COLOR_MAIN;
+};
 
 /**
  *
  * @param {InterviewGroup[]} groups
  * @returns {string}
  */
-export const getOverallPerformanceColor = (groups) => {
-    let performance = getOverallPerformancePercent(groups)
+export const getOverallPerformanceColor = groups => {
+    let performance = getOverallPerformancePercent(groups);
     if (performance >= Score.HIGHLY_SKILLED) {
         return COLOR_GREEN_DARK;
     } else if (performance >= Score.SKILLED) {
@@ -69,15 +69,15 @@ export const getOverallPerformanceColor = (groups) => {
     } else if (performance >= Score.LOW_SKILLS) {
         return COLOR_RED_5;
     }
-    return COLOR_NEUTRAL_6
-}
+    return COLOR_NEUTRAL_6;
+};
 
 /**
  *
  * @param {InterviewGroup[]} groups
  * @returns {number} - [0, 100]
  */
-export const getOverallPerformancePercent = (groups) => {
+export const getOverallPerformancePercent = groups => {
     let totalScore = 0;
     let totalGroupsWithAssessment = 0;
     groups.forEach(group => {
@@ -86,27 +86,27 @@ export const getOverallPerformancePercent = (groups) => {
             totalScore += groupAssessmentNumber;
             totalGroupsWithAssessment++;
         }
-    })
+    });
     return totalGroupsWithAssessment > 0 ? Math.round(totalScore / totalGroupsWithAssessment) : 0;
-}
+};
 
 /**
  *
  * @param {InterviewGroup[]} groups
  * @returns {Question[]}
  */
-export const getQuestionsWithAssessment = (groups) => {
-    return flatMap(groups, (item) => item.questions).filter(question => hasAssessment(question))
-}
+export const getQuestionsWithAssessment = groups => {
+    return flatMap(groups, item => item.questions).filter(question => hasAssessment(question));
+};
 
 /**
  *
  * @param {number} score
  * @returns {string}
  */
-export const getGroupAssessmentEmoji = (score) => {
-    let emojiTotal = 10
-    let emojiColorIndex = Math.round(score / emojiTotal)
+export const getGroupAssessmentEmoji = score => {
+    let emojiTotal = 10;
+    let emojiColorIndex = Math.round(score / emojiTotal);
 
     let emojiColor = "⬛";
     if (score >= Score.HIGHLY_SKILLED) {
@@ -117,12 +117,12 @@ export const getGroupAssessmentEmoji = (score) => {
         emojiColor = "🟥";
     }
 
-    let progress = ""
+    let progress = "";
     for (let i = 0; i < emojiTotal; i++) {
         progress += i < emojiColorIndex ? emojiColor : "⬛️";
     }
     return progress;
-}
+};
 
 /**
  * @typedef {Object} GroupAssessment
@@ -136,21 +136,21 @@ export const getGroupAssessmentEmoji = (score) => {
  * @param {Question[]} questions
  * @returns {GroupAssessment}
  */
-export const getGroupAssessment = (questions) => {
-    let score = getQuestionsAssessment(defaultTo(questions, []))
+export const getGroupAssessment = questions => {
+    let score = getQuestionsAssessment(defaultTo(questions, []));
     return {
         score: score,
         text: getGroupAssessmentText(score),
-        color: getGroupAssessmentColor(score)
-    }
-}
+        color: getGroupAssessmentColor(score),
+    };
+};
 
 /**
  *
  * @param {number} score
  * @returns {string}
  */
-const getGroupAssessmentText = (score) => {
+const getGroupAssessmentText = score => {
     if (score >= Score.HIGHLY_SKILLED) {
         return "highly skilled";
     } else if (score >= Score.SKILLED) {
@@ -158,15 +158,15 @@ const getGroupAssessmentText = (score) => {
     } else if (score >= Score.LOW_SKILLS) {
         return "low skills";
     }
-    return "no data"
-}
+    return "no data";
+};
 
 /**
  *
  * @param {number} score
  * @returns {string}
  */
-const getGroupAssessmentColor = (score) => {
+const getGroupAssessmentColor = score => {
     if (score >= Score.HIGHLY_SKILLED) {
         return COLOR_GREEN_LIGHT;
     } else if (score >= Score.SKILLED) {
@@ -174,32 +174,34 @@ const getGroupAssessmentColor = (score) => {
     } else if (score >= Score.LOW_SKILLS) {
         return COLOR_RED_5;
     }
-    return COLOR_NEUTRAL_6
-}
+    return COLOR_NEUTRAL_6;
+};
 
 /**
  * @param {Question[]} questions
  * @returns {number} - [0, 100]
  */
-export const getQuestionsAssessment = (questions) => {
+export const getQuestionsAssessment = questions => {
     // handle case when questions difficulty is not set
-    let allQuestions = questions.filter(question => hasAssessment(question)).map(question => {
-        if (!question.difficulty || question.difficulty === "") {
-            question.difficulty = Difficulty.DEFAULT
-        }
-        return question
-    })
+    let allQuestions = questions
+        .filter(question => hasAssessment(question))
+        .map(question => {
+            if (!question.difficulty || question.difficulty === "") {
+                question.difficulty = Difficulty.DEFAULT;
+            }
+            return question;
+        });
 
     // log(`Total questions: ${allQuestions.length}`);
 
-    let easyQuestions = allQuestions.filter(question => question.difficulty === Difficulty.EASY)
+    let easyQuestions = allQuestions.filter(question => question.difficulty === Difficulty.EASY);
     let mediumQuestions = allQuestions.filter(question => question.difficulty === Difficulty.MEDIUM);
     let hardQuestions = allQuestions.filter(question => question.difficulty === Difficulty.HARD);
 
     let totalQuestions =
-        (easyQuestions.length * DifficultyWeight.EASY) +
-        (mediumQuestions.length * DifficultyWeight.MEDIUM) +
-        (hardQuestions.length * DifficultyWeight.HARD)
+        easyQuestions.length * DifficultyWeight.EASY +
+        mediumQuestions.length * DifficultyWeight.MEDIUM +
+        hardQuestions.length * DifficultyWeight.HARD;
     // log(`Total questions in easy scale: ${totalQuestions}`);
 
     let scorePerQuestion = Score.MAX / totalQuestions;
@@ -237,7 +239,7 @@ export const getQuestionsAssessment = (questions) => {
     // log(`Candidate score: ${Math.round(candidateScore)}`);
 
     return Math.round(candidateScore);
-}
+};
 
 /**
  *

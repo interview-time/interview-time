@@ -18,50 +18,43 @@ import { defaultTo } from "lodash/util";
  * @constructor
  */
 const NewTeam = ({ teams, createTeam }) => {
-
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState();
 
     const history = useHistory();
 
     useEffect(() => {
-        let team = teams.find(team => team.teamName === name)
+        let team = teams.find(team => team.teamName === name);
         if (team) {
-            message.success("Team has been create.")
-            history.push(routeTeamMembers(team.teamId))
+            message.success("Team has been create.");
+            history.push(routeTeamMembers(team.teamId));
         }
 
         // eslint-disable-next-line
     }, [teams, name]);
 
-
-    const onSaveClicked = (values) => {
+    const onSaveClicked = values => {
         const teamName = values.name;
 
-        setLoading(true)
-        setName(teamName)
+        setLoading(true);
+        setName(teamName);
         createTeam({
-            teamName: teamName
-        })
+            teamName: teamName,
+        });
     };
 
     return (
         <Layout>
             <Col span={24} xl={{ span: 12, offset: 6 }} xxl={{ span: 12, offset: 6 }}>
-                <Spin spinning={loading} tip="Creating team...">
+                <Spin spinning={loading} tip='Creating team...'>
                     <Card style={{ marginTop: 12 }}>
                         <Title level={4}>Create Team</Title>
-                        <Text type="secondary" style={{ marginTop: 12 }}>
+                        <Text type='secondary' style={{ marginTop: 12 }}>
                             Share templates and interviews with your team.
                         </Text>
-                        <Form
-                            style={{ marginTop: 24 }}
-                            name="basic"
-                            layout="vertical"
-                            onFinish={onSaveClicked}
-                        >
+                        <Form style={{ marginTop: 24 }} name='basic' layout='vertical' onFinish={onSaveClicked}>
                             <Form.Item
-                                name="name"
+                                name='name'
                                 label={<Text strong>Name</Text>}
                                 rules={[
                                     {
@@ -70,16 +63,12 @@ const NewTeam = ({ teams, createTeam }) => {
                                     },
                                 ]}
                             >
-                                <Input
-                                    placeholder="Team name"
-                                />
+                                <Input placeholder='Team name' />
                             </Form.Item>
                             <div className={styles.divRight}>
-
-                                <Button type="primary" htmlType="submit">
+                                <Button type='primary' htmlType='submit'>
                                     Create team
                                 </Button>
-
                             </div>
                         </Form>
                     </Card>
@@ -87,17 +76,17 @@ const NewTeam = ({ teams, createTeam }) => {
             </Col>
         </Layout>
     );
-}
+};
 
 const mapDispatch = { createTeam };
 
-const mapState = (state) => {
+const mapState = state => {
     const userState = state.user || {};
-    const profile = userState.profile || {}
+    const profile = userState.profile || {};
 
     return {
-        teams: defaultTo(profile.teams, [])
+        teams: defaultTo(profile.teams, []),
     };
 };
 
-export default connect(mapState, mapDispatch)(NewTeam)
+export default connect(mapState, mapDispatch)(NewTeam);

@@ -47,16 +47,15 @@ const Assessment = ({
     onQuestionsRemoved,
     interviewsUploading,
 }) => {
-
     const history = useHistory();
     const [templateOptions, setTemplateOptions] = useState([]);
-    const [selectedTemplate, setSelectedTemplate] = useState(/** @type {Template|undefined} */undefined);
+    const [selectedTemplate, setSelectedTemplate] = useState(/** @type {Template|undefined} */ undefined);
 
     React.useEffect(() => {
         // templates selector
         if (templates.length !== 0 && templateOptions.length === 0) {
             setTemplateOptions(
-                templates.map((template) => ({
+                templates.map(template => ({
                     value: template.templateId,
                     label: template.title,
                 }))
@@ -65,16 +64,16 @@ const Assessment = ({
         // eslint-disable-next-line
     }, [templates]);
 
-    const onTemplateSelect = (value) => {
-        let template = templates.find((template) => template.templateId === value);
-        setSelectedTemplate(template)
-    }
+    const onTemplateSelect = value => {
+        let template = templates.find(template => template.templateId === value);
+        setSelectedTemplate(template);
+    };
 
     const onAddQuestions = () => {
         if (selectedTemplate) {
-            onQuestionsAdded(selectedTemplate)
+            onQuestionsAdded(selectedTemplate);
         }
-    }
+    };
 
     return (
         <div className={styles.rootContainer}>
@@ -83,28 +82,21 @@ const Assessment = ({
                 subtitle={interview.position}
                 leftComponent={
                     <Space size={16}>
-                        <Button
-                            icon={<BackIcon />}
-                            size="large"
-                            onClick={() => history.goBack()}
-                        />
+                        <Button icon={<BackIcon />} size='large' onClick={() => history.goBack()} />
                         <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
                     </Space>
                 }
                 rightComponent={
                     <Space size={16}>
                         <InterviewStatusTag interview={interview} />
-                        <Button type="primary" onClick={onCompletedClicked}>
+                        <Button type='primary' onClick={onCompletedClicked}>
                             Complete Interview
                         </Button>
                     </Space>
                 }
             />
 
-            <Col span={22} offset={1}
-                 xl={{ span: 20, offset: 2 }}
-                 xxl={{ span: 16, offset: 4 }}>
-
+            <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
                 <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
                     <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
                     <CandidateInfoSection candidate={candidate} />
@@ -124,20 +116,20 @@ const Assessment = ({
 
                 <Card style={{ marginTop: 32, padding: 16 }}>
                     <div className={styles.divSpaceBetween}>
-                        <Text type="secondary">Need more questions? Import questions from your templates.</Text>
+                        <Text type='secondary'>Need more questions? Import questions from your templates.</Text>
                         <Space>
                             <Select
                                 style={{ width: "200px" }}
                                 showSearch
                                 allowClear
-                                placeholder="Select template"
+                                placeholder='Select template'
                                 onChange={onTemplateSelect}
-                                options={templateOptions} />
+                                options={templateOptions}
+                            />
 
-                            <Button
-                                icon={<PlusOutlined />}
-                                disabled={!selectedTemplate}
-                                onClick={onAddQuestions}>Import questions</Button>
+                            <Button icon={<PlusOutlined />} disabled={!selectedTemplate} onClick={onAddQuestions}>
+                                Import questions
+                            </Button>
                         </Space>
                     </div>
                 </Card>
@@ -147,11 +139,7 @@ const Assessment = ({
                 </Card>
             </Col>
 
-            <NotesSection
-                notes={interview.notes}
-                status={interview.status}
-                onChange={onNoteChanges}
-            />
+            <NotesSection notes={interview.notes} status={interview.status} onChange={onNoteChanges} />
         </div>
     );
 };

@@ -24,20 +24,20 @@ const columns = [
         title: <TableHeader>NAME</TableHeader>,
         dataIndex: "name",
         key: "name",
-        render: (name) => <TableText className={`fs-mask`}>{name}</TableText>,
+        render: name => <TableText className={`fs-mask`}>{name}</TableText>,
     },
     {
         title: <TableHeader>EMAIL</TableHeader>,
         dataIndex: "email",
         key: "email",
-        render: (email) => <TableText className={`fs-mask`}>{email}</TableText>,
+        render: email => <TableText className={`fs-mask`}>{email}</TableText>,
     },
     {
         title: <TableHeader>ROLE</TableHeader>,
         key: "role",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => localeCompare(a.roles[0], b.roles[0]),
-        render: (member) => <TeamRoleTag role={member.roles[0]} />,
+        render: member => <TeamRoleTag role={member.roles[0]} />,
     },
 ];
 
@@ -53,18 +53,9 @@ const columns = [
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamSettings = ({
-    userName,
-    teams,
-    teamMembers,
-    updateTeam,
-    deleteTeam,
-    leaveTeam,
-    loadTeamMembers
-}) => {
-
+const TeamSettings = ({ userName, teams, teamMembers, updateTeam, deleteTeam, leaveTeam, loadTeamMembers }) => {
     const [loading, setLoading] = useState(false);
-    const [team, setTeam] = useState(/** @type {Team|undefined} */undefined);
+    const [team, setTeam] = useState(/** @type {Team|undefined} */ undefined);
 
     const history = useHistory();
     const { id } = useParams();
@@ -73,134 +64,139 @@ const TeamSettings = ({
         const currentTeam = teams.find(team => team.teamId === id);
         if (currentTeam) {
             setTeam(currentTeam);
-            setLoading(false)
-            loadTeamMembers(currentTeam.teamId)
+            setLoading(false);
+            loadTeamMembers(currentTeam.teamId);
         }
         // eslint-disable-next-line
     }, [id, teams]);
 
-    const getTeamName = () => team ? team.teamName : "Team"
+    const getTeamName = () => (team ? team.teamName : "Team");
 
-    const isAdmin = () => team ? team.roles.some(role => role === Roles.ADMIN) : false
+    const isAdmin = () => (team ? team.roles.some(role => role === Roles.ADMIN) : false);
 
-    const onSaveClicked = (teamName) => {
+    const onSaveClicked = teamName => {
         const newTeam = {
             ...team,
-            teamName: teamName
+            teamName: teamName,
         };
-        setLoading(true)
-        updateTeam(newTeam)
-    }
+        setLoading(true);
+        updateTeam(newTeam);
+    };
 
     const onDeleteClicked = () => {
-        deleteTeam(team.teamId)
-        message.success(`Team '${getTeamName()}' has been removed.`)
-        history.push("/")
-    }
+        deleteTeam(team.teamId);
+        message.success(`Team '${getTeamName()}' has been removed.`);
+        history.push("/");
+    };
 
     const onLeaveClicked = () => {
-        leaveTeam(team.teamId)
-        message.success(`You left '${getTeamName()}' team.`)
-        history.push("/")
-    }
+        leaveTeam(team.teamId);
+        message.success(`You left '${getTeamName()}' team.`);
+        history.push("/");
+    };
 
     function rolesInfoDialog() {
         const data = [
             {
                 role: Roles.ADMIN,
-                text: "Same as Hiring Manager plus can manage its team."
+                text: "Same as Hiring Manager plus can manage its team.",
             },
             {
                 role: Roles.HR,
-                text: "Can view all interviews and assign new interviews to others."
+                text: "Can view all interviews and assign new interviews to others.",
             },
             {
                 role: Roles.HIRING_MANAGER,
-                text: "Can view all interviews and assign new interviews to others."
+                text: "Can view all interviews and assign new interviews to others.",
             },
             {
                 role: Roles.INTERVIEWER,
-                text: "Can view and run interviews assigned to them."
+                text: "Can view and run interviews assigned to them.",
             },
         ];
 
         Modal.info({
-            title: 'Roles permissions',
+            title: "Roles permissions",
             width: 800,
             content: (
                 <Space direction='vertical'>
-                    {data.map(item =><div>
-                        <TeamRoleTag role={item.role}/>
-                        <Text>- {item.text}</Text>
-                    </div>)}
+                    {data.map(item => (
+                        <div>
+                            <TeamRoleTag role={item.role} />
+                            <Text>- {item.text}</Text>
+                        </div>
+                    ))}
                 </Space>
             ),
-            onOk() {
-            },
+            onOk() {},
         });
     }
 
-    const isLoading = () => !team || loading
+    const isLoading = () => !team || loading;
 
     return (
         <Layout contentStyle={styles.rootContainer}>
-            {!isLoading() ? <div>
-                <Title level={4} style={{ marginBottom: 0 }}>Team settings</Title>
+            {!isLoading() ? (
+                <div>
+                    <Title level={4} style={{ marginBottom: 0 }}>
+                        Team settings
+                    </Title>
 
-                <Card style={{ marginTop: 12 }}>
-                    <TeamDetails
-                        teamName={getTeamName()}
-                        isAdmin={isAdmin()}
-                        onSaveClicked={onSaveClicked}
-                        onDeleteClicked={onDeleteClicked}
-                        onLeaveClicked={onLeaveClicked}
-                    />
-                </Card>
+                    <Card style={{ marginTop: 12 }}>
+                        <TeamDetails
+                            teamName={getTeamName()}
+                            isAdmin={isAdmin()}
+                            onSaveClicked={onSaveClicked}
+                            onDeleteClicked={onDeleteClicked}
+                            onLeaveClicked={onLeaveClicked}
+                        />
+                    </Card>
 
-                <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
-                    <Title level={5} style={{ marginBottom: 0 }}>Your team members</Title>
-                    <Button type="text"
+                    <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
+                        <Title level={5} style={{ marginBottom: 0 }}>
+                            Your team members
+                        </Title>
+                        <Button
+                            type='text'
                             className={styles.rolesButton}
                             onClick={rolesInfoDialog}
-                            icon={<InfoCircleOutlined />}>Roles permissions</Button>
+                            icon={<InfoCircleOutlined />}
+                        >
+                            Roles permissions
+                        </Button>
+                    </div>
+
+                    <Card withPadding={false} style={{ marginTop: 12 }}>
+                        <Table columns={columns} dataSource={teamMembers} pagination={false} />
+                    </Card>
+
+                    <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
+                        Invite your team
+                    </Title>
+
+                    <Card style={{ marginTop: 12 }}>
+                        <TeamInvite teamName={getTeamName()} userName={userName} token={team ? team.token : null} />
+                    </Card>
                 </div>
-
-                <Card withPadding={false} style={{ marginTop: 12 }}>
-                    <Table
-                        columns={columns}
-                        dataSource={teamMembers}
-                        pagination={false}
-                    />
-
-                </Card>
-
-                <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>Invite your team</Title>
-
-                <Card style={{ marginTop: 12 }}>
-                    <TeamInvite
-                        teamName={getTeamName()}
-                        userName={userName}
-                        token={team ? team.token : null} />
-                </Card>
-
-            </div> : <Spinner />}
-
+            ) : (
+                <Spinner />
+            )}
         </Layout>
     );
-}
+};
 
 const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers };
 
-const mapState = (state) => {
+const mapState = state => {
     const userState = state.user || {};
-    const profile = userState.profile || {}
-    const teamMembers = userState.teamMembers || []
+    const profile = userState.profile || {};
+    const teamMembers = userState.teamMembers || [];
 
     return {
         userName: profile.name,
         teams: defaultTo(profile.teams, []),
-        teamMembers: teamMembers
+        teamMembers: teamMembers,
     };
 };
 
-export default connect(mapState, mapDispatch)(TeamSettings)
+export default connect(mapState, mapDispatch)(TeamSettings);

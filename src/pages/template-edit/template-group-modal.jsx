@@ -5,24 +5,23 @@ import Text from "antd/lib/typography/Text";
 import * as React from "react";
 
 const TemplateGroupModal = ({ visible, name, id, onAdd, onUpdate, onCancel }) => {
-
-    const [groupName, setGroupName] = React.useState()
+    const [groupName, setGroupName] = React.useState();
 
     const onCancelClicked = () => {
-        onCancel()
-    }
+        onCancel();
+    };
 
     const onAddClicked = () => {
-        onAdd(groupName)
-    }
+        onAdd(groupName);
+    };
 
     const onUpdateClicked = () => {
-        onUpdate(id, groupName)
-    }
+        onUpdate(id, groupName);
+    };
 
     const onChange = e => {
-        setGroupName(e.target.value)
-    }
+        setGroupName(e.target.value);
+    };
 
     return (
         <Modal
@@ -35,21 +34,29 @@ const TemplateGroupModal = ({ visible, name, id, onAdd, onUpdate, onCancel }) =>
                 <div className={styles.modalFooter}>
                     <Space>
                         <Button onClick={onCancelClicked}>Cancel</Button>
-                        {!id && <Button type="primary" onClick={onAddClicked}>Add</Button>}
-                        {id && <Button type="primary" onClick={onUpdateClicked}>Update</Button>}
+                        {!id && (
+                            <Button type='primary' onClick={onAddClicked}>
+                                Add
+                            </Button>
+                        )}
+                        {id && (
+                            <Button type='primary' onClick={onUpdateClicked}>
+                                Update
+                            </Button>
+                        )}
                     </Space>
-                </div>
+                </div>,
             ]}
         >
             <Text strong>Group Name</Text>
             <Input
-                style={{marginTop: '8px'}}
-                placeholder="e.g Problem Solving"
+                style={{ marginTop: "8px" }}
+                placeholder='e.g Problem Solving'
                 onChange={onChange}
                 defaultValue={name}
             />
         </Modal>
-    )
-}
+    );
+};
 
-export default TemplateGroupModal
+export default TemplateGroupModal;

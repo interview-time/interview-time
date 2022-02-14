@@ -13,7 +13,7 @@ import CardHero from "../../components/card/card-hero";
 import { DuplicateIcon, NewFileIcon, UploadIcon } from "../../components/utils/icons";
 import { createEvent } from "../../analytics";
 
-const iconStyle = { fontSize: 24, color: '#8C2BE3' }
+const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
 /**
  *
@@ -24,11 +24,7 @@ const iconStyle = { fontSize: 24, color: '#8C2BE3' }
  * @returns {JSX.Element}
  * @constructor
  */
-const Templates = ({
-    templates,
-    loadingTemplates,
-    loadTemplates,
-}) => {
+const Templates = ({ templates, loadingTemplates, loadTemplates }) => {
     const history = useHistory();
 
     React.useEffect(() => {
@@ -36,14 +32,14 @@ const Templates = ({
         // eslint-disable-next-line
     }, []);
 
-    const initialTemplatesLoading = () => templates.length === 0 && loadingTemplates
+    const initialTemplatesLoading = () => templates.length === 0 && loadingTemplates;
 
     const onAddTemplateClicked = () => {
-        history.push(routeTemplateBlank())
+        history.push(routeTemplateBlank());
     };
 
     const onFromLibraryClicked = () => {
-        history.push(routeTemplateLibrary())
+        history.push(routeTemplateLibrary());
     };
 
     const onImportClicked = () => {
@@ -55,44 +51,47 @@ const Templates = ({
                     <p>Coming soon...</p>
                 </div>
             ),
-            onOk() {
-            },
+            onOk() {},
         });
     };
 
     return (
         <Layout contentStyle={styles.rootContainer}>
             <div>
-                <Title level={4} style={{ marginBottom: 20 }}>Templates</Title>
+                <Title level={4} style={{ marginBottom: 20 }}>
+                    Templates
+                </Title>
 
                 <Row gutter={32} style={{ marginBottom: 32 }}>
                     <Col span={8}>
                         <CardHero
                             onClick={onAddTemplateClicked}
                             icon={<NewFileIcon style={iconStyle} />}
-                            title="Blank"
-                            text="Start from scratch"
+                            title='Blank'
+                            text='Start from scratch'
                         />
                     </Col>
                     <Col span={8}>
                         <CardHero
                             onClick={onFromLibraryClicked}
                             icon={<DuplicateIcon style={iconStyle} />}
-                            title="From public library "
-                            text="Find & customize a template"
+                            title='From public library '
+                            text='Find & customize a template'
                         />
                     </Col>
                     <Col span={8}>
                         <CardHero
                             onClick={onImportClicked}
                             icon={<UploadIcon style={iconStyle} />}
-                            title="Import questions"
-                            text="From a CSV"
+                            title='Import questions'
+                            text='From a CSV'
                         />
                     </Col>
                 </Row>
 
-                <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>Your templates</Title>
+                <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>
+                    Your templates
+                </Title>
 
                 {initialTemplatesLoading() && (
                     <Row gutter={[32, 32]}>
@@ -110,15 +109,9 @@ const Templates = ({
 
                 {!initialTemplatesLoading() && (
                     <Row gutter={[32, 32]}>
-                        {templates.map((template) => (
-                            <Col span={24}
-                                 xl={{ span: 8 }}
-                                 md={{ span: 12 }}
-                            >
-                                <TemplateCard
-                                    key={template.templateId}
-                                    template={template}
-                                />
+                        {templates.map(template => (
+                            <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
+                                <TemplateCard key={template.templateId} template={template} />
                             </Col>
                         ))}
                     </Row>
@@ -128,7 +121,7 @@ const Templates = ({
     );
 };
 const mapDispatch = { loadTemplates };
-const mapState = (state) => {
+const mapState = state => {
     const templateState = state.templates || {};
     const templates = sortBy(templateState.templates, ["title"]);
 

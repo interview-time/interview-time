@@ -9,8 +9,10 @@ import { getDecisionColor, getDecisionText } from "../utils/assessment";
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewDecisionTag = ({ decision }) =>
-    <Tag color={getDecisionColor(decision)}
-         className={styles.tag}>{getDecisionText(decision)}</Tag>
+const InterviewDecisionTag = ({ decision }) => (
+    <Tag color={getDecisionColor(decision)} className={styles.tag}>
+        {getDecisionText(decision)}
+    </Tag>
+);
 
-export default InterviewDecisionTag
+export default InterviewDecisionTag;

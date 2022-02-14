@@ -8,6 +8,6 @@ import React from "react";
  * @returns {JSX.Element}
  * @constructor
  */
-const TableHeader = ({ children }) => <Text className={styles.tableHeader}>{children}</Text>
+const TableHeader = ({ children }) => <Text className={styles.tableHeader}>{children}</Text>;
 
-export default TableHeader
+export default TableHeader;

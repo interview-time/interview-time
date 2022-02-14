@@ -1,11 +1,7 @@
 import moment from "moment";
-import {
-    DATE_FORMAT_DISPLAY,
-    DATE_FORMAT_DISPLAY_LONG,
-    DATE_FORMAT_DISPLAY_TIME,
-} from "./constants";
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_DISPLAY_LONG, DATE_FORMAT_DISPLAY_TIME } from "./constants";
 
-export const isEmpty = (data) => !data || data.length === 0;
+export const isEmpty = data => !data || data.length === 0;
 
 /**
  * Empty dates stored on backend as '0001-01-01T00:00:00+00:00'
@@ -87,7 +83,7 @@ export const getDate = (dateTime, defaultValue = undefined) => {
  * @param {Interview} interview
  * @returns {moment.Moment}
  */
-export const orderByInterviewDate = (interview) => {
+export const orderByInterviewDate = interview => {
     const interviewDateTime = moment(interview.interviewDateTime);
     return interviewDateTime.year() > 1 ? interviewDateTime : moment(interview.modifiedDate);
 };

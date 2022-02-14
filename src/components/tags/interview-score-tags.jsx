@@ -9,8 +9,10 @@ import { getOverallPerformanceColor, getOverallPerformancePercent } from "../uti
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewScoreTag = ({ interview }) =>
-    <Tag color={getOverallPerformanceColor(interview.structure.groups)}
-         className={styles.tag}>{getOverallPerformancePercent(interview.structure.groups)}</Tag>
+const InterviewScoreTag = ({ interview }) => (
+    <Tag color={getOverallPerformanceColor(interview.structure.groups)} className={styles.tag}>
+        {getOverallPerformancePercent(interview.structure.groups)}
+    </Tag>
+);
 
-export default InterviewScoreTag
+export default InterviewScoreTag;

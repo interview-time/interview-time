@@ -11,7 +11,6 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 
 const TemplateLibrary = ({ loadLibrary, library, loading }) => {
-
     const history = useHistory();
 
     React.useEffect(() => {
@@ -21,14 +20,16 @@ const TemplateLibrary = ({ loadLibrary, library, loading }) => {
 
     const onBackClicked = () => {
         history.goBack();
-    }
+    };
 
     return (
         <Layout contentStyle={styles.rootContainer}>
             <div>
                 <div className={styles.header} onClick={onBackClicked}>
                     <ArrowLeftOutlined style={{ marginRight: 12 }} />
-                    <Title level={4} style={{ marginBottom: 0 }}>Public templates library</Title>
+                    <Title level={4} style={{ marginBottom: 0 }}>
+                        Public templates library
+                    </Title>
                 </div>
 
                 {loading && (
@@ -47,7 +48,7 @@ const TemplateLibrary = ({ loadLibrary, library, loading }) => {
 
                 {!loading && (
                     <Row gutter={[32, 32]}>
-                        {library.map((template) => (
+                        {library.map(template => (
                             <Col span={24} lg={{ span: 8 }}>
                                 <LibraryCard template={template} />
                             </Col>
@@ -60,7 +61,7 @@ const TemplateLibrary = ({ loadLibrary, library, loading }) => {
 };
 
 const mapDispatch = { loadLibrary };
-const mapState = (state) => {
+const mapState = state => {
     const templatesState = state.templates || {};
 
     return {

@@ -26,7 +26,8 @@ export const updatesData = [
     {
         version: "v0.4.1",
         date: moment("2021/04/26", "YYYY/MM/DD").valueOf(),
-        description: "Community section has been renamed to Library and moved to separate menu item. Updated design of question categories.",
+        description:
+            "Community section has been renamed to Library and moved to separate menu item. Updated design of question categories.",
     },
     {
         version: "v0.4.0",
@@ -82,47 +83,44 @@ export const updatesData = [
         version: "v0.1 ",
         date: moment("2021/02/01", "YYYY/MM/DD").valueOf(),
         description: "Closed Beta Release 🚀",
-    }
+    },
 ];
 
 const News = () => {
-
-    const [updateState, setUpdateState] = React.useState(false)
+    const [updateState, setUpdateState] = React.useState(false);
 
     React.useEffect(() => {
-        updateNewsVisitTime()
-        setUpdateState(!updateState)
+        updateNewsVisitTime();
+        setUpdateState(!updateState);
         // eslint-disable-next-line
-    }, [])
+    }, []);
 
     return (
-        <Layout pageHeader={
-            <StickyHeader title="What's new" />
-        } contentStyle={styles.pageContent}>
+        <Layout pageHeader={<StickyHeader title="What's new" />} contentStyle={styles.pageContent}>
             <Row>
-                <Col
-                    xxl={{ span: 16, offset: 4 }}
-                    xl={{ span: 20, offset: 2 }}
-                    lg={{ span: 24 }}>
+                <Col xxl={{ span: 16, offset: 4 }} xl={{ span: 20, offset: 2 }} lg={{ span: 24 }}>
                     <Card bodyStyle={{ padding: 0 }}>
                         <List
-                            size="large"
-                            header={<Text strong style={{ marginLeft: 24 }}>Recent updates from the Interviewer
-                                team.</Text>}
+                            size='large'
+                            header={
+                                <Text strong style={{ marginLeft: 24 }}>
+                                    Recent updates from the Interviewer team.
+                                </Text>
+                            }
                             dataSource={updatesData}
-                            renderItem={item =>
+                            renderItem={item => (
                                 <List.Item>
                                     <List.Item.Meta
                                         title={moment(item.date).format("MMM DD, YYYY") + " • " + item.version}
                                         description={item.description}
                                     />
                                 </List.Item>
-                            }
+                            )}
                         />
                     </Card>
                 </Col>
             </Row>
         </Layout>
-    )
-}
+    );
+};
 export default News;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Modal, Row } from "antd";
 import { connect } from "react-redux";
-import { deleteInterview, loadInterviews, updateInterview, updateScorecard, } from "../../store/interviews/actions";
+import { deleteInterview, loadInterviews, updateInterview, updateScorecard } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
@@ -53,7 +53,7 @@ const InterviewScorecard = ({
     /**
      * @type {Interview}
      */
-    const [interview, setInterview] = useState(/** @type {Interview|undefined} */undefined);
+    const [interview, setInterview] = useState(/** @type {Interview|undefined} */ undefined);
 
     const { id } = useParams();
 
@@ -64,7 +64,7 @@ const InterviewScorecard = ({
         if (interviews.length > 0 && !interview) {
             const currentInterview = cloneDeep(findInterview(id, interviews));
             setInterview(currentInterview);
-            loadTeamMembers(currentInterview.teamId)
+            loadTeamMembers(currentInterview.teamId);
         }
         // eslint-disable-next-line
     }, [interviews]);
@@ -99,11 +99,13 @@ const InterviewScorecard = ({
         // eslint-disable-next-line
     }, [interview]);
 
-    const getCandidate = () => interview && candidates ?
-        candidates.find(candidate => candidate.candidateId === interview.candidateId) : undefined
+    const getCandidate = () =>
+        interview && candidates
+            ? candidates.find(candidate => candidate.candidateId === interview.candidateId)
+            : undefined;
 
     const onQuestionNotesChanged = (questionId, notes) => {
-        setInterview((prevInterview) => {
+        setInterview(prevInterview => {
             findQuestionInGroups(questionId, prevInterview.structure.groups).notes = notes;
 
             return { ...prevInterview };
@@ -111,9 +113,8 @@ const InterviewScorecard = ({
     };
 
     const onQuestionAssessmentChanged = (questionId, assessment) => {
-        setInterview((prevInterview) => {
-            findQuestionInGroups(questionId, prevInterview.structure.groups).assessment =
-                assessment;
+        setInterview(prevInterview => {
+            findQuestionInGroups(questionId, prevInterview.structure.groups).assessment = assessment;
 
             return { ...prevInterview };
         });
@@ -122,39 +123,39 @@ const InterviewScorecard = ({
     /**
      * @param {Template} template
      */
-    const onQuestionsAdded = (template) => {
-        let newStructure = cloneDeep(interview.structure)
+    const onQuestionsAdded = template => {
+        let newStructure = cloneDeep(interview.structure);
         template.structure.groups.forEach(group => {
             newStructure.groups.push({
                 ...group,
-                name: `${template.title} - ${group.name}`
-            })
-        })
+                name: `${template.title} - ${group.name}`,
+            });
+        });
 
         setInterview({
             ...interview,
             structure: newStructure,
         });
-    }
+    };
 
     /**
      * @param {InterviewGroup} group
      */
-    const onQuestionsRemoved = (group) => {
-        let newStructure = cloneDeep(interview.structure)
-        newStructure.groups = newStructure.groups.filter(g => g.groupId !== group.groupId)
+    const onQuestionsRemoved = group => {
+        let newStructure = cloneDeep(interview.structure);
+        newStructure.groups = newStructure.groups.filter(g => g.groupId !== group.groupId);
 
         setInterview({
             ...interview,
             structure: newStructure,
         });
-    }
+    };
 
-    const onNoteChanges = (e) => {
+    const onNoteChanges = e => {
         setInterview({ ...interview, notes: e.target.value });
     };
 
-    const onAssessmentChanged = (assessment) => {
+    const onAssessmentChanged = assessment => {
         setInterview({
             ...interview,
             decision: assessment,
@@ -177,7 +178,7 @@ const InterviewScorecard = ({
             ...interview,
             status: Status.STARTED,
         });
-    }
+    };
 
     const onSubmitClicked = () => {
         if (interview.decision) {
@@ -247,9 +248,9 @@ const mapDispatch = {
     updateScorecard,
     updateInterview,
     loadTeamMembers,
-    loadCandidates
+    loadCandidates,
 };
-const mapState = (state) => {
+const mapState = state => {
     const interviewsState = state.interviews || {};
     const userState = state.user || {};
     const candidatesState = state.candidates || {};

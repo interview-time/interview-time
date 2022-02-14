@@ -6,15 +6,7 @@ import Spinner from "../spinner/spinner";
 import { loadProfile, setupUser } from "../../store/user/actions";
 import { getParameterByName } from "../utils/utils";
 
-const PrivateRoute = ({
-    loadProfile,
-    setupUser,
-    profile,
-    loadingProfile,
-    component: Component,
-    path,
-    ...rest
-}) => {
+const PrivateRoute = ({ loadProfile, setupUser, profile, loadingProfile, component: Component, path, ...rest }) => {
     const { loading, isAuthenticated, loginWithRedirect, user } = useAuth0();
 
     useEffect(() => {
@@ -37,17 +29,13 @@ const PrivateRoute = ({
         fn();
     }, [loading, isAuthenticated, loginWithRedirect, path, loadProfile, user]);
 
-    const render = (props) => (isAuthenticated === true ? <Component {...props} /> : null);
+    const render = props => (isAuthenticated === true ? <Component {...props} /> : null);
 
-    return profile && !loadingProfile ? (
-        <Route path={path} render={render} {...rest} />
-    ) : (
-        <Spinner />
-    );
+    return profile && !loadingProfile ? <Route path={path} render={render} {...rest} /> : <Spinner />;
 };
 
 const mapDispatch = { loadProfile, setupUser };
-const mapState = (state) => {
+const mapState = state => {
     return {
         profile: state.user.profile,
         loadingProfile: state.user.loading,

@@ -35,7 +35,6 @@ import Card from "../../components/card/card";
  * @constructor
  */
 const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate, shareTemplate }) => {
-
     const history = useHistory();
 
     const { id } = useParams();
@@ -45,7 +44,7 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
 
     useEffect(() => {
         if (templates.length > 0 && !template) {
-            setTemplate(findTemplate(id, templates))
+            setTemplate(findTemplate(id, templates));
         }
         // eslint-disable-next-line
     }, [templates, id]);
@@ -57,7 +56,7 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
 
     const onBackClicked = () => {
         history.goBack();
-    }
+    };
 
     const onEditClicked = () => {
         history.push(routeTemplateEdit(template.templateId));
@@ -93,82 +92,96 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
     };
 
     const onShareClicked = () => {
-        setShareModalVisible(true)
-    }
+        setShareModalVisible(true);
+    };
 
     const onShareClosed = () => {
-        setShareModalVisible(false)
-    }
+        setShareModalVisible(false);
+    };
 
-    const onShareChange = (shared) => {
+    const onShareChange = shared => {
         setTemplate({
             ...template,
-            isShared: shared
-        })
-        shareTemplate(template.templateId, shared)
-    }
+            isShared: shared,
+        });
+        shareTemplate(template.templateId, shared);
+    };
 
     const menu = (
         <Menu>
-            <Menu.Item onClick={onCopyClicked}><CopyOutlined /> Copy</Menu.Item>
-            <Menu.Item onClick={onDeleteClicked}><DeleteOutlined /> Delete</Menu.Item>
+            <Menu.Item onClick={onCopyClicked}>
+                <CopyOutlined /> Copy
+            </Menu.Item>
+            <Menu.Item onClick={onDeleteClicked}>
+                <DeleteOutlined /> Delete
+            </Menu.Item>
             <Menu.Divider />
-            <Menu.Item onClick={onShareClicked}><ShareAltOutlined /> Share</Menu.Item>
+            <Menu.Item onClick={onShareClicked}>
+                <ShareAltOutlined /> Share
+            </Menu.Item>
         </Menu>
     );
 
-    return <Layout contentStyle={styles.rootContainer}>
-        {template ? <>
-            <div>
-                <Card>
-                    <div className={styles.header} style={{ marginBottom: 24 }}>
-                        <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                            <ArrowLeftOutlined />
-                            <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                                Interview Template - {template.title}
-                            </Title>
+    return (
+        <Layout contentStyle={styles.rootContainer}>
+            {template ? (
+                <>
+                    <div>
+                        <Card>
+                            <div className={styles.header} style={{ marginBottom: 24 }}>
+                                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
+                                    <ArrowLeftOutlined />
+                                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
+                                        Interview Template - {template.title}
+                                    </Title>
+                                </div>
+                            </div>
+
+                            <Text>Use this template to schedule new interview and customize as you go.</Text>
+
+                            <Divider />
+
+                            <div className={styles.divSpaceBetween}>
+                                <Button type='primary' onClick={onScheduleInterviewClicked}>
+                                    Schedule interview
+                                </Button>
+
+                                <Dropdown.Button overlay={menu} onClick={onEditClicked}>
+                                    <EditOutlined /> Edit
+                                </Dropdown.Button>
+                            </div>
+                        </Card>
+                        <Card className={styles.cardSpace}>
+                            <IntroSection interview={template} />
+                        </Card>
+                        <div className={styles.cardSpace}>
+                            <TemplateGroupsSection template={template} />
                         </div>
+                        <Card className={styles.cardSpace}>
+                            <SummarySection interview={template} />
+                        </Card>
                     </div>
-
-                    <Text>Use this template to schedule new interview and customize as you go.</Text>
-
-                    <Divider />
-
-                    <div className={styles.divSpaceBetween}>
-                        <Button type="primary" onClick={onScheduleInterviewClicked}>Schedule interview</Button>
-
-                        <Dropdown.Button overlay={menu} onClick={onEditClicked}>
-                            <EditOutlined /> Edit
-                        </Dropdown.Button>
-                    </div>
-                </Card>
-                <Card className={styles.cardSpace}>
-                    <IntroSection interview={template} />
-                </Card>
-                <div className={styles.cardSpace}>
-                    <TemplateGroupsSection template={template} />
-                </div>
-                <Card className={styles.cardSpace}>
-                    <SummarySection interview={template} />
-                </Card>
-            </div>
-            <TemplateShareModal
-                shared={template.isShared}
-                token={template.token}
-                visible={shareModalVisible}
-                onShareChange={onShareChange}
-                onClose={onShareClosed}
-            />
-        </> : <Spinner />}
-    </Layout>
+                    <TemplateShareModal
+                        shared={template.isShared}
+                        token={template.token}
+                        visible={shareModalVisible}
+                        onShareChange={onShareChange}
+                        onClose={onShareClosed}
+                    />
+                </>
+            ) : (
+                <Spinner />
+            )}
+        </Layout>
+    );
 };
 
 const mapDispatch = { loadTemplates, deleteTemplate, addTemplate, shareTemplate };
-const mapState = (state) => {
+const mapState = state => {
     const templateState = state.templates || {};
 
     return {
-        templates: templateState.templates
+        templates: templateState.templates,
     };
 };
 

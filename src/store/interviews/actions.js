@@ -11,56 +11,55 @@ export const loadInterviews = (forceFetch = false) => ({
     type: LOAD_INTERVIEWS,
     payload: {
         forceFetch,
-    }
+    },
 });
 
-export const setInterviews = (interviews) => ({
+export const setInterviews = interviews => ({
     type: SET_INTERVIEWS,
     payload: {
         interviews,
-    }
+    },
 });
 
-export const setUploading = (uploading) => ({
+export const setUploading = uploading => ({
     type: SET_UPLOADING,
     payload: {
         uploading,
-    }
+    },
 });
 
-
-export const addInterview = (interview) => ({
+export const addInterview = interview => ({
     type: ADD_INTERVIEW,
     payload: {
-        interview
-    }
+        interview,
+    },
 });
 
 export const addInterviewWithTemplate = (interview, template) => ({
     type: ADD_INTERVIEW_WITH_TEMPLATE,
     payload: {
         interview: interview,
-        template: template
-    }
+        template: template,
+    },
 });
 
-export const updateScorecard = (interview) => ({
+export const updateScorecard = interview => ({
     type: UPDATE_SCORECARD,
     payload: {
-        interview
-    }
+        interview,
+    },
 });
 
-export const updateInterview = (interview) => ({
+export const updateInterview = interview => ({
     type: UPDATE_INTERVIEW,
     payload: {
-        interview
-    }
+        interview,
+    },
 });
 
-export const deleteInterview = (interviewId) => ({
+export const deleteInterview = interviewId => ({
     type: DELETE_INTERVIEW,
     payload: {
-        interviewId
-    }
+        interviewId,
+    },
 });

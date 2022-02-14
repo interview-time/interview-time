@@ -13,14 +13,14 @@ export const loadCandidates = (forceFetch = false) => ({
     },
 });
 
-export const setCandidates = (candidates) => ({
+export const setCandidates = candidates => ({
     type: SET_CANDIDATES,
     payload: {
         candidates,
     },
 });
 
-export const setUploadUrl = (uploadUrl) => ({
+export const setUploadUrl = uploadUrl => ({
     type: SET_UPLOAD_URL,
     payload: {
         uploadUrl,
@@ -35,21 +35,21 @@ export const getUploadUrl = (candidateId, filename) => ({
     },
 });
 
-export const createCandidate = (candidate) => ({
+export const createCandidate = candidate => ({
     type: CREATE_CANDIDATE,
     payload: {
         candidate,
     },
 });
 
-export const updateCandidate = (candidate) => ({
+export const updateCandidate = candidate => ({
     type: UPDATE_CANDIDATE,
     payload: {
         candidate,
     },
 });
 
-export const deleteCandidate = (candidateId) => ({
+export const deleteCandidate = candidateId => ({
     type: DELETE_CANDIDATE,
     payload: {
         candidateId,

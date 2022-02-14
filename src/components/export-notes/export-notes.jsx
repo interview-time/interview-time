@@ -16,16 +16,14 @@ import { filterGroupsWithAssessment } from "../utils/filters";
 
 const { TextArea } = Input;
 
-export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a"
+export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a";
 
 const ExportNotes = ({ interview }) => {
-
     const isCandidateQualified =
-        interview.decision === InterviewAssessment.YES ||
-        interview.decision === InterviewAssessment.STRONG_YES;
+        interview.decision === InterviewAssessment.YES || interview.decision === InterviewAssessment.STRONG_YES;
 
     const [notes, setNotes] = useState(() => {
-        let competenceAreas = ""
+        let competenceAreas = "";
         if (interview.structure.groups && interview.structure.groups.length > 1) {
             let longestName = 0;
             interview.structure.groups.forEach(group => {
@@ -33,11 +31,11 @@ const ExportNotes = ({ interview }) => {
                 if (name.length > longestName) {
                     longestName = name.length;
                 }
-            })
+            });
             filterGroupsWithAssessment(interview.structure.groups)
                 .map(group => ({
                     group: group,
-                    assessment: getGroupAssessment(group.questions)
+                    assessment: getGroupAssessment(group.questions),
                 }))
                 .forEach(({ group, assessment }, index) => {
                     const emoji = getGroupAssessmentEmoji(assessment.score);
@@ -45,8 +43,10 @@ const ExportNotes = ({ interview }) => {
                     if (index !== 0) {
                         competenceAreas += "\n";
                     }
-                    competenceAreas += `${name.padEnd(longestName + 5, ' ')} ${assessment.score}% ${emoji} ${assessment.text}`;
-                })
+                    competenceAreas += `${name.padEnd(longestName + 5, " ")} ${assessment.score}% ${emoji} ${
+                        assessment.text
+                    }`;
+                });
         }
 
         let notes = "There are no notes.";
@@ -54,8 +54,8 @@ const ExportNotes = ({ interview }) => {
             notes = interview.notes;
         }
 
-        let questionNotes = ""
-        defaultTo(interview.structure.groups, []).forEach((group) => {
+        let questionNotes = "";
+        defaultTo(interview.structure.groups, []).forEach(group => {
             group.questions.forEach(q => {
                 if (q.notes) {
                     questionNotes += `- ${q.question}\n${q.notes}\n\n`;
@@ -109,15 +109,15 @@ ${questionNotes}
     return (
         <div>
             <TextArea
-                className="fs-mask"
-                style={{ fontFamily: 'monospace' }}
+                className='fs-mask'
+                style={{ fontFamily: "monospace" }}
                 autoSize={{ minRows: 10, maxRows: 20 }}
-                onChange={(e) => setNotes(e.target.value)}
+                onChange={e => setNotes(e.target.value)}
                 defaultValue={notes}
             />
             <div className={styles.action}>
                 <CopyToClipboard text={notes} onCopy={() => setCopied(true)}>
-                    <Button type="primary" icon={copied ? <CheckOutlined /> : <CopyOutlined />}>
+                    <Button type='primary' icon={copied ? <CheckOutlined /> : <CopyOutlined />}>
                         {copied ? "Copied!" : "Copy to clipboard"}
                     </Button>
                 </CopyToClipboard>

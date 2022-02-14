@@ -13,7 +13,9 @@ const Header = ({ title, subtitle, rightComponent, leftComponent }) => {
                 <Title level={4} style={{ marginBottom: 0 }}>
                     {title}
                 </Title>
-                <Text type="secondary" className={styles.subheader}>{subtitle}</Text>
+                <Text type='secondary' className={styles.subheader}>
+                    {subtitle}
+                </Text>
             </div>
             <div className={styles.actions}>{rightComponent}</div>
         </div>
