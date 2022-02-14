@@ -59,6 +59,13 @@
         ]
     },
     "devDependencies": {
-        "jest": "^26.6.0"
+        "jest": "^26.6.0",
+        "prettier": "^2.5.1"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "printWidth": 120,
+        "jsxSingleQuote": true,
+        "arrowParens": "avoid"
     }
 }
