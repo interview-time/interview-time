@@ -25,8 +25,13 @@ namespace CafApi.Models
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime InterviewDateTime { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
+        public DateTime InterviewEndDateTime { get; set; }
+
         [DynamoDBGlobalSecondaryIndexHashKey]
         public string TemplateId { get; set; }
+
+        public string TemplateIds { get; set; }
 
         public string LibraryId { get; set; }
 
