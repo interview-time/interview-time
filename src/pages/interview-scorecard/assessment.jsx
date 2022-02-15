@@ -5,18 +5,19 @@ import {
     InterviewGroupsSection,
     InterviewInfoSection,
     IntroSection,
-    SummarySection
+    SummarySection,
 } from "./interview-sections";
 import NotesSection from "./notes-section";
 import TimeAgo from "../../components/time-ago/time-ago";
 import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
-import { BackIcon } from "../../components/utils/icons";
+import { BackIcon, CloseIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 import Text from "antd/lib/typography/Text";
 import { PlusOutlined } from "@ant-design/icons";
+import { routeHome } from "../../components/utils/route";
 
 /**
  *
@@ -82,7 +83,12 @@ const Assessment = ({
                 subtitle={interview.position}
                 leftComponent={
                     <Space size={16}>
-                        <Button icon={<BackIcon />} size='large' onClick={() => history.goBack()} />
+                        {history.action !== "POP" ? (
+                            <Button icon={<BackIcon />} size='large' onClick={() => history.goBack()} />
+                        ) : (
+                            <Button icon={<CloseIcon />} size='large' onClick={() => history.replace(routeHome())} />
+                        )}
+
                         <TimeAgo timestamp={interview.modifiedDate} saving={interviewsUploading} />
                     </Space>
                 }
