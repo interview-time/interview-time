@@ -9,12 +9,19 @@ export const LOAD_SHARED_TEMPLATE = "LOAD_SHARED_TEMPLATE";
 export const SET_SHARED_TEMPLATE = "SET_SHARED_TEMPLATE";
 export const SHARE_TEMPLATE = "SHARE_TEMPLATE";
 
-export const loadTemplates = (forceFetch = false) => ({
-    type: LOAD_TEMPLATES,
-    payload: {
-        forceFetch,
-    },
-});
+export function loadTemplates(forceFetch = false) {
+    return (dispatch, getState) => {
+        const { user } = getState();
+
+        dispatch({
+            type: LOAD_TEMPLATES,
+            payload: {
+                forceFetch: forceFetch,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
 
 export const loadLibrary = (forceFetch = false) => ({
     type: LOAD_LIBRARY,
@@ -37,12 +44,19 @@ export const setLibrary = library => ({
     },
 });
 
-export const addTemplate = template => ({
-    type: ADD_TEMPLATE,
-    payload: {
-        template,
-    },
-});
+export function addTemplate(template) {
+    return (dispatch, getState) => {
+        const { user } = getState();
+
+        dispatch({
+            type: ADD_TEMPLATE,
+            payload: {
+                template: template,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
 
 export const updateTemplate = template => ({
     type: UPDATE_TEMPLATE,

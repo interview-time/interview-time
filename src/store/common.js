@@ -1,5 +1,3 @@
-import { getCachedActiveTeam } from "../components/utils/storage";
-
 export function config(token) {
     return {
         headers: {
@@ -7,12 +5,3 @@ export function config(token) {
         },
     };
 }
-
-/**
- *
- * @returns {string|undefined}
- */
-export const getActiveTeamId = () => {
-    const team = getCachedActiveTeam();
-    return team ? team.teamId : undefined;
-};

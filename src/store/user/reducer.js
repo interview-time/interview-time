@@ -85,7 +85,7 @@ const userReducer = (state = initialState, action) => {
         case SET_PROFILE: {
             const { profile } = action.payload;
 
-            // active team is not set, all other requests rely on getActiveTeamId
+            // active team is not set, all other requests rely on state.activeTeam
             if (!state.activeTeam) {
                 let cachedActiveTeam = getCachedActiveTeam();
                 if (cachedActiveTeam && profile.teams.find(team => team.teamId === cachedActiveTeam.teamId)) {

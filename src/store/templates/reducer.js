@@ -12,12 +12,12 @@ import {
     setSharedTemplate,
     setTemplates,
     SHARE_TEMPLATE,
-    UPDATE_TEMPLATE
+    UPDATE_TEMPLATE,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
-import { config, getActiveTeamId } from "../common";
+import { config } from "../common";
 import { log } from "../../components/utils/log";
 
 /**
@@ -37,14 +37,11 @@ const URL = `${process.env.REACT_APP_API_URL}/template`;
 const templatesReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_TEMPLATES: {
-            const { forceFetch } = action.payload;
-
-            const teamId = getActiveTeamId();
-            const url = teamId ? `${URL}/${teamId}` : URL;
+            const { forceFetch, teamId } = action.payload;
 
             if (forceFetch || (state.templates.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then(token => axios.get(url, config(token)))
+                    .then(token => axios.get(`${URL}/${teamId}`, config(token)))
                     .then(res => store.dispatch(setTemplates(res.data || [])))
                     .catch(reason => console.error(reason));
 
@@ -106,9 +103,9 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case ADD_TEMPLATE: {
-            const { template } = action.payload;
+            const { template, teamId } = action.payload;
             template.templateId = Date.now().toString();
-            template.teamId = getActiveTeamId();
+            template.teamId = teamId;
 
             getAccessTokenSilently()
                 .then(token => axios.post(URL, template, config(token)))
