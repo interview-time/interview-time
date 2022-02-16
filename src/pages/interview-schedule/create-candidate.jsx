@@ -9,14 +9,14 @@ import Spinner from "../../components/spinner/spinner";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
-import { config, getActiveTeamId } from "../../store/common";
+import { config } from "../../store/common";
 import styles from "./interview-schedule.module.css";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
 
 const { Dragger } = Upload;
 
-const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCancel }) => {
+const CreateCandidate = ({ candidates, teamId, loading, createCandidate, onSave, onCancel }) => {
     const [candidateName, setCandidateName] = useState();
     const [candidateId, setCandidateId] = useState();
     const [resumeFile, setResumeFile] = useState();
@@ -47,7 +47,6 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
             },
         };
 
-        const teamId = getActiveTeamId();
         const url = `${process.env.REACT_APP_API_URL}/candidate/upload-signed-url/${teamId}/${candidateIdUuid}/${filename}`;
 
         getAccessTokenSilently()

@@ -10,12 +10,7 @@ import { findInterview, findTemplate } from "../../components/utils/converters";
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, POSITIONS, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
-import {
-    addInterview,
-    addInterviewWithTemplate,
-    loadInterviews,
-    updateInterview,
-} from "../../store/interviews/actions";
+import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { personalEvent } from "../../analytics";
@@ -457,6 +452,7 @@ const InterviewSchedule = ({
 
                         {createCandidate && (
                             <CreateCandidate
+                                teamId={activeTeam.teamId}
                                 onSave={candidateName => {
                                     var selectedCandidates = candidates.filter(c => c.candidateName === candidateName);
 
@@ -496,7 +492,6 @@ const InterviewSchedule = ({
 
 const mapDispatch = {
     addInterview,
-    addInterviewWithTemplate,
     loadInterviews,
     updateInterview,
     loadTemplates,

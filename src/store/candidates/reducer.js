@@ -13,7 +13,7 @@ import {
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
-import { config, getActiveTeamId } from "../common";
+import { config } from "../common";
 import { log } from "../../components/utils/log";
 
 /**
@@ -31,14 +31,11 @@ const URL = `${process.env.REACT_APP_API_URL}/candidate`;
 const candidatesReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_CANDIDATES: {
-            const { forceFetch } = action.payload;
-
-            const teamId = getActiveTeamId();
-            const url = teamId ? `${URL}/${teamId}` : URL;
+            const { forceFetch, teamId } = action.payload;
 
             if (forceFetch || (state.candidates.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then(token => axios.get(url, config(token)))
+                    .then(token => axios.get(`${URL}/${teamId}`, config(token)))
                     .then(res => store.dispatch(setCandidates(res.data || [])))
                     .catch(reason => console.error(reason));
 
@@ -69,9 +66,8 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case GET_UPLOAD_URL: {
-            const { candidateId, filename } = action.payload;
+            const { candidateId, filename, teamId } = action.payload;
 
-            const teamId = getActiveTeamId();
             const url = `${URL}/upload-signed-url/${teamId}/${candidateId}/${filename}`;
 
             if (!state.loading) {
@@ -87,8 +83,8 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case CREATE_CANDIDATE: {
-            const { candidate } = action.payload;
-            candidate.teamId = getActiveTeamId();
+            const { candidate, teamId } = action.payload;
+            candidate.teamId = teamId;
 
             getAccessTokenSilently()
                 .then(token => axios.post(URL, candidate, config(token)))

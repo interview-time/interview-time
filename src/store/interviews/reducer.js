@@ -1,6 +1,5 @@
 import {
     ADD_INTERVIEW,
-    ADD_INTERVIEW_WITH_TEMPLATE,
     DELETE_INTERVIEW,
     LOAD_INTERVIEWS,
     loadInterviews,
@@ -14,8 +13,7 @@ import {
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
-import { config, getActiveTeamId } from "../common";
-import { loadTemplates } from "../templates/actions";
+import { config } from "../common";
 import { log } from "../../components/utils/log";
 
 /**
@@ -33,14 +31,11 @@ const URL = `${process.env.REACT_APP_API_URL}/interview`;
 const interviewsReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_INTERVIEWS: {
-            const { forceFetch } = action.payload;
-
-            const teamId = getActiveTeamId();
-            const url = teamId ? `${URL}/${teamId}` : URL;
+            const { forceFetch, teamId } = action.payload;
 
             if (forceFetch || (state.interviews.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then(token => axios.get(url, config(token)))
+                    .then(token => axios.get(`${URL}/${teamId}`, config(token)))
                     .then(res => store.dispatch(setInterviews(res.data || [])))
                     .catch(reason => console.error(reason));
 
@@ -68,47 +63,14 @@ const interviewsReducer = (state = initialState, action) => {
         }
 
         case ADD_INTERVIEW: {
-            const { interview } = action.payload;
+            const { interview, teamId } = action.payload;
             interview.interviewId = Date.now().toString();
-            interview.teamId = getActiveTeamId();
+            interview.teamId = teamId;
 
             getAccessTokenSilently()
                 .then(token => axios.post(URL, interview, config(token)))
                 .then(() => log(`Interview added: ${JSON.stringify(interview)}`))
                 .then(() => store.dispatch(loadInterviews(true)))
-                .catch(reason => console.error(reason));
-
-            return {
-                ...state,
-                interviews: [...state.interviews, interview],
-            };
-        }
-
-        case ADD_INTERVIEW_WITH_TEMPLATE: {
-            const template = action.payload.template;
-            const interview = action.payload.interview;
-
-            template.templateId = Date.now().toString();
-            interview.interviewId = Date.now().toString();
-            interview.teamId = getActiveTeamId();
-
-            const templateURL = `${process.env.REACT_APP_API_URL}/template`;
-
-            getAccessTokenSilently()
-                .then(token => {
-                    let tokenPromise = Promise.resolve(token);
-                    let templatePromise = axios.post(templateURL, template, config(token));
-                    return Promise.all([tokenPromise, templatePromise]);
-                })
-                .then(res => {
-                    let token = res[0];
-                    let template = res[1].data;
-                    interview.templateId = template.templateId;
-                    return axios.post(URL, interview, config(token));
-                })
-                .then(() => log(`Interview added: ${JSON.stringify(interview)}`))
-                .then(() => store.dispatch(loadInterviews(true)))
-                .then(() => store.dispatch(loadTemplates(true)))
                 .catch(reason => console.error(reason));
 
             return {

@@ -6,12 +6,19 @@ export const DELETE_CANDIDATE = "DELETE_CANDIDATE";
 export const GET_UPLOAD_URL = "GET_UPLOAD_URL";
 export const SET_UPLOAD_URL = "SET_UPLOAD_URL";
 
-export const loadCandidates = (forceFetch = false) => ({
-    type: LOAD_CANDIDATES,
-    payload: {
-        forceFetch,
-    },
-});
+export function loadCandidates(forceFetch = false) {
+    return (dispatch, getState) => {
+        const { user } = getState();
+
+        dispatch({
+            type: LOAD_CANDIDATES,
+            payload: {
+                forceFetch: forceFetch,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
 
 export const setCandidates = candidates => ({
     type: SET_CANDIDATES,
@@ -27,20 +34,34 @@ export const setUploadUrl = uploadUrl => ({
     },
 });
 
-export const getUploadUrl = (candidateId, filename) => ({
-    type: GET_UPLOAD_URL,
-    payload: {
-        candidateId,
-        filename,
-    },
-});
+export function getUploadUrl(candidateId, filename) {
+    return (dispatch, getState) => {
+        const { user } = getState();
 
-export const createCandidate = candidate => ({
-    type: CREATE_CANDIDATE,
-    payload: {
-        candidate,
-    },
-});
+        dispatch({
+            type: GET_UPLOAD_URL,
+            payload: {
+                candidateId: candidateId,
+                filename: filename,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
+
+export function createCandidate(candidate) {
+    return (dispatch, getState) => {
+        const { user } = getState();
+
+        dispatch({
+            type: CREATE_CANDIDATE,
+            payload: {
+                candidate: candidate,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
 
 export const updateCandidate = candidate => ({
     type: UPDATE_CANDIDATE,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useParams, useLocation } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { Modal, Row } from "antd";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview, updateScorecard } from "../../store/interviews/actions";
@@ -17,7 +17,6 @@ import { Status } from "../../components/utils/constants";
 import { personalEvent } from "../../analytics";
 import Assessment from "./assessment";
 import Evaluation from "./evaluation";
-import { getActiveTeamId } from "../../store/common";
 
 const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
 const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
@@ -28,6 +27,8 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  * @param {TeamMember[]} teamMembers
  * @param {Candidate[]} candidates
  * @param {Templates[]} templates
+ * @param {Team[]} teams
+ * @param {Team} activeTeam
  * @param {boolean} interviewsUploading
  * @param loadInterviews
  * @param loadTeamMembers
@@ -35,6 +36,7 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  * @param loadTemplates,
  * @param updateScorecard
  * @param updateInterview
+ * @param setActiveTeam
  * @returns {JSX.Element}
  * @constructor
  */
@@ -43,6 +45,8 @@ const InterviewScorecard = ({
     teamMembers,
     candidates,
     templates,
+    teams,
+    activeTeam,
     interviewsUploading,
     loadInterviews,
     loadTeamMembers,
@@ -51,7 +55,6 @@ const InterviewScorecard = ({
     updateScorecard,
     updateInterview,
     setActiveTeam,
-    teams,
 }) => {
     /**
      * @type {Interview}
@@ -66,6 +69,7 @@ const InterviewScorecard = ({
         // initial data loading
         if (interviews.length > 0 && !interview) {
             const currentInterview = cloneDeep(findInterview(id, interviews));
+            currentInterview.position = "Hello world"
             setInterview(currentInterview);
             loadTeamMembers(currentInterview.teamId);
         }
@@ -73,14 +77,12 @@ const InterviewScorecard = ({
     }, [interviews]);
 
     useEffect(() => {
-        var currentTeamId = getActiveTeamId();
-        var paramTeamId = new URLSearchParams(search).get("teamId");
+        let paramTeamId = new URLSearchParams(search).get("teamId");
 
-        if (paramTeamId && currentTeamId !== paramTeamId) {
-            var filteredTeams = teams.filter(t => t.teamId === paramTeamId);
-
-            if (filteredTeams.length > 0) {
-                setActiveTeam(filteredTeams[0]);
+        if (paramTeamId && activeTeam?.teamId !== paramTeamId) {
+            let team = teams.find(t => t.teamId === paramTeamId);
+            if (team) {
+                setActiveTeam(team);
             }
         }
 
@@ -277,6 +279,7 @@ const mapState = state => {
         templates: templatesState.templates,
         interviewsUploading: interviewsState.uploading,
         teams: userState.profile.teams,
+        activeTeam: userState.activeTeam,
     };
 };
 
