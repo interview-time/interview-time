@@ -31,7 +31,7 @@ namespace CafApi.Models
         [DynamoDBGlobalSecondaryIndexHashKey]
         public string TemplateId { get; set; }
 
-        public string TemplateIds { get; set; }
+        public List<string> TemplateIds { get; set; }
 
         public string LibraryId { get; set; }
 

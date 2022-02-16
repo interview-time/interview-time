@@ -21,5 +21,9 @@ namespace CafApi.Services
         Task<Team> JoinTeam(string userId, string token, string role = null);
 
         Task LeaveTeam(string userId, string teamId);
+
+        Task RemoveTeamMember(string adminId, string memberId, string teamId);
+
+        Task UpdateMemberRole(string adminId, string memberId, string teamId, string newRole);
     }
 }

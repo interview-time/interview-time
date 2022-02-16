@@ -194,6 +194,29 @@ namespace CafApi.Services
             }
         }
 
+        public async Task RemoveTeamMember(string adminId, string memberId, string teamId)
+        {
+            var admin = await _context.LoadAsync<TeamMember>(teamId, adminId);
+            if (admin != null && admin.Roles.Contains(TeamRole.ADMIN.ToString()))
+            {
+                await LeaveTeam(memberId, teamId);
+            }
+        }
+
+        public async Task UpdateMemberRole(string adminId, string memberId, string teamId, string newRole)
+        {
+            var admin = await _context.LoadAsync<TeamMember>(teamId, adminId);
+            if (admin != null && admin.Roles.Contains(TeamRole.ADMIN.ToString()))
+            {
+                var member = await _context.LoadAsync<TeamMember>(teamId, memberId);
+                if (member != null)
+                {
+                    member.Roles = new List<string> { newRole };
+                    await _context.SaveAsync(member);
+                }
+            }
+        }
+
         private async Task AddToTeam(string userId, string teamId, string role = null)
         {
             var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);

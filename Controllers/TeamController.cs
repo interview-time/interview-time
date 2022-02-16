@@ -87,5 +87,17 @@ namespace CafApi.Controllers
         {
             await _teamService.LeaveTeam(UserId, request.TeamId);
         }
+
+        [HttpPut("member")]
+        public async Task ChangeMemberRole(ChangeMemberRoleRequest request)
+        {
+            await _teamService.UpdateMemberRole(UserId, request.MemberId, request.TeamId, request.NewRole);
+        }
+
+        [HttpDelete("member")]
+        public async Task RemoveTeamMember(RemoveTeamMemberRequest request)
+        {
+            await _teamService.RemoveTeamMember(UserId, request.MemberId, request.TeamId);
+        }
     }
 }
