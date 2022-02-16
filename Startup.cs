@@ -12,6 +12,8 @@ using Amazon;
 using CafApi.Services;
 using Amazon.S3;
 using SendGrid.Extensions.DependencyInjection;
+using FluentValidation.AspNetCore;
+using CafApi.ViewModel;
 
 namespace CafApi
 {
@@ -58,7 +60,10 @@ namespace CafApi
                                          });
                    });
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv =>
+                    fv.RegisterValidatorsFromAssemblyContaining<ChangeMemberRoleRequestValidator>());
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CAF API", Version = "v1" });
@@ -97,7 +102,7 @@ namespace CafApi
             services.AddSingleton<ITeamService, TeamService>();
             services.AddSingleton<ICandidateService, CandidateService>();
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
-            services.AddSingleton<IEmailService, EmailService>();        
+            services.AddSingleton<IEmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
