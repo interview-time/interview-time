@@ -42,6 +42,7 @@
  * @property {string} interviewDateTime
  * @property {string} modifiedDate
  * @property {string} templateId
+ * @property {string[]} templateIds
  * @property {string} status
  * @property {string} decision
  * @property {string} notes
