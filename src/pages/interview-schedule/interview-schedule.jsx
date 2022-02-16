@@ -13,6 +13,7 @@ import { InterviewPreviewCard } from "../interview-scorecard/interview-sections"
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
+import { loadTeamMembers } from "../../store/user/actions";
 import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -20,13 +21,13 @@ import { sortBy } from "lodash/collection";
 import { getDate } from "../../components/utils/utils";
 import { filterOptionLabel } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
-import { loadTeamMembers } from "../../store/user/actions";
 import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "./create-candidate";
 import Card from "../../components/card/card";
 
 /**
  *
+ * @param {UserProfile} profile
  * @param {Interview[]} interviews
  * @param {Template[]} templates
  * @param {TeamMember[]} teamMembers
@@ -42,6 +43,7 @@ import Card from "../../components/card/card";
  * @constructor
  */
 const InterviewSchedule = ({
+    profile,
     interviews,
     templates,
     candidates,
@@ -72,7 +74,7 @@ const InterviewSchedule = ({
      */
     const emptyInterview = {
         interviewId: undefined,
-        templateId: undefined,
+        templateIds: [],
         status: Status.NEW,
         title: "",
         structure: defaultStructure,
@@ -89,20 +91,25 @@ const InterviewSchedule = ({
         // existing interview
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
             setInterview(cloneDeep(findInterview(id, interviews)));
-        }
-
-        // new interview from template
-        if (isFromTemplateFlow() && !interview.templateId && templates.length !== 0) {
+        } else if (isFromTemplateFlow() && interview.templateIds.length === 0 && templates.length !== 0) {
+            // new interview from template
             const template = cloneDeep(findTemplate(fromTemplateId(), templates));
             setInterview({
                 ...interview,
-                templateId: template.templateId,
+                templateIds: [template.templateId],
                 structure: template.structure,
+                interviewers: profile.userId,
+            });
+        } else {
+            // pre-select current user as interviewer
+            setInterview({
+                ...interview,
+                interviewers: profile.userId,
             });
         }
 
         // eslint-disable-next-line
-    }, [interview, templates]);
+    }, [interviews, templates, teamMembers]);
 
     React.useEffect(() => {
         // templates selector
@@ -147,14 +154,6 @@ const InterviewSchedule = ({
                           }
                 )
             );
-
-            if (!isExistingInterviewFlow()) {
-                // pre-select current user as interviewer
-                setInterview({
-                    ...interview,
-                    interviewers: [currentUser.userId],
-                });
-            }
         }
         // eslint-disable-next-line
     }, [teamMembers]);
@@ -176,7 +175,8 @@ const InterviewSchedule = ({
     const isFromTemplateFlow = () => fromTemplateId() !== null;
 
     const isInitialLoading = () =>
-        (isExistingInterviewFlow() && !interview.interviewId) || (isFromTemplateFlow() && !interview.templateId);
+        (isExistingInterviewFlow() && !interview.interviewId) ||
+        (isFromTemplateFlow() && interview.templateIds.length === 0);
 
     /**
      *
@@ -225,40 +225,31 @@ const InterviewSchedule = ({
 
     const onTemplateSelect = templateIds => {
         if (templateIds.length !== 0) {
-            // use first template to define main structure
-            let mainTemplate = cloneDeep(templates.find(template => template.templateId === templateIds[0]));
-
-            if (templateIds.length > 1) {
-                let templatesStructure = mainTemplate.structure;
-                templatesStructure.groups.forEach(group => {
-                    group.name = `${mainTemplate.title} - ${group.name}`;
-                });
-
-                for (let i = 1; i < templateIds.length; i++) {
-                    let template = templates.find(template => template.templateId === templateIds[i]);
-                    let structure = cloneDeep(template.structure);
+            let interviewStructure = null;
+            templateIds.forEach((templateId, index) => {
+                let template = templates.find(template => template.templateId === templateIds[index]);
+                let structure = cloneDeep(template.structure);
+                if (index === 0) {
+                    // use first template to define main structure
+                    interviewStructure = structure;
+                } else {
                     structure.groups.forEach(group => {
                         group.name = `${template.title} - ${group.name}`;
                     });
 
-                    templatesStructure.groups.push(...structure.groups);
+                    interviewStructure.groups.push(...structure.groups);
                 }
-                setInterview({
-                    ...interview,
-                    templateId: mainTemplate.templateId,
-                    structure: templatesStructure,
-                });
-            } else {
-                setInterview({
-                    ...interview,
-                    templateId: mainTemplate.templateId,
-                    structure: mainTemplate.structure,
-                });
-            }
+            });
+
+            setInterview({
+                ...interview,
+                templateIds: templateIds,
+                structure: interviewStructure,
+            });
         } else {
             setInterview({
                 ...interview,
-                templateId: null,
+                templateIds: [],
                 structure: defaultStructure,
             });
         }
@@ -289,7 +280,7 @@ const InterviewSchedule = ({
                 form={form}
                 layout='vertical'
                 initialValues={{
-                    template: interview.templateId ? [interview.templateId] : undefined,
+                    template: interview.templateIds,
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime, undefined),
@@ -506,6 +497,7 @@ const mapState = state => {
     const userState = state.user || {};
 
     return {
+        profile: userState.profile,
         interviews: interviewState.interviews,
         templates: templateState.templates,
         candidates: candidatesState.candidates,

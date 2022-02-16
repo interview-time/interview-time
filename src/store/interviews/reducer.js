@@ -47,6 +47,18 @@ const interviewsReducer = (state = initialState, action) => {
 
         case SET_INTERVIEWS: {
             const { interviews } = action.payload;
+
+            // backward compatibility
+            interviews.forEach(interview => {
+                if (!interview.templateIds || interview.templateIds.length === 0) {
+                    if (interview.templateId) {
+                        interview.templateIds = [interview.templateId];
+                    } else {
+                        interview.templateIds = [];
+                    }
+                }
+            });
+
             return {
                 ...state,
                 interviews: interviews,
