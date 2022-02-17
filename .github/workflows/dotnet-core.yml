@@ -32,10 +32,10 @@ jobs:
       run: zip -r -j package.zip build/*
 
     - name: Upload build artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-package
-          path: package.zip
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-package
+        path: package.zip
 
   deploy:
     runs-on: ubuntu-latest
