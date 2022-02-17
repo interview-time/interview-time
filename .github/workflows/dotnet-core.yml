@@ -34,8 +34,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    
-    steps:    
+
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        path: ./package.zip
+
     - name: Get timestamp
       id: timestamp
       run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H-%M-%S-%3NZ')" 
