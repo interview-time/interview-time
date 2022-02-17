@@ -31,14 +31,21 @@ jobs:
     - name: Create deployment zip package
       run: zip -r -j package.zip build/*
 
+    - name: Upload build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-package
+          path: package.zip
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-    - uses: actions/download-artifact@v2
+    - name: Download build artifact
+      uses: actions/download-artifact@v2
       with:
-        path: ./package.zip
+        name: build-package
 
     - name: Get timestamp
       id: timestamp
