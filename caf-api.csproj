@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>CafApi</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.10" NoWarn="NU1605" />
     <PackageReference Include="SendGrid" Version="9.25.2" />
     <PackageReference Include="SendGrid.Extensions.DependencyInjection" Version="1.0.1" />
-    <PackageReference Include="Sentry" Version="3.0.5" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.14.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.65" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.1" />
