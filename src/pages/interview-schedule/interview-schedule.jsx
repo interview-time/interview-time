@@ -1,13 +1,33 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { AutoComplete, Button, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Select, Space } from "antd";
+import {
+    AutoComplete,
+    Button,
+    Col,
+    DatePicker,
+    Divider,
+    Form,
+    Input,
+    message,
+    Modal,
+    Row,
+    Select,
+    Space,
+    TimePicker,
+} from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_SERVER, POSITIONS, Status } from "../../components/utils/constants";
+import {
+    DATE_FORMAT_DISPLAY_LONG,
+    DATE_FORMAT_SERVER,
+    defaultTimeFormat,
+    POSITIONS,
+    Status,
+} from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
@@ -24,6 +44,7 @@ import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "./create-candidate";
 import Card from "../../components/card/card";
+import { log } from "../../components/utils/log";
 
 /**
  *
@@ -98,13 +119,13 @@ const InterviewSchedule = ({
                 ...interview,
                 templateIds: [template.templateId],
                 structure: template.structure,
-                interviewers: profile.userId,
+                interviewers: [profile.userId],
             });
         } else {
             // pre-select current user as interviewer
             setInterview({
                 ...interview,
-                interviewers: profile.userId,
+                interviewers: [profile.userId],
             });
         }
 
@@ -199,8 +220,65 @@ const InterviewSchedule = ({
         interview.interviewers = values;
     };
 
-    const onDateChange = date => {
-        interview.interviewDateTime = date.utc().format(DATE_FORMAT_SERVER);
+    const onDateChange = newDate => {
+        let date = getDate(interview.interviewDateTime);
+        if (date) {
+            interview.interviewDateTime = date
+                .clone()
+                .year(newDate.year())
+                .month(newDate.month())
+                .date(newDate.date())
+                .utc()
+                .format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = date
+                .clone()
+                .year(newDate.year())
+                .month(newDate.month())
+                .date(newDate.date())
+                .utc()
+                .format(DATE_FORMAT_SERVER);
+        } else {
+            // current time + selected date
+            interview.interviewDateTime = newDate.clone().utc().format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = newDate.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
+        }
+
+        logInterviewDateTime();
+    };
+
+    const onTimeChange = time => {
+        let startTime = time[0];
+        let endTime = time[1];
+
+        let date = getDate(interview.interviewDateTime);
+        if (date) {
+            interview.interviewDateTime = date
+                .clone()
+                .hour(startTime.hour())
+                .minute(startTime.minute())
+                .utc()
+                .format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = date
+                .clone()
+                .hour(endTime.hour())
+                .minute(endTime.minute())
+                .utc()
+                .format(DATE_FORMAT_SERVER);
+        } else {
+            // current date + selected time
+            interview.interviewDateTime = startTime.utc().format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = endTime.utc().format(DATE_FORMAT_SERVER);
+        }
+
+        logInterviewDateTime();
+    };
+
+    const logInterviewDateTime = () => {
+        log("Interview start date (utc)", interview.interviewDateTime);
+        log("Interview end date (utc)", interview.interviewEndDateTime);
+
+        log("Interview start date (local)", getDate(interview.interviewDateTime).format(DATE_FORMAT_SERVER));
+        log("Interview end date (local)", getDate(interview.interviewEndDateTime).format(DATE_FORMAT_SERVER));
     };
 
     const onSaveClicked = () => {
@@ -277,147 +355,148 @@ const InterviewSchedule = ({
             </Text>
             <Form
                 name='basic'
+                style={marginTop12}
                 form={form}
                 layout='vertical'
                 initialValues={{
                     template: interview.templateIds,
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
-                    date: getDate(interview.interviewDateTime, undefined),
+                    date: getDate(interview.interviewDateTime),
+                    time: [getDate(interview.interviewDateTime), getDate(interview.interviewEndDateTime)],
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
                 onFinish={onSaveClicked}
             >
-                <Col span={24} style={marginTop12}>
-                    {isExistingInterviewFlow() && !interview.candidateId ? (
-                        <Form.Item
-                            name='candidate'
-                            label={<Text strong>Candidate</Text>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter candidate name",
-                                },
-                            ]}
-                        >
-                            <Input
-                                className='fs-mask'
-                                placeholder='Enter candidate full name'
-                                onChange={e => (interview.candidate = e.target.value)}
-                            />
-                        </Form.Item>
-                    ) : (
-                        <Form.Item
-                            name='candidateId'
-                            label={<Text strong>Candidate</Text>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please enter candidate name",
-                                },
-                            ]}
-                        >
-                            <Select
-                                showSearch
-                                allowClear
-                                placeholder='Select candidate'
-                                onChange={(value, option) => {
-                                    interview.candidateId = value;
-                                    interview.candidate = option.label;
-                                }}
-                                options={candidatesOptions}
-                                filterOption={filterOptionLabel}
-                                notFoundContent={<Text>No candidate found.</Text>}
-                                dropdownRender={menu => (
-                                    <div>
-                                        {menu}
-                                        <Divider style={{ margin: "4px 0" }} />
-                                        <Button
-                                            style={{ paddingLeft: 12 }}
-                                            onClick={() => setCreateCandidate(true)}
-                                            type='link'
-                                        >
-                                            Create new candidate
-                                        </Button>
-                                    </div>
-                                )}
-                            />
-                        </Form.Item>
-                    )}
-                </Col>
-                <Col span={24}>
+                {isExistingInterviewFlow() && !interview.candidateId ? (
                     <Form.Item
-                        name='interviewers'
-                        label={<Text strong>Interviewers</Text>}
+                        name='candidate'
+                        className={styles.formItem}
+                        label={<Text strong>Candidate</Text>}
                         rules={[
                             {
                                 required: true,
-                                message: "Please select at least 1 interviewer",
+                                message: "Please enter candidate name",
+                            },
+                        ]}
+                    >
+                        <Input
+                            className='fs-mask'
+                            placeholder='Enter candidate full name'
+                            onChange={e => (interview.candidate = e.target.value)}
+                        />
+                    </Form.Item>
+                ) : (
+                    <Form.Item
+                        name='candidateId'
+                        className={styles.formItem}
+                        label={<Text strong>Candidate</Text>}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter candidate name",
                             },
                         ]}
                     >
                         <Select
-                            mode='multiple'
-                            placeholder='Select interviewers'
-                            disabled={isExistingInterviewFlow()}
-                            options={interviewersOptions}
-                            filterOption={filterOptionLabel}
-                            onChange={onInterviewersChange}
-                        />
-                    </Form.Item>
-                </Col>
-                <Col span={24}>
-                    <Form.Item name='template' label={<Text strong>Template</Text>}>
-                        <Select
                             showSearch
                             allowClear
-                            mode='multiple'
-                            placeholder='Select interview template'
-                            onChange={onTemplateSelect}
-                            options={templateOptions}
+                            placeholder='Select candidate'
+                            onChange={(value, option) => {
+                                interview.candidateId = value;
+                                interview.candidate = option.label;
+                            }}
+                            options={candidatesOptions}
                             filterOption={filterOptionLabel}
-                            notFoundContent={<Text>No template found.</Text>}
+                            notFoundContent={<Text>No candidate found.</Text>}
                             dropdownRender={menu => (
                                 <div>
                                     {menu}
                                     <Divider style={{ margin: "4px 0" }} />
-                                    <Button style={{ paddingLeft: 12 }} onClick={onCreateTemplateClicked} type='link'>
-                                        Create new template
+                                    <Button
+                                        style={{ paddingLeft: 12 }}
+                                        onClick={() => setCreateCandidate(true)}
+                                        type='link'
+                                    >
+                                        Create new candidate
                                     </Button>
                                 </div>
                             )}
                         />
                     </Form.Item>
-                </Col>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item name='position' label={<Text strong>Position</Text>}>
-                            <AutoComplete
-                                allowClear
-                                placeholder='Select position you are hiring for'
-                                options={sortBy(POSITIONS, ["value"])}
-                                filterOption={(inputValue, option) =>
-                                    option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                                }
-                                onChange={onPositionChange}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item name='date' label={<Text strong>Interview Date</Text>}>
-                            <DatePicker
-                                showTime={{
-                                    minuteStep: 15,
-                                }}
-                                allowClear={false}
-                                format={DATE_FORMAT_DISPLAY}
-                                className={styles.fillWidth}
-                                onChange={onDateChange}
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>
+                )}
+                <Form.Item
+                    name='interviewers'
+                    className={styles.formItem}
+                    label={<Text strong>Interviewers</Text>}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please select at least 1 interviewer",
+                        },
+                    ]}
+                >
+                    <Select
+                        mode='multiple'
+                        placeholder='Select interviewers'
+                        disabled={isExistingInterviewFlow()}
+                        options={interviewersOptions}
+                        filterOption={filterOptionLabel}
+                        onChange={onInterviewersChange}
+                    />
+                </Form.Item>
+                <Form.Item name='template' className={styles.formItem} label={<Text strong>Template</Text>}>
+                    <Select
+                        showSearch
+                        allowClear
+                        mode='multiple'
+                        placeholder='Select interview template'
+                        onChange={onTemplateSelect}
+                        options={templateOptions}
+                        filterOption={filterOptionLabel}
+                        notFoundContent={<Text>No template found.</Text>}
+                        dropdownRender={menu => (
+                            <div>
+                                {menu}
+                                <Divider style={{ margin: "4px 0" }} />
+                                <Button style={{ paddingLeft: 12 }} onClick={onCreateTemplateClicked} type='link'>
+                                    Create new template
+                                </Button>
+                            </div>
+                        )}
+                    />
+                </Form.Item>
+                <div className={styles.formDate}>
+                    <Form.Item name='date' label={<Text strong>Interview Date</Text>}>
+                        <DatePicker
+                            allowClear={false}
+                            format={DATE_FORMAT_DISPLAY_LONG}
+                            className={styles.fillWidth}
+                            onChange={onDateChange}
+                        />
+                    </Form.Item>
+                    <Form.Item name='time' className={styles.formItemTime}>
+                        <TimePicker.RangePicker
+                            allowClear={false}
+                            minuteStep={15}
+                            format={defaultTimeFormat()}
+                            className={styles.fillWidth}
+                            onChange={onTimeChange}
+                        />
+                    </Form.Item>
+                </div>
+                <Form.Item name='position' className={styles.formItem} label={<Text strong>Position</Text>}>
+                    <AutoComplete
+                        allowClear
+                        placeholder='Select position you are hiring for'
+                        options={sortBy(POSITIONS, ["value"])}
+                        filterOption={(inputValue, option) =>
+                            option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                        }
+                        onChange={onPositionChange}
+                    />
+                </Form.Item>
                 <Divider />
                 <div className={styles.divSpaceBetween}>
                     <Text />

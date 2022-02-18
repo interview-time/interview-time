@@ -102,3 +102,17 @@
     display: flex;
     align-items: center;
 }
+
+.formItem {
+    max-width: 500px;
+}
+
+.formDate {
+    max-width: 500px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.formItemTime {
+    margin-left: 16px;
+}

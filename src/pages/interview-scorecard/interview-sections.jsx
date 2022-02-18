@@ -21,7 +21,12 @@ import {
     UsersIcon,
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
-import { getFormattedDate, getFormattedDateLong, getFormattedTime, isEmpty } from "../../components/utils/utils";
+import {
+    getFormattedDate,
+    getFormattedDateLong,
+    getFormattedTimeRange,
+    isEmpty
+} from "../../components/utils/utils";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
@@ -133,7 +138,9 @@ export const InterviewInfoSection = ({ interview, teamMembers }) => {
             </div>
             <div className={styles.divHorizontal}>
                 <TimeIcon style={iconStyle} />
-                <Text className={styles.reportLabel}>{getFormattedTime(interview.interviewDateTime)}</Text>
+                <Text className={styles.reportLabel}>
+                    {getFormattedTimeRange(interview.interviewDateTime, interview.interviewEndDateTime)}
+                </Text>
             </div>
         </Space>
     );
