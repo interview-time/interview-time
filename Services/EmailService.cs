@@ -26,7 +26,7 @@ namespace CafApi.Services
             _logger = logger;
         }
 
-        public async Task SendNewInterviewInvitation(string toEmail, string interviewerName, string candidateName, DateTime interviewDateTime, string interviewId, string timezone, string teamId)
+        public async Task SendNewInterviewInvitation(string toEmail, string interviewerName, string candidateName, DateTime interviewStartDateTime, DateTime interviewEndDateTime, string interviewId, string timezone, string teamId)
         {
             try
             {
@@ -34,27 +34,32 @@ namespace CafApi.Services
 
                 if (!string.IsNullOrWhiteSpace(timezone))
                 {
-                    if (interviewDateTime.Kind != DateTimeKind.Utc)
+                    if (interviewStartDateTime.Kind != DateTimeKind.Utc)
                     {
-                        interviewDateTime = interviewDateTime.ToUniversalTime();
+                        interviewStartDateTime = interviewStartDateTime.ToUniversalTime();
                     }
 
                     TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById(timezone);
-                    interviewDateTime = TimeZoneInfo.ConvertTimeFromUtc(interviewDateTime, tzi);
+                    interviewStartDateTime = TimeZoneInfo.ConvertTimeFromUtc(interviewStartDateTime, tzi);
                 }
 
                 dynamic templateData = new
                 {
                     candidateName = candidateName,
                     interviewerName = !interviewerName.Equals(toEmail) ? interviewerName : "there",
-                    interviewDate = interviewDateTime.ToString("dd MMM yyyy h:mm tt"),
+                    interviewDate = interviewStartDateTime.ToString("dd MMM yyyy h:mm tt"),
                     interviewTime = $"({timezone ?? "UTC"})",
                     interviewScorecard = $"https://app.interviewer.space/interviews/scorecard/{interviewId}?teamId={teamId}"
-                };            
+                };
 
                 var description = $"You have a new interview scheduled for {templateData.interviewDate} {templateData.interviewTime} with {candidateName}.\\n\\nHere is the link to the interview scorecard: {templateData.interviewScorecard}";
 
-                var invite = CreateInvite(interviewDateTime, interviewDateTime.AddHours(1), timezone, $"Interview with {candidateName}", description);
+                if (interviewEndDateTime == DateTime.MinValue || interviewEndDateTime < interviewStartDateTime)
+                {
+                    interviewEndDateTime = interviewEndDateTime.AddHours(1);
+                }
+
+                var invite = CreateInvite(interviewStartDateTime, interviewEndDateTime, timezone, $"Interview with {candidateName}", description);
                 var attachment = new Attachment
                 {
                     Filename = "invite.ics",
@@ -94,7 +99,7 @@ namespace CafApi.Services
 
             sb.AppendLine("BEGIN:VTIMEZONE");
             sb.AppendLine($"TZID:{timezone}");
-            sb.AppendLine("BEGIN:STANDARD");            
+            sb.AppendLine("BEGIN:STANDARD");
             sb.AppendLine("END:STANDARD");
             sb.AppendLine("END:VTIMEZONE");
 
@@ -104,7 +109,7 @@ namespace CafApi.Services
             sb.AppendLine($"DTEND;TZID={timezone}:" + endDate.ToString("yyyyMMddTHHmm00"));
             sb.AppendLine($"SUMMARY:{summary}");
             sb.AppendLine($"LOCATION:");
-            sb.AppendLine($"DESCRIPTION:{description}");            
+            sb.AppendLine($"DESCRIPTION:{description}");
             sb.AppendLine("PRIORITY:3");
             sb.AppendLine("END:VEVENT");
 
