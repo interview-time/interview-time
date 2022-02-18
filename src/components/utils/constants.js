@@ -1,9 +1,17 @@
 import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
+import moment from "moment";
 
+// TODO migrate to locale aware date formats
 export const DATE_FORMAT_DISPLAY = "ddd DD, MMM • hh:mm a";
 export const DATE_FORMAT_DISPLAY_LONG = "ddd DD, MMM YYYY";
 export const DATE_FORMAT_DISPLAY_TIME = "hh:mm a";
 export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ";
+
+/**
+ * Returns locale aware time format
+ * @returns {string} 'h:mm A' or 'h:mm'
+ */
+export const defaultTimeFormat = () =>  moment().creationData().locale.longDateFormat('LT')
 
 export const Roles = {
     HR: "HR",

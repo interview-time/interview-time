@@ -40,6 +40,7 @@
  * @property {string} candidateNotes
  * @property {string} position
  * @property {string} interviewDateTime
+ * @property {string} interviewEndDateTime
  * @property {string} modifiedDate
  * @property {string} templateId
  * @property {string[]} templateIds
