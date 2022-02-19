@@ -22,11 +22,11 @@ import {
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
 import {
+    getFormattedDateTime,
     getFormattedDate,
-    getFormattedDateLong,
     getFormattedTimeRange,
     isEmpty
-} from "../../components/utils/utils";
+} from "../../components/utils/date";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
@@ -134,7 +134,7 @@ export const InterviewInfoSection = ({ interview, teamMembers }) => {
             )}
             <div className={styles.divHorizontal}>
                 <CalendarIcon style={iconStyle} />
-                <Text className={styles.reportLabel}>{getFormattedDateLong(interview.interviewDateTime)}</Text>
+                <Text className={styles.reportLabel}>{getFormattedDate(interview.interviewDateTime)}</Text>
             </div>
             <div className={styles.divHorizontal}>
                 <TimeIcon style={iconStyle} />
@@ -250,7 +250,7 @@ export const InterviewInformationSection = ({ loading, title, interview, onDelet
                     <Space direction='vertical'>
                         <Text className='fs-mask'>{interview.candidate}</Text>
                         <Text className='fs-mask'>{defaultTo(interview.position, "-")}</Text>
-                        <Text>{getFormattedDate(interview.interviewDateTime, "-")}</Text>
+                        <Text>{getFormattedDateTime(interview.interviewDateTime, "-")}</Text>
                     </Space>
                 </Col>
             </Row>

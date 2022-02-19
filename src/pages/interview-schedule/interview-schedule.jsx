@@ -21,13 +21,7 @@ import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import {
-    DATE_FORMAT_DISPLAY_LONG,
-    DATE_FORMAT_SERVER,
-    defaultTimeFormat,
-    POSITIONS,
-    Status,
-} from "../../components/utils/constants";
+import { DATE_FORMAT_SERVER, POSITIONS, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
@@ -38,7 +32,7 @@ import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
-import { getDate } from "../../components/utils/utils";
+import { datePickerFormat, getDate, timePickerFormat } from "../../components/utils/date";
 import { filterOptionLabel } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
@@ -468,19 +462,24 @@ const InterviewSchedule = ({
                     />
                 </Form.Item>
                 <div className={styles.formDate}>
-                    <Form.Item name='date' label={<Text strong>Interview Date</Text>}>
+                    <Form.Item
+                        name='date'
+                        label={<Text strong>Interview Date</Text>}
+                        className={styles.fillWidth}
+                        style={{ marginRight: 16 }}
+                    >
                         <DatePicker
                             allowClear={false}
-                            format={DATE_FORMAT_DISPLAY_LONG}
+                            format={datePickerFormat()}
                             className={styles.fillWidth}
                             onChange={onDateChange}
                         />
                     </Form.Item>
-                    <Form.Item name='time' className={styles.formItemTime}>
+                    <Form.Item name='time' className={styles.fillWidth}>
                         <TimePicker.RangePicker
                             allowClear={false}
                             minuteStep={15}
-                            format={defaultTimeFormat()}
+                            format={timePickerFormat()}
                             className={styles.fillWidth}
                             onChange={onTimeChange}
                         />
