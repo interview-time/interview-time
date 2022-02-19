@@ -34,13 +34,19 @@ namespace CafApi.Services
 
                 if (!string.IsNullOrWhiteSpace(timezone))
                 {
+                    TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById(timezone);
+
                     if (interviewStartDateTime.Kind != DateTimeKind.Utc)
                     {
                         interviewStartDateTime = interviewStartDateTime.ToUniversalTime();
-                    }
-
-                    TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById(timezone);
+                    }                    
                     interviewStartDateTime = TimeZoneInfo.ConvertTimeFromUtc(interviewStartDateTime, tzi);
+
+                    if (interviewEndDateTime.Kind != DateTimeKind.Utc)
+                    {
+                        interviewEndDateTime = interviewEndDateTime.ToUniversalTime();
+                    }
+                    interviewEndDateTime = TimeZoneInfo.ConvertTimeFromUtc(interviewEndDateTime, tzi);
                 }
 
                 dynamic templateData = new
@@ -54,7 +60,7 @@ namespace CafApi.Services
 
                 var description = $"You have a new interview scheduled for {templateData.interviewDate} {templateData.interviewTime} with {candidateName}.\\n\\nHere is the link to the interview scorecard: {templateData.interviewScorecard}";
 
-                if (interviewEndDateTime == DateTime.MinValue || interviewEndDateTime < interviewStartDateTime)
+                if (interviewEndDateTime < interviewStartDateTime)
                 {
                     interviewEndDateTime = interviewEndDateTime.AddHours(1);
                 }
