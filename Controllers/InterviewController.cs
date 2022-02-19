@@ -91,7 +91,7 @@ namespace CafApi.Controllers
                 foreach (var profile in profiles)
                 {
                     var interviewId = interviews.GetValueOrDefault(profile.UserId)?.InterviewId;
-                    await _emailService.SendNewInterviewInvitation(profile.Email, profile.Name, interview.Candidate, interview.InterviewDateTime, interviewId, profile.Timezone, interview.TeamId);
+                    await _emailService.SendNewInterviewInvitation(profile.Email, profile.Name, interview.Candidate, interview.InterviewDateTime, interview.InterviewEndDateTime, interviewId, profile.Timezone, interview.TeamId);
                 }
 
                 return mainInterview;
