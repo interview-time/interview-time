@@ -70,3 +70,12 @@ export const routeTeamSettings = id => {
 export const routeTeamMembers = id => `/team/${id}/settings?tab=members`;
 
 export const routeTeamJoin = () => "/team/join/:id";
+
+export const getParameterByName = (name, url = window.location.href) => {
+    name = name.replace(/[[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+};

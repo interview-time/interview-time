@@ -7,7 +7,7 @@ import { localeCompare } from "../../components/utils/comparators";
 import TableText from "../../components/table/table-text";
 import { orderBy } from "lodash/collection";
 import Title from "antd/lib/typography/Title";
-import { getFormattedDateSimple } from "../../components/utils/utils";
+import { getFormattedDateShort } from "../../components/utils/date";
 import { GithubFilled, LinkedinFilled } from "@ant-design/icons";
 import TableHeader from "../../components/table/table-header";
 import { loadCandidates } from "../../store/candidates/actions";
@@ -56,7 +56,7 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.createdDate, b.createdDate),
             render: candidate => (
-                <TableText className={`fs-mask`}>{getFormattedDateSimple(candidate.createdDate, "-")}</TableText>
+                <TableText className={`fs-mask`}>{getFormattedDateShort(candidate.createdDate, "-")}</TableText>
             ),
         },
         {

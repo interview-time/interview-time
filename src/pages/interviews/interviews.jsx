@@ -12,7 +12,7 @@ import { localeCompare } from "../../components/utils/comparators";
 import { routeInterviewDetails, routeInterviewReport, routeInterviewScorecard } from "../../components/utils/route";
 import Title from "antd/lib/typography/Title";
 import DemoTag from "../../components/demo/demo-tag";
-import { getFormattedDate, orderByInterviewDate } from "../../components/utils/utils";
+import { getFormattedDateTime, orderByInterviewDate } from "../../components/utils/date";
 import { defaultTo } from "lodash/util";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import { ArchiveIcon, CalendarIcon, IdeaIcon, MoreIcon } from "../../components/utils/icons";
@@ -191,7 +191,7 @@ const Interviews = ({
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: interview => (
-                <TableText className={`fs-mask`}>{getFormattedDate(interview.interviewDateTime, "-")}</TableText>
+                <TableText className={`fs-mask`}>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {

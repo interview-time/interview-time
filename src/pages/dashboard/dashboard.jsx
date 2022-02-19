@@ -25,7 +25,7 @@ import TableHeader from "../../components/table/table-header";
 import { localeCompare } from "../../components/utils/comparators";
 import TableText from "../../components/table/table-text";
 import { defaultTo } from "lodash/util";
-import { getFormattedDate } from "../../components/utils/utils";
+import { getFormattedDateTime } from "../../components/utils/date";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
@@ -89,7 +89,7 @@ const Dashboard = ({ interviews, interviewsLoading, templates, activeTeam, loadI
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: interview => (
-                <TableText className={`fs-mask`}>{getFormattedDate(interview.interviewDateTime, "-")}</TableText>
+                <TableText className={`fs-mask`}>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {
