@@ -11,61 +11,61 @@ export const ADD_CATEGORY = "ADD_CATEGORY";
 export const loadQuestionBank = (forceFetch = false) => ({
     type: LOAD_QUESTION_BANK,
     payload: {
-        forceFetch
-    }
+        forceFetch,
+    },
 });
 
-export const setQuestionBank = (questionBank) => ({
+export const setQuestionBank = questionBank => ({
     type: SET_QUESTION_BANK,
-    payload: questionBank
+    payload: questionBank,
 });
 
-export const addQuestion = (question) => ({
+export const addQuestion = question => ({
     type: ADD_QUESTION,
     payload: {
-        question
-    }
+        question,
+    },
 });
 
-export const addQuestions = (questions) => ({
+export const addQuestions = questions => ({
     type: ADD_QUESTIONS,
     payload: {
-        questions
-    }
+        questions,
+    },
 });
 
-export const updateQuestion = (question) => ({
+export const updateQuestion = question => ({
     type: UPDATE_QUESTION,
     payload: {
-        question
-    }
+        question,
+    },
 });
 
 export const deleteQuestion = (questionId, categoryId) => ({
     type: DELETE_QUESTION,
     payload: {
         questionId,
-        categoryId
-    }
+        categoryId,
+    },
 });
 
-export const addCategory = (category) => ({
+export const addCategory = category => ({
     type: ADD_CATEGORY,
     payload: {
-        category
-    }
+        category,
+    },
 });
 
-export const deleteCategory = (category) => ({
+export const deleteCategory = category => ({
     type: DELETE_CATEGORY,
     payload: {
-        category
-    }
+        category,
+    },
 });
 
-export const updateCategory = (category) => ({
+export const updateCategory = category => ({
     type: UPDATE_CATEGORY,
     payload: {
-        category
-    }
+        category,
+    },
 });

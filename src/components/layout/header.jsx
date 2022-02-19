@@ -11,24 +11,25 @@ import { useHistory } from "react-router-dom";
  * @returns {JSX.Element}
  * @constructor
  */
-const Header = ({title, backButton, children}) => {
-
+const Header = ({ title, backButton, children }) => {
     const history = useHistory();
 
     const onBackClicked = () => {
-        history.goBack()
-    }
+        history.goBack();
+    };
 
     return (
-        <div className={styles.header} style={{flexDirection: 'column'}}>
-            {backButton && <div onClick={onBackClicked} style={{ cursor: 'pointer' }}>
-                <ArrowLeftOutlined />
-                <span className={styles.headerTitle}>{title}</span>
-            </div>}
+        <div className={styles.header} style={{ flexDirection: "column" }}>
+            {backButton && (
+                <div onClick={onBackClicked} style={{ cursor: "pointer" }}>
+                    <ArrowLeftOutlined />
+                    <span className={styles.headerTitle}>{title}</span>
+                </div>
+            )}
             {!backButton && <span className={styles.headerTitle}>{title}</span>}
             {children}
         </div>
     );
-}
+};
 
-export default Header
+export default Header;

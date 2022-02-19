@@ -1,13 +1,13 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Avatar, Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip, } from "antd";
-import { createTagColors, InterviewAssessment, Status, } from "../../components/utils/constants";
+import { Avatar, Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
+import { createTagColors, InterviewAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { CloseOutlined, DeleteOutlined, EditOutlined, GithubFilled, LinkedinFilled, } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined, EditOutlined, GithubFilled, LinkedinFilled } from "@ant-design/icons";
 import {
     CalendarIcon,
     MenuIcon,
@@ -21,7 +21,12 @@ import {
     UsersIcon,
 } from "../../components/utils/icons";
 import { interviewToTags } from "../../components/utils/converters";
-import { getFormattedDate, getFormattedDateLong, getFormattedTime, isEmpty } from "../../components/utils/utils";
+import {
+    getFormattedDate,
+    getFormattedDateLong,
+    getFormattedTimeRange,
+    isEmpty
+} from "../../components/utils/utils";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
@@ -76,7 +81,7 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
                 <IntroSection interview={template} />
             </Card>
             <TemplateGroupsSection template={template} />
-            <Card style={{marginTop: 32}}>
+            <Card style={{ marginTop: 32 }}>
                 <SummarySection interview={template} />
             </Card>
         </div>
@@ -89,52 +94,57 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
  * @returns {JSX.Element}
  * @constructor
  */
-export const InterviewInfoSection = ({
-    interview,
-    teamMembers
-}) => {
+export const InterviewInfoSection = ({ interview, teamMembers }) => {
+    const iconStyle = { fontSize: 20, color: "#374151" };
 
-    const iconStyle = { fontSize: 20, color: '#374151' }
+    const getInterviewerName = userId => {
+        return teamMembers && teamMembers.length > 0 ? teamMembers.find(member => member.userId === userId).name : "";
+    };
 
-    const getInterviewerName = (userId) => {
-        return teamMembers && teamMembers.length > 0
-            ? teamMembers.find(member => member.userId === userId).name : "";
-    }
-
-    const getInterviewerNameShort = (name) => {
-        let names = name.split(' ')
+    const getInterviewerNameShort = name => {
+        let names = name.split(" ");
         if (names.length >= 2) {
             // Dmytro Danylyk -> DD
-            return names[0].charAt(0).toUpperCase() + names[1].charAt(0).toUpperCase()
+            return names[0].charAt(0).toUpperCase() + names[1].charAt(0).toUpperCase();
         } else if (name.length > 0) {
             // dmytrodanylyk -> D
-            return name.charAt(0).toUpperCase()
+            return name.charAt(0).toUpperCase();
         } else {
-            return ""
+            return "";
         }
-    }
+    };
 
-    return <Space direction='vertical' size={12}>
-        {interview.interviewers && <div className={styles.divHorizontal}>
-            <UsersIcon style={iconStyle} />
-            <Avatar.Group size={36} style={{ marginLeft: 8 }}>
-                {interview.interviewers
-                    .map(userId => getInterviewerName(userId))
-                    .map(name => <Tooltip title={name} placement="top">
-                        <Avatar className={styles.avatar} gap={8}>{getInterviewerNameShort(name)}</Avatar>
-                    </Tooltip>)}
-            </Avatar.Group>
-        </div>}
-        <div className={styles.divHorizontal}>
-            <CalendarIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>{getFormattedDateLong(interview.interviewDateTime)}</Text>
-        </div>
-        <div className={styles.divHorizontal}>
-            <TimeIcon style={iconStyle} />
-            <Text className={styles.reportLabel}>{getFormattedTime(interview.interviewDateTime)}</Text>
-        </div>
-    </Space>
-}
+    return (
+        <Space direction='vertical' size={12}>
+            {interview.interviewers && (
+                <div className={styles.divHorizontal}>
+                    <UsersIcon style={iconStyle} />
+                    <Avatar.Group size={36} style={{ marginLeft: 8 }}>
+                        {interview.interviewers
+                            .map(userId => getInterviewerName(userId))
+                            .map(name => (
+                                <Tooltip title={name} placement='top'>
+                                    <Avatar className={styles.avatar} gap={8}>
+                                        {getInterviewerNameShort(name)}
+                                    </Avatar>
+                                </Tooltip>
+                            ))}
+                    </Avatar.Group>
+                </div>
+            )}
+            <div className={styles.divHorizontal}>
+                <CalendarIcon style={iconStyle} />
+                <Text className={styles.reportLabel}>{getFormattedDateLong(interview.interviewDateTime)}</Text>
+            </div>
+            <div className={styles.divHorizontal}>
+                <TimeIcon style={iconStyle} />
+                <Text className={styles.reportLabel}>
+                    {getFormattedTimeRange(interview.interviewDateTime, interview.interviewEndDateTime)}
+                </Text>
+            </div>
+        </Space>
+    );
+};
 
 /**
  *
@@ -143,42 +153,46 @@ export const InterviewInfoSection = ({
  * @returns {JSX.Element}
  * @constructor
  */
-export const CandidateInfoSection = ({
-    candidate,
-    className
-}) => {
+export const CandidateInfoSection = ({ candidate, className }) => {
+    const iconStyle = { fontSize: 20, color: "#374151" };
 
-    const iconStyle = { fontSize: 20, color: '#374151' }
-
-    const getUrlPathname = (url) => {
+    const getUrlPathname = url => {
         try {
-            return new URL(candidate.linkedIn).pathname
+            return new URL(candidate.linkedIn).pathname;
         } catch (e) {
-            return url
+            return url;
         }
-    }
+    };
 
-    return <Space className={className} direction='vertical' size={12}>
-        {candidate && candidate.linkedIn && <div className={styles.divHorizontal}>
-            <LinkedinFilled style={iconStyle} />
-            <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
-                {getUrlPathname(candidate.linkedIn)}
-            </a>
-        </div>}
-        {candidate && candidate.gitHub && <div className={styles.divHorizontal}>
-            <GithubFilled style={iconStyle} />
-            <a className={styles.reportLabel} href={candidate.linkedIn} target="_blank" rel="noreferrer">
-                {getUrlPathname(candidate.gitHub)}
-            </a>
-        </div>}
-        {candidate && candidate.resumeUrl && <div className={styles.divHorizontal}>
-            <TextNoteIcon style={iconStyle} />
-            <a className={styles.reportLabel} href={candidate.resumeUrl} target="_blank" rel="noreferrer">
-                resume.pdf
-            </a>
-        </div>}
-    </Space>
-}
+    return (
+        <Space className={className} direction='vertical' size={12}>
+            {candidate && candidate.linkedIn && (
+                <div className={styles.divHorizontal}>
+                    <LinkedinFilled style={iconStyle} />
+                    <a className={styles.reportLabel} href={candidate.linkedIn} target='_blank' rel='noreferrer'>
+                        {getUrlPathname(candidate.linkedIn)}
+                    </a>
+                </div>
+            )}
+            {candidate && candidate.gitHub && (
+                <div className={styles.divHorizontal}>
+                    <GithubFilled style={iconStyle} />
+                    <a className={styles.reportLabel} href={candidate.linkedIn} target='_blank' rel='noreferrer'>
+                        {getUrlPathname(candidate.gitHub)}
+                    </a>
+                </div>
+            )}
+            {candidate && candidate.resumeUrl && (
+                <div className={styles.divHorizontal}>
+                    <TextNoteIcon style={iconStyle} />
+                    <a className={styles.reportLabel} href={candidate.resumeUrl} target='_blank' rel='noreferrer'>
+                        resume.pdf
+                    </a>
+                </div>
+            )}
+        </Space>
+    );
+};
 
 /**
  *
@@ -190,13 +204,7 @@ export const CandidateInfoSection = ({
  * @returns {JSX.Element}
  * @constructor
  */
-export const InterviewInformationSection = ({
-    loading,
-    title,
-    interview,
-    onDeleteInterview,
-    onEditInterview,
-}) => {
+export const InterviewInformationSection = ({ loading, title, interview, onDeleteInterview, onEditInterview }) => {
     const onDeleteClicked = () => {
         Modal.confirm({
             title: "Delete Interview",
@@ -231,17 +239,17 @@ export const InterviewInformationSection = ({
                 )}
             </div>
             <Row style={{ marginTop: "24px" }}>
-                <Col flex="140px">
-                    <Space direction="vertical">
-                        <Text type="secondary">Candidate Name:</Text>
-                        <Text type="secondary">Position:</Text>
-                        <Text type="secondary">Interview Date:</Text>
+                <Col flex='140px'>
+                    <Space direction='vertical'>
+                        <Text type='secondary'>Candidate Name:</Text>
+                        <Text type='secondary'>Position:</Text>
+                        <Text type='secondary'>Interview Date:</Text>
                     </Space>
                 </Col>
-                <Col flex="1">
-                    <Space direction="vertical">
-                        <Text className="fs-mask">{interview.candidate}</Text>
-                        <Text className="fs-mask">{defaultTo(interview.position, "-")}</Text>
+                <Col flex='1'>
+                    <Space direction='vertical'>
+                        <Text className='fs-mask'>{interview.candidate}</Text>
+                        <Text className='fs-mask'>{defaultTo(interview.position, "-")}</Text>
                         <Text>{getFormattedDate(interview.interviewDateTime, "-")}</Text>
                     </Space>
                 </Col>
@@ -268,7 +276,7 @@ export const IntroSection = ({ interview, hashStyle }) => {
 
     return (
         <>
-            <Title id="intro" level={4} className={hashStyle ? hashStyle : null}>
+            <Title id='intro' level={4} className={hashStyle ? hashStyle : null}>
                 💡 Interview reminders
             </Title>
             <div className={styles.multiLineText}>{getHeader()}</div>
@@ -295,7 +303,7 @@ export const SummarySection = ({ interview, hashStyle }) => {
 
     return (
         <>
-            <Title id="summary" level={4} className={hashStyle ? hashStyle : null}>
+            <Title id='summary' level={4} className={hashStyle ? hashStyle : null}>
                 End of interview
             </Title>
             <div className={styles.multiLineText}>{getFooter()}</div>
@@ -338,11 +346,11 @@ const InterviewQuestionsCard = ({
             render: difficulty => {
                 return {
                     props: {
-                        style: { padding: 0, }
+                        style: { padding: 0 },
                     },
-                    children: <QuestionDifficultyTag difficulty={difficulty} />
+                    children: <QuestionDifficultyTag difficulty={difficulty} />,
                 };
-            }
+            },
         },
         {
             title: "Question",
@@ -355,23 +363,23 @@ const InterviewQuestionsCard = ({
             render: question => {
                 return {
                     props: {
-                        style: { padding: 0, }
+                        style: { padding: 0 },
                     },
-                    children: <span className="fs-mask">{question}</span>
+                    children: <span className='fs-mask'>{question}</span>,
                 };
-            }
+            },
         },
         {
             title: "Tags",
             key: "tags",
             dataIndex: "tags",
-            responsive: [tagsVisible ? 'lg' : 'xxl'], // hide tags for 'lg' devices
+            responsive: [tagsVisible ? "lg" : "xxl"], // hide tags for 'lg' devices
             width: 250,
             shouldCellUpdate: (record, prevRecord) => record.tags !== prevRecord.tags,
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
-            render: (tags) => (
+            render: tags => (
                 <>
-                    {defaultTo(tags, []).map((tag) => {
+                    {defaultTo(tags, []).map(tag => {
                         return (
                             <Tag key={tag} className={styles.tag} color={tagColors.get(tag)}>
                                 {tag.toLowerCase()}
@@ -384,12 +392,12 @@ const InterviewQuestionsCard = ({
         {
             title: "Assessment",
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
-            render: (question) => (
+            render: question => (
                 <AssessmentCheckbox
                     key={question.questionId}
                     defaultValue={question.assessment}
                     disabled={disabled}
-                    onChange={(value) => {
+                    onChange={value => {
                         if (onQuestionAssessmentChanged) {
                             onQuestionAssessmentChanged(question.questionId, value);
                         }
@@ -398,7 +406,7 @@ const InterviewQuestionsCard = ({
             ),
             onCell: (record, rowIndex) => {
                 return {
-                    onClick: (event) => event.stopPropagation(),
+                    onClick: event => event.stopPropagation(),
                 };
             },
         },
@@ -406,7 +414,7 @@ const InterviewQuestionsCard = ({
             title: "Notes",
             dataIndex: "",
             key: "notes",
-            width: 48
+            width: 48,
         },
     ];
 
@@ -425,10 +433,14 @@ const InterviewQuestionsCard = ({
         <Menu>
             <Menu.Item onClick={onCollapseClicked}>{!collapsed ? "Collapse section" : "Expand section"}</Menu.Item>
             <Menu.Item onClick={onTagsClicked}>{tagsVisible ? "Hide tags" : "Show tags"}</Menu.Item>
-            {onRemoveGroupClicked && <>
-                <Menu.Divider />
-                <Menu.Item danger onClick={() => onRemoveGroupClicked(group)}>Remove section</Menu.Item>
-            </>}
+            {onRemoveGroupClicked && (
+                <>
+                    <Menu.Divider />
+                    <Menu.Item danger onClick={() => onRemoveGroupClicked(group)}>
+                        Remove section
+                    </Menu.Item>
+                </>
+            )}
         </Menu>
     );
 
@@ -440,17 +452,17 @@ const InterviewQuestionsCard = ({
                         id={group.name}
                         level={4}
                         onClick={onCollapseClicked}
-                        style={{ cursor: "pointer", marginBottom: 0, color: !collapsed ? '#000000d9' : '#C4C4C4' }}
+                        style={{ cursor: "pointer", marginBottom: 0, color: !collapsed ? "#000000d9" : "#C4C4C4" }}
                         className={hashStyle ? hashStyle : null}
                     >
                         {group.name}
                     </Title>
-                    <span style={{ color: !collapsed ? '#6B7280' : '#C4C4C4' }}>
+                    <span style={{ color: !collapsed ? "#6B7280" : "#C4C4C4" }}>
                         ({group.questions.length} questions)
                     </span>
                 </Space>
                 <Dropdown overlay={menu}>
-                    <MenuIcon style={{ cursor: "pointer"}} />
+                    <MenuIcon style={{ cursor: "pointer" }} />
                 </Dropdown>
             </div>
             {!collapsed && (
@@ -459,7 +471,7 @@ const InterviewQuestionsCard = ({
                     <Table
                         columns={columns}
                         scroll={{
-                            x: screens.lg ? false : 'max-content' // turn off table scrolling for 'lg' devices
+                            x: screens.lg ? false : "max-content", // turn off table scrolling for 'lg' devices
                         }}
                         dataSource={group.questions.map((question, index) => {
                             question.key = index;
@@ -470,43 +482,34 @@ const InterviewQuestionsCard = ({
                         expandable={
                             !disabled
                                 ? {
-                                    expandIconColumnIndex: 5,
-                                    expandRowByClick: true,
-                                    defaultExpandedRowKeys: group.questions.map((question, index) => {
-                                        if (question.notes) return index;
-                                        return null;
-                                    }),
-                                    expandedRowRender: (question) => (
-                                        <TextArea
-                                            className={styles.questionNotesArea + " fs-mask"}
-                                            placeholder="Notes"
-                                            bordered={false}
-                                            autoSize={true}
-                                            autoFocus={true}
-                                            defaultValue={question.notes}
-                                            onChange={(e) => {
-                                                if (onQuestionNotesChanged) {
-                                                    onQuestionNotesChanged(
-                                                        question.questionId,
-                                                        e.target.value
-                                                    );
-                                                }
-                                            }}
-                                        />
-                                    ),
-                                    expandIcon: ({ onExpand, record }) =>
-                                        !isEmpty(record.notes) ? (
-                                            <NoteIcon
-                                                style={primaryIconStyle}
-                                                onClick={(e) => onExpand(record, e)}
-                                            />
-                                        ) : (
-                                            <NoteIcon
-                                                style={greyIconStyle}
-                                                onClick={(e) => onExpand(record, e)}
-                                            />
-                                        ),
-                                }
+                                      expandIconColumnIndex: 5,
+                                      expandRowByClick: true,
+                                      defaultExpandedRowKeys: group.questions.map((question, index) => {
+                                          if (question.notes) return index;
+                                          return null;
+                                      }),
+                                      expandedRowRender: question => (
+                                          <TextArea
+                                              className={styles.questionNotesArea + " fs-mask"}
+                                              placeholder='Notes'
+                                              bordered={false}
+                                              autoSize={true}
+                                              autoFocus={true}
+                                              defaultValue={question.notes}
+                                              onChange={e => {
+                                                  if (onQuestionNotesChanged) {
+                                                      onQuestionNotesChanged(question.questionId, e.target.value);
+                                                  }
+                                              }}
+                                          />
+                                      ),
+                                      expandIcon: ({ onExpand, record }) =>
+                                          !isEmpty(record.notes) ? (
+                                              <NoteIcon style={primaryIconStyle} onClick={e => onExpand(record, e)} />
+                                          ) : (
+                                              <NoteIcon style={greyIconStyle} onClick={e => onExpand(record, e)} />
+                                          ),
+                                  }
                                 : null
                         }
                     />
@@ -527,7 +530,7 @@ const InterviewQuestionsCard = ({
 export const InterviewAssessmentButtons = ({ assessment, disabled, onAssessmentChanged }) => {
     const [activeAssessment, setActiveAssessment] = React.useState(assessment);
 
-    const onButtonClicked = (groupAssessment) => {
+    const onButtonClicked = groupAssessment => {
         if (!disabled) {
             if (activeAssessment === groupAssessment) {
                 setActiveAssessment(null);
@@ -538,19 +541,19 @@ export const InterviewAssessmentButtons = ({ assessment, disabled, onAssessmentC
         }
     };
 
-    const getAssessmentTextBlue = (assessment) =>
+    const getAssessmentTextBlue = assessment =>
         activeAssessment === assessment ? styles.assessmentTextGreen : styles.assessmentText;
 
-    const getAssessmentTextRed = (assessment) =>
+    const getAssessmentTextRed = assessment =>
         activeAssessment === assessment ? styles.assessmentTextRed : styles.assessmentText;
 
-    const getAssessmentButtonBlue = (assessment) =>
+    const getAssessmentButtonBlue = assessment =>
         activeAssessment === assessment ? styles.assessmentButtonGreenActive : styles.assessmentButtonGreen;
 
-    const getAssessmentButtonRed = (assessment) =>
+    const getAssessmentButtonRed = assessment =>
         activeAssessment === assessment ? styles.assessmentButtonRedActive : styles.assessmentButtonRed;
 
-    const getAssessmentIconStyle = (assessment) =>
+    const getAssessmentIconStyle = assessment =>
         activeAssessment === assessment ? styles.assessmentIconActive : styles.assessmentIcon;
 
     return (

@@ -12,49 +12,43 @@ import { isNotesExpanded, setNotesExpanded } from "../../components/utils/storag
 import Title from "antd/lib/typography/Title";
 
 const Account = () => {
-
     const { logout, user } = useAuth0();
 
     const getUserName = () => {
         if (user && user.name) {
             return user.name;
         }
-        return 'Profile'
-    }
+        return "Profile";
+    };
 
     const getUserEmail = () => {
         if (user && user.email) {
             return user.email;
         }
-        return ''
-    }
+        return "";
+    };
 
     const onSignOutClicked = () => {
-        logout({ returnTo: window.location.origin })
-    }
+        logout({ returnTo: window.location.origin });
+    };
 
-    const onStickyNotesChange = (checked) => {
-        setNotesExpanded(checked)
-    }
+    const onStickyNotesChange = checked => {
+        setNotesExpanded(checked);
+    };
 
     return (
-        <Layout pageHeader={
-            <StickyHeader title="Profile" />
-        } contentStyle={styles.pageContent}>
+        <Layout pageHeader={<StickyHeader title='Profile' />} contentStyle={styles.pageContent}>
             <Row>
                 <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                     <Card>
                         <Meta
-                            avatar={
-                                <Avatar
-                                    src={user ? user.picture : null}
-                                    size={48}
-                                    icon={<ProfileIcon />} />
-                            }
+                            avatar={<Avatar src={user ? user.picture : null} size={48} icon={<ProfileIcon />} />}
                             title={getUserName()}
                             description={getUserEmail()}
                         />
-                        <Button className={styles.button} onClick={onSignOutClicked}>Sign out</Button>
+                        <Button className={styles.button} onClick={onSignOutClicked}>
+                            Sign out
+                        </Button>
                         <Divider />
                         <div className={styles.container}>
                             <Title level={4}>Settings</Title>
@@ -67,6 +61,6 @@ const Account = () => {
                 </Col>
             </Row>
         </Layout>
-    )
-}
+    );
+};
 export default Account;

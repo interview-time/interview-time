@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
-import { Button, Col, Divider, Form, Input, Row, Space, Upload, message } from "antd";
+import { Button, Col, Divider, Form, Input, message, Row, Space, Upload } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { createCandidate } from "../../store/candidates/actions";
@@ -9,14 +9,14 @@ import Spinner from "../../components/spinner/spinner";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
-import { config, getActiveTeamId } from "../../store/common";
+import { config } from "../../store/common";
 import styles from "./interview-schedule.module.css";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
 
 const { Dragger } = Upload;
 
-const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCancel }) => {
+const CreateCandidate = ({ candidates, teamId, loading, createCandidate, onSave, onCancel }) => {
     const [candidateName, setCandidateName] = useState();
     const [candidateId, setCandidateId] = useState();
     const [resumeFile, setResumeFile] = useState();
@@ -27,7 +27,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
         }
     }, [loading, candidateName, onSave]);
 
-    const uploadFile = async (options) => {
+    const uploadFile = async options => {
         const { onSuccess, onError, file, onProgress } = options;
         log(file);
         const candidateIdUuid = uuidv4();
@@ -42,26 +42,25 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
         setResumeFile(filename);
 
         const axiosConfig = {
-            onUploadProgress: (event) => {
+            onUploadProgress: event => {
                 onProgress({ percent: (event.loaded / event.total) * 100 });
             },
         };
 
-        const teamId = getActiveTeamId();
         const url = `${process.env.REACT_APP_API_URL}/candidate/upload-signed-url/${teamId}/${candidateIdUuid}/${filename}`;
 
         getAccessTokenSilently()
-            .then((token) => axios.get(url, config(token)))
-            .then((res) => {
+            .then(token => axios.get(url, config(token)))
+            .then(res => {
                 axios
                     .put(res.data, file, axiosConfig)
-                    .then((res) => onSuccess("Ok"))
-                    .catch((err) => {
+                    .then(res => onSuccess("Ok"))
+                    .catch(err => {
                         onError({ err });
                         setResumeFile(null);
                     });
             })
-            .catch((reason) => {
+            .catch(reason => {
                 console.error(reason);
                 setResumeFile(null);
             });
@@ -79,14 +78,14 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                 </div>
             </div>
             <Form
-                name="basic"
-                layout="vertical"
+                name='basic'
+                layout='vertical'
                 initialValues={{
                     candidateName: "",
                     linkedin: "",
                     github: "",
                 }}
-                onFinish={(values) => {
+                onFinish={values => {
                     createCandidate({
                         ...values,
                         candidateId: candidateId,
@@ -98,7 +97,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                 <Row gutter={16} style={{ marginTop: 16 }}>
                     <Col span={24}>
                         <Form.Item
-                            name="candidateName"
+                            name='candidateName'
                             label={<Text strong>Candidate</Text>}
                             rules={[
                                 {
@@ -107,14 +106,14 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                                 },
                             ]}
                         >
-                            <Input className="fs-mask" placeholder="Candidate's full name" />
+                            <Input className='fs-mask' placeholder="Candidate's full name" />
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
                     <Col span={24}>
                         <Form.Item
-                            name="linkedin"
+                            name='linkedin'
                             label={<Text strong>LinkedIn</Text>}
                             rules={[
                                 {
@@ -122,14 +121,14 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                                 },
                             ]}
                         >
-                            <Input className="fs-mask" placeholder="Candidate's LinkedIn page" />
+                            <Input className='fs-mask' placeholder="Candidate's LinkedIn page" />
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
                     <Col span={24}>
                         <Form.Item
-                            name="github"
+                            name='github'
                             label={<Text strong>GitHub</Text>}
                             rules={[
                                 {
@@ -137,43 +136,41 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                                 },
                             ]}
                         >
-                            <Input className="fs-mask" placeholder="Candidate's GitHub account" />
+                            <Input className='fs-mask' placeholder="Candidate's GitHub account" />
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={16} style={{ marginTop: 16 }}>
                     <Col span={24}>
                         <Dragger
-                            name="file"
+                            name='file'
                             maxCount={1}
                             style={{ display: resumeFile ? "none" : "block" }}
                             multiple={false}
-                            listType="picture"
+                            listType='picture'
                             customRequest={uploadFile}
-                            onChange={(info) => {
+                            onChange={info => {
                                 const { status } = info.file;
                                 if (status !== "uploading") {
                                     log(info.file, info.fileList);
                                 }
                                 if (status === "done") {
-                                    message.success(
-                                        `${info.file.name} file uploaded successfully.`
-                                    );
+                                    message.success(`${info.file.name} file uploaded successfully.`);
                                 } else if (status === "error") {
                                     message.error(`${info.file.name} file upload failed.`);
                                 }
                             }}
-                            onRemove={(file) => {
+                            onRemove={file => {
                                 setResumeFile(null);
                             }}
-                            onDrop={(e) => {
+                            onDrop={e => {
                                 log("Dropped files", e.dataTransfer.files);
                             }}
                         >
-                            <p className="ant-upload-drag-icon">
+                            <p className='ant-upload-drag-icon'>
                                 <InboxOutlined />
                             </p>
-                            <p className="ant-upload-text">
+                            <p className='ant-upload-text'>
                                 Click to upload or drag and drop a PDF, DOC or DOCX upto 10 MB
                             </p>
                         </Dragger>
@@ -186,7 +183,7 @@ const CreateCandidate = ({ candidates, loading, createCandidate, onSave, onCance
                     <Text />
                     <Space>
                         <Button onClick={onCancel}>Cancel</Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button type='primary' htmlType='submit'>
                             Save
                         </Button>
                     </Space>
@@ -200,7 +197,7 @@ const mapDispatch = {
     createCandidate,
 };
 
-const mapState = (state) => {
+const mapState = state => {
     const candidatesState = state.candidates || {};
 
     return {

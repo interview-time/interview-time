@@ -19,6 +19,7 @@ module.exports = {
                             "@font-family": "'Inter', 'system-ui'",
                             "@height-base": "44px",
                             "@btn-font-weight": "500",
+                            "@pagination-item-size": "32px",
                         },
                         javascriptEnabled: true,
                     },

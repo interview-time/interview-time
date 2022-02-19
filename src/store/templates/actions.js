@@ -9,73 +9,87 @@ export const LOAD_SHARED_TEMPLATE = "LOAD_SHARED_TEMPLATE";
 export const SET_SHARED_TEMPLATE = "SET_SHARED_TEMPLATE";
 export const SHARE_TEMPLATE = "SHARE_TEMPLATE";
 
-export const loadTemplates = (forceFetch = false) => ({
-    type: LOAD_TEMPLATES,
-    payload: {
-        forceFetch
-    }
-});
+export function loadTemplates(forceFetch = false) {
+    return (dispatch, getState) => {
+        const { user } = getState();
+
+        dispatch({
+            type: LOAD_TEMPLATES,
+            payload: {
+                forceFetch: forceFetch,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
 
 export const loadLibrary = (forceFetch = false) => ({
     type: LOAD_LIBRARY,
     payload: {
-        forceFetch
-    }
+        forceFetch,
+    },
 });
 
-export const setTemplates = (templates) => ({
+export const setTemplates = templates => ({
     type: SET_TEMPLATES,
     payload: {
-        templates
-    }
+        templates,
+    },
 });
 
-export const setLibrary = (library) => ({
+export const setLibrary = library => ({
     type: SET_LIBRARY,
     payload: {
-        library
-    }
+        library,
+    },
 });
 
-export const addTemplate = (template) => ({
-    type: ADD_TEMPLATE,
-    payload: {
-        template
-    }
-});
+export function addTemplate(template) {
+    return (dispatch, getState) => {
+        const { user } = getState();
 
-export const updateTemplate = (template) => ({
+        dispatch({
+            type: ADD_TEMPLATE,
+            payload: {
+                template: template,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
+
+export const updateTemplate = template => ({
     type: UPDATE_TEMPLATE,
     payload: {
-        template
-    }
+        template,
+    },
 });
 
-export const deleteTemplate = (templateId) => ({
+export const deleteTemplate = templateId => ({
     type: DELETE_TEMPLATE,
     payload: {
-        templateId
-    }
+        templateId,
+    },
 });
 
-export const loadSharedTemplate = (token) => ({
+export const loadSharedTemplate = token => ({
     type: LOAD_SHARED_TEMPLATE,
     payload: {
-        token
-    }
+        token,
+    },
 });
 
-export const setSharedTemplate = (template) => ({
+export const setSharedTemplate = template => ({
     type: SET_SHARED_TEMPLATE,
     payload: {
-        template
-    }
+        template,
+    },
 });
 
 export const shareTemplate = (templateId, share) => ({
     type: SHARE_TEMPLATE,
     payload: {
         templateId,
-        share
-    }
+        share,
+    },
 });

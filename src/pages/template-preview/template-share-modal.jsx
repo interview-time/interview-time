@@ -17,7 +17,6 @@ import { CheckOutlined } from "@ant-design/icons";
  * @constructor
  */
 const TemplateShareModal = ({ visible, shared, token, onShareChange, onClose }) => {
-
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
@@ -40,46 +39,45 @@ const TemplateShareModal = ({ visible, shared, token, onShareChange, onClose }) 
     }, [copied]);
 
     const onCancelClicked = () => {
-        onClose()
-    }
+        onClose();
+    };
 
     const onCopyClicked = () => {
-        setCopied(true)
-    }
+        setCopied(true);
+    };
 
-    const getSharedURL = () => token ? `https://app.interviewer.space/template/shared/${token}` : null
+    const getSharedURL = () => (token ? `https://app.interviewer.space/template/shared/${token}` : null);
 
-    const copyButton = <CopyToClipboard text={getSharedURL()} onCopy={onCopyClicked}>
-        <Button type="text"
-                size="small"
-                icon={copied ? <CheckOutlined /> : null}>
-            {copied ? "Copied" : "Copy"}
-        </Button>
-    </CopyToClipboard>
+    const copyButton = (
+        <CopyToClipboard text={getSharedURL()} onCopy={onCopyClicked}>
+            <Button type='text' size='small' icon={copied ? <CheckOutlined /> : null}>
+                {copied ? "Copied" : "Copy"}
+            </Button>
+        </CopyToClipboard>
+    );
 
     return (
-        <Modal destroyOnClose={true}
-               title={"Template Sharing"}
-               closable={true}
-               okText={"Send feedback"}
-               cancelText="Cancel"
-               visible={visible}
-               footer={null}
-               onCancel={onCancelClicked}
+        <Modal
+            destroyOnClose={true}
+            title={"Template Sharing"}
+            closable={true}
+            okText={"Send feedback"}
+            cancelText='Cancel'
+            visible={visible}
+            footer={null}
+            onCancel={onCancelClicked}
         >
             <div className={styles.divSpaceBetween}>
-                <Space direction="vertical">
+                <Space direction='vertical'>
                     <Text strong>Share to web</Text>
-                    <Text type="secondary">Anyone with the link can view and use.</Text>
+                    <Text type='secondary'>Anyone with the link can view and use.</Text>
                 </Space>
                 <Switch onChange={onShareChange} defaultChecked={shared} />
             </div>
 
-            {shared && token && <Input className={styles.urlInput}
-                                       addonAfter={copyButton}
-                                       value={getSharedURL()} />}
+            {shared && token && <Input className={styles.urlInput} addonAfter={copyButton} value={getSharedURL()} />}
         </Modal>
     );
-}
+};
 
-export default TemplateShareModal
+export default TemplateShareModal;

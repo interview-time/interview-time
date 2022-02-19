@@ -19,14 +19,14 @@ export const loadProfile = (name, email, forceFetch = false) => ({
     },
 });
 
-export const setupUser = (profile) => ({
+export const setupUser = profile => ({
     type: SETUP_USER,
     payload: {
         profile,
     },
 });
 
-export const setProfile = (profile) => ({
+export const setProfile = profile => ({
     type: SET_PROFILE,
     payload: {
         profile,
@@ -46,11 +46,11 @@ export const setActiveTeam = (team, reloadData = true) => ({
  * @param {Team} team
  * @returns {{payload: {team}, type: Team}}
  */
-export const createTeam = (team) => ({
+export const createTeam = team => ({
     type: CREATE_TEAM,
     payload: {
-        team
-    }
+        team,
+    },
 });
 
 /**
@@ -58,24 +58,23 @@ export const createTeam = (team) => ({
  * @param {Team} team
  * @returns {{payload: {team}, type: Team}}
  */
-export const updateTeam = (team) => ({
+export const updateTeam = team => ({
     type: UPDATE_TEAM,
     payload: {
-        team
-    }
+        team,
+    },
 });
-
 
 /**
  *
  * @param {String} teamId
  * @returns {{payload: {teamId}, type: String}}
  */
-export const deleteTeam = (teamId) => ({
+export const deleteTeam = teamId => ({
     type: DELETE_TEAM,
     payload: {
-        teamId
-    }
+        teamId,
+    },
 });
 
 /**
@@ -83,11 +82,11 @@ export const deleteTeam = (teamId) => ({
  * @param {String} teamId
  * @returns {{payload: {teamId}, type: String}}
  */
-export const leaveTeam = (teamId) => ({
+export const leaveTeam = teamId => ({
     type: LEAVE_TEAM,
     payload: {
-        teamId
-    }
+        teamId,
+    },
 });
 
 /**
@@ -95,11 +94,11 @@ export const leaveTeam = (teamId) => ({
  * @param {String} teamId
  * @returns {{payload: {teamId}, type: String}}
  */
-export const loadTeamMembers = (teamId) => ({
+export const loadTeamMembers = teamId => ({
     type: LOAD_TEAM_MEMBERS,
     payload: {
-        teamId
-    }
+        teamId,
+    },
 });
 
 /**
@@ -107,11 +106,11 @@ export const loadTeamMembers = (teamId) => ({
  * @param {TeamMember[]} members
  * @returns {{payload: {members}, type: string}}
  */
-export const setTeamMembers = (members) => ({
+export const setTeamMembers = members => ({
     type: SET_TEAM_MEMBERS,
     payload: {
-        members
-    }
+        members,
+    },
 });
 
 /**
@@ -119,9 +118,9 @@ export const setTeamMembers = (members) => ({
  * @param {{token: string, role: string}} team
  * @returns {{payload: {token: string, role: string}, type: String}}
  */
-export const joinTeam = (team) => ({
+export const joinTeam = team => ({
     type: JOIN_TEAM,
     payload: {
-        team
-    }
+        team,
+    },
 });

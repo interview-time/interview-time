@@ -31,11 +31,17 @@
     font-size: 18px;
     color: rgba(0, 0, 0, 0.45);
 }
+
 .divRight {
     display: flex;
     align-items: center;
     justify-content: right;
     margin-bottom: 12px;
+}
+
+.select {
+    min-width: 230px;
+    margin-left: 16px;
 }
 
 .headerSearch {

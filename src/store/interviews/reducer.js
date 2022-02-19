@@ -1,5 +1,5 @@
 import {
-    ADD_INTERVIEW, ADD_INTERVIEW_WITH_TEMPLATE,
+    ADD_INTERVIEW,
     DELETE_INTERVIEW,
     LOAD_INTERVIEWS,
     loadInterviews,
@@ -7,14 +7,13 @@ import {
     SET_UPLOADING,
     setInterviews,
     setUploading,
-    UPDATE_SCORECARD,
     UPDATE_INTERVIEW,
+    UPDATE_SCORECARD
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
-import { config, getActiveTeamId } from "../common";
-import { loadTemplates } from "../templates/actions";
+import { config } from "../common";
 import { log } from "../../components/utils/log";
 
 /**
@@ -24,24 +23,19 @@ import { log } from "../../components/utils/log";
 const initialState = {
     interviews: [],
     loading: false,
-    uploading: false
+    uploading: false,
 };
 
 const URL = `${process.env.REACT_APP_API_URL}/interview`;
 
 const interviewsReducer = (state = initialState, action) => {
-
     switch (action.type) {
-
         case LOAD_INTERVIEWS: {
-            const { forceFetch } = action.payload
-
-            const teamId = getActiveTeamId();
-            const url = teamId ? `${URL}/${teamId}` : URL;
+            const { forceFetch, teamId } = action.payload;
 
             if (forceFetch || (state.interviews.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then(token => axios.get(url, config(token)))
+                    .then(token => axios.get(`${URL}/${teamId}`, config(token)))
                     .then(res => store.dispatch(setInterviews(res.data || [])))
                     .catch(reason => console.error(reason));
 
@@ -53,10 +47,22 @@ const interviewsReducer = (state = initialState, action) => {
 
         case SET_INTERVIEWS: {
             const { interviews } = action.payload;
+
+            // backward compatibility
+            interviews.forEach(interview => {
+                if (!interview.templateIds || interview.templateIds.length === 0) {
+                    if (interview.templateId) {
+                        interview.templateIds = [interview.templateId];
+                    } else {
+                        interview.templateIds = [];
+                    }
+                }
+            });
+
             return {
                 ...state,
                 interviews: interviews,
-                loading: false
+                loading: false,
             };
         }
 
@@ -64,14 +70,14 @@ const interviewsReducer = (state = initialState, action) => {
             const { uploading } = action.payload;
             return {
                 ...state,
-                uploading: uploading
+                uploading: uploading,
             };
         }
 
         case ADD_INTERVIEW: {
-            const { interview } = action.payload;
-            interview.interviewId = Date.now().toString()
-            interview.teamId = getActiveTeamId();
+            const { interview, teamId } = action.payload;
+            interview.interviewId = Date.now().toString();
+            interview.teamId = teamId;
 
             getAccessTokenSilently()
                 .then(token => axios.post(URL, interview, config(token)))
@@ -81,40 +87,7 @@ const interviewsReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                interviews: [...state.interviews, interview]
-            };
-        }
-
-        case ADD_INTERVIEW_WITH_TEMPLATE: {
-            const template = action.payload.template;
-            const interview = action.payload.interview;
-
-            template.templateId = Date.now().toString();
-            interview.interviewId = Date.now().toString()
-            interview.teamId = getActiveTeamId();
-
-            const templateURL = `${process.env.REACT_APP_API_URL}/template`;
-
-            getAccessTokenSilently()
-                .then(token => {
-                    let tokenPromise = Promise.resolve(token)
-                    let templatePromise = axios.post(templateURL, template, config(token))
-                    return Promise.all([tokenPromise, templatePromise])
-                })
-                .then(res => {
-                    let token = res[0]
-                    let template = res[1].data
-                    interview.templateId = template.templateId
-                    return axios.post(URL, interview, config(token))
-                })
-                .then(() => log(`Interview added: ${JSON.stringify(interview)}`))
-                .then(() => store.dispatch(loadInterviews(true)))
-                .then(() => store.dispatch(loadTemplates(true)))
-                .catch(reason => console.error(reason));
-
-            return {
-                ...state,
-                interviews: [...state.interviews, interview]
+                interviews: [...state.interviews, interview],
             };
         }
 
@@ -122,16 +95,16 @@ const interviewsReducer = (state = initialState, action) => {
             const { interview } = action.payload;
 
             interview.modifiedDate = new Date();
-            
+
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))
                 .then(() => log(`SCORECARD updated: ${JSON.stringify(interview)}`))
                 .then(() => {
-                    store.dispatch(setUploading(false))
+                    store.dispatch(setUploading(false));
                 })
                 .catch(reason => {
-                    store.dispatch(setUploading(false))
-                    console.error(reason)
+                    store.dispatch(setUploading(false));
+                    console.error(reason);
                 });
 
             const interviews = state.interviews.map(item => {
@@ -140,14 +113,15 @@ const interviewsReducer = (state = initialState, action) => {
                 }
 
                 return {
-                    ...item, ...interview
-                }
+                    ...item,
+                    ...interview,
+                };
             });
 
             return {
                 ...state,
                 interviews: interviews,
-                uploading: true
+                uploading: true,
             };
         }
 
@@ -158,12 +132,12 @@ const interviewsReducer = (state = initialState, action) => {
                 .then(token => axios.put(URL, interview, config(token)))
                 .then(() => log(`Interview updated: ${JSON.stringify(interview)}`))
                 .then(() => {
-                    store.dispatch(setUploading(false))
-                    store.dispatch(loadInterviews(true))
+                    store.dispatch(setUploading(false));
+                    store.dispatch(loadInterviews(true));
                 })
                 .catch(reason => {
-                    store.dispatch(setUploading(false))
-                    console.error(reason)
+                    store.dispatch(setUploading(false));
+                    console.error(reason);
                 });
 
             const interviews = state.interviews.map(item => {
@@ -172,14 +146,15 @@ const interviewsReducer = (state = initialState, action) => {
                 }
 
                 return {
-                    ...item, ...interview
-                }
+                    ...item,
+                    ...interview,
+                };
             });
 
             return {
                 ...state,
                 interviews: interviews,
-                uploading: true
+                uploading: true,
             };
         }
 
@@ -194,13 +169,13 @@ const interviewsReducer = (state = initialState, action) => {
             const interviews = state.interviews.filter(item => item.interviewId !== interviewId);
             return {
                 ...state,
-                interviews: interviews
+                interviews: interviews,
             };
         }
 
         default:
             return state;
     }
-}
+};
 
 export default interviewsReducer;

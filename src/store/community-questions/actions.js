@@ -4,13 +4,13 @@ export const SET_COMMUNITY_CATEGORIES = "SET_COMMUNITY_CATEGORIES";
 export const loadCommunityCategories = (forceFetch = false) => ({
     type: LOAD_COMMUNITY_CATEGORIES,
     payload: {
-        forceFetch
-    }
+        forceFetch,
+    },
 });
 
-export const setCommunityCategories = (categories) => ({
+export const setCommunityCategories = categories => ({
     type: SET_COMMUNITY_CATEGORIES,
     payload: {
-        categories
-    }
+        categories,
+    },
 });

@@ -1,6 +1,7 @@
 import {
     ADD_CATEGORY,
-    ADD_QUESTION, ADD_QUESTIONS,
+    ADD_QUESTION,
+    ADD_QUESTIONS,
     DELETE_CATEGORY,
     DELETE_QUESTION,
     LOAD_QUESTION_BANK,
@@ -17,7 +18,7 @@ import { config } from "../common";
 import { cloneDeep } from "lodash/lang";
 import { orderBy } from "lodash/collection";
 import { findCategory } from "../../components/utils/converters";
-import { findIndex} from "lodash/array";
+import { findIndex } from "lodash/array";
 import { log } from "../../components/utils/log";
 
 /**
@@ -26,18 +27,17 @@ import { log } from "../../components/utils/log";
  */
 const initialState = {
     categories: [],
-    loading: false
+    loading: false,
 };
 
 const URL = `${process.env.REACT_APP_API_URL}/question-bank`;
 
 const questionBankReducer = (state = initialState, action) => {
     switch (action.type) {
-
         case LOAD_QUESTION_BANK: {
             const { forceFetch } = action.payload;
 
-            if(forceFetch || (state.categories.length === 0 && !state.loading)) {
+            if (forceFetch || (state.categories.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
                     .then(token => axios.get(`${URL}/new`, config(token)))
                     .then(res => store.dispatch(setQuestionBank(res.data)))
@@ -50,15 +50,13 @@ const questionBankReducer = (state = initialState, action) => {
         }
 
         case SET_QUESTION_BANK: {
-            const categories = action.payload.filter(c => c.category.isActive)
-            categories.forEach(c =>
-                c.questions = orderBy(c.questions, ['createdDate'], ['asc'])
-            )
+            const categories = action.payload.filter(c => c.category.isActive);
+            categories.forEach(c => (c.questions = orderBy(c.questions, ["createdDate"], ["asc"])));
 
             return {
                 ...state,
                 categories: categories,
-                loading: false
+                loading: false,
             };
         }
 
@@ -71,13 +69,13 @@ const questionBankReducer = (state = initialState, action) => {
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
-            const categories = cloneDeep(state.categories)
-            const index = findIndex(categories, c => c.category.categoryId === category.categoryId)
-            categories[index].category = category
+            const categories = cloneDeep(state.categories);
+            const index = findIndex(categories, c => c.category.categoryId === category.categoryId);
+            categories[index].category = category;
 
             return {
                 ...state,
-                categories: categories
+                categories: categories,
             };
         }
 
@@ -91,7 +89,7 @@ const questionBankReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                categories: state.categories.filter(c => c.category.categoryId !== category.categoryId)
+                categories: state.categories.filter(c => c.category.categoryId !== category.categoryId),
             };
         }
 
@@ -100,39 +98,37 @@ const questionBankReducer = (state = initialState, action) => {
             question.questionId = Date.now().toString();
 
             getAccessTokenSilently()
-                .then((token) => axios.post(URL, question, config(token)))
+                .then(token => axios.post(URL, question, config(token)))
                 .then(() => log(`Question added: ${JSON.stringify(question)}`))
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
-            const categories = cloneDeep(state.categories)
-            findCategory(question.categoryId, categories).questions
-                .push(question)
+            const categories = cloneDeep(state.categories);
+            findCategory(question.categoryId, categories).questions.push(question);
 
             return {
                 ...state,
-                categories: categories
+                categories: categories,
             };
         }
 
         case ADD_QUESTIONS: {
-            const questionId = Date.now().toString()
+            const questionId = Date.now().toString();
             const { questions } = action.payload;
-            questions.forEach((question, index) => question.questionId = questionId + index)
+            questions.forEach((question, index) => (question.questionId = questionId + index));
 
             getAccessTokenSilently()
-                .then((token) => axios.post(`${URL}/questions`, questions, config(token)))
+                .then(token => axios.post(`${URL}/questions`, questions, config(token)))
                 .then(() => log(`Question added: ${JSON.stringify(questions)}`))
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
-            const categories = cloneDeep(state.categories)
-            findCategory(questions[0].categoryId, categories).questions
-                .push(questions)
+            const categories = cloneDeep(state.categories);
+            findCategory(questions[0].categoryId, categories).questions.push(questions);
 
             return {
                 ...state,
-                categories: categories
+                categories: categories,
             };
         }
 
@@ -145,14 +141,14 @@ const questionBankReducer = (state = initialState, action) => {
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
 
-            const categories = cloneDeep(state.categories)
-            const category = findCategory(question.categoryId, categories)
-            const index = findIndex(category.questions, q => q.questionId === question.questionId)
-            category.questions[index] = question
+            const categories = cloneDeep(state.categories);
+            const category = findCategory(question.categoryId, categories);
+            const index = findIndex(category.questions, q => q.questionId === question.questionId);
+            category.questions[index] = question;
 
             return {
                 ...state,
-                categories: categories
+                categories: categories,
             };
         }
 
@@ -164,13 +160,13 @@ const questionBankReducer = (state = initialState, action) => {
                 .then(() => log(`Question removed: ${JSON.stringify(questionId)}`))
                 .catch(reason => console.error(reason));
 
-            const categories = cloneDeep(state.categories)
-            const category = findCategory(categoryId, categories)
-            category.questions = category.questions.filter(q => q.questionId !== questionId)
+            const categories = cloneDeep(state.categories);
+            const category = findCategory(categoryId, categories);
+            category.questions = category.questions.filter(q => q.questionId !== questionId);
 
             return {
                 ...state,
-                categories: categories
+                categories: categories,
             };
         }
 
@@ -178,7 +174,7 @@ const questionBankReducer = (state = initialState, action) => {
             const { category } = action.payload;
 
             getAccessTokenSilently()
-                .then(token => axios.post(`${URL}/category`, {categoryName: category.categoryName}, config(token)))
+                .then(token => axios.post(`${URL}/category`, { categoryName: category.categoryName }, config(token)))
                 .then(() => log(`Category created ${category.categoryName}`))
                 .then(() => store.dispatch(loadQuestionBank(true)))
                 .catch(reason => console.error(reason));
@@ -189,6 +185,6 @@ const questionBankReducer = (state = initialState, action) => {
         default:
             return state;
     }
-}
+};
 
 export default questionBankReducer;

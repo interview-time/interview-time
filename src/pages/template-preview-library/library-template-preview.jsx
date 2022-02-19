@@ -22,7 +22,6 @@ import Card from "../../components/card/card";
  * @constructor
  */
 const LibraryTemplatePreview = ({ library, loadLibrary }) => {
-
     /**
      *
      * @type {Template}
@@ -45,7 +44,7 @@ const LibraryTemplatePreview = ({ library, loadLibrary }) => {
 
     useEffect(() => {
         if (!template.libraryId && library.length !== 0) {
-            setTemplate(findLibraryTemplate(id, library))
+            setTemplate(findLibraryTemplate(id, library));
         }
         // eslint-disable-next-line
     }, [library, id]);
@@ -57,11 +56,11 @@ const LibraryTemplatePreview = ({ library, loadLibrary }) => {
 
     const onBackClicked = () => {
         history.goBack();
-    }
+    };
 
     const onUseTemplateClicked = () => {
-        history.push(routeTemplateBlankFromLibrary(template.libraryId))
-    }
+        history.push(routeTemplateBlankFromLibrary(template.libraryId));
+    };
 
     const isInitialLoading = () => !template.libraryId;
 
@@ -89,7 +88,9 @@ const LibraryTemplatePreview = ({ library, loadLibrary }) => {
                     </div>
                     <Divider />
                     <div className={styles.buttonContainer}>
-                        <Button type="primary" onClick={onUseTemplateClicked}>Use template</Button>
+                        <Button type='primary' onClick={onUseTemplateClicked}>
+                            Use template
+                        </Button>
                     </div>
                 </Card>
                 <Card className={styles.cardSpace} loading={isInitialLoading()}>
@@ -107,7 +108,7 @@ const LibraryTemplatePreview = ({ library, loadLibrary }) => {
 };
 
 const mapDispatch = { loadLibrary };
-const mapState = (state) => {
+const mapState = state => {
     const templateState = state.templates || {};
 
     return {

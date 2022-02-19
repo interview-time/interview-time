@@ -1,21 +1,17 @@
-import { combineReducers, createStore } from "redux";
-import questionBank from "./question-bank/reducer";
+import { configureStore } from "@reduxjs/toolkit";
+import thunk from "redux-thunk";
 import templates from "./templates/reducer";
 import interviews from "./interviews/reducer";
-import communityQuestions from "./community-questions/reducer";
 import user from "./user/reducer";
 import candidates from "./candidates/reducer";
 
-export const rootReducer = combineReducers({
-    questionBank,
-    templates,
-    interviews,
-    communityQuestions,
-    user,
-    candidates,
+// remove 'middleware' when we fix all issues found by immutableStateInvariant https://redux-toolkit.js.org/api/getDefaultMiddleware
+export default configureStore({
+    middleware: [thunk],
+    reducer: {
+        user: user,
+        interviews: interviews,
+        templates: templates,
+        candidates: candidates,
+    },
 });
-
-export default createStore(
-    rootReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);

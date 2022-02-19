@@ -5,8 +5,9 @@
  * @returns {*}
  */
 export function findQuestion(id, questions) {
-    return questions.find(question => question.questionId === id)
+    return questions.find(question => question.questionId === id);
 }
+
 /**
  *
  * @param {String} id
@@ -14,7 +15,7 @@ export function findQuestion(id, questions) {
  * @returns {CategoryHolder}
  */
 export function findCategory(id, categories) {
-    return categories.find(item => item.category.categoryId === id)
+    return categories.find(item => item.category.categoryId === id);
 }
 
 /**
@@ -24,7 +25,7 @@ export function findCategory(id, categories) {
  * @returns {Interview}
  */
 export function findInterview(id, interviews) {
-    return interviews.find(interview => interview.interviewId === id)
+    return interviews.find(interview => interview.interviewId === id);
 }
 
 /**
@@ -34,7 +35,7 @@ export function findInterview(id, interviews) {
  * @returns {Template}
  */
 export function findTemplate(id, templates) {
-    return templates.find(template => template.templateId === id)
+    return templates.find(template => template.templateId === id);
 }
 
 /**
@@ -44,7 +45,7 @@ export function findTemplate(id, templates) {
  * @returns {Template}
  */
 export function findLibraryTemplate(id, templates) {
-    return templates.find(template => template.libraryId === id)
+    return templates.find(template => template.libraryId === id);
 }
 
 /**
@@ -65,9 +66,9 @@ export function findGroup(id, groups) {
  */
 export function findQuestionInGroups(id, groups) {
     for (let group of groups) {
-        let question = findQuestion(id, group.questions)
-        if(question) {
-            return question
+        let question = findQuestion(id, group.questions);
+        if (question) {
+            return question;
         }
     }
 }
@@ -80,9 +81,9 @@ export function findQuestionInGroups(id, groups) {
  */
 export function findQuestionInCategories(id, categories) {
     for (let category of categories) {
-        let question = findQuestion(id, category.questions)
-        if(question) {
-            return question
+        let question = findQuestion(id, category.questions);
+        if (question) {
+            return question;
         }
     }
 }
@@ -94,8 +95,7 @@ export function findQuestionInCategories(id, categories) {
  * @returns {Question[]}
  */
 export function findInterviewGroupQuestions(group, categories) {
-    return group.questions.map(q => q.questionId)
-        .map(id => findQuestionInCategories(id, categories))
+    return group.questions.map(q => q.questionId).map(id => findQuestionInCategories(id, categories));
 }
 
 /**
@@ -104,13 +104,13 @@ export function findInterviewGroupQuestions(group, categories) {
  * @returns {[String]}
  */
 export function interviewToTags(interview) {
-    let tags = new Set()
+    let tags = new Set();
     interview.structure.groups.forEach(group => {
         group.questions.forEach(item => {
             if (item.tags) {
-                item.tags.forEach(tag => tags.add(tag))
+                item.tags.forEach(tag => tags.add(tag));
             }
-        })
-    })
-    return [...tags]
+        });
+    });
+    return [...tags];
 }
