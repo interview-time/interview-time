@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -5,6 +6,9 @@ using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
 using CafApi.ViewModel;
+using MailChimp.Net;
+using MailChimp.Net.Interfaces;
+using MailChimp.Net.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +26,7 @@ namespace CafApi.Controllers
         private readonly IUserService _userService;
         private readonly ITeamService _teamService;
         private readonly ILogger<UserController> _logger;
+        private readonly IMailChimpManager _mailChimpManager;
         private readonly string _demoUserId;
 
         private string UserId
@@ -44,6 +49,7 @@ namespace CafApi.Controllers
             _templateService = templateService;
             _userService = userService;
             _teamService = teamService;
+            _mailChimpManager = new MailChimpManager(configuration["MailChimpApiKey"]);
 
             _demoUserId = configuration["DemoUserId"];
         }
@@ -111,6 +117,8 @@ namespace CafApi.Controllers
                         await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId, team.TeamId, toTemplate.TemplateId);
                     }
                 }
+
+                await AddNewUserInMailchimp(request.Email, request.Name);
             }
 
             return new ProfileResponse
@@ -121,6 +129,20 @@ namespace CafApi.Controllers
                 TimezoneOffset = profile.TimezoneOffset,
                 Teams = teams
             };
+        }
+
+        private async Task AddNewUserInMailchimp(string email, string name)
+        {
+            try
+            {
+                var member = new Member { EmailAddress = email, StatusIfNew = Status.Subscribed };
+                member.MergeFields.Add("FNAME", name);
+                await _mailChimpManager.Members.AddOrUpdateAsync("43f230a3ba", member);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding user {email} to MailChimp contacts.");
+            }
         }
     }
 }
