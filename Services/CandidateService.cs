@@ -70,7 +70,7 @@ namespace CafApi.Services
                 candidate.Position = updatedCandidate.Position;
                 candidate.ResumeFile = updatedCandidate.ResumeFile;
                 candidate.Status = updatedCandidate.Status;
-                candidate.Archieved = updatedCandidate.Archieved;
+                candidate.Archived = updatedCandidate.Archived;
                 candidate.ModifiedDate = DateTime.UtcNow;
 
                 await _context.SaveAsync(candidate);
