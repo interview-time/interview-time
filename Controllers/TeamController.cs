@@ -94,10 +94,10 @@ namespace CafApi.Controllers
             await _teamService.UpdateMemberRole(UserId, request.MemberId, request.TeamId, request.NewRole);
         }
 
-        [HttpDelete("member")]
-        public async Task RemoveTeamMember(RemoveTeamMemberRequest request)
+        [HttpDelete("member/{memberId}/team/{teamId}")]
+        public async Task RemoveTeamMember(string memberId, string teamId)
         {
-            await _teamService.RemoveTeamMember(UserId, request.MemberId, request.TeamId);
+            await _teamService.RemoveTeamMember(UserId, memberId, teamId);
         }
     }
 }
