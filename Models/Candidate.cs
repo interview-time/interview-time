@@ -27,6 +27,8 @@ namespace CafApi.Models
 
         public string Status { get; set; }
 
+        public bool Archived { get; set; }
+
         public string CreatedByUserId { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]

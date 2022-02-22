@@ -28,8 +28,8 @@ namespace CafApi.Services
         {
             var candidates = new List<Candidate>();
 
-            var canCreateCandidate = await BelongsToTeam(userId, teamId);
-            if (canCreateCandidate)
+            var isBelongToTeam = await BelongsToTeam(userId, teamId);
+            if (isBelongToTeam)
             {
                 candidates = await _context.QueryAsync<Candidate>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
             }
@@ -39,8 +39,8 @@ namespace CafApi.Services
 
         public async Task<Candidate> CreateCandidate(string userId, Candidate candidate)
         {
-            var canCreateCandidate = await BelongsToTeam(userId, candidate.TeamId);
-            if (canCreateCandidate)
+            var isBelongToTeam = await BelongsToTeam(userId, candidate.TeamId);
+            if (isBelongToTeam)
             {
                 candidate.CreatedByUserId = userId;
                 candidate.CandidateId = candidate.CandidateId ?? Guid.NewGuid().ToString();
@@ -58,34 +58,33 @@ namespace CafApi.Services
 
         public async Task<Candidate> UpdateCandidate(string userId, Candidate updatedCandidate)
         {
-            var canAccessCandidate = await CanUserAccessCandidate(userId, updatedCandidate.CandidateId);
-            if (canAccessCandidate)
+            var candidate = await _context.LoadAsync<Candidate>(updatedCandidate.TeamId, updatedCandidate.CandidateId);
+            var isBelongToTeam = await BelongsToTeam(userId, updatedCandidate.TeamId);
+
+            if (candidate != null && isBelongToTeam)
             {
-                var candidate = await _context.LoadAsync<Candidate>(updatedCandidate.CandidateId);
-                if (candidate != null)
-                {
-                    candidate.CandidateName = updatedCandidate.CandidateName;
-                    candidate.CodingRepo = updatedCandidate.CodingRepo;
-                    candidate.GitHub = updatedCandidate.GitHub;
-                    candidate.LinkedIn = updatedCandidate.LinkedIn;
-                    candidate.Position = updatedCandidate.Position;
-                    candidate.ResumeFile = updatedCandidate.ResumeFile;
-                    candidate.Status = updatedCandidate.Status;
-                    candidate.ModifiedDate = DateTime.UtcNow;
+                candidate.CandidateName = updatedCandidate.CandidateName;
+                candidate.CodingRepo = updatedCandidate.CodingRepo;
+                candidate.GitHub = updatedCandidate.GitHub;
+                candidate.LinkedIn = updatedCandidate.LinkedIn;
+                candidate.Position = updatedCandidate.Position;
+                candidate.ResumeFile = updatedCandidate.ResumeFile;
+                candidate.Status = updatedCandidate.Status;
+                candidate.Archived = updatedCandidate.Archived;
+                candidate.ModifiedDate = DateTime.UtcNow;
 
-                    await _context.SaveAsync(candidate);
+                await _context.SaveAsync(candidate);
 
-                    return candidate;
-                }
+                return candidate;
             }
 
             return null;
         }
 
-        public async Task DeleteCandidate(string userId, string candidateId)
+        public async Task DeleteCandidate(string userId, string teamId, string candidateId)
         {
-            var canAccessCandidate = await CanUserAccessCandidate(userId, candidateId);
-            if (canAccessCandidate)
+            var isBelongToTeam = await BelongsToTeam(userId, teamId);
+            if (isBelongToTeam)
             {
                 // Get candidate interviews
                 var searchByCandidate = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
@@ -103,7 +102,7 @@ namespace CafApi.Services
                     await interviewBatch.ExecuteAsync();
                 }
 
-                await _context.DeleteAsync<Candidate>(candidateId);
+                await _context.DeleteAsync<Candidate>(teamId, candidateId);
             }
         }
 
@@ -137,19 +136,6 @@ namespace CafApi.Services
             };
 
             return _s3Client.GetPreSignedURL(request);
-        }
-
-        private async Task<bool> CanUserAccessCandidate(string userId, string candidateId)
-        {
-            var candidate = await _context.LoadAsync<Candidate>(candidateId);
-            if (candidate != null)
-            {
-                var isBelongToTeam = await _userService.IsBelongInTeam(userId, candidate.TeamId);
-
-                return isBelongToTeam;
-            }
-
-            return false;
         }
 
         private async Task<bool> BelongsToTeam(string userId, string teamId)

@@ -74,10 +74,10 @@ namespace CafApi.Controllers
             return await _candidateService.UpdateCandidate(UserId, candidate);
         }
 
-        [HttpDelete("{candidateId}")]
-        public async Task DeleteCandidate(string candidateId)
+        [HttpDelete("{candidateId}/team/{teamId}")]
+        public async Task DeleteCandidate(string candidateId, string teamId)
         {
-            await _candidateService.DeleteCandidate(UserId, candidateId);
+            await _candidateService.DeleteCandidate(UserId, teamId, candidateId);
         }
 
         [HttpGet("upload-signed-url/{teamId}/{candidateId}/{filename}")]
