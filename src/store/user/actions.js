@@ -9,6 +9,8 @@ export const JOIN_TEAM = "JOIN_TEAM";
 export const LEAVE_TEAM = "LEAVE_TEAM";
 export const LOAD_TEAM_MEMBERS = "LOAD_TEAM_MEMBERS";
 export const SET_TEAM_MEMBERS = "SET_TEAM_MEMBERS";
+export const CHANGE_ROLE = "CHANGE_ROLE";
+export const REMOVE_MEMBER = "REMOVE_MEMBER";
 
 export const loadProfile = (name, email, forceFetch = false) => ({
     type: LOAD_PROFILE,
@@ -122,5 +124,22 @@ export const joinTeam = team => ({
     type: JOIN_TEAM,
     payload: {
         team,
+    },
+});
+
+export const changeRole = (userId, teamId, newRole) => ({
+    type: CHANGE_ROLE,
+    payload: {
+        userId,
+        teamId,
+        newRole,
+    },
+});
+
+export const removeMember = (userId, teamId) => ({
+    type: REMOVE_MEMBER,
+    payload: {
+        userId,
+        teamId,
     },
 });

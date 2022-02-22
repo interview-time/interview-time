@@ -9,6 +9,13 @@ export const Roles = {
     ADMIN: "ADMIN",
 };
 
+export const DisplayRoles = {
+    HR: "Recruiter",
+    HIRING_MANAGER: "Hiring Manager",
+    INTERVIEWER: "Interviewer",
+    ADMIN: "Admin",
+};
+
 export const Status = {
     NEW: "NEW",
     STARTED: "STARTED",
