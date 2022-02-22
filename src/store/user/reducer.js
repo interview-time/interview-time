@@ -13,7 +13,9 @@ import {
     setTeamMembers,
     SETUP_USER,
     setupUser,
-    UPDATE_TEAM
+    UPDATE_TEAM,
+    CHANGE_ROLE,
+    REMOVE_MEMBER,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -40,6 +42,8 @@ const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
 const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
 
 const userReducer = (state = initialState, action) => {
+    log(action.type);
+
     switch (action.type) {
         case LOAD_PROFILE: {
             const { name, email, forceFetch } = action.payload;
@@ -303,6 +307,42 @@ const userReducer = (state = initialState, action) => {
                     };
                     store.dispatch(setProfile(profile));
                     store.dispatch(setActiveTeam(state.profile.teams[0], true));
+                })
+                .catch(reason => console.error(reason));
+
+            return state;
+        }
+
+        case CHANGE_ROLE: {
+            const { userId, teamId, newRole } = action.payload;
+
+            const request = {
+                teamId: teamId,
+                memberId: userId,
+                newRole: newRole,
+            };
+
+            getAccessTokenSilently()
+                .then(token => axios.put(`${URL_TEAMS}/member`, request, config(token)))
+                .then(() => {
+                    const teamMembers = state.teamMembers.map(tm =>
+                        tm.userId === userId ? { ...tm, roles: [newRole] } : tm
+                    );
+
+                    store.dispatch(setTeamMembers(teamMembers));
+                });
+
+            return state;
+        }
+
+        case REMOVE_MEMBER: {
+            const { userId, teamId } = action.payload;
+
+            getAccessTokenSilently()
+                .then(token => axios.delete(`${URL_TEAMS}/member/${userId}/team/${teamId}`, config(token)))
+                .then(() => {
+                    const teamMembers = state.teamMembers.filter(tm => tm.userId !== userId);
+                    store.dispatch(setTeamMembers(teamMembers));
                 })
                 .catch(reason => console.error(reason));
 
