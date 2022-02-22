@@ -12,7 +12,7 @@ namespace CafApi.Services
 
         Task<Candidate> UpdateCandidate(string userId, Candidate updatedCandidate);
 
-        Task DeleteCandidate(string userId, string candidateId);
+        Task DeleteCandidate(string userId, string teamId, string candidateId);
 
         Task<string> GetUploadSignedUrl(string userId, string teamId, string candidateId, string filename);        
 
