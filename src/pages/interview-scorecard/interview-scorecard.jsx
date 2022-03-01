@@ -69,7 +69,6 @@ const InterviewScorecard = ({
         // initial data loading
         if (interviews.length > 0 && !interview) {
             const currentInterview = cloneDeep(findInterview(id, interviews));
-            currentInterview.position = "Hello world"
             setInterview(currentInterview);
             loadTeamMembers(currentInterview.teamId);
         }
