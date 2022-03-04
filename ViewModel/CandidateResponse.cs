@@ -23,5 +23,7 @@ namespace CafApi.ViewModel
         public DateTime CreatedDate { get; set; }
 
         public string Status { get; set; }
+
+        public bool Archived { get; set; }
     }
 }

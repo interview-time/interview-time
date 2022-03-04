@@ -58,7 +58,8 @@ namespace CafApi.Controllers
                 CodingRepo = c.CodingRepo,
                 CreatedDate = c.CreatedDate,
                 TotalInterviews = candidateInterviews.GetValueOrDefault(c.CandidateId),
-                Status = c.Status
+                Status = c.Status,
+                Archived = c.Archived
             }).ToList();
         }
 
