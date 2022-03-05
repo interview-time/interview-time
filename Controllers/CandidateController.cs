@@ -64,14 +64,33 @@ namespace CafApi.Controllers
         }
 
         [HttpPost()]
-        public async Task<Candidate> CreateCandidate([FromBody] Candidate candidate)
+        public async Task<Candidate> CreateCandidate([FromBody] CreateCandidateRequest request)
         {
+            var candidate = new Candidate
+            {
+                TeamId = request.TeamId,
+                CandidateName = request.CandidateName,
+                Position = request.Position,
+                ResumeFile = request.ResumeFile,
+                LinkedIn = request.LinkedIn,
+                GitHub = request.GitHub,
+                CodingRepo = request.CodingRepo
+            };
+
             return await _candidateService.CreateCandidate(UserId, candidate);
         }
 
         [HttpPut()]
-        public async Task<Candidate> UpdateCandidate([FromBody] Candidate candidate)
+        public async Task<ActionResult<Candidate>> UpdateCandidate([FromBody] Candidate candidate)
         {
+            if (string.IsNullOrWhiteSpace(candidate.CandidateId))
+            {
+                return BadRequest(new ProblemDetails
+                {
+
+                });
+            }
+
             return await _candidateService.UpdateCandidate(UserId, candidate);
         }
 
