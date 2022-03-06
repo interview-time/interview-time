@@ -81,7 +81,7 @@ namespace CafApi.Controllers
         }
 
         [HttpPut()]
-        public async Task<ActionResult<Candidate>> UpdateCandidate([FromBody] Candidate candidate)
+        public async Task<Candidate> UpdateCandidate([FromBody] Candidate candidate)
         {
             return await _candidateService.UpdateCandidate(UserId, candidate);
         }
