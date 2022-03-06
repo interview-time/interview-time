@@ -83,14 +83,6 @@ namespace CafApi.Controllers
         [HttpPut()]
         public async Task<ActionResult<Candidate>> UpdateCandidate([FromBody] Candidate candidate)
         {
-            if (string.IsNullOrWhiteSpace(candidate.CandidateId))
-            {
-                return BadRequest(new ProblemDetails
-                {
-
-                });
-            }
-
             return await _candidateService.UpdateCandidate(UserId, candidate);
         }
 
