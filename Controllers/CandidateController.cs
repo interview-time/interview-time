@@ -64,8 +64,19 @@ namespace CafApi.Controllers
         }
 
         [HttpPost()]
-        public async Task<Candidate> CreateCandidate([FromBody] Candidate candidate)
+        public async Task<Candidate> CreateCandidate([FromBody] CreateCandidateRequest request)
         {
+            var candidate = new Candidate
+            {
+                TeamId = request.TeamId,
+                CandidateName = request.CandidateName,
+                Position = request.Position,
+                ResumeFile = request.ResumeFile,
+                LinkedIn = request.LinkedIn,
+                GitHub = request.GitHub,
+                CodingRepo = request.CodingRepo
+            };
+
             return await _candidateService.CreateCandidate(UserId, candidate);
         }
 
