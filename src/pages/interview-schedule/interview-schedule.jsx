@@ -36,7 +36,7 @@ import { datePickerFormat, getDate, timePickerFormat } from "../../components/ut
 import { filterOptionLabel } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
-import CreateCandidate from "./create-candidate";
+import CreateCandidate from "../candidate-details/create-candidate";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
 
@@ -578,9 +578,9 @@ const mapState = state => {
         profile: userState.profile,
         interviews: interviewState.interviews,
         templates: templateState.templates,
-        candidates: candidatesState.candidates,
+        candidates: candidatesState.candidates.filter(c => !c.archived),
         teamMembers: userState.teamMembers || [],
-        activeTeam: userState.activeTeam,
+        activeTeam: userState.activeTeam
     };
 };
 

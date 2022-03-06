@@ -170,7 +170,10 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
 
                 <Card withPadding={false}>
                     <Table
-                        pagination={false}
+                        pagination={{
+                            style: { marginRight: 24 },
+                            defaultPageSize: 20,
+                        }}
                         scroll={{
                             x: "max-content",
                         }}

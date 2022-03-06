@@ -1,8 +1,10 @@
 import "./App.less";
 import React, { useEffect } from "react";
-import { Switch, withRouter, Route } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import {
     routeAccount,
+    routeCandidateDetails,
+    routeCandidates,
     routeHome,
     routeInterviewAdd,
     routeInterviewDetails,
@@ -12,16 +14,15 @@ import {
     routeLibraryTemplatePreview,
     routeNews,
     routeReports,
+    routeSharedTemplate,
+    routeTeamJoin,
+    routeTeamNew,
+    routeTeamSettings,
     routeTemplateBlank,
     routeTemplateEdit,
     routeTemplateLibrary,
     routeTemplatePreview,
     routeTemplates,
-    routeSharedTemplate,
-    routeTeamNew,
-    routeTeamSettings,
-    routeTeamJoin,
-    routeCandidates,
 } from "./components/utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -45,6 +46,7 @@ import TeamSettings from "./pages/team-settings/team-settings";
 import JoinTeam from "./pages/team-join/team-join";
 import InterviewReport from "./pages/interview-scorecard/interview-report";
 import Candidates from "./pages/candidates/candidates";
+import CandidateDetails from "./pages/candidate-details/candidate-details";
 
 function App({ history }) {
     useEffect(() => {
@@ -54,7 +56,7 @@ function App({ history }) {
             ReactGA.pageview(window.location.pathname + window.location.search);
         }
 
-        history.listen((location) => {
+        history.listen(location => {
             if (process.env.REACT_APP_GA_TRACKING_ID) {
                 ReactGA.set({ page: location.pathname });
                 ReactGA.pageview(location.pathname);
@@ -88,6 +90,7 @@ function App({ history }) {
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
             <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
+            <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
             <Route path={routeTeamJoin()} exact component={JoinTeam} />
         </Switch>

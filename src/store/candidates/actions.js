@@ -63,16 +63,30 @@ export function createCandidate(candidate) {
     };
 }
 
-export const updateCandidate = candidate => ({
-    type: UPDATE_CANDIDATE,
-    payload: {
-        candidate,
-    },
-});
+export function updateCandidate(candidate) {
+    return (dispatch, getState) => {
+        const { user } = getState();
 
-export const deleteCandidate = candidateId => ({
-    type: DELETE_CANDIDATE,
-    payload: {
-        candidateId,
-    },
-});
+        dispatch({
+            type: UPDATE_CANDIDATE,
+            payload: {
+                candidate: candidate,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}
+
+export function deleteCandidate(candidateId) {
+    return (dispatch, getState) => {
+        const { user } = getState();
+
+        dispatch({
+            type: DELETE_CANDIDATE,
+            payload: {
+                candidateId: candidateId,
+                teamId: user.activeTeam.teamId,
+            },
+        });
+    };
+}

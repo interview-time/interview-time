@@ -8,7 +8,7 @@ import {
     SET_UPLOAD_URL,
     setCandidates,
     setUploadUrl,
-    UPDATE_CANDIDATE
+    UPDATE_CANDIDATE,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -98,7 +98,8 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case UPDATE_CANDIDATE: {
-            const { candidate } = action.payload;
+            const { candidate, teamId } = action.payload;
+            candidate.teamId = teamId;
 
             getAccessTokenSilently()
                 .then(token => axios.put(URL, candidate, config(token)))
@@ -124,17 +125,17 @@ const candidatesReducer = (state = initialState, action) => {
         }
 
         case DELETE_CANDIDATE: {
-            const { candidateId } = action.payload;
+            const { candidateId, teamId } = action.payload;
 
             getAccessTokenSilently()
-                .then(token => axios.delete(`${URL}/${candidateId}`, config(token)))
-                .then(() => {
-                    log("Candidate removed.");
-                    store.dispatch(setCandidates(state.candidates.filter(item => item.candidateId !== candidateId)));
-                })
+                .then(token => axios.delete(`${URL}/${candidateId}/team/${teamId}`, config(token)))
+                .then(() => log("Candidate removed."))
                 .catch(reason => console.error(reason));
 
-            return { ...state, loading: true };
+            return {
+                ...state,
+                candidates: state.candidates.filter(item => item.candidateId !== candidateId),
+            };
         }
 
         default:

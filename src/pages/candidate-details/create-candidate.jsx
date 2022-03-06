@@ -4,19 +4,32 @@ import axios from "axios";
 import { Button, Col, Divider, Form, Input, message, Row, Space, Upload } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { createCandidate } from "../../store/candidates/actions";
+import { createCandidate, updateCandidate } from "../../store/candidates/actions";
 import Spinner from "../../components/spinner/spinner";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../../store/common";
-import styles from "./interview-schedule.module.css";
+import styles from "../interview-schedule/interview-schedule.module.css";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
+import { cloneDeep } from "lodash/lang";
 
 const { Dragger } = Upload;
 
-const CreateCandidate = ({ candidates, teamId, loading, createCandidate, onSave, onCancel }) => {
+/**
+ *
+ * @param {Candidate|undefined} candidate
+ * @param teamId
+ * @param loading
+ * @param createCandidate
+ * @param updateCandidate
+ * @param onSave
+ * @param onCancel
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCandidate, onSave, onCancel }) => {
     const [candidateName, setCandidateName] = useState();
     const [candidateId, setCandidateId] = useState();
     const [resumeFile, setResumeFile] = useState();
@@ -81,17 +94,29 @@ const CreateCandidate = ({ candidates, teamId, loading, createCandidate, onSave,
                 name='basic'
                 layout='vertical'
                 initialValues={{
-                    candidateName: "",
-                    linkedin: "",
-                    github: "",
+                    candidateName: candidate?.candidateName,
+                    linkedIn: candidate?.linkedIn,
+                    gitHub: candidate?.gitHub,
                 }}
                 onFinish={values => {
-                    createCandidate({
-                        ...values,
-                        candidateId: candidateId,
-                        resumeFile: resumeFile,
-                    });
-                    setCandidateName(values.candidateName);
+                    if (candidate) {
+                        const updatedCandidate = cloneDeep(candidate);
+                        updatedCandidate.candidateName = values.candidateName;
+                        updatedCandidate.linkedIn = values.linkedIn;
+                        updatedCandidate.gitHub = values.gitHub;
+                        if (resumeFile) {
+                            updatedCandidate.resumeFile = resumeFile;
+                        }
+                        updateCandidate(updatedCandidate);
+                        onSave();
+                    } else {
+                        createCandidate({
+                            ...values,
+                            candidateId: candidateId,
+                            resumeFile: resumeFile,
+                        });
+                        setCandidateName(values.candidateName);
+                    }
                 }}
             >
                 <Row gutter={16} style={{ marginTop: 16 }}>
@@ -113,7 +138,7 @@ const CreateCandidate = ({ candidates, teamId, loading, createCandidate, onSave,
                 <Row gutter={16} style={{ marginTop: 16 }}>
                     <Col span={24}>
                         <Form.Item
-                            name='linkedin'
+                            name='linkedIn'
                             label={<Text strong>LinkedIn</Text>}
                             rules={[
                                 {
@@ -128,7 +153,7 @@ const CreateCandidate = ({ candidates, teamId, loading, createCandidate, onSave,
                 <Row gutter={16} style={{ marginTop: 16 }}>
                     <Col span={24}>
                         <Form.Item
-                            name='github'
+                            name='gitHub'
                             label={<Text strong>GitHub</Text>}
                             rules={[
                                 {
@@ -195,6 +220,7 @@ const CreateCandidate = ({ candidates, teamId, loading, createCandidate, onSave,
 
 const mapDispatch = {
     createCandidate,
+    updateCandidate,
 };
 
 const mapState = state => {

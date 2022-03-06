@@ -589,3 +589,31 @@ const MenuSvg = () => (
 );
 
 export const MenuIcon = props => <Icon component={MenuSvg} {...props} />;
+
+const EditSvg = () => (
+    <svg width='24' height='24' viewBox='0 0 24 24' fill='none'>
+        <path
+            d='M11 5H6C4.89543 5 4 5.89543 4 7V18C4 19.1046 4.89543 20 6 20H17C18.1046 20 19 19.1046 19 18V13M17.5858 3.58579C18.3668 2.80474 19.6332 2.80474 20.4142 3.58579C21.1953 4.36683 21.1953 5.63316 20.4142 6.41421L11.8284 15H9L9 12.1716L17.5858 3.58579Z'
+            stroke='currentColor'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+        />
+    </svg>
+);
+
+export const EditIcon = props => <Icon component={EditSvg} {...props} />;
+
+const AlertSvg = () => (
+    <svg width='20' height='20' viewBox='0 0 20 20' fill='none'>
+        <path
+            d='M10 8.4326V10.0001M10 13.1352H10.0078M4.56988 16.2703H15.4301C16.6368 16.2703 17.391 14.964 16.7877 13.919L11.3575 4.51375C10.7542 3.46872 9.24582 3.46872 8.64247 4.51375L3.21235 13.919C2.609 14.964 3.36319 16.2703 4.56988 16.2703Z'
+            stroke='#8C2BE3'
+            stroke-width='1.67'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+        />
+    </svg>
+);
+
+export const AlertIcon = props => <Icon component={AlertSvg} {...props} />;
