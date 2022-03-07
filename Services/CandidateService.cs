@@ -67,8 +67,7 @@ namespace CafApi.Services
                 candidate.CodingRepo = updatedCandidate.CodingRepo;
                 candidate.GitHub = updatedCandidate.GitHub;
                 candidate.LinkedIn = updatedCandidate.LinkedIn;
-                candidate.Position = updatedCandidate.Position;
-                candidate.ResumeFile = updatedCandidate.ResumeFile;
+                candidate.Position = updatedCandidate.Position;                
                 candidate.Status = updatedCandidate.Status;
                 candidate.Archived = updatedCandidate.Archived;
                 candidate.ModifiedDate = DateTime.UtcNow;
