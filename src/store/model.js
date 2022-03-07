@@ -36,7 +36,7 @@
  * @property {string} interviewId
  * @property {string[]} interviewers
  * @property {string} teamId
- * @property {string} candidate
+ * @property {string} candidateId
  * @property {string} candidateNotes
  * @property {string} position
  * @property {string} interviewDateTime
@@ -127,10 +127,12 @@
  * @typedef {Object} Candidate
  * @property {string} candidateId
  * @property {string} candidateName
+ * @property {string} createdDate
  * @property {string} position
  * @property {string} resumeUrl
  * @property {string} status
  * @property {string} codingRepo
  * @property {string} gitHub
  * @property {string} linkedIn
+ * @property {boolean} archived
  */

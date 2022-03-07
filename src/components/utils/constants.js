@@ -28,7 +28,6 @@ export const CandidateStatus = {
     INTERVIEWING: "INTERVIEWING",
     HIRE: "HIRE",
     NO_HIRE: "NO_HIRE",
-    ARCHIVED: "ARCHIVED",
 };
 
 export const Difficulty = {

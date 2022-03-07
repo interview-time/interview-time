@@ -1,29 +1,21 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
 import styles from "../interviews/interviews.module.css";
-import { Button, Col, Dropdown, Menu, Modal, Row, Select, Table } from "antd";
+import { Col, Row, Select } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import { orderBy, sortBy } from "lodash/collection";
 import { Status } from "../../components/utils/constants";
-import { localeCompare } from "../../components/utils/comparators";
-import { routeInterviewDetails, routeInterviewReport, routeInterviewScorecard } from "../../components/utils/route";
 import Title from "antd/lib/typography/Title";
-import DemoTag from "../../components/demo/demo-tag";
-import { getFormattedDateTime, orderByInterviewDate } from "../../components/utils/date";
-import { defaultTo } from "lodash/util";
-import InterviewStatusTag from "../../components/tags/interview-status-tags";
-import { ArchiveIcon, CalendarIcon, IdeaIcon, MoreIcon } from "../../components/utils/icons";
-import Card from "../../components/card/card";
-import TableHeader from "../../components/table/table-header";
+import { orderByInterviewDate } from "../../components/utils/date";
+import { ArchiveIcon, CalendarIcon, IdeaIcon } from "../../components/utils/icons";
 import { loadTeamMembers } from "../../store/user/actions";
 import { truncate } from "lodash/string";
-import TableText from "../../components/table/table-text";
 import CardHero from "../../components/card/card-hero";
 import { uniq, uniqBy } from "lodash/array";
 import { filterOptionLabel } from "../../components/utils/filters";
+import InterviewsTable from "./interviews-table";
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
@@ -48,8 +40,6 @@ const Interviews = ({
     loadTeamMembers,
     deleteInterview,
 }) => {
-    const history = useHistory();
-
     const [interviews, setInterviews] = useState([]);
     const [positions, setPositions] = useState([]);
     const [interviewers, setInterviewers] = useState([]);
@@ -118,111 +108,6 @@ const Interviews = ({
 
         // eslint-disable-next-line
     }, [filter]);
-
-    const onRowClicked = interview => {
-        if (interview.status === Status.SUBMITTED || interview.userId !== profile.userId) {
-            history.push(routeInterviewReport(interview.interviewId));
-        } else {
-            history.push(routeInterviewScorecard(interview.interviewId));
-        }
-    };
-
-    const showDeleteDialog = interview => {
-        Modal.confirm({
-            title: "Delete Interview",
-            content: `Are you sure you want to delete interview with '${interview.candidate}' ?`,
-            okText: "Yes",
-            cancelText: "No",
-            onOk() {
-                deleteInterview(interview.interviewId);
-            },
-        });
-    };
-
-    const createMenu = interview => (
-        <Menu>
-            {interview.status !== Status.SUBMITTED && interview.status !== Status.COMPLETED && (
-                <Menu.Item
-                    onClick={e => {
-                        e.domEvent.stopPropagation();
-                        history.push(routeInterviewDetails(interview.interviewId));
-                    }}
-                >
-                    Edit
-                </Menu.Item>
-            )}
-            <Menu.Item
-                danger
-                onClick={e => {
-                    e.domEvent.stopPropagation();
-                    showDeleteDialog(interview);
-                }}
-            >
-                Delete
-            </Menu.Item>
-        </Menu>
-    );
-
-    const columns = [
-        {
-            title: <TableHeader>CANDIDATE</TableHeader>,
-            key: "candidate",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.candidate, b.candidate),
-            render: interview => {
-                return (
-                    <>
-                        <TableText className={`fs-mask`}>{interview.candidate}</TableText>
-                        <DemoTag isDemo={interview.isDemo} />
-                    </>
-                );
-            },
-        },
-        {
-            title: <TableHeader>INTERVIEW</TableHeader>,
-            key: "position",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.position, b.position),
-            render: interview => <TableText className={`fs-mask`}>{defaultTo(interview.position, "-")}</TableText>,
-        },
-        {
-            title: <TableHeader>DATE</TableHeader>,
-            key: "interviewDateTime",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: interview => (
-                <TableText className={`fs-mask`}>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
-            ),
-        },
-        {
-            title: <TableHeader>INTERVIEWER</TableHeader>,
-            key: "interviewer",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.userName, b.userName),
-            render: interview => (
-                <TableText className={`fs-mask`}>
-                    {truncate(interview.userName, {
-                        length: 20,
-                    })}
-                </TableText>
-            ),
-        },
-        {
-            title: <TableHeader>STATUS</TableHeader>,
-            key: "status",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.status, b.status),
-            render: interview => <InterviewStatusTag interview={interview} />,
-        },
-        {
-            key: "actions",
-            render: interview => (
-                <Dropdown overlay={createMenu(interview)} placement='bottomLeft'>
-                    <Button icon={<MoreIcon />} style={{ width: 36, height: 36 }} onClick={e => e.stopPropagation()} />
-                </Dropdown>
-            ),
-        },
-    ];
 
     const onPositionFilterClear = () => {
         setFilter({
@@ -320,24 +205,12 @@ const Interviews = ({
                     />
                 </div>
 
-                <Card withPadding={false}>
-                    <Table
-                        pagination={{
-                            style: { marginRight: 24 },
-                            defaultPageSize: 20,
-                        }}
-                        scroll={{
-                            x: "max-content",
-                        }}
-                        columns={columns}
-                        dataSource={interviews}
-                        loading={interviewsLoading}
-                        rowClassName={styles.row}
-                        onRow={record => ({
-                            onClick: () => onRowClicked(record),
-                        })}
-                    />
-                </Card>
+                <InterviewsTable
+                    interviews={interviews}
+                    profile={profile}
+                    loading={interviewsLoading}
+                    deleteInterview={deleteInterview}
+                />
             </div>
         </Layout>
     );
