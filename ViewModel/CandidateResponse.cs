@@ -12,6 +12,8 @@ namespace CafApi.ViewModel
 
         public string ResumeUrl { get; set; }
 
+        public string ResumeFile { get; set; }
+
         public string LinkedIn { get; set; }
 
         public string GitHub { get; set; }
