@@ -16,7 +16,7 @@
 }
 
 .buttonPrimaryLight {
-    background-color: #F4EAFC;
+    background-color: #f4eafc;
 }
 
 .divSpaceBetween {
@@ -27,5 +27,15 @@
 
 .rolesButton {
     font-size: 14px;
-    color: #6B7280;
+    color: #6b7280;
+}
+
+.roleItem {
+    display: flex;
+    justify-content: space-between;
+}
+
+.hasRole {
+    width: 40px;
+    text-align: right;
 }

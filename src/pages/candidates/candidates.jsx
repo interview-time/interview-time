@@ -1,26 +1,118 @@
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
-import { Table } from "antd";
+import { Button, Checkbox, Dropdown, Menu, Modal, Select, Table } from "antd";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import { localeCompare } from "../../components/utils/comparators";
 import TableText from "../../components/table/table-text";
 import { orderBy } from "lodash/collection";
 import Title from "antd/lib/typography/Title";
-import { getFormattedDateSimple } from "../../components/utils/utils";
-import { GithubFilled, LinkedinFilled } from "@ant-design/icons";
+import { getFormattedDateShort } from "../../components/utils/date";
 import TableHeader from "../../components/table/table-header";
-import { loadCandidates } from "../../store/candidates/actions";
-import CandidateStatusTag from "../../components/tags/candidate-status-tag";
+import { deleteCandidate, loadCandidates, updateCandidate } from "../../store/candidates/actions";
+import CandidateStatusTag, { getCandidateStatusText } from "../../components/tags/candidate-status-tag";
 import styles from "./candidates.module.css";
+import { routeCandidateDetails, routeCandidates } from "../../components/utils/route";
+import { useHistory } from "react-router-dom";
+import ArchivedTag from "../../components/tags/candidate-archived-tag";
+import { CandidateStatus } from "../../components/utils/constants";
+import { filterOptionLabel } from "../../components/utils/filters";
+import { MoreIcon } from "../../components/utils/icons";
+import { cloneDeep } from "lodash/lang";
 
-const Candidates = ({ loadCandidates, candidates, loading }) => {
+/**
+ *
+ * @param {Candidate[]} candidatesData
+ * @param loadCandidates
+ * @param updateCandidate
+ * @param deleteCandidate
+ * @param loading
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, deleteCandidate }) => {
+    const history = useHistory();
+
+    const [candidates, setCandidates] = useState([]);
+    const [filter, setFilter] = useState({
+        status: null,
+        displayArchived: true,
+    });
+
     React.useEffect(() => {
         loadCandidates();
         // eslint-disable-next-line
     }, []);
 
-    const iconStyle = { fontSize: 20, color: "#374151" };
+    React.useEffect(() => {
+        updateCandidatesState();
+        // eslint-disable-next-line
+    }, [candidatesData, filter]);
+
+    const updateCandidatesState = () => {
+        let filteredCandidates = candidatesData;
+
+        if (!filter.displayArchived) {
+            filteredCandidates = filteredCandidates.filter(c => !c.archived);
+        }
+
+        if (filter.status) {
+            filteredCandidates = filteredCandidates.filter(c => c.status === filter.status);
+        }
+
+        setCandidates(filteredCandidates);
+    };
+
+    const archive = candidate => {
+        const updatedCandidate = cloneDeep(candidate);
+        candidate.archived = true;
+        updateCandidate(updatedCandidate);
+    };
+
+    const undoArchive = candidate => {
+        const updatedCandidate = cloneDeep(candidate);
+        candidate.archived = false;
+        updateCandidate(updatedCandidate);
+    };
+
+    const showDeleteDialog = candidate => {
+        Modal.confirm({
+            title: "Delete Candidate",
+            content: `Are you sure you want to delete this candidate and all related interview data?`,
+            okText: "Yes",
+            cancelText: "No",
+            onOk() {
+                history.push(routeCandidates());
+                deleteCandidate(candidate.candidateId);
+            },
+        });
+    };
+
+    const createMenu = candidate => (
+        <Menu>
+            <Menu.Item
+                onClick={e => {
+                    e.domEvent.stopPropagation();
+                    if (candidate.archived) {
+                        undoArchive(candidate);
+                    } else {
+                        archive(candidate);
+                    }
+                }}
+            >
+                {candidate.archived ? "Undo Archive" : "Archive"}
+            </Menu.Item>
+            <Menu.Item
+                danger
+                onClick={e => {
+                    e.domEvent.stopPropagation();
+                    showDeleteDialog(candidate);
+                }}
+            >
+                Delete
+            </Menu.Item>
+        </Menu>
+    );
 
     const columns = [
         {
@@ -31,32 +123,12 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             render: candidate => <TableText className={`fs-mask`}>{candidate.candidateName}</TableText>,
         },
         {
-            title: <TableHeader>SOCIALS</TableHeader>,
-            key: "linkedin",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.linkedin, b.linkedin),
-            render: candidate => (
-                <>
-                    {candidate.linkedIn && candidate.linkedIn.includes("linkedin.com/") && (
-                        <a href={candidate.linkedIn} target='_blank' rel='noreferrer'>
-                            <LinkedinFilled style={iconStyle} />
-                        </a>
-                    )}{" "}
-                    {candidate.gitHub && candidate.gitHub.includes("github.com/") && (
-                        <a href={candidate.gitHub} target='_blank' rel='noreferrer'>
-                            <GithubFilled style={iconStyle} />
-                        </a>
-                    )}
-                </>
-            ),
-        },
-        {
             title: <TableHeader>CREATED DATE</TableHeader>,
             key: "createdDate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.createdDate, b.createdDate),
             render: candidate => (
-                <TableText className={`fs-mask`}>{getFormattedDateSimple(candidate.createdDate, "-")}</TableText>
+                <TableText className={`fs-mask`}>{getFormattedDateShort(candidate.createdDate, "-")}</TableText>
             ),
         },
         {
@@ -71,9 +143,59 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: candidate => <CandidateStatusTag status={candidate.status} />,
+            render: candidate => (
+                <div>
+                    <CandidateStatusTag status={candidate.status} />
+                    {candidate.archived ? <ArchivedTag /> : null}
+                </div>
+            ),
+        },
+        {
+            key: "actions",
+            render: candidate => (
+                <Dropdown overlay={createMenu(candidate)} placement='bottomLeft'>
+                    <Button icon={<MoreIcon />} style={{ width: 36, height: 36 }} onClick={e => e.stopPropagation()} />
+                </Dropdown>
+            ),
         },
     ];
+
+    const createStatusOption = status => ({
+        value: status,
+        label: getCandidateStatusText(status),
+    });
+
+    const statusOptions = [
+        createStatusOption(CandidateStatus.NEW),
+        createStatusOption(CandidateStatus.INTERVIEWING),
+        createStatusOption(CandidateStatus.HIRE),
+        createStatusOption(CandidateStatus.NO_HIRE),
+    ];
+
+    const onRowClicked = record => {
+        history.push(routeCandidateDetails(record.candidateId));
+    };
+
+    const onStatusFilterClear = () => {
+        setFilter({
+            ...filter,
+            status: null,
+        });
+    };
+
+    const onStatusFilterChange = value => {
+        setFilter({
+            ...filter,
+            status: value,
+        });
+    };
+
+    const onDisplayArchivedChange = e => {
+        setFilter({
+            ...filter,
+            displayArchived: e.target.checked,
+        });
+    };
 
     return (
         <Layout contentStyle={styles.rootContainer}>
@@ -81,29 +203,51 @@ const Candidates = ({ loadCandidates, candidates, loading }) => {
                 Candidates
             </Title>
 
+            <div className={styles.divRight}>
+                <Checkbox className={styles.checkbox} onChange={onDisplayArchivedChange} defaultChecked>
+                    Display archived
+                </Checkbox>
+                <Select
+                    className={styles.select}
+                    placeholder='Status filter'
+                    options={statusOptions}
+                    onSelect={onStatusFilterChange}
+                    onClear={onStatusFilterClear}
+                    showSearch
+                    allowClear
+                    filterOption={filterOptionLabel}
+                />
+            </div>
+
             <Card withPadding={false}>
                 <Table
-                    pagination={false}
+                    pagination={{
+                        style: { marginRight: 24 },
+                        defaultPageSize: 20,
+                    }}
                     scroll={{
                         x: "max-content",
                     }}
                     columns={columns}
                     dataSource={candidates}
-                    loading={loading}
+                    loading={loading && candidates.length === 0}
                     rowClassName={styles.row}
+                    onRow={record => ({
+                        onClick: () => onRowClicked(record),
+                    })}
                 />
             </Card>
         </Layout>
     );
 };
 
-const mapDispatch = { loadCandidates };
+const mapDispatch = { loadCandidates, updateCandidate, deleteCandidate };
 
 const mapState = state => {
     const candidatesState = state.candidates || {};
 
     return {
-        candidates: orderBy(candidatesState.candidates, "status", ["asc"]),
+        candidatesData: orderBy(candidatesState.candidates, "createdDate", ["desc"]),
         loading: candidatesState.loading,
     };
 };

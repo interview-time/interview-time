@@ -18,7 +18,7 @@ import { filterOptionLabel } from "../../components/utils/filters";
 import Card from "../../components/card/card";
 import TableHeader from "../../components/table/table-header";
 import TableText from "../../components/table/table-text";
-import { getFormattedDate } from "../../components/utils/utils";
+import { getFormattedDateTime } from "../../components/utils/date";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 import InterviewScoreTag from "../../components/tags/interview-score-tags";
 import InterviewCompetenceTag from "../../components/tags/interview-competence-tags";
@@ -109,7 +109,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: interview => (
-                <TableText className={`fs-mask`}>{getFormattedDate(interview.interviewDateTime, "-")}</TableText>
+                <TableText className={`fs-mask`}>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {
@@ -170,7 +170,10 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
 
                 <Card withPadding={false}>
                     <Table
-                        pagination={false}
+                        pagination={{
+                            style: { marginRight: 24 },
+                            defaultPageSize: 20,
+                        }}
                         scroll={{
                             x: "max-content",
                         }}

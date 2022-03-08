@@ -7,7 +7,7 @@ import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
-import { isEmpty } from "../../components/utils/utils";
+import { isEmpty } from "../../components/utils/date";
 import { flatten, sortedUniq } from "lodash/array";
 import { createTagColors } from "../../components/utils/constants";
 import { TemplateTags } from "./template-tags";

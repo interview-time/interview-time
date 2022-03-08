@@ -5,3 +5,20 @@
 .row {
     cursor: pointer;
 }
+
+.divRight {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.select {
+    min-width: 230px;
+    margin-left: 16px;
+}
+
+.checkbox {
+    font-size: 14px;
+    color: #6b7280;
+}

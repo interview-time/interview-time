@@ -4,7 +4,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import { connect } from "react-redux";
 import Spinner from "../spinner/spinner";
 import { loadProfile, setupUser } from "../../store/user/actions";
-import { getParameterByName } from "../utils/utils";
+import { getParameterByName } from "../utils/route";
 
 const PrivateRoute = ({ loadProfile, setupUser, profile, loadingProfile, component: Component, path, ...rest }) => {
     const { loading, isAuthenticated, loginWithRedirect, user } = useAuth0();

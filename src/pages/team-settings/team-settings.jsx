@@ -1,11 +1,13 @@
 import Layout from "../../components/layout/layout";
-import { Button, message, Modal, Space, Table } from "antd";
+import { Button, message, Modal, Space, Table, Menu, Dropdown } from "antd";
+import { CheckOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import { connect } from "react-redux";
 import TeamDetails from "./team-details";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam } from "../../store/user/actions";
+import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam, changeRole, removeMember } from "../../store/user/actions";
+import { MoreIcon } from "../../components/utils/icons";
 import { defaultTo } from "lodash/util";
 import Spinner from "../../components/spinner/spinner";
 import styles from "./team-settings.module.css";
@@ -16,30 +18,8 @@ import TableHeader from "../../components/table/table-header";
 import { localeCompare } from "../../components/utils/comparators";
 import TableText from "../../components/table/table-text";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Roles } from "../../components/utils/constants";
+import { DisplayRoles, Roles } from "../../components/utils/constants";
 import Text from "antd/lib/typography/Text";
-
-const columns = [
-    {
-        title: <TableHeader>NAME</TableHeader>,
-        dataIndex: "name",
-        key: "name",
-        render: name => <TableText className={`fs-mask`}>{name}</TableText>,
-    },
-    {
-        title: <TableHeader>EMAIL</TableHeader>,
-        dataIndex: "email",
-        key: "email",
-        render: email => <TableText className={`fs-mask`}>{email}</TableText>,
-    },
-    {
-        title: <TableHeader>ROLE</TableHeader>,
-        key: "role",
-        sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => localeCompare(a.roles[0], b.roles[0]),
-        render: member => <TeamRoleTag role={member.roles[0]} />,
-    },
-];
 
 /**
  *
@@ -53,7 +33,17 @@ const columns = [
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamSettings = ({ userName, teams, teamMembers, updateTeam, deleteTeam, leaveTeam, loadTeamMembers }) => {
+const TeamSettings = ({
+    userName,
+    teams,
+    teamMembers,
+    updateTeam,
+    deleteTeam,
+    leaveTeam,
+    loadTeamMembers,
+    changeRole,
+    removeMember,
+}) => {
     const [loading, setLoading] = useState(false);
     const [team, setTeam] = useState(/** @type {Team|undefined} */ undefined);
 
@@ -132,6 +122,87 @@ const TeamSettings = ({ userName, teams, teamMembers, updateTeam, deleteTeam, le
         });
     }
 
+    const showDeleteDialog = (memberId, memberName) => {
+        Modal.confirm({
+            title: "Remove member",
+            content: `Are you sure you want to remove ${memberName} from your team ${team.teamName}?`,
+            okText: "Yes",
+            cancelText: "No",
+            onOk() {
+                removeMember(memberId, team.teamId);
+            },
+        });
+    };
+
+    const createMenu = teamMember => (
+        <Menu mode='vertical'>
+            <Menu.SubMenu key='role' title='Update Roles'>
+                {Object.entries(DisplayRoles).map(([key, value]) => (
+                    <Menu.Item
+                        onClick={e => {
+                            e.domEvent.stopPropagation();
+                            changeRole(teamMember.userId, team.teamId, key);
+                        }}
+                        key={key}
+                    >
+                        <div className={styles.roleItem}>
+                            {value}
+                            <span className={styles.hasRole}>
+                                {teamMember.roles.includes(key) && <CheckOutlined />}
+                            </span>
+                        </div>
+                    </Menu.Item>
+                ))}
+            </Menu.SubMenu>
+
+            <Menu.Item
+                key='remove'
+                danger
+                onClick={e => {
+                    e.domEvent.stopPropagation();
+                    showDeleteDialog(teamMember.userId, teamMember.name);
+                }}
+            >
+                Remove
+            </Menu.Item>
+        </Menu>
+    );
+
+    const columns = [
+        {
+            title: <TableHeader>NAME</TableHeader>,
+            dataIndex: "name",
+            key: "name",
+            render: name => <TableText className={`fs-mask`}>{name}</TableText>,
+        },
+        {
+            title: <TableHeader>EMAIL</TableHeader>,
+            dataIndex: "email",
+            key: "email",
+            render: email => <TableText className={`fs-mask`}>{email}</TableText>,
+        },
+        {
+            title: <TableHeader>ROLE</TableHeader>,
+            key: "role",
+            sortDirections: ["descend", "ascend"],
+            sorter: (a, b) => localeCompare(a.roles[0], b.roles[0]),
+            render: member => <TeamRoleTag role={member.roles[0]} />,
+        },
+        {
+            key: "actions",
+            render: teamMember =>
+                !teamMember.roles.includes(Roles.ADMIN) && (
+                    <Dropdown overlay={createMenu(teamMember)} placement='bottomLeft'>
+                        <Button
+                            icon={<MoreIcon />}
+                            style={{ width: 36, height: 36 }}
+                            onClick={e => e.stopPropagation()}
+                        />
+                    </Dropdown>
+                ),
+        },
+    ];
+
     const isLoading = () => !team || loading;
 
     return (
@@ -185,7 +256,7 @@ const TeamSettings = ({ userName, teams, teamMembers, updateTeam, deleteTeam, le
     );
 };
 
-const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers };
+const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers, changeRole, removeMember };
 
 const mapState = state => {
     const userState = state.user || {};
