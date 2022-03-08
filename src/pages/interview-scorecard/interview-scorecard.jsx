@@ -68,7 +68,7 @@ const InterviewScorecard = ({
     useEffect(() => {
         // initial data loading
         if (interviews.length > 0 && !interview) {
-            const currentInterview = cloneDeep(findInterview(id, interviews));            
+            const currentInterview = cloneDeep(findInterview(id, interviews));
             setInterview(currentInterview);
             loadTeamMembers(currentInterview.teamId);
         }
