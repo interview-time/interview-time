@@ -1,5 +1,7 @@
 import { includes } from "./comparators";
 import { defaultTo } from "lodash/util";
+import { uniq } from "lodash/array";
+import { isEmpty } from "./date";
 
 /**
  *
@@ -64,3 +66,17 @@ export const filterQuestionsWithAssessment = inputValue =>
  */
 export const filterGroupsWithAssessment = inputValue =>
     inputValue.filter(group => filterQuestionsWithAssessment(group).length > 0);
+
+/**
+ *
+ * @param {Interview[]} interviews
+ * @returns {{label: string, value: string}[]}
+ */
+export const interviewsPositionOptions = interviews =>
+    uniq(interviews.map(interview => interview.position))
+        .filter(position => !isEmpty(position) && position !== "Hello world") // bug introduced somewhere in the past
+        .sort()
+        .map(position => ({
+            label: position,
+            value: position,
+        }));
