@@ -7,14 +7,14 @@ import { Input, Select, Table } from "antd";
 import { connect } from "react-redux";
 import moment from "moment";
 import { sortBy } from "lodash/collection";
-import { getStatusText, Status } from "../../components/utils/constants";
+import { Status } from "../../components/utils/constants";
 import { getDecisionText, getOverallPerformancePercent } from "../../components/utils/assessment";
 import { localeCompare } from "../../components/utils/comparators";
-import { reverse, sortedUniq } from "lodash/array";
+import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import { routeInterviewReport } from "../../components/utils/route";
 import Title from "antd/lib/typography/Title";
-import { filterOptionLabel } from "../../components/utils/filters";
+import { filterOptionLabel, interviewsPositionOptions } from "../../components/utils/filters";
 import Card from "../../components/card/card";
 import TableHeader from "../../components/table/table-header";
 import TableText from "../../components/table/table-text";
@@ -65,10 +65,9 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
         setInterviews(
             interviews.filter(
                 item =>
-                    item.candidate.toLocaleLowerCase().includes(lowerCaseText) ||
-                    item.position.toLocaleLowerCase().includes(lowerCaseText) ||
+                    item.candidate?.toLocaleLowerCase()?.includes(lowerCaseText) ||
+                    item.position?.toLocaleLowerCase()?.includes(lowerCaseText) ||
                     moment(item.interviewDateTime).format("lll").toLocaleLowerCase().includes(lowerCaseText) ||
-                    getStatusText(item.status).toLocaleLowerCase().includes(lowerCaseText) ||
                     getDecisionText(item.decision).toLocaleLowerCase().includes(lowerCaseText)
             )
         );
@@ -129,8 +128,6 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             title: <TableHeader>DECISION</TableHeader>,
             key: "decision",
             dataIndex: "decision",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.decision, b.decision),
             render: decision => <InterviewDecisionTag decision={decision} />,
         },
     ];
@@ -156,12 +153,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
                         placeholder='Position'
                         onSelect={onPositionChange}
                         onClear={onPositionClear}
-                        options={sortedUniq(interviews.map(interview => interview.position)).map(position => {
-                            return {
-                                label: position,
-                                value: position,
-                            };
-                        })}
+                        options={interviewsPositionOptions(interviews)}
                         showSearch
                         allowClear
                         filterOption={filterOptionLabel}

@@ -13,8 +13,8 @@ import { ArchiveIcon, CalendarIcon, IdeaIcon } from "../../components/utils/icon
 import { loadTeamMembers } from "../../store/user/actions";
 import { truncate } from "lodash/string";
 import CardHero from "../../components/card/card-hero";
-import { uniq, uniqBy } from "lodash/array";
-import { filterOptionLabel } from "../../components/utils/filters";
+import { uniqBy } from "lodash/array";
+import { filterOptionLabel, interviewsPositionOptions } from "../../components/utils/filters";
 import InterviewsTable from "./interviews-table";
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
@@ -41,7 +41,6 @@ const Interviews = ({
     deleteInterview,
 }) => {
     const [interviews, setInterviews] = useState([]);
-    const [positions, setPositions] = useState([]);
     const [interviewers, setInterviewers] = useState([]);
     const [filter, setFilter] = useState({
         interviewer: null,
@@ -56,14 +55,6 @@ const Interviews = ({
 
     React.useEffect(() => {
         setInterviews(interviewsData);
-        setPositions(
-            uniq(interviewsData.map(interview => interview.position))
-                .sort()
-                .map(position => ({
-                    label: position,
-                    value: position,
-                }))
-        );
 
         let profileName =
             truncate(profile.name, {
@@ -198,7 +189,7 @@ const Interviews = ({
                         placeholder='Position filter'
                         onSelect={onPositionFilterChange}
                         onClear={onPositionFilterClear}
-                        options={positions}
+                        options={interviewsPositionOptions(interviews)}
                         showSearch
                         allowClear
                         filterOption={filterOptionLabel}
