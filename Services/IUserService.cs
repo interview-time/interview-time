@@ -13,5 +13,7 @@ namespace CafApi.Services
         Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset, string timezone);
 
         Task<bool> IsBelongInTeam(string userId, string teamId);
+
+        Task UpdateCurrentTeam(string userId, string currentTeamId);
     }
 }

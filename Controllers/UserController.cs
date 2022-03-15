@@ -71,6 +71,7 @@ namespace CafApi.Controllers
                 Name = profile.Name,
                 Email = profile.Email,
                 TimezoneOffset = profile.TimezoneOffset,
+                CurrentTeamId = profile.CurrentTeamId,
                 Teams = teams.Select(t => new TeamResponse
                 {
                     TeamId = t.Team.TeamId,
@@ -129,6 +130,12 @@ namespace CafApi.Controllers
                 TimezoneOffset = profile.TimezoneOffset,
                 Teams = teams
             };
+        }
+
+        [HttpPut("current-team")]
+        public async Task UpdateCurrentTeam(UpdateCurrentTeamRequest request)
+        {
+            await _userService.UpdateCurrentTeam(UserId, request.CurrentTeamId);
         }
 
         private async Task AddNewUserInMailchimp(string email, string name)

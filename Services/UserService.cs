@@ -65,5 +65,21 @@ namespace CafApi.Services
 
             return teamMember != null;
         }
+
+        public async Task UpdateCurrentTeam(string userId, string currentTeamId)
+        {
+            var isBelongToTeam = await IsBelongInTeam(userId, currentTeamId);
+            if (isBelongToTeam)
+            {
+                var profile = await GetProfile(userId);
+                if (profile != null)
+                {
+                    profile.CurrentTeamId = currentTeamId;
+                    profile.ModifiedDate = DateTime.UtcNow;
+
+                    await _context.SaveAsync(profile);
+                }
+            }
+        }
     }
 }
