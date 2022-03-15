@@ -18,6 +18,8 @@ namespace CafApi.Models
 
         public string Timezone { get; set; }
 
+        public string CurrentTeamId { get; set; }
+
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 
