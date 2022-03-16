@@ -14,7 +14,7 @@ export function loadCandidates(forceFetch = false) {
             type: LOAD_CANDIDATES,
             payload: {
                 forceFetch: forceFetch,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };
@@ -43,7 +43,7 @@ export function getUploadUrl(candidateId, filename) {
             payload: {
                 candidateId: candidateId,
                 filename: filename,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };
@@ -57,7 +57,7 @@ export function createCandidate(candidate) {
             type: CREATE_CANDIDATE,
             payload: {
                 candidate: candidate,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };
@@ -71,7 +71,7 @@ export function updateCandidate(candidate) {
             type: UPDATE_CANDIDATE,
             payload: {
                 candidate: candidate,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };
@@ -85,7 +85,7 @@ export function deleteCandidate(candidateId) {
             type: DELETE_CANDIDATE,
             payload: {
                 candidateId: candidateId,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };

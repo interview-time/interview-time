@@ -28,7 +28,7 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  * @param {Candidate[]} candidates
  * @param {Templates[]} templates
  * @param {Team[]} teams
- * @param {Team} activeTeam
+ * @param {UserProfile} profile
  * @param {boolean} interviewsUploading
  * @param loadInterviews
  * @param loadTeamMembers
@@ -46,7 +46,7 @@ const InterviewScorecard = ({
     candidates,
     templates,
     teams,
-    activeTeam,
+    profile,
     interviewsUploading,
     loadInterviews,
     loadTeamMembers,
@@ -78,10 +78,10 @@ const InterviewScorecard = ({
     useEffect(() => {
         let paramTeamId = new URLSearchParams(search).get("teamId");
 
-        if (paramTeamId && activeTeam?.teamId !== paramTeamId) {
+        if (paramTeamId && profile.currentTeamId !== paramTeamId) {
             let team = teams.find(t => t.teamId === paramTeamId);
             if (team) {
-                setActiveTeam(team);
+                setActiveTeam(team.teamId);
             }
         }
 
@@ -278,7 +278,7 @@ const mapState = state => {
         templates: templatesState.templates,
         interviewsUploading: interviewsState.uploading,
         teams: userState.profile.teams,
-        activeTeam: userState.activeTeam,
+        profile: userState.profile,
     };
 };
 

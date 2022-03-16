@@ -1,10 +1,13 @@
 import {
+    CHANGE_ROLE,
     CREATE_TEAM,
     DELETE_TEAM,
     JOIN_TEAM,
     LEAVE_TEAM,
     LOAD_PROFILE,
     LOAD_TEAM_MEMBERS,
+    loadTeamMembers,
+    REMOVE_MEMBER,
     SET_ACTIVE_TEAM,
     SET_PROFILE,
     SET_TEAM_MEMBERS,
@@ -14,14 +17,11 @@ import {
     SETUP_USER,
     setupUser,
     UPDATE_TEAM,
-    CHANGE_ROLE,
-    REMOVE_MEMBER,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
-import { getCachedActiveTeam, setCachedActiveTeam } from "../../components/utils/storage";
 import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { log } from "../../components/utils/log";
@@ -89,28 +89,11 @@ const userReducer = (state = initialState, action) => {
         case SET_PROFILE: {
             const { profile } = action.payload;
 
-            // active team is not set, all other requests rely on state.activeTeam
-            if (!state.activeTeam) {
-                let cachedActiveTeam = getCachedActiveTeam();
-                if (cachedActiveTeam && profile.teams.find(team => team.teamId === cachedActiveTeam.teamId)) {
-                    // cached team found and user is member of that team
-                    return {
-                        ...state,
-                        profile: profile,
-                        activeTeam: cachedActiveTeam,
-                        loading: false,
-                    };
-                }
-
-                // initial profile loading or user setup
-                let activeTeam = profile.teams[0];
-                setCachedActiveTeam(activeTeam);
-                return {
-                    ...state,
-                    profile: profile,
-                    activeTeam: activeTeam,
-                    loading: false,
-                };
+            // active team is not set (old users only) or user is not member of active team
+            if (!profile.currentTeamId || !profile.teams.find(team => team.teamId === profile.currentTeamId)) {
+                Promise.resolve().then(() => {
+                    store.dispatch(setActiveTeam(profile.teams[0].teamId));
+                });
             }
 
             return {
@@ -121,9 +104,15 @@ const userReducer = (state = initialState, action) => {
         }
 
         case SET_ACTIVE_TEAM: {
-            const { team, reloadData } = action.payload;
+            const { teamId, reloadData } = action.payload;
 
-            setCachedActiveTeam(team);
+            const data = {
+                currentTeamId: teamId
+            }
+            getAccessTokenSilently()
+                .then(token => axios.put(`${URL_PROFILE}/current-team`, data, config(token)))
+                .then(() => log(`Active team set to: ${teamId}`))
+                .catch(reason => console.error(reason));
 
             if (reloadData) {
                 Promise.resolve().then(() => {
@@ -131,23 +120,22 @@ const userReducer = (state = initialState, action) => {
                     store.dispatch(setTemplates([]));
                     store.dispatch(setInterviews([]));
                     store.dispatch(setCandidates([]));
+                    store.dispatch(setTeamMembers([]));
 
                     // load new data for current team
                     store.dispatch(loadTemplates());
                     store.dispatch(loadInterviews());
                     store.dispatch(loadCandidates());
+                    store.dispatch(loadTeamMembers(teamId));
                 });
-
-                return {
-                    ...state,
-                    activeTeam: team,
-                    teamMembers: [],
-                };
             }
 
             return {
                 ...state,
-                activeTeam: team,
+                profile: {
+                    ...state.profile,
+                    currentTeamId: teamId,
+                },
             };
         }
 
@@ -175,13 +163,8 @@ const userReducer = (state = initialState, action) => {
                     const team = res[0];
                     const profile = res[1].data;
 
-                    store.dispatch(
-                        setActiveTeam({
-                            teamId: team.teamId,
-                            teamName: team.name,
-                        })
-                    );
                     store.dispatch(setProfile(profile || []));
+                    store.dispatch(setActiveTeam(team.teamId));
                 })
                 .catch(reason => console.error(reason));
 
@@ -207,15 +190,6 @@ const userReducer = (state = initialState, action) => {
                 .then(res => {
                     const profile = res.data;
                     store.dispatch(setProfile(profile || []));
-                    store.dispatch(
-                        setActiveTeam(
-                            {
-                                teamId: team.teamId,
-                                teamName: team.teamName,
-                            },
-                            false
-                        )
-                    );
                 })
                 .catch(reason => console.error(reason));
 
@@ -234,7 +208,6 @@ const userReducer = (state = initialState, action) => {
                         teams: state.profile.teams.filter(team => team.teamId !== teamId),
                     };
                     store.dispatch(setProfile(profile));
-                    store.dispatch(setActiveTeam(state.profile.teams[0], true));
                 })
                 .catch(reason => console.error(reason));
 
@@ -306,7 +279,6 @@ const userReducer = (state = initialState, action) => {
                         teams: state.profile.teams.filter(team => team.teamId !== teamId),
                     };
                     store.dispatch(setProfile(profile));
-                    store.dispatch(setActiveTeam(state.profile.teams[0], true));
                 })
                 .catch(reason => console.error(reason));
 

@@ -38,13 +38,13 @@ const iconStyle = { fontSize: 24, color: "#8C2BE3" };
  * @param {Interview[]} interviews
  * @param {boolean} interviewsLoading
  * @param {Template[]} templates
- * @param {Team} activeTeam
+ * @param {UserProfile} profile
  * @param loadInterviews
  * @param loadTemplates
  * @returns {JSX.Element}
  * @constructor
  */
-const Dashboard = ({ interviews, interviewsLoading, templates, activeTeam, loadInterviews, loadTemplates }) => {
+const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInterviews, loadTemplates }) => {
     const history = useHistory();
 
     React.useEffect(() => {
@@ -57,7 +57,7 @@ const Dashboard = ({ interviews, interviewsLoading, templates, activeTeam, loadI
 
     const onScheduleInterviewClicked = () => history.push(routeInterviewAdd());
 
-    const onInviteTeamMembers = () => history.push(routeTeamSettings(activeTeam.teamId));
+    const onInviteTeamMembers = () => history.push(routeTeamSettings(profile.currentTeamId));
 
     const onRowClicked = interview => history.push(routeInterviewScorecard(interview.interviewId));
 
@@ -194,7 +194,7 @@ const mapState = state => {
         interviews: interviews,
         interviewsLoading: interviewsState.loading,
         templates: templates,
-        activeTeam: userState.activeTeam,
+        profile: userState.profile,
     };
 };
 
