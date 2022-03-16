@@ -17,7 +17,7 @@ import { loadInterviews } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { connect } from "react-redux";
-import { findInterview } from "../../components/utils/converters";
+import { findInterview, getInterviewerName } from "../../components/utils/converters";
 import Spinner from "../../components/spinner/spinner";
 import Paragraph from "antd/lib/typography/Paragraph";
 import ExportNotes from "../../components/export-notes/export-notes";
@@ -69,12 +69,6 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
 
     const onCollapseClicked = () => setExpanded(false);
 
-    const getInterviewerName = () => {
-        return teamMembers && teamMembers.length > 0
-            ? teamMembers.find(member => member.userId === interview.userId).name
-            : "";
-    };
-
     const onExportClicked = () => {
         setShowExportNotes(true);
     };
@@ -106,7 +100,7 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
                     >
                         <div className={styles.decisionTextHolder}>
                             <Title level={4} style={{ margin: 0 }}>
-                                🎉 {getInterviewerName()} scored a...
+                                🎉 {getInterviewerName(teamMembers, interview.userId)} scored a...
                             </Title>
                             <InterviewDecisionTag decision={interview.decision} />
                         </div>
