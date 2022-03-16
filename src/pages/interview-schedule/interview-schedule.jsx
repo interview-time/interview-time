@@ -47,7 +47,6 @@ import { log } from "../../components/utils/log";
  * @param {Template[]} templates
  * @param {TeamMember[]} teamMembers
  * @param {Candidate[]} candidates
- * @param activeTeam
  * @param addInterview
  * @param loadInterviews
  * @param updateInterview
@@ -63,7 +62,6 @@ const InterviewSchedule = ({
     templates,
     candidates,
     teamMembers,
-    activeTeam,
     addInterview,
     loadInterviews,
     updateInterview,
@@ -176,7 +174,7 @@ const InterviewSchedule = ({
     React.useEffect(() => {
         loadTemplates();
         loadCandidates();
-        loadTeamMembers(activeTeam.teamId);
+        loadTeamMembers(profile.currentTeamId);
 
         if (isExistingInterviewFlow()) {
             loadInterviews();
@@ -521,7 +519,7 @@ const InterviewSchedule = ({
 
                         {createCandidate && (
                             <CreateCandidate
-                                teamId={activeTeam.teamId}
+                                teamId={profile.currentTeamId}
                                 onSave={candidateName => {
                                     var selectedCandidates = candidates.filter(c => c.candidateName === candidateName);
 
@@ -580,7 +578,6 @@ const mapState = state => {
         templates: templateState.templates,
         candidates: candidatesState.candidates.filter(c => !c.archived),
         teamMembers: userState.teamMembers || [],
-        activeTeam: userState.activeTeam
     };
 };
 

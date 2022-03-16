@@ -14,7 +14,7 @@ export function loadInterviews(forceFetch = false) {
             type: LOAD_INTERVIEWS,
             payload: {
                 forceFetch: forceFetch,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };
@@ -42,7 +42,7 @@ export function addInterview(interview) {
             type: ADD_INTERVIEW,
             payload: {
                 interview: interview,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };
