@@ -17,7 +17,7 @@ export function loadTemplates(forceFetch = false) {
             type: LOAD_TEMPLATES,
             payload: {
                 forceFetch: forceFetch,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };
@@ -52,7 +52,7 @@ export function addTemplate(template) {
             type: ADD_TEMPLATE,
             payload: {
                 template: template,
-                teamId: user.activeTeam.teamId,
+                teamId: user.profile.currentTeamId,
             },
         });
     };

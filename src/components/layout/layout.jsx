@@ -49,14 +49,13 @@ import { getJoinTeam, setJoinTeam } from "../utils/storage";
  * @param pageHeader
  * @param contentStyle
  * @param {UserProfile} profile
- * @param activeTeam
  * @param setTemplates
  * @param setActiveTeam
  * @param joinTeam
  * @returns {JSX.Element}
  * @constructor
  */
-const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setActiveTeam, joinTeam }) => {
+const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, joinTeam }) => {
     const location = useLocation();
     const history = useHistory();
     const { user } = useAuth0();
@@ -90,14 +89,6 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
         }
         // eslint-disable-next-line
     }, [profile]);
-
-    /**
-     *
-     * @returns {ActiveTeam}
-     */
-    const getActiveTeam = () => {
-        return activeTeam ? activeTeam : profile.teams[0];
-    };
 
     const getSelectedMenuKey = () => {
         if (location.pathname.includes(routeTemplates()) || location.pathname.includes(routeTemplateLibrary())) {
@@ -163,7 +154,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
             teamName: team.teamName,
             teamId: team.teamId,
         };
-        setActiveTeam(selected);
+        setActiveTeam(selected.teamId);
         history.push(routeHome());
     };
 
@@ -221,7 +212,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                     <Select
                         placeholder='Select interview template'
                         onChange={onTeamChange}
-                        value={getActiveTeam().teamId}
+                        value={profile.currentTeamId}
                         options={teamOptions}
                         dropdownRender={menu => (
                             <div>
@@ -273,7 +264,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, activeTeam, setAc
                     </Menu.Item>
                     <Divider className={styles.divider} />
                     <Menu.Item key='settings' className={styles.menuItem} icon={<UserAddIcon />}>
-                        <Link to={routeTeamSettings(getActiveTeam().teamId)}>
+                        <Link to={routeTeamSettings(profile.currentTeamId)}>
                             <span className='nav-text'>Team settings</span>
                         </Link>
                     </Menu.Item>
@@ -305,8 +296,7 @@ const mapState = state => {
     const userState = state.user || {};
 
     return {
-        profile: userState.profile,
-        activeTeam: userState.activeTeam,
+        profile: userState.profile
     };
 };
 

@@ -35,10 +35,10 @@ export const setProfile = profile => ({
     },
 });
 
-export const setActiveTeam = (team, reloadData = true) => ({
+export const setActiveTeam = (teamId, reloadData = true) => ({
     type: SET_ACTIVE_TEAM,
     payload: {
-        team,
+        teamId,
         reloadData,
     },
 });

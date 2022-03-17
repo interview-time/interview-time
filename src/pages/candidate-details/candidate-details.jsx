@@ -22,7 +22,6 @@ import CreateCandidate from "./create-candidate";
  * @param {UserProfile} profile
  * @param {Candidate[]} candidates
  * @param {Interview[]} interviews
- * @param {Team} activeTeam
  * @param  loadCandidates
  * @param  loadInterviews
  * @param  updateCandidate
@@ -35,7 +34,6 @@ const CandidateDetails = ({
     profile,
     candidates,
     interviews,
-    activeTeam,
     loadCandidates,
     loadInterviews,
     updateCandidate,
@@ -70,7 +68,7 @@ const CandidateDetails = ({
     useEffect(() => {
         loadCandidates();
         loadInterviews();
-        loadTeamMembers(activeTeam.teamId);
+        loadTeamMembers(profile.currentTeamId);
         // eslint-disable-next-line
     }, []);
 
@@ -168,7 +166,7 @@ const CandidateDetails = ({
                         <CreateCandidate
                             onCancel={onEditCancel}
                             candidate={candidate}
-                            teamId={activeTeam.teamId}
+                            teamId={profile.currentTeamId}
                             onSave={onCandidateUpdate}
                         />
                     </div>}
@@ -206,7 +204,6 @@ const mapState = state => {
         profile: userState.profile,
         candidates: candidatesState.candidates,
         interviews: interviews,
-        activeTeam: userState.activeTeam,
     };
 };
 

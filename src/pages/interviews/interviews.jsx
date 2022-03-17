@@ -22,7 +22,6 @@ const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 /**
  *
  * @param {UserProfile} profile
- * @param {Team} activeTeam
  * @param {Interview[]} interviewsData
  * @param {boolean} interviewsLoading
  * @param loadInterviews
@@ -33,7 +32,6 @@ const iconStyle = { fontSize: 24, color: "#8C2BE3" };
  */
 const Interviews = ({
     profile,
-    activeTeam,
     interviewsData,
     interviewsLoading,
     loadInterviews,
@@ -49,7 +47,7 @@ const Interviews = ({
 
     React.useEffect(() => {
         loadInterviews();
-        loadTeamMembers(activeTeam.teamId);
+        loadTeamMembers(profile.currentTeamId);
         // eslint-disable-next-line
     }, []);
 
@@ -229,7 +227,6 @@ const mapState = state => {
         interviewsData: sortedInterviews,
         interviewsLoading: interviewsState.loading,
         profile: userState.profile,
-        activeTeam: userState.activeTeam,
     };
 };
 
