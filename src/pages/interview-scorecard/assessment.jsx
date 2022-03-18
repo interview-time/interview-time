@@ -102,7 +102,7 @@ const Assessment = ({
                 }
             />
 
-            <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
+            <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }} className={styles.interviewSectionContainer}>
                 <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
                     <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
                     <CandidateInfoSection candidate={candidate} />
