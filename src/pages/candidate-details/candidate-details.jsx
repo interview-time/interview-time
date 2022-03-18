@@ -16,6 +16,7 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { MoreIcon } from "../../components/utils/icons";
 import { routeCandidates } from "../../components/utils/route";
 import CreateCandidate from "./create-candidate";
+import { getInterviewerName } from "../../components/utils/converters";
 
 /**
  *
@@ -195,8 +196,7 @@ const mapState = state => {
     const interviews = cloneDeep(interviewsState.interviews);
     interviews.forEach(interview => {
         if (userState.teamMembers) {
-            interview.userName =
-                userState.teamMembers.find(member => member.userId === interview.userId)?.name || "Unknown user";
+            interview.userName = getInterviewerName(userState.teamMembers, interview.userId);
         }
     });
 

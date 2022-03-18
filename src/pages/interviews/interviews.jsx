@@ -16,6 +16,7 @@ import CardHero from "../../components/card/card-hero";
 import { uniqBy } from "lodash/array";
 import { filterOptionLabel, interviewsPositionOptions } from "../../components/utils/filters";
 import InterviewsTable from "./interviews-table";
+import { getInterviewerName } from "../../components/utils/converters";
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
@@ -218,8 +219,7 @@ const mapState = state => {
     );
     sortedInterviews.forEach(interview => {
         if (userState.teamMembers) {
-            interview.userName =
-                userState.teamMembers.find(member => member.userId === interview.userId)?.name || "Unknown user";
+            interview.userName = getInterviewerName(userState.teamMembers, interview.userId);
         }
     });
 

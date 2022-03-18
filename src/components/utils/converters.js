@@ -114,3 +114,19 @@ export function interviewToTags(interview) {
     });
     return [...tags];
 }
+
+/**
+ *
+ * @param {TeamMember[]} teamMembers
+ * @param {string} interviewerId
+ * @returns {string}
+ */
+export function getInterviewerName(teamMembers, interviewerId) {
+    if (teamMembers && teamMembers.length > 0) {
+        const teamMember = teamMembers.find(member => member.userId === interviewerId);
+        if (teamMember && teamMember.name) {
+            return teamMember.name;
+        }
+    }
+    return "Unknown User";
+}
