@@ -382,6 +382,7 @@ const InterviewQuestionsCard = ({
         },
         {
             title: "Assessment",
+            width: 120,
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: question => (
                 <AssessmentCheckbox
