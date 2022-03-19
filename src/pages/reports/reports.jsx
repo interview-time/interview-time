@@ -22,6 +22,7 @@ import { getFormattedDateTime } from "../../components/utils/date";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 import InterviewScoreTag from "../../components/tags/interview-score-tags";
 import InterviewCompetenceTag from "../../components/tags/interview-competence-tags";
+import { defaultTo } from "lodash/util";
 
 const { Search } = Input;
 
@@ -44,7 +45,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
         if (position) {
             let lowerCaseText = position.toLocaleLowerCase();
             setInterviews(
-                interviews.filter(interview => interview.position.toLocaleLowerCase().includes(lowerCaseText))
+                interviews.filter(interview => interview.position && interview.position.toLocaleLowerCase().includes(lowerCaseText))
             );
         } else if (position === null) {
             setInterviews(interviews);
@@ -99,7 +100,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
             render: position => {
-                return <TableText className='fs-mask'>{position}</TableText>;
+                return <TableText className='fs-mask'>{defaultTo(position, "-")}</TableText>;
             },
         },
         {
