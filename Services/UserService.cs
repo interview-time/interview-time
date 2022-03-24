@@ -41,7 +41,7 @@ namespace CafApi.Services
             return profileBatch.Results;
         }
 
-        public async Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset, string timezone)
+        public async Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset, string timezone, string currentTeamId)
         {
             var profile = new Profile
             {
@@ -50,6 +50,7 @@ namespace CafApi.Services
                 Email = email,
                 TimezoneOffset = timezoneOffset,
                 Timezone = timezone,
+                CurrentTeamId = currentTeamId,
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow
             };

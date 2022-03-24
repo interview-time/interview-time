@@ -52,6 +52,8 @@ namespace CafApi.Models
 
         public List<string> Interviewers { get; set; }
 
+        public string LinkId { get; set; }
+
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 

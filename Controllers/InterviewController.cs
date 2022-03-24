@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -61,6 +62,7 @@ namespace CafApi.Controllers
             {
                 Interview mainInterview = null;
                 var interviews = new Dictionary<string, Interview>();
+                string linkId = interview.Interviewers.Count > 1 ? Guid.NewGuid().ToString() : null;
 
                 foreach (var interviewerId in interview.Interviewers)
                 {
@@ -69,6 +71,7 @@ namespace CafApi.Controllers
                     {
                         var newInterview = interview.Clone();
                         newInterview.UserId = interviewerId;
+                        newInterview.LinkId = linkId;
 
                         // Demo account
                         if (UserId == _demoUserId)
