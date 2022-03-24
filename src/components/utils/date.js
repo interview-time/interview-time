@@ -70,7 +70,7 @@ export const datePickerFormat = () => "ddd, ll"; // 18 Feb 2022
 /**
  *
  * @param {string} dateTime
- * @param {undefined|string} defaultValue
+ * @param defaultValue
  * @returns {undefined|moment.Moment}
  */
 export const getDate = (dateTime, defaultValue = undefined) => {

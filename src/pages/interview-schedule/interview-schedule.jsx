@@ -39,6 +39,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "../candidate-details/create-candidate";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
+import moment from "moment";
 
 /**
  *
@@ -99,6 +100,41 @@ const InterviewSchedule = ({
     const [interviewersOptions, setInterviewersOptions] = useState([]);
     const [createCandidate, setCreateCandidate] = useState(false);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
+
+    const durationOptions = [
+        {
+            value: 30,
+            label: "30 min",
+        },
+        {
+            value: 60,
+            label: "1 hour",
+        },
+        {
+            value: 90,
+            label: "1 hour 30 minutes",
+        },
+        {
+            value: 120,
+            label: "2 hours",
+        },
+        {
+            value: 150,
+            label: "2 hours 30 minutes",
+        },
+        {
+            value: 180,
+            label: "3 hours",
+        },
+        {
+            value: 210,
+            label: "3 hours 30 minutes",
+        },
+        {
+            value: 240,
+            label: "4 hours",
+        },
+    ];
 
     React.useEffect(() => {
         // existing interview
@@ -239,31 +275,47 @@ const InterviewSchedule = ({
     };
 
     const onTimeChange = time => {
-        let startTime = time[0];
-        let endTime = time[1];
-
         let date = getDate(interview.interviewDateTime);
-        if (date) {
+        let duration = getDurationMinutes(interview.interviewDateTime, interview.interviewEndDateTime);
+        console.log(duration)
+        if (date && duration) {
             interview.interviewDateTime = date
                 .clone()
-                .hour(startTime.hour())
-                .minute(startTime.minute())
+                .hour(time.hour())
+                .minute(time.minute())
                 .utc()
                 .format(DATE_FORMAT_SERVER);
+
             interview.interviewEndDateTime = date
                 .clone()
-                .hour(endTime.hour())
-                .minute(endTime.minute())
+                .hour(time.hour())
+                .minute(time.minute())
+                .add(duration, "minutes")
                 .utc()
                 .format(DATE_FORMAT_SERVER);
         } else {
             // current date + selected time
-            interview.interviewDateTime = startTime.utc().format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = endTime.utc().format(DATE_FORMAT_SERVER);
+            interview.interviewDateTime = time.clone().utc().format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = time.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
         }
 
         logInterviewDateTime();
     };
+
+    const onDurationChange = duration => {
+        let date = getDate(interview.interviewDateTime);
+        if (date) {
+            interview.interviewEndDateTime = date.clone().add(duration, "minutes").utc().format(DATE_FORMAT_SERVER);
+        } else {
+            // current date + selected time
+            interview.interviewDateTime = moment().utc().format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = moment().add(duration, "minutes").utc().format(DATE_FORMAT_SERVER);
+        }
+
+        logInterviewDateTime();
+    };
+
+    const getDurationMinutes = (start, end) => (start && end ? (getDate(end) - getDate(start)) / 1000 / 60 : undefined);
 
     const logInterviewDateTime = () => {
         log("Interview start date (utc)", interview.interviewDateTime);
@@ -355,7 +407,8 @@ const InterviewSchedule = ({
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime),
-                    time: [getDate(interview.interviewDateTime), getDate(interview.interviewEndDateTime)],
+                    time: getDate(interview.interviewDateTime),
+                    duration: getDurationMinutes(interview.interviewDateTime, interview.interviewEndDateTime),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
@@ -473,13 +526,22 @@ const InterviewSchedule = ({
                             onChange={onDateChange}
                         />
                     </Form.Item>
-                    <Form.Item name='time' className={styles.fillWidth}>
-                        <TimePicker.RangePicker
+                    <Form.Item name='time' className={styles.fillWidth} style={{ marginRight: 16 }}>
+                        <TimePicker
                             allowClear={false}
                             minuteStep={15}
                             format={timePickerFormat()}
                             className={styles.fillWidth}
                             onChange={onTimeChange}
+                        />
+                    </Form.Item>
+                    <Form.Item name='duration' className={styles.fillWidth}>
+                        <Select
+                            allowClear={false}
+                            placeholder='Select duration'
+                            options={durationOptions}
+                            className={styles.fillWidth}
+                            onSelect={onDurationChange}
                         />
                     </Form.Item>
                 </div>
