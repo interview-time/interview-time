@@ -90,8 +90,8 @@ namespace CafApi.Controllers
 
             if (profile == null)
             {
-                profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset, request.Timezone);
                 var team = await _teamService.CreateTeam(UserId, "My Team");
+                profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset, request.Timezone, team.TeamId);
 
                 teams.Add(new TeamResponse
                 {

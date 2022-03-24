@@ -10,7 +10,7 @@ namespace CafApi.Services
 
         Task<List<Profile>> GetUserProfiles(List<string> userIds);
 
-        Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset, string timezone);
+        Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset, string timezone, string currentTeamId);
 
         Task<bool> IsBelongInTeam(string userId, string teamId);
 
