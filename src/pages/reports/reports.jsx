@@ -100,7 +100,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
             render: position => {
-                return <TableText className='fs-mask'>{defaultTo(position, "-")}</TableText>;
+                return <TableText>{defaultTo(position, "-")}</TableText>;
             },
         },
         {
@@ -109,7 +109,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: interview => (
-                <TableText className={`fs-mask`}>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
+                <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {

@@ -108,8 +108,7 @@ ${questionNotes}
 
     return (
         <div>
-            <TextArea
-                className='fs-mask'
+            <TextArea               
                 style={{ fontFamily: "monospace" }}
                 autoSize={{ minRows: 10, maxRows: 20 }}
                 onChange={e => setNotes(e.target.value)}
