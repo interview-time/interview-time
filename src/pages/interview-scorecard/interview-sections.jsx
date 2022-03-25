@@ -240,7 +240,7 @@ export const InterviewInformationSection = ({ loading, title, interview, onDelet
                 <Col flex='1'>
                     <Space direction='vertical'>
                         <Text className='fs-mask'>{interview.candidate}</Text>
-                        <Text className='fs-mask'>{defaultTo(interview.position, "-")}</Text>
+                        <Text>{defaultTo(interview.position, "-")}</Text>
                         <Text>{getFormattedDateTime(interview.interviewDateTime, "-")}</Text>
                     </Space>
                 </Col>
@@ -356,7 +356,7 @@ const InterviewQuestionsCard = ({
                     props: {
                         style: { padding: 0 },
                     },
-                    children: <span className='fs-mask'>{question}</span>,
+                    children: <span>{question}</span>,
                 };
             },
         },
@@ -482,7 +482,7 @@ const InterviewQuestionsCard = ({
                                       }),
                                       expandedRowRender: question => (
                                           <TextArea
-                                              className={styles.questionNotesArea + " fs-mask"}
+                                              className={styles.questionNotesArea}
                                               placeholder='Notes'
                                               bordered={false}
                                               autoSize={true}

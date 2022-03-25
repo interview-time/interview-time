@@ -128,7 +128,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.createdDate, b.createdDate),
             render: candidate => (
-                <TableText className={`fs-mask`}>{getFormattedDateShort(candidate.createdDate, "-")}</TableText>
+                <TableText>{getFormattedDateShort(candidate.createdDate, "-")}</TableText>
             ),
         },
         {
@@ -136,7 +136,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
             key: "interviews",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviews, b.interviews),
-            render: candidate => <TableText className={`fs-mask`}>{candidate.totalInterviews}</TableText>,
+            render: candidate => <TableText>{candidate.totalInterviews}</TableText>,
         },
         {
             title: <TableHeader>STATUS</TableHeader>,
