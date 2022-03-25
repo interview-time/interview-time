@@ -202,7 +202,7 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
                             Summary notes
                         </Title>
                         <div className={styles.divider} />
-                        <Paragraph className={`${styles.notesTextArea} fs-mask`}>
+                        <Paragraph className={styles.notesTextArea}>
                             {interview.notes ? interview.notes : "No summary was left"}
                         </Paragraph>
                     </Card>

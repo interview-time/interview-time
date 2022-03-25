@@ -93,7 +93,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
             key: "position",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.position, b.position),
-            render: interview => <TableText className={`fs-mask`}>{defaultTo(interview.position, "-")}</TableText>,
+            render: interview => <TableText>{defaultTo(interview.position, "-")}</TableText>,
         },
         {
             title: <TableHeader>DATE</TableHeader>,
@@ -101,7 +101,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
             render: interview => (
-                <TableText className={`fs-mask`}>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
+                <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
             ),
         },
         {

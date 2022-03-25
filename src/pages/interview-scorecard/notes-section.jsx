@@ -51,7 +51,7 @@ const NotesSection = ({ notes, status, onChange }) => {
 
                 <TextArea
                     {...(status === Status.COMPLETED ? { readonly: "true" } : {})}
-                    className={styles.notesTextArea + " fs-mask"}
+                    className={styles.notesTextArea}
                     placeholder='Enter generic notes here'
                     bordered={false}
                     autoSize={{ minRows: 3, maxRows: 6 }}

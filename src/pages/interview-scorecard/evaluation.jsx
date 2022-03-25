@@ -175,7 +175,7 @@ const Evaluation = ({
                         <div className={styles.divider} />
                         <TextArea
                             {...(interview.status === Status.SUBMITTED ? { readonly: "true" } : {})}
-                            className={`${styles.notesTextArea} fs-mask`}
+                            className={styles.notesTextArea}
                             placeholder='No summary was left, you can still add notes now'
                             bordered={false}
                             autoSize={{ minRows: 1 }}
