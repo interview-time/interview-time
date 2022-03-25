@@ -97,7 +97,7 @@ const InterviewSchedule = ({
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
             const existingInterview = cloneDeep(findInterview(id, interviews));
             // backwards compatibility for interviews without dates
-            if (!existingInterview.interviewDateTime) {
+            if (!getDate(existingInterview.interviewDateTime)) {
                 existingInterview.interviewDateTime = defaultStartDateTime;
                 existingInterview.interviewEndDateTime = defaultEndDateTime;
             }
