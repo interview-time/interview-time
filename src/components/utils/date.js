@@ -70,7 +70,7 @@ export const datePickerFormat = () => "ddd, ll"; // 18 Feb 2022
 /**
  *
  * @param {string} dateTime
- * @param {undefined|string} defaultValue
+ * @param defaultValue
  * @returns {undefined|moment.Moment}
  */
 export const getDate = (dateTime, defaultValue = undefined) => {
@@ -84,4 +84,23 @@ export const getDate = (dateTime, defaultValue = undefined) => {
 export const orderByInterviewDate = interview => {
     const interviewDateTime = moment(interview.interviewDateTime);
     return interviewDateTime.year() > 1 ? interviewDateTime : moment(interview.modifiedDate);
+};
+
+export const generateTimeSlots = (duration = 15) => {
+    let format = timePickerFormat();
+
+    const timeSlots = [];
+    let start = moment().hour(9).minutes(0);
+    let end = start.clone().add(24, "hours");
+
+    let current = start.clone();
+    while(current.isBefore(end)) {
+        timeSlots.push({
+            label: current.format(format),
+            value: current.format()
+        });
+        current.add(duration, "minutes");
+    }
+
+    return timeSlots;
 };

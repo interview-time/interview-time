@@ -104,11 +104,11 @@
 }
 
 .formItem {
-    max-width: 500px;
+    max-width: 600px;
 }
 
 .formDate {
-    max-width: 500px;
+    max-width: 600px;
     display: flex;
     align-items: flex-end;
 }
