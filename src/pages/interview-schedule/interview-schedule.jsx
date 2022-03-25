@@ -1,21 +1,7 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-    AutoComplete,
-    Button,
-    Col,
-    DatePicker,
-    Divider,
-    Form,
-    Input,
-    message,
-    Modal,
-    Row,
-    Select,
-    Space,
-    TimePicker,
-} from "antd";
+import { AutoComplete, Button, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -32,7 +18,7 @@ import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
-import { datePickerFormat, getDate, timePickerFormat } from "../../components/utils/date";
+import { datePickerFormat, generateTimeSlots, getDate, timePickerFormat } from "../../components/utils/date";
 import { filterOptionLabel } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
@@ -82,6 +68,9 @@ const InterviewSchedule = ({
         groups: [],
     };
 
+    const defaultStartDateTime = moment().hour(9).minute(0).utc().format(DATE_FORMAT_SERVER);
+    const defaultEndDateTime = moment().hour(10).minute(0).utc().format(DATE_FORMAT_SERVER);
+
     /**
      *
      * @type {Interview}
@@ -92,6 +81,8 @@ const InterviewSchedule = ({
         status: Status.NEW,
         title: "",
         structure: defaultStructure,
+        interviewDateTime: defaultStartDateTime,
+        interviewEndDateTime: defaultEndDateTime,
     };
 
     const [interview, setInterview] = useState(emptyInterview);
@@ -101,45 +92,16 @@ const InterviewSchedule = ({
     const [createCandidate, setCreateCandidate] = useState(false);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
 
-    const durationOptions = [
-        {
-            value: 30,
-            label: "30 min",
-        },
-        {
-            value: 60,
-            label: "1 hour",
-        },
-        {
-            value: 90,
-            label: "1 hour 30 minutes",
-        },
-        {
-            value: 120,
-            label: "2 hours",
-        },
-        {
-            value: 150,
-            label: "2 hours 30 minutes",
-        },
-        {
-            value: 180,
-            label: "3 hours",
-        },
-        {
-            value: 210,
-            label: "3 hours 30 minutes",
-        },
-        {
-            value: 240,
-            label: "4 hours",
-        },
-    ];
-
     React.useEffect(() => {
         // existing interview
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            setInterview(cloneDeep(findInterview(id, interviews)));
+            const existingInterview = cloneDeep(findInterview(id, interviews));
+            // backwards compatibility for interviews without dates
+            if (!existingInterview.interviewDateTime) {
+                existingInterview.interviewDateTime = defaultStartDateTime;
+                existingInterview.interviewEndDateTime = defaultEndDateTime;
+            }
+            setInterview(existingInterview);
         } else if (isFromTemplateFlow() && interview.templateIds.length === 0 && templates.length !== 0) {
             // new interview from template
             const template = cloneDeep(findTemplate(fromTemplateId(), templates));
@@ -249,16 +211,16 @@ const InterviewSchedule = ({
     };
 
     const onDateChange = newDate => {
-        let date = getDate(interview.interviewDateTime);
-        if (date) {
-            interview.interviewDateTime = date
+        let interviewDateTime = getDate(interview.interviewDateTime);
+        if (interviewDateTime) {
+            interview.interviewDateTime = interviewDateTime
                 .clone()
                 .year(newDate.year())
                 .month(newDate.month())
                 .date(newDate.date())
                 .utc()
                 .format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = date
+            interview.interviewEndDateTime = interviewDateTime
                 .clone()
                 .year(newDate.year())
                 .month(newDate.month())
@@ -274,23 +236,14 @@ const InterviewSchedule = ({
         logInterviewDateTime();
     };
 
-    const onTimeChange = time => {
-        let date = getDate(interview.interviewDateTime);
-        let duration = getDurationMinutes(interview.interviewDateTime, interview.interviewEndDateTime);
-        console.log(duration)
-        if (date && duration) {
-            interview.interviewDateTime = date
+    const onStartTimeChange = value => {
+        let time = moment(value);
+        let interviewDateTime = getDate(interview.interviewDateTime);
+        if (interviewDateTime) {
+            interview.interviewDateTime = interviewDateTime
                 .clone()
                 .hour(time.hour())
                 .minute(time.minute())
-                .utc()
-                .format(DATE_FORMAT_SERVER);
-
-            interview.interviewEndDateTime = date
-                .clone()
-                .hour(time.hour())
-                .minute(time.minute())
-                .add(duration, "minutes")
                 .utc()
                 .format(DATE_FORMAT_SERVER);
         } else {
@@ -302,20 +255,24 @@ const InterviewSchedule = ({
         logInterviewDateTime();
     };
 
-    const onDurationChange = duration => {
-        let date = getDate(interview.interviewDateTime);
-        if (date) {
-            interview.interviewEndDateTime = date.clone().add(duration, "minutes").utc().format(DATE_FORMAT_SERVER);
+    const onEndTimeChange = value => {
+        let time = moment(value);
+        let interviewDateTime = getDate(interview.interviewDateTime);
+        if (interviewDateTime) {
+            interview.interviewEndDateTime = interviewDateTime
+                .clone()
+                .hour(time.hour())
+                .minute(time.minute())
+                .utc()
+                .format(DATE_FORMAT_SERVER);
         } else {
             // current date + selected time
-            interview.interviewDateTime = moment().utc().format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = moment().add(duration, "minutes").utc().format(DATE_FORMAT_SERVER);
+            interview.interviewDateTime = time.clone().utc().format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = time.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
         }
 
         logInterviewDateTime();
     };
-
-    const getDurationMinutes = (start, end) => (start && end ? (getDate(end) - getDate(start)) / 1000 / 60 : undefined);
 
     const logInterviewDateTime = () => {
         log("Interview start date (utc)", interview.interviewDateTime);
@@ -407,8 +364,8 @@ const InterviewSchedule = ({
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime),
-                    time: getDate(interview.interviewDateTime),
-                    duration: getDurationMinutes(interview.interviewDateTime, interview.interviewEndDateTime),
+                    startTime: getDate(interview.interviewDateTime).format(timePickerFormat()),
+                    endTime: getDate(interview.interviewEndDateTime).format(timePickerFormat()),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
@@ -526,22 +483,24 @@ const InterviewSchedule = ({
                             onChange={onDateChange}
                         />
                     </Form.Item>
-                    <Form.Item name='time' className={styles.fillWidth} style={{ marginRight: 16 }}>
-                        <TimePicker
-                            allowClear={false}
-                            minuteStep={15}
-                            format={timePickerFormat()}
-                            className={styles.fillWidth}
-                            onChange={onTimeChange}
-                        />
-                    </Form.Item>
-                    <Form.Item name='duration' className={styles.fillWidth}>
+                    <Form.Item name='startTime' style={{ marginRight: 16 }}>
                         <Select
                             allowClear={false}
-                            placeholder='Select duration'
-                            options={durationOptions}
+                            showSearch
+                            placeholder='Start time'
+                            options={generateTimeSlots()}
+                            onSelect={onStartTimeChange}
                             className={styles.fillWidth}
-                            onSelect={onDurationChange}
+                        />
+                    </Form.Item>
+                    <Form.Item name='endTime'>
+                        <Select
+                            allowClear={false}
+                            showSearch
+                            placeholder='End time'
+                            options={generateTimeSlots()}
+                            onSelect={onEndTimeChange}
+                            className={styles.fillWidth}
                         />
                     </Form.Item>
                 </div>
