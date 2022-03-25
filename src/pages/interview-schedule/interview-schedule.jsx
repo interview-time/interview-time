@@ -1,21 +1,7 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-    AutoComplete,
-    Button,
-    Col,
-    DatePicker,
-    Divider,
-    Form,
-    Input,
-    message,
-    Modal,
-    Row,
-    Select,
-    Space,
-    TimePicker,
-} from "antd";
+import { AutoComplete, Button, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -32,13 +18,14 @@ import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { sortBy } from "lodash/collection";
-import { datePickerFormat, getDate, timePickerFormat } from "../../components/utils/date";
+import { datePickerFormat, generateTimeSlots, getDate, timePickerFormat } from "../../components/utils/date";
 import { filterOptionLabel } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "../candidate-details/create-candidate";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
+import moment from "moment";
 
 /**
  *
@@ -81,6 +68,9 @@ const InterviewSchedule = ({
         groups: [],
     };
 
+    const defaultStartDateTime = moment().hour(9).minute(0).utc().format(DATE_FORMAT_SERVER);
+    const defaultEndDateTime = moment().hour(10).minute(0).utc().format(DATE_FORMAT_SERVER);
+
     /**
      *
      * @type {Interview}
@@ -91,6 +81,8 @@ const InterviewSchedule = ({
         status: Status.NEW,
         title: "",
         structure: defaultStructure,
+        interviewDateTime: defaultStartDateTime,
+        interviewEndDateTime: defaultEndDateTime,
     };
 
     const [interview, setInterview] = useState(emptyInterview);
@@ -103,7 +95,13 @@ const InterviewSchedule = ({
     React.useEffect(() => {
         // existing interview
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            setInterview(cloneDeep(findInterview(id, interviews)));
+            const existingInterview = cloneDeep(findInterview(id, interviews));
+            // backwards compatibility for interviews without dates
+            if (!getDate(existingInterview.interviewDateTime)) {
+                existingInterview.interviewDateTime = defaultStartDateTime;
+                existingInterview.interviewEndDateTime = defaultEndDateTime;
+            }
+            setInterview(existingInterview);
         } else if (isFromTemplateFlow() && interview.templateIds.length === 0 && templates.length !== 0) {
             // new interview from template
             const template = cloneDeep(findTemplate(fromTemplateId(), templates));
@@ -213,16 +211,16 @@ const InterviewSchedule = ({
     };
 
     const onDateChange = newDate => {
-        let date = getDate(interview.interviewDateTime);
-        if (date) {
-            interview.interviewDateTime = date
+        let interviewDateTime = getDate(interview.interviewDateTime);
+        if (interviewDateTime) {
+            interview.interviewDateTime = interviewDateTime
                 .clone()
                 .year(newDate.year())
                 .month(newDate.month())
                 .date(newDate.date())
                 .utc()
                 .format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = date
+            interview.interviewEndDateTime = interviewDateTime
                 .clone()
                 .year(newDate.year())
                 .month(newDate.month())
@@ -238,28 +236,39 @@ const InterviewSchedule = ({
         logInterviewDateTime();
     };
 
-    const onTimeChange = time => {
-        let startTime = time[0];
-        let endTime = time[1];
-
-        let date = getDate(interview.interviewDateTime);
-        if (date) {
-            interview.interviewDateTime = date
+    const onStartTimeChange = value => {
+        let time = moment(value);
+        let interviewDateTime = getDate(interview.interviewDateTime);
+        if (interviewDateTime) {
+            interview.interviewDateTime = interviewDateTime
                 .clone()
-                .hour(startTime.hour())
-                .minute(startTime.minute())
-                .utc()
-                .format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = date
-                .clone()
-                .hour(endTime.hour())
-                .minute(endTime.minute())
+                .hour(time.hour())
+                .minute(time.minute())
                 .utc()
                 .format(DATE_FORMAT_SERVER);
         } else {
             // current date + selected time
-            interview.interviewDateTime = startTime.utc().format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = endTime.utc().format(DATE_FORMAT_SERVER);
+            interview.interviewDateTime = time.clone().utc().format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = time.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
+        }
+
+        logInterviewDateTime();
+    };
+
+    const onEndTimeChange = value => {
+        let time = moment(value);
+        let interviewDateTime = getDate(interview.interviewDateTime);
+        if (interviewDateTime) {
+            interview.interviewEndDateTime = interviewDateTime
+                .clone()
+                .hour(time.hour())
+                .minute(time.minute())
+                .utc()
+                .format(DATE_FORMAT_SERVER);
+        } else {
+            // current date + selected time
+            interview.interviewDateTime = time.clone().utc().format(DATE_FORMAT_SERVER);
+            interview.interviewEndDateTime = time.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
         }
 
         logInterviewDateTime();
@@ -355,7 +364,8 @@ const InterviewSchedule = ({
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime),
-                    time: [getDate(interview.interviewDateTime), getDate(interview.interviewEndDateTime)],
+                    startTime: getDate(interview.interviewDateTime).format(timePickerFormat()),
+                    endTime: getDate(interview.interviewEndDateTime).format(timePickerFormat()),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
@@ -473,13 +483,24 @@ const InterviewSchedule = ({
                             onChange={onDateChange}
                         />
                     </Form.Item>
-                    <Form.Item name='time' className={styles.fillWidth}>
-                        <TimePicker.RangePicker
+                    <Form.Item name='startTime' style={{ marginRight: 16 }}>
+                        <Select
                             allowClear={false}
-                            minuteStep={15}
-                            format={timePickerFormat()}
+                            showSearch
+                            placeholder='Start time'
+                            options={generateTimeSlots()}
+                            onSelect={onStartTimeChange}
                             className={styles.fillWidth}
-                            onChange={onTimeChange}
+                        />
+                    </Form.Item>
+                    <Form.Item name='endTime'>
+                        <Select
+                            allowClear={false}
+                            showSearch
+                            placeholder='End time'
+                            options={generateTimeSlots()}
+                            onSelect={onEndTimeChange}
+                            className={styles.fillWidth}
                         />
                     </Form.Item>
                 </div>

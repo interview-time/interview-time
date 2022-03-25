@@ -20,13 +20,8 @@ import {
     TimeIcon,
     UsersIcon,
 } from "../../components/utils/icons";
-import { interviewToTags } from "../../components/utils/converters";
-import {
-    getFormattedDateTime,
-    getFormattedDate,
-    getFormattedTimeRange,
-    isEmpty
-} from "../../components/utils/date";
+import { getInterviewerName, interviewToTags } from "../../components/utils/converters";
+import { getFormattedDate, getFormattedDateTime, getFormattedTimeRange, isEmpty } from "../../components/utils/date";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 
@@ -97,10 +92,6 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
 export const InterviewInfoSection = ({ interview, teamMembers }) => {
     const iconStyle = { fontSize: 20, color: "#374151" };
 
-    const getInterviewerName = userId => {
-        return teamMembers && teamMembers.length > 0 ? teamMembers.find(member => member.userId === userId).name : "";
-    };
-
     const getInterviewerNameShort = name => {
         let names = name.split(" ");
         if (names.length >= 2) {
@@ -121,7 +112,7 @@ export const InterviewInfoSection = ({ interview, teamMembers }) => {
                     <UsersIcon style={iconStyle} />
                     <Avatar.Group size={36} style={{ marginLeft: 8 }}>
                         {interview.interviewers
-                            .map(userId => getInterviewerName(userId))
+                            .map(userId => getInterviewerName(teamMembers, userId))
                             .map(name => (
                                 <Tooltip title={name} placement='top'>
                                     <Avatar className={styles.avatar} gap={8}>
@@ -391,6 +382,7 @@ const InterviewQuestionsCard = ({
         },
         {
             title: "Assessment",
+            width: 120,
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: question => (
                 <AssessmentCheckbox
