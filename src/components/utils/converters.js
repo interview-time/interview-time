@@ -122,6 +122,9 @@ export function interviewToTags(interview) {
  * @returns {string}
  */
 export function getInterviewerName(teamMembers, interviewerId) {
+    console.log(teamMembers);
+    console.log(interviewerId);
+    
     if (teamMembers && teamMembers.length > 0) {
         const teamMember = teamMembers.find(member => member.userId === interviewerId);
         if (teamMember && teamMember.name) {

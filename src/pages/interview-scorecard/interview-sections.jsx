@@ -107,22 +107,10 @@ export const InterviewInfoSection = ({ interview, teamMembers }) => {
 
     return (
         <Space direction='vertical' size={12}>
-            {interview.interviewers && (
-                <div className={styles.divHorizontal}>
-                    <UsersIcon style={iconStyle} />
-                    <Avatar.Group size={36} style={{ marginLeft: 8 }}>
-                        {interview.interviewers
-                            .map(userId => getInterviewerName(teamMembers, userId))
-                            .map(name => (
-                                <Tooltip title={name} placement='top'>
-                                    <Avatar className={styles.avatar} gap={8}>
-                                        {getInterviewerNameShort(name)}
-                                    </Avatar>
-                                </Tooltip>
-                            ))}
-                    </Avatar.Group>
-                </div>
-            )}
+            <div className={styles.divHorizontal}>
+                <UsersIcon style={iconStyle} />
+                <Text className={styles.reportLabel}>{getInterviewerName(teamMembers, interview.userId)}</Text>
+            </div>
             <div className={styles.divHorizontal}>
                 <CalendarIcon style={iconStyle} />
                 <Text className={styles.reportLabel}>{getFormattedDate(interview.interviewDateTime)}</Text>
