@@ -22,6 +22,7 @@
  * @property {string} createdDate
  * @property {string} modifiedDate
  * @property {number} assessment
+ * @property {string} notes
  */
 
 /**

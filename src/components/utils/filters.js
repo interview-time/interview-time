@@ -61,11 +61,29 @@ export const filterQuestionsWithAssessment = inputValue =>
 
 /**
  *
+ * @param {InterviewGroup} inputValue
+ * @returns {Question[]}
+ */
+export const filterQuestionsWithAssessmentNotes = inputValue =>
+    inputValue.questions.filter(
+        question => (question.assessment && question.assessment !== 0) || !isEmpty(question.notes)
+    );
+
+/**
+ *
  * @param {InterviewGroup[]} inputValue
  * @returns {InterviewGroup[]}
  */
 export const filterGroupsWithAssessment = inputValue =>
     inputValue.filter(group => filterQuestionsWithAssessment(group).length > 0);
+
+/**
+ *
+ * @param {InterviewGroup[]} inputValue
+ * @returns {InterviewGroup[]}
+ */
+export const filterGroupsWithAssessmentNotes = inputValue =>
+    inputValue.filter(group => filterQuestionsWithAssessmentNotes(group).length > 0);
 
 /**
  *

@@ -13,7 +13,7 @@ import { Status } from "../../components/utils/constants";
 import TextArea from "antd/lib/input/TextArea";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import TimeAgo from "../../components/time-ago/time-ago";
-import { filterGroupsWithAssessment, filterQuestionsWithAssessment } from "../../components/utils/filters";
+import { filterGroupsWithAssessmentNotes, filterQuestionsWithAssessmentNotes } from "../../components/utils/filters";
 import { CloseIcon } from "../../components/utils/icons";
 import { routeInterviews } from "../../components/utils/route";
 import { useHistory } from "react-router-dom";
@@ -113,7 +113,7 @@ const Evaluation = ({
                         {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
                         {expanded && <Button onClick={onCollapseClicked}>Collapse</Button>}
                     </div>
-                    {filterGroupsWithAssessment(interview.structure.groups)
+                    {filterGroupsWithAssessmentNotes(interview.structure.groups)
                         .map(group => ({
                             group: group,
                             assessment: getGroupAssessment(group.questions),
@@ -144,7 +144,7 @@ const Evaluation = ({
                                     </div>
                                 </div>
                                 {expanded &&
-                                    filterQuestionsWithAssessment(group).map(question => (
+                                    filterQuestionsWithAssessmentNotes(group).map(question => (
                                         <>
                                             <div className={styles.divider} />
                                             <div className={styles.questionAreaRow}>
