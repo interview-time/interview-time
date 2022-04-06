@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { filterQuestionsWithAssessment } from "../utils/filters";
-import { Difficulty } from "../utils/constants";
 import { Pie } from "react-chartjs-2";
 import styles from "./charts.module.css";
 import { Button, Tooltip } from "antd";
@@ -16,33 +15,7 @@ const CompetenceAreaChart = ({ groups }) => {
     const [chartData, setChartData] = useState([]);
 
     useEffect(() => {
-        const easy = {
-            label: "Easy",
-            color: "#22C55E",
-            value: 0,
-        };
-        const medium = {
-            label: "Medium",
-            color: "#FFC300",
-            value: 0,
-        };
-        const hard = {
-            label: "Hard",
-            color: "#ff4d4f",
-            value: 0,
-        };
         if (groups && groups.length > 0) {
-            groups.forEach(group => {
-                filterQuestionsWithAssessment(group).forEach(question => {
-                    if (question.difficulty === Difficulty.EASY) {
-                        easy.value++;
-                    } else if (question.difficulty === Difficulty.MEDIUM) {
-                        medium.value++;
-                    } else if (question.difficulty === Difficulty.HARD) {
-                        hard.value++;
-                    }
-                });
-            });
             setChartData(
                 groups.map((group, index) => ({
                     label: group.name,

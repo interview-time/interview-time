@@ -72,27 +72,30 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
         setShowExportNotes(true);
     };
 
-    const ChartsSection = () => (
-        <Row gutter={24} style={{ paddingTop: 30 }}>
-            <Col span={8}>
-                <Card withPadding={false}>
-                    <CompetenceAreaChart groups={interview.structure.groups} />
-                </Card>
-            </Col>
+    const ChartsSection = () => {
+        let groups = filterGroupsWithAssessment(interview.structure.groups);
+        return (
+            groups.length > 0 && <Row gutter={24} style={{ paddingTop: 30 }}>
+                <Col span={8}>
+                    <Card withPadding={false}>
+                        <CompetenceAreaChart groups={groups} />
+                    </Card>
+                </Col>
 
-            <Col span={8}>
-                <Card withPadding={false}>
-                    <QuestionDifficultyChart groups={interview.structure.groups} />
-                </Card>
-            </Col>
+                <Col span={8}>
+                    <Card withPadding={false}>
+                        <QuestionDifficultyChart groups={groups} />
+                    </Card>
+                </Col>
 
-            <Col span={8}>
-                <Card withPadding={false}>
-                    <QuestionAnswersChart groups={interview.structure.groups} />
-                </Card>
-            </Col>
-        </Row>
-    );
+                <Col span={8}>
+                    <Card withPadding={false}>
+                        <QuestionAnswersChart groups={groups} />
+                    </Card>
+                </Col>
+            </Row>
+        );
+    };
 
     return interview && teamMembers && teamMembers.length > 0 ? (
         <div className={styles.rootContainer}>
