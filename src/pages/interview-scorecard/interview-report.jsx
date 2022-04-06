@@ -13,7 +13,7 @@ import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import {
     filterGroupsWithAssessment,
     filterGroupsWithAssessmentNotes,
-    filterQuestionsWithAssessment
+    filterQuestionsWithAssessmentNotes
 } from "../../components/utils/filters";
 import { CloseIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
@@ -198,7 +198,7 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
                                     </div>
                                 </div>
                                 {expanded &&
-                                    filterQuestionsWithAssessment(group).map(question => (
+                                    filterQuestionsWithAssessmentNotes(group).map(question => (
                                         <>
                                             <div className={styles.divider} />
                                             <div className={styles.questionAreaRow}>
