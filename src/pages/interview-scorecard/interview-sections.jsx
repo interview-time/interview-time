@@ -1,6 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Avatar, Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag, Tooltip } from "antd";
+import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag} from "antd";
 import { createTagColors, InterviewAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -92,6 +92,7 @@ export const TemplateDetailsPreviewCard = ({ template, onCloseClicked }) => {
 export const InterviewInfoSection = ({ interview, teamMembers }) => {
     const iconStyle = { fontSize: 20, color: "#374151" };
 
+    // eslint-disable-next-line
     const getInterviewerNameShort = name => {
         let names = name.split(" ");
         if (names.length >= 2) {
