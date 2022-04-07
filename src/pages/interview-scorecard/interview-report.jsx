@@ -10,7 +10,11 @@ import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
 import Title from "antd/lib/typography/Title";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { filterGroupsWithAssessment, filterQuestionsWithAssessment } from "../../components/utils/filters";
+import {
+    filterGroupsWithAssessment,
+    filterGroupsWithAssessmentNotes,
+    filterQuestionsWithAssessmentNotes
+} from "../../components/utils/filters";
 import { CloseIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
@@ -163,7 +167,7 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
                         {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
                         {expanded && <Button onClick={onCollapseClicked}>Collapse</Button>}
                     </div>
-                    {filterGroupsWithAssessment(interview.structure.groups)
+                    {filterGroupsWithAssessmentNotes(interview.structure.groups)
                         .map(group => ({
                             group: group,
                             assessment: getGroupAssessment(group.questions),
@@ -194,7 +198,7 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
                                     </div>
                                 </div>
                                 {expanded &&
-                                    filterQuestionsWithAssessment(group).map(question => (
+                                    filterQuestionsWithAssessmentNotes(group).map(question => (
                                         <>
                                             <div className={styles.divider} />
                                             <div className={styles.questionAreaRow}>
