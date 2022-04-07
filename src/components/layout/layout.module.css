@@ -101,3 +101,12 @@
 .avatar {
     background-color: var(--color-primary);
 }
+
+.version {
+    color: #6B7280;
+    font-size: 12px;
+    position: absolute;
+    width: 100%;
+    bottom: 12px;
+    left: 36px;
+}
