@@ -276,8 +276,8 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
                     >
                         <span className='nav-text'>Provide feedback</span>
                     </Menu.Item>
-                    {/*<div className={styles.space} />*/}
                 </Menu>
+                <div className={styles.version}>{process.env.REACT_APP_VERSION}</div>
             </AntLayout.Sider>
             <AntLayout className='site-layout'>
                 {pageHeader}
