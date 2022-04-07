@@ -31,7 +31,6 @@ import InterviewSchedule from "./pages/interview-schedule/interview-schedule";
 import Templates from "./pages/templates/templates";
 import TemplateEdit from "./pages/template-edit/template-edit";
 import Reports from "./pages/reports/reports";
-import News from "./pages/news/news";
 import Account from "./pages/account/account";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
@@ -85,7 +84,6 @@ function App({ history }) {
             <PrivateRoute path={routeTemplateEdit()} exact component={TemplateEdit} />
             <PrivateRoute path={routeTemplatePreview()} exact component={TemplatePreview} />
             <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />
-            <PrivateRoute path={routeNews()} exact component={News} />
             <PrivateRoute path={routeAccount()} exact component={Account} />
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
             <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />

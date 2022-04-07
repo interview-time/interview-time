@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Button, Divider, Layout as AntLayout, Menu, notification, Select } from "antd";
+import { Badge, Button, Divider, Layout as AntLayout, Menu, notification, Select } from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
@@ -34,7 +34,8 @@ import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
-import { getJoinTeam, setJoinTeam } from "../utils/storage";
+import { getJoinTeam, isUpdateAvailable, setJoinTeam, updateNewsVisitTime } from "../utils/storage";
+import NewsModal from "../../pages/news/modal-news";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -68,6 +69,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
     const MENU_KEY_CANDIDATES = "CANDIDATES";
 
     const [feedbackVisible, setFeedbackVisible] = React.useState(false);
+    const [newsVisible, setNewsVisible] = React.useState(false);
 
     React.useEffect(() => {
         let team = getJoinTeam();
@@ -147,6 +149,15 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
 
     const onFeedbackClose = () => {
         setFeedbackVisible(false);
+    };
+
+    const onNewsClicked = () => {
+        setNewsVisible(true);
+        updateNewsVisitTime();
+    };
+
+    const onNewsClose = () => {
+        setNewsVisible(false);
     };
 
     const onTeamSelected = team => {
@@ -277,12 +288,18 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
                         <span className='nav-text'>Provide feedback</span>
                     </Menu.Item>
                 </Menu>
-                <div className={styles.version}>{process.env.REACT_APP_VERSION}</div>
+                <div className={styles.versionContainer}>
+                    <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
+                        <a className={styles.whatsNew} onClick={onNewsClicked}>What's new</a>
+                    </Badge>
+                    <div className={styles.version}>`v{process.env.REACT_APP_VERSION}`</div>
+                </div>
             </AntLayout.Sider>
             <AntLayout className='site-layout'>
                 {pageHeader}
                 <AntLayout.Content className={`${styles.pageContent} ${contentStyle}`}>
                     <FeedbackModal visible={feedbackVisible} onClose={onFeedbackClose} />
+                    <NewsModal visible={newsVisible} onClose={onNewsClose} />
                     {children}
                 </AntLayout.Content>
             </AntLayout>

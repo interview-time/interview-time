@@ -1,7 +1,5 @@
 export const routeHome = () => "/";
 
-export const routeNews = () => "/news";
-
 export const routeInterviews = () => "/interviews";
 
 export const routeReports = () => "/reports";
