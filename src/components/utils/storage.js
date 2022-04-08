@@ -1,14 +1,14 @@
 import moment from "moment";
-import { updatesData } from "../../pages/news/news";
+import { newsData } from "../../pages/news/modal-news";
 
-const KEY_NEWS_VISIT_TIME = "news-visit-time";
+const KEY_NEWS_VISIT_TIME = "news-visit-time-long";
 const KEY_QUICKSTART_QUESTION_BANK = "quickstart-question-bank";
 const KEY_NOTES_EXPANDED = "sticky-notes-enabled-v1";
 const KEY_JOIN_TEAM = "selected-team-v1";
 
 export function isUpdateAvailable() {
     const newsVisitTime = localStorage.getItem(KEY_NEWS_VISIT_TIME);
-    return newsVisitTime === null || updatesData[0].date > parseInt(newsVisitTime);
+    return newsVisitTime === null || newsData[0].date > parseInt(newsVisitTime);
 }
 
 export function updateNewsVisitTime() {
