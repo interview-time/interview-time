@@ -290,11 +290,11 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
                 </Menu>
                 <div className={styles.versionContainer}>
                     <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
-                        <a className={styles.whatsNew} onClick={onNewsClicked} href="javascript:void(0);">
-                            What's new
-                        </a>
+                        <Button type='link' className={styles.whatsNew} onClick={onNewsClicked}>
+                            What's New
+                        </Button>
                     </Badge>
-                    <div className={styles.version}>`v{process.env.REACT_APP_VERSION}`</div>
+                    <div className={styles.version}>v{process.env.REACT_APP_VERSION}</div>
                 </div>
             </AntLayout.Sider>
             <AntLayout className='site-layout'>
