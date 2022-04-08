@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Button, Divider, Layout as AntLayout, Menu, notification, Select } from "antd";
+import { Badge, Button, Divider, Layout as AntLayout, Menu, notification, Select } from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
@@ -10,7 +10,7 @@ import {
     ProfileIcon,
     ReportsIcon,
     TextNoteIcon,
-    UserAddIcon
+    UserAddIcon,
 } from "../utils/icons";
 import {
     routeAccount,
@@ -22,7 +22,7 @@ import {
     routeTeamNew,
     routeTeamSettings,
     routeTemplateLibrary,
-    routeTemplates
+    routeTemplates,
 } from "../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
@@ -34,7 +34,8 @@ import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
-import { getJoinTeam, setJoinTeam } from "../utils/storage";
+import { getJoinTeam, isUpdateAvailable, setJoinTeam, updateNewsVisitTime } from "../utils/storage";
+import NewsModal from "../../pages/news/modal-news";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -68,6 +69,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
     const MENU_KEY_CANDIDATES = "CANDIDATES";
 
     const [feedbackVisible, setFeedbackVisible] = React.useState(false);
+    const [newsVisible, setNewsVisible] = React.useState(false);
 
     React.useEffect(() => {
         let team = getJoinTeam();
@@ -147,6 +149,15 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
 
     const onFeedbackClose = () => {
         setFeedbackVisible(false);
+    };
+
+    const onNewsClicked = () => {
+        setNewsVisible(true);
+        updateNewsVisitTime();
+    };
+
+    const onNewsClose = () => {
+        setNewsVisible(false);
     };
 
     const onTeamSelected = team => {
@@ -276,13 +287,22 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
                     >
                         <span className='nav-text'>Provide feedback</span>
                     </Menu.Item>
-                    {/*<div className={styles.space} />*/}
                 </Menu>
+                <div className={styles.versionContainer}>
+                    <Button type='link' onClick={onNewsClicked}>
+                        <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
+                            <span className={styles.whatsNew}>What's New</span>
+                        </Badge>
+                    </Button>
+
+                    <div className={styles.version}>v{process.env.REACT_APP_VERSION}</div>
+                </div>
             </AntLayout.Sider>
             <AntLayout className='site-layout'>
                 {pageHeader}
                 <AntLayout.Content className={`${styles.pageContent} ${contentStyle}`}>
                     <FeedbackModal visible={feedbackVisible} onClose={onFeedbackClose} />
+                    <NewsModal visible={newsVisible} onClose={onNewsClose} />
                     {children}
                 </AntLayout.Content>
             </AntLayout>
@@ -296,7 +316,7 @@ const mapState = state => {
     const userState = state.user || {};
 
     return {
-        profile: userState.profile
+        profile: userState.profile,
     };
 };
 

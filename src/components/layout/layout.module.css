@@ -101,3 +101,24 @@
 .avatar {
     background-color: var(--color-primary);
 }
+
+.versionContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    bottom: 24px;
+}
+
+.whatsNew {
+    color: #6B7280;
+    font-size: 13px;
+    margin-left: 24px;
+}
+
+.version {
+    color: #6B7280;
+    font-size: 13px;
+    margin-right: 24px;
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Modal, Progress, Space, Typography } from "antd";
+import { Button, Col, Modal, Progress, Row, Space, Typography } from "antd";
 import {
     getDecisionColor,
     getGroupAssessment,
@@ -10,14 +10,17 @@ import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
 import Title from "antd/lib/typography/Title";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
-import { filterGroupsWithAssessment, filterQuestionsWithAssessment } from "../../components/utils/filters";
+import {
+    filterGroupsWithAssessment,
+    filterGroupsWithAssessmentNotes,
+    filterQuestionsWithAssessmentNotes
+} from "../../components/utils/filters";
 import { CloseIcon } from "../../components/utils/icons";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { connect } from "react-redux";
-import { findInterview, getInterviewerName } from "../../components/utils/converters";
 import Spinner from "../../components/spinner/spinner";
 import Paragraph from "antd/lib/typography/Paragraph";
 import ExportNotes from "../../components/export-notes/export-notes";
@@ -26,6 +29,11 @@ import Card from "../../components/card/card";
 import { CandidateInfoSection, InterviewInfoSection } from "./interview-sections";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
+import { selectCandidate } from "../../store/candidates/selector";
+import { selectInterview } from "../../store/interviews/selector";
+import QuestionDifficultyChart from "../../components/charts/question-difficulty-chart";
+import QuestionAnswersChart from "../../components/charts/question-answers-chart";
+import CompetenceAreaChart from "../../components/charts/competence-area-chart";
 
 const { Text } = Typography;
 
@@ -33,31 +41,26 @@ const { Text } = Typography;
  *
  * @param {Interview[]} interviews
  * @param {TeamMember[]} teamMembers
- * @param {Candidate[]} candidates
+ * @param {Candidate} candidate
  * @param loadInterviews
  * @param loadTeamMembers
  * @param loadCandidates
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, loadTeamMembers, loadCandidates }) => {
-    const [interview, setInterview] = useState(/** @type {Interview|undefined} */ undefined);
+const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, loadTeamMembers, loadCandidates }) => {
     const [expanded, setExpanded] = useState(false);
     const [showExportNotes, setShowExportNotes] = useState(false);
-
-    const { id } = useParams();
 
     const history = useHistory();
 
     useEffect(() => {
         // initial data loading
-        if (interviews.length > 0 && !interview) {
-            const currentInterview = findInterview(id, interviews);
-            setInterview(currentInterview);
-            loadTeamMembers(currentInterview.teamId);
+        if (interview) {
+            loadTeamMembers(interview.teamId);
         }
         // eslint-disable-next-line
-    }, [interviews]);
+    }, [interview]);
 
     useEffect(() => {
         loadInterviews();
@@ -73,15 +76,35 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
         setShowExportNotes(true);
     };
 
-    const getCandidate = () =>
-        interview && candidates
-            ? candidates.find(candidate => candidate.candidateId === interview.candidateId)
-            : undefined;
+    const ChartsSection = () => {
+        let groups = filterGroupsWithAssessment(interview.structure.groups);
+        return (
+            groups.length > 0 && <Row gutter={24} style={{ paddingTop: 30 }}>
+                <Col span={8}>
+                    <Card withPadding={false}>
+                        <CompetenceAreaChart groups={groups} />
+                    </Card>
+                </Col>
 
-    return interview ? (
+                <Col span={8}>
+                    <Card withPadding={false}>
+                        <QuestionDifficultyChart groups={groups} />
+                    </Card>
+                </Col>
+
+                <Col span={8}>
+                    <Card withPadding={false}>
+                        <QuestionAnswersChart groups={groups} />
+                    </Card>
+                </Col>
+            </Row>
+        );
+    };
+
+    return interview && teamMembers && teamMembers.length > 0 ? (
         <div className={styles.rootContainer}>
             <Header
-                title={interview.candidate}
+                title={candidate?.candidateName ?? interview.candidate}
                 subtitle={interview.position}
                 leftComponent={<Button icon={<CloseIcon />} size='large' onClick={() => history.goBack()} />}
                 rightComponent={
@@ -99,9 +122,10 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
                         style={{ borderColor: getDecisionColor(interview.decision), width: "100%" }}
                     >
                         <div className={styles.decisionTextHolder}>
-                            <Title level={4} style={{ margin: 0 }}>
-                                🎉 {getInterviewerName(teamMembers, interview.userId)} scored a...
+                            <Title level={4} style={{ margin: "0 10px 0 0" }}>
+                                🎉 {candidate?.candidateName ?? interview.candidate} scored a
                             </Title>
+
                             <InterviewDecisionTag decision={interview.decision} />
                         </div>
                     </Card>
@@ -133,17 +157,17 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
                             />
                         )}
                     </div>
-                    <CandidateInfoSection className={styles.reportInterviewRight} candidate={getCandidate()} />
+                    <CandidateInfoSection className={styles.reportInterviewRight} candidate={candidate} />
                 </div>
                 <Card withPadding={false}>
                     <div className={styles.divSpaceBetween} style={{ padding: 24 }}>
-                        <Title level={4} style={{ marginBottom: 0 }}>
+                        <Title level={4} style={{ margin: 0 }}>
                             Competence areas
                         </Title>
                         {!expanded && <Button onClick={onExpandClicked}>Expand</Button>}
                         {expanded && <Button onClick={onCollapseClicked}>Collapse</Button>}
                     </div>
-                    {filterGroupsWithAssessment(interview.structure.groups)
+                    {filterGroupsWithAssessmentNotes(interview.structure.groups)
                         .map(group => ({
                             group: group,
                             assessment: getGroupAssessment(group.questions),
@@ -174,7 +198,7 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
                                     </div>
                                 </div>
                                 {expanded &&
-                                    filterQuestionsWithAssessment(group).map(question => (
+                                    filterQuestionsWithAssessmentNotes(group).map(question => (
                                         <>
                                             <div className={styles.divider} />
                                             <div className={styles.questionAreaRow}>
@@ -195,6 +219,8 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
                             </>
                         ))}
                 </Card>
+
+                {ChartsSection()}
 
                 <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
                     <Card withPadding={false} style={{ width: "100%" }}>
@@ -224,14 +250,19 @@ const InterviewReport = ({ interviews, teamMembers, candidates, loadInterviews, 
 };
 
 const mapDispatch = { loadInterviews, loadTeamMembers, loadCandidates };
-const mapState = state => {
+
+const mapState = (state, ownProps) => {
     const interviewsState = state.interviews || {};
     const userState = state.user || {};
     const candidatesState = state.candidates || {};
+
+    const interview = selectInterview(interviewsState, ownProps.match.params.id);
+    const candidate = selectCandidate(candidatesState, interview?.candidateId);
+
     return {
-        interviews: interviewsState.interviews,
+        interview: interview,
         teamMembers: userState.teamMembers,
-        candidates: candidatesState.candidates,
+        candidate: candidate,
     };
 };
 
