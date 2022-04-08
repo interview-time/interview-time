@@ -17,6 +17,7 @@ import { uniqBy } from "lodash/array";
 import { filterOptionLabel, interviewsPositionOptions } from "../../components/utils/filters";
 import InterviewsTable from "./interviews-table";
 import { getInterviewerName } from "../../components/utils/converters";
+import { selectInterviews } from "../../store/interviews/selector";
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
@@ -222,6 +223,8 @@ const mapState = state => {
             interview.userName = getInterviewerName(userState.teamMembers, interview.userId);
         }
     });
+
+    selectInterviews(interviewsState);
 
     return {
         interviewsData: sortedInterviews,

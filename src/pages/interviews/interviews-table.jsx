@@ -100,9 +100,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: interview => (
-                <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
-            ),
+            render: interview => <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>,
         },
         {
             title: <TableHeader>INTERVIEWER</TableHeader>,
@@ -159,6 +157,10 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
                     onRow={record => ({
                         onClick: () => onRowClicked(record),
                     })}
+                    expandable={{
+                        expandedRowRender: record => <p style={{ margin: 0 }}>{record.linkId}</p>,
+                        rowExpandable: record => record.linkId,
+                    }}
                 />
             </ConfigProvider>
         </Card>
