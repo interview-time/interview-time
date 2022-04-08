@@ -10,7 +10,7 @@ import {
     ProfileIcon,
     ReportsIcon,
     TextNoteIcon,
-    UserAddIcon
+    UserAddIcon,
 } from "../utils/icons";
 import {
     routeAccount,
@@ -22,7 +22,7 @@ import {
     routeTeamNew,
     routeTeamSettings,
     routeTemplateLibrary,
-    routeTemplates
+    routeTemplates,
 } from "../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
@@ -290,7 +290,9 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
                 </Menu>
                 <div className={styles.versionContainer}>
                     <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
-                        <a className={styles.whatsNew} onClick={onNewsClicked}>What's new</a>
+                        <a className={styles.whatsNew} onClick={onNewsClicked} href="javascript:void(0);">
+                            What's new
+                        </a>
                     </Badge>
                     <div className={styles.version}>`v{process.env.REACT_APP_VERSION}`</div>
                 </div>
@@ -313,7 +315,7 @@ const mapState = state => {
     const userState = state.user || {};
 
     return {
-        profile: userState.profile
+        profile: userState.profile,
     };
 };
 

@@ -12,7 +12,6 @@ import {
     routeInterviews,
     routeInterviewScorecard,
     routeLibraryTemplatePreview,
-    routeNews,
     routeReports,
     routeSharedTemplate,
     routeTeamJoin,
