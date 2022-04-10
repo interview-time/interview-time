@@ -365,7 +365,9 @@ const InterviewSchedule = ({
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime),
                     startTime: getDate(interview.interviewDateTime).format(timePickerFormat()),
-                    endTime: getDate(interview.interviewEndDateTime).format(timePickerFormat()),
+                    endTime: getDate(interview.interviewEndDateTime, moment(interview.interviewDateTime)).format(
+                        timePickerFormat()
+                    ),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
