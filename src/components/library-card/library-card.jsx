@@ -18,9 +18,9 @@ const LibraryCard = ({ template }) => {
 
     return (
         <Card className={styles.card} onClick={onCardClicked} key={template.id}>
-            <div className={styles.card}>
+            <div>
                 <div>
-                    <img alt={template.title} src={template.image ? template.image : defaultIcon} width={50} />
+                    <img alt={template.title} src={template.image ? template.image : defaultIcon} width={72} />
                 </div>
                 <div className={styles.cardTitle}>{template.title}</div>
                 <div className={styles.cardMetaTitle}>{totalQuestions} QUESTIONS</div>
