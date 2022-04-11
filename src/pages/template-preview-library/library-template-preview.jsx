@@ -83,7 +83,7 @@ const LibraryTemplatePreview = ({ library, loadLibrary }) => {
                             className={styles.headerImage}
                             alt={template.title}
                             src={template.image ? template.image : defaultIcon}
-                            height={50}
+                            height={72}
                         />
                     </div>
                     <Divider />
