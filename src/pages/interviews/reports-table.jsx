@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Input, Select, Table } from "antd";
+import { Input, Select, Table, ConfigProvider, Space } from "antd";
+import Text from "antd/lib/typography/Text";
 import { getFormattedDateTime } from "../../components/utils/formatters";
 import { getDecisionText, getOverallPerformancePercent } from "../../components/utils/assessment";
 import { localeCompare } from "../../components/utils/comparators";
@@ -14,6 +15,7 @@ import InterviewDecisionTag from "../../components/tags/interview-decision-tags"
 import InterviewScoreTag from "../../components/tags/interview-score-tags";
 import InterviewCompetenceTag from "../../components/tags/interview-competence-tags";
 import { defaultTo } from "lodash/util";
+import emptyInterview from "../../assets/empty-interview.svg";
 import styles from "./reports-table.module.css";
 
 const { Search } = Input;
@@ -80,7 +82,7 @@ const ReportsTable = ({ interviews, loading }) => {
             title: <TableHeader>DATE</TableHeader>,
             key: "interviewStartDateTimeDisplay",
             sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.interviewStartDateTimeDisplay, b.interviewStartDateTimeDisplay),
+            sorter: (a, b) => a.interviewStartDateTimeDisplay - b.interviewStartDateTimeDisplay,
             render: interview => <TableText>{getFormattedDateTime(interview.interviewStartDateTimeDisplay)}</TableText>,
         },
         {
@@ -136,23 +138,32 @@ const ReportsTable = ({ interviews, loading }) => {
             </div>
 
             <Card withPadding={false}>
-                <Table
-                    pagination={{
-                        style: { marginRight: 24 },
-                        defaultPageSize: 10,
-                        hideOnSinglePage: true
-                    }}
-                    scroll={{
-                        x: "max-content",
-                    }}
-                    columns={columns}
-                    dataSource={interviewsData}
-                    loading={loading}
-                    rowClassName={styles.row}
-                    onRow={record => ({
-                        onClick: () => history.push(routeInterviewReport(record.id)),
-                    })}
-                />
+                <ConfigProvider
+                    renderEmpty={() => (
+                        <Space direction='vertical' style={{ padding: 24 }}>
+                            <img src={emptyInterview} alt='No interviews' />
+                            <Text style={{ color: "#6B7280" }}>You currently don’t have any completed interviews</Text>
+                        </Space>
+                    )}
+                >
+                    <Table
+                        pagination={{
+                            style: { marginRight: 24 },
+                            defaultPageSize: 10,
+                            hideOnSinglePage: true,
+                        }}
+                        scroll={{
+                            x: "max-content",
+                        }}
+                        columns={columns}
+                        dataSource={interviewsData}
+                        loading={loading}
+                        rowClassName={styles.row}
+                        onRow={record => ({
+                            onClick: () => history.push(routeInterviewReport(record.id)),
+                        })}
+                    />
+                </ConfigProvider>
             </Card>
         </div>
     );
