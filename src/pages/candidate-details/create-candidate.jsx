@@ -146,7 +146,7 @@ const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCa
                                 },
                             ]}
                         >
-                            <Input className='fs-mask' placeholder="Candidate's LinkedIn page" />
+                            <Input placeholder="Candidate's LinkedIn page" />
                         </Form.Item>
                     </Col>
                 </Row>
@@ -161,7 +161,7 @@ const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCa
                                 },
                             ]}
                         >
-                            <Input className='fs-mask' placeholder="Candidate's GitHub account" />
+                            <Input placeholder="Candidate's GitHub account" />
                         </Form.Item>
                     </Col>
                 </Row>

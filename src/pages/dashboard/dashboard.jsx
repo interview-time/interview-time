@@ -88,16 +88,19 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: interview => (
-                <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
-            ),
+            render: interview => <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>,
         },
         {
             title: <TableHeader>STATUS</TableHeader>,
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: interview => <InterviewStatusTag interview={interview} />,
+            render: interview => (
+                <InterviewStatusTag
+                    interviewStartDateTime={new Date(interview.interviewDateTime)}
+                    status={interview.status}
+                />
+            ),
         },
     ];
 
