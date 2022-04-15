@@ -8,7 +8,6 @@ import {
     HomeIcon,
     InterviewIcon,
     ProfileIcon,
-    ReportsIcon,
     TextNoteIcon,
     UserAddIcon,
 } from "../utils/icons";
