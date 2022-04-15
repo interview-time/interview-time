@@ -88,12 +88,19 @@ export const filterGroupsWithAssessmentNotes = inputValue =>
 /**
  *
  * @param {Interview[]} interviews
+ * @returns {string[]}
+ */
+export const interviewsPositions = interviews => uniq(interviews.map(interview => interview.position))
+    .filter(position => !isEmpty(position) && position !== "Hello world") // bug introduced somewhere in the past
+    .sort();
+
+/**
+ *
+ * @param {Interview[]} interviews
  * @returns {{label: string, value: string}[]}
  */
 export const interviewsPositionOptions = interviews =>
-    uniq(interviews.map(interview => interview.position))
-        .filter(position => !isEmpty(position) && position !== "Hello world") // bug introduced somewhere in the past
-        .sort()
+    interviewsPositions(interviews)
         .map(position => ({
             label: position,
             value: position,
