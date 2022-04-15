@@ -198,99 +198,101 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
                 width={280}
                 className={styles.globalSider}
             >
-                <div className={styles.logoHolder}>
-                    <img alt='Interviewer' src={process.env.PUBLIC_URL + "/logo192.png"} className={styles.logo} />
-                    <span className={styles.logoText}>Interviewer</span>
-                </div>
-                <Menu
-                    theme='light'
-                    mode='vertical'
-                    defaultSelectedKeys={[routeHome()]}
-                    selectedKeys={[getSelectedMenuKey()]}
-                    className={styles.menu}
-                >
-                    <Link to={routeAccount()} className={styles.profileHolder}>
-                        <Avatar
-                            src={user ? user.picture : null}
-                            className={styles.avatar}
-                            size={32}
-                            icon={<ProfileIcon />}
+                <div className={styles.globalSiderContainer}>
+                    <div className={styles.logoHolder}>
+                        <img alt='Interviewer' src={process.env.PUBLIC_URL + "/logo192.png"} className={styles.logo} />
+                        <span className={styles.logoText}>Interviewer</span>
+                    </div>
+                    <Menu
+                        theme='light'
+                        mode='vertical'
+                        defaultSelectedKeys={[routeHome()]}
+                        selectedKeys={[getSelectedMenuKey()]}
+                        className={styles.menu}
+                    >
+                        <Link to={routeAccount()} className={styles.profileHolder}>
+                            <Avatar
+                                src={user ? user.picture : null}
+                                className={styles.avatar}
+                                size={32}
+                                icon={<ProfileIcon />}
+                            />
+                            <Text className={styles.profileButton} type='text'>
+                                {getProfileName()}
+                            </Text>
+                        </Link>
+                        <Select
+                            placeholder='Select interview template'
+                            onChange={onTeamChange}
+                            value={profile.currentTeamId}
+                            options={teamOptions}
+                            dropdownRender={menu => (
+                                <div>
+                                    {menu}
+                                    <Divider style={{ margin: "4px 0" }} />
+                                    <Button style={{ paddingLeft: 12 }} type='link' onClick={onCreateTeam}>
+                                        Create New Team
+                                    </Button>
+                                </div>
+                            )}
                         />
-                        <Text className={styles.profileButton} type='text'>
-                            {getProfileName()}
-                        </Text>
-                    </Link>
-                    <Select
-                        placeholder='Select interview template'
-                        onChange={onTeamChange}
-                        value={profile.currentTeamId}
-                        options={teamOptions}
-                        dropdownRender={menu => (
-                            <div>
-                                {menu}
-                                <Divider style={{ margin: "4px 0" }} />
-                                <Button style={{ paddingLeft: 12 }} type='link' onClick={onCreateTeam}>
-                                    Create New Team
-                                </Button>
-                            </div>
-                        )}
-                    />
-                    <Divider className={styles.divider} />
-                    <Button
-                        type='primary'
-                        icon={<PlusOutlined style={{ fontSize: "18px" }} />}
-                        onClick={onNewInterviewClicked}
-                        className={styles.newInterviewButton}
-                    >
-                        New Interview
-                    </Button>
-                    <Menu.Item key={MENU_KEY_HOME} className={styles.menuItem} icon={<HomeIcon />}>
-                        <Link to={routeHome()}>
-                            <span className='nav-text'>Dashboard</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key={MENU_KEY_INTERVIEWS} className={styles.menuItem} icon={<InterviewIcon />}>
-                        <Link to={routeInterviews()}>
-                            <span className='nav-text'>Interviews</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item
-                        key={MENU_KEY_TEMPLATES}
-                        className={styles.menuItem}
-                        icon={<TextNoteIcon style={{ fontSize: 24 }} />}
-                    >
-                        <Link to={routeTemplates()}>
-                            <span className='nav-text'>Templates</span>
-                        </Link>
-                    </Menu.Item>                  
-                    <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<CandidatesIcon />}>
-                        <Link to={routeCandidates()}>
-                            <span className='nav-text'>Candidates</span>
-                        </Link>
-                    </Menu.Item>
-                    <Divider className={styles.divider} />
-                    <Menu.Item key='settings' className={styles.menuItem} icon={<UserAddIcon />}>
-                        <Link to={routeTeamSettings(profile.currentTeamId)}>
-                            <span className='nav-text'>Team settings</span>
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item
-                        key='feedback'
-                        className={styles.menuItem}
-                        icon={<FeedbackIcon />}
-                        onClick={onFeedbackClicked}
-                    >
-                        <span className='nav-text'>Provide feedback</span>
-                    </Menu.Item>
-                </Menu>
-                <div className={styles.versionContainer}>
-                    <Button type='link' onClick={onNewsClicked}>
-                        <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
-                            <span className={styles.whatsNew}>What's New</span>
-                        </Badge>
-                    </Button>
+                        <Divider className={styles.divider} />
+                        <Button
+                            type='primary'
+                            icon={<PlusOutlined style={{ fontSize: "18px" }} />}
+                            onClick={onNewInterviewClicked}
+                            className={styles.newInterviewButton}
+                        >
+                            New Interview
+                        </Button>
+                        <Menu.Item key={MENU_KEY_HOME} className={styles.menuItem} icon={<HomeIcon />}>
+                            <Link to={routeHome()}>
+                                <span className='nav-text'>Dashboard</span>
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key={MENU_KEY_INTERVIEWS} className={styles.menuItem} icon={<InterviewIcon />}>
+                            <Link to={routeInterviews()}>
+                                <span className='nav-text'>Interviews</span>
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item
+                            key={MENU_KEY_TEMPLATES}
+                            className={styles.menuItem}
+                            icon={<TextNoteIcon style={{ fontSize: 24 }} />}
+                        >
+                            <Link to={routeTemplates()}>
+                                <span className='nav-text'>Templates</span>
+                            </Link>
+                        </Menu.Item>                  
+                        <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<CandidatesIcon />}>
+                            <Link to={routeCandidates()}>
+                                <span className='nav-text'>Candidates</span>
+                            </Link>
+                        </Menu.Item>
+                        <Divider className={styles.divider} />
+                        <Menu.Item key='settings' className={styles.menuItem} icon={<UserAddIcon />}>
+                            <Link to={routeTeamSettings(profile.currentTeamId)}>
+                                <span className='nav-text'>Team settings</span>
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item
+                            key='feedback'
+                            className={styles.menuItem}
+                            icon={<FeedbackIcon />}
+                            onClick={onFeedbackClicked}
+                        >
+                            <span className='nav-text'>Provide feedback</span>
+                        </Menu.Item>
+                    </Menu>
+                    <div className={styles.versionContainer}>
+                        <Button type='link' onClick={onNewsClicked}>
+                            <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
+                                <span className={styles.whatsNew}>What's New</span>
+                            </Badge>
+                        </Button>
 
-                    <div className={styles.version}>v{process.env.REACT_APP_VERSION}</div>
+                        <div className={styles.version}>v{process.env.REACT_APP_VERSION}</div>
+                    </div>
                 </div>
             </AntLayout.Sider>
             <AntLayout className='site-layout'>
