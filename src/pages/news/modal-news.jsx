@@ -6,6 +6,17 @@ import { getFormattedDateShort } from "../../components/utils/date";
 
 export const newsData = [
     {
+        version: "v1.150422",
+        date: moment("15/04/2022", "DD/MM/YYYY").valueOf(),
+        description: <div>
+            <ul className={styles.list}>
+                <li>🆕 "Reports" page moved inside "Interviews" page.</li>
+                <li> New public interview template "iOS Engineer".</li>
+                <li>🐛 Minor bug fixes.</li>
+            </ul>
+        </div>,
+    },
+    {
         version: "v1.060322",
         date: moment("06/04/2022", "DD/MM/YYYY").valueOf(),
         description: <div>
