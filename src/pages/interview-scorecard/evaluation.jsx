@@ -66,7 +66,10 @@ const Evaluation = ({
                 }
                 rightComponent={
                     <Space size={16}>
-                        <InterviewStatusTag interview={interview} />
+                        <InterviewStatusTag
+                            interviewStartDateTime={new Date(interview.interviewDateTime)}
+                            status={interview.status}
+                        />
                         <Button onClick={onEditClicked}>Edit</Button>
                         <Button type='primary' onClick={onSubmitClicked}>
                             Submit Evaluation

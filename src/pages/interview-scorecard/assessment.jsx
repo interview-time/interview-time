@@ -94,7 +94,10 @@ const Assessment = ({
                 }
                 rightComponent={
                     <Space size={16}>
-                        <InterviewStatusTag interview={interview} />
+                        <InterviewStatusTag
+                            interviewStartDateTime={new Date(interview.interviewDateTime)}
+                            status={interview.status}
+                        />
                         <Button type='primary' onClick={onCompletedClicked}>
                             Complete Interview
                         </Button>
@@ -102,7 +105,13 @@ const Assessment = ({
                 }
             />
 
-            <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }} className={styles.interviewSectionContainer}>
+            <Col
+                span={22}
+                offset={1}
+                xl={{ span: 20, offset: 2 }}
+                xxl={{ span: 16, offset: 4 }}
+                className={styles.interviewSectionContainer}
+            >
                 <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
                     <InterviewInfoSection interview={interview} teamMembers={teamMembers} />
                     <CandidateInfoSection candidate={candidate} />

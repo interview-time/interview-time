@@ -13,7 +13,7 @@ import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import {
     filterGroupsWithAssessment,
     filterGroupsWithAssessmentNotes,
-    filterQuestionsWithAssessmentNotes
+    filterQuestionsWithAssessmentNotes,
 } from "../../components/utils/filters";
 import { CloseIcon } from "../../components/utils/icons";
 import { useHistory } from "react-router-dom";
@@ -79,25 +79,27 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
     const ChartsSection = () => {
         let groups = filterGroupsWithAssessment(interview.structure.groups);
         return (
-            groups.length > 0 && <Row gutter={24} style={{ paddingTop: 30 }}>
-                <Col span={8}>
-                    <Card withPadding={false}>
-                        <CompetenceAreaChart groups={groups} />
-                    </Card>
-                </Col>
+            groups.length > 0 && (
+                <Row gutter={24} style={{ paddingTop: 30 }}>
+                    <Col span={8}>
+                        <Card withPadding={false}>
+                            <CompetenceAreaChart groups={groups} />
+                        </Card>
+                    </Col>
 
-                <Col span={8}>
-                    <Card withPadding={false}>
-                        <QuestionDifficultyChart groups={groups} />
-                    </Card>
-                </Col>
+                    <Col span={8}>
+                        <Card withPadding={false}>
+                            <QuestionDifficultyChart groups={groups} />
+                        </Card>
+                    </Col>
 
-                <Col span={8}>
-                    <Card withPadding={false}>
-                        <QuestionAnswersChart groups={groups} />
-                    </Card>
-                </Col>
-            </Row>
+                    <Col span={8}>
+                        <Card withPadding={false}>
+                            <QuestionAnswersChart groups={groups} />
+                        </Card>
+                    </Col>
+                </Row>
+            )
         );
     };
 
@@ -109,7 +111,10 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
                 leftComponent={<Button icon={<CloseIcon />} size='large' onClick={() => history.goBack()} />}
                 rightComponent={
                     <Space size={16}>
-                        <InterviewStatusTag interview={interview} />
+                        <InterviewStatusTag
+                            interviewStartDateTime={new Date(interview.interviewDateTime)}
+                            status={interview.status}
+                        />
                         <Button onClick={onExportClicked}>Export</Button>
                     </Space>
                 }

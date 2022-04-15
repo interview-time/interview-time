@@ -1,4 +1,3 @@
-import moment from "moment";
 import styles from "./status-tags.module.css";
 import { Tag } from "antd";
 import React from "react";
@@ -10,13 +9,13 @@ import { Status } from "../utils/constants";
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewStatusTag = ({ interview }) => {
-    const interviewStarted = () => moment() > moment(interview.interviewDateTime);
+const InterviewStatusTag = ({ interviewStartDateTime, status }) => {
+    const interviewStarted = () => new Date() > interviewStartDateTime;
 
     const getClass = () => {
-        if (interview.status === Status.SUBMITTED) {
+        if (status === Status.SUBMITTED) {
             return styles.tagGreen;
-        } else if (interview.status === Status.COMPLETED) {
+        } else if (status === Status.COMPLETED) {
             return styles.tagOrange;
         } else {
             return interviewStarted() ? styles.tagOrange : styles.tagRed;
@@ -24,9 +23,9 @@ const InterviewStatusTag = ({ interview }) => {
     };
 
     const getText = () => {
-        if (interview.status === Status.SUBMITTED) {
+        if (status === Status.SUBMITTED) {
             return "Complete";
-        } else if (interview.status === Status.COMPLETED) {
+        } else if (status === Status.COMPLETED) {
             return "Finalizing...";
         } else {
             return interviewStarted() ? "In Progress" : "Upcoming";

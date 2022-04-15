@@ -262,12 +262,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
                         <Link to={routeTemplates()}>
                             <span className='nav-text'>Templates</span>
                         </Link>
-                    </Menu.Item>
-                    <Menu.Item key={MENU_KEY_REPORTS} className={styles.menuItem} icon={<ReportsIcon />}>
-                        <Link to={routeReports()}>
-                            <span className='nav-text'>Reports</span>
-                        </Link>
-                    </Menu.Item>
+                    </Menu.Item>                  
                     <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<CandidatesIcon />}>
                         <Link to={routeCandidates()}>
                             <span className='nav-text'>Candidates</span>
