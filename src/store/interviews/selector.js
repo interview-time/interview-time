@@ -58,12 +58,12 @@ export const selectInterviews = state => {
     return interviews;
 };
 
-export const selectSortedByDateInterviews = interviews => {
+export const selectSortedByDateInterviews = (interviews, desc = false) => {
     return interviews.sort((a, b) => {
         const first = a.interviewStartDateTime.getFullYear() > 1 ? a.interviewStartDateTime : a.createdDate;
         const second = b.interviewStartDateTime.getFullYear() > 1 ? b.interviewStartDateTime : b.createdDate;
 
-        return second - first;
+        return desc ? second - first : first - second;
     });
 };
 
@@ -117,5 +117,13 @@ export const selectCompletedInterviews = state => {
     const completedInterviews = interviews.filter(i => i.scorecards.every(s => s.status === Status.SUBMITTED));
     const completedInterviewsView = selectInterviewsTable(completedInterviews, state.user.profile);
 
-    return selectSortedByDateInterviews(completedInterviewsView);
+    return selectSortedByDateInterviews(completedInterviewsView, true);
+};
+
+export const selectCandidateInterviews = (state, candidateId) => {
+    const interviews = selectInterviews(state);
+    const candidateInterviews = interviews.filter(i => i.candidateId === candidateId);
+    const candidateInterviewsView = selectInterviewsTable(candidateInterviews, state.user.profile);
+
+    return selectSortedByDateInterviews(candidateInterviewsView);
 };
