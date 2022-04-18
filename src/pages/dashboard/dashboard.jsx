@@ -6,7 +6,6 @@ import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
-import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import { Status } from "../../components/utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
@@ -88,16 +87,19 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
             key: "interviewDateTime",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: interview => (
-                <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>
-            ),
+            render: interview => <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>,
         },
         {
             title: <TableHeader>STATUS</TableHeader>,
             key: "status",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.status, b.status),
-            render: interview => <InterviewStatusTag interview={interview} />,
+            render: interview => (
+                <InterviewStatusTag
+                    interviewStartDateTime={new Date(interview.interviewDateTime)}
+                    status={interview.status}
+                />
+            ),
         },
     ];
 
@@ -184,7 +186,7 @@ const mapState = state => {
     const interviewsState = state.interviews || {};
     const templateState = state.templates || {};
 
-    const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"])).filter(
+    const interviews = sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"]).filter(
         interview => interview.userId === userState.profile.userId && interview.status !== Status.SUBMITTED
     );
 

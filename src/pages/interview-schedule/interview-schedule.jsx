@@ -7,7 +7,7 @@ import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import { DATE_FORMAT_SERVER, POSITIONS, Status } from "../../components/utils/constants";
+import { DATE_FORMAT_SERVER, POSITIONS, POSITIONS_OPTIONS, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
@@ -17,15 +17,15 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { sortBy } from "lodash/collection";
-import { datePickerFormat, generateTimeSlots, getDate, timePickerFormat } from "../../components/utils/date";
-import { filterOptionLabel } from "../../components/utils/filters";
+import { datePickerFormat, generateTimeSlots, getDate, isEmpty, timePickerFormat } from "../../components/utils/date";
+import { filterOptionLabel, interviewsPositions } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "../candidate-details/create-candidate";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
 import moment from "moment";
+import { uniq } from "lodash/array";
 
 /**
  *
@@ -86,6 +86,7 @@ const InterviewSchedule = ({
     };
 
     const [interview, setInterview] = useState(emptyInterview);
+    const [positionOptions, setPositionOptions] = useState(POSITIONS_OPTIONS);
     const [templateOptions, setTemplateOptions] = useState([]);
     const [candidatesOptions, setCandidateOptions] = useState([]);
     const [interviewersOptions, setInterviewersOptions] = useState([]);
@@ -121,6 +122,17 @@ const InterviewSchedule = ({
 
         // eslint-disable-next-line
     }, [interviews, templates, teamMembers]);
+
+    React.useEffect(() => {
+        if (!isEmpty(interviews)) {
+            setPositionOptions(
+                uniq(interviewsPositions(interviews).concat(POSITIONS)).map(position => ({
+                    value: position,
+                }))
+            );
+        }
+        // eslint-disable-next-line
+    }, [interviews]);
 
     React.useEffect(() => {
         // templates selector
@@ -173,10 +185,7 @@ const InterviewSchedule = ({
         loadTemplates();
         loadCandidates();
         loadTeamMembers(profile.currentTeamId);
-
-        if (isExistingInterviewFlow()) {
-            loadInterviews();
-        }
+        loadInterviews();
 
         // eslint-disable-next-line
     }, []);
@@ -365,7 +374,9 @@ const InterviewSchedule = ({
                     candidate: interview.candidate,
                     date: getDate(interview.interviewDateTime),
                     startTime: getDate(interview.interviewDateTime).format(timePickerFormat()),
-                    endTime: getDate(interview.interviewEndDateTime).format(timePickerFormat()),
+                    endTime: getDate(interview.interviewEndDateTime, moment(interview.interviewDateTime)).format(
+                        timePickerFormat()
+                    ),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
@@ -508,7 +519,7 @@ const InterviewSchedule = ({
                     <AutoComplete
                         allowClear
                         placeholder='Select position you are hiring for'
-                        options={sortBy(POSITIONS, ["value"])}
+                        options={positionOptions}
                         filterOption={(inputValue, option) =>
                             option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                         }

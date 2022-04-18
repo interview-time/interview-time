@@ -8,11 +8,11 @@
 
 .label {
     font-size: 14px;
-    color: #6B7280;
+    color: #6b7280;
 }
 
 .iconHolder {
-    border: 1px solid #E5E7EB;
+    border: 1px solid #e5e7eb;
     box-sizing: border-box;
     border-radius: 6px;
     width: 48px;
@@ -30,6 +30,11 @@
 .subTitle {
     font-size: 18px;
     color: rgba(0, 0, 0, 0.45);
+}
+
+.filterSection {
+    display: flex;
+    justify-content: space-between;
 }
 
 .divRight {

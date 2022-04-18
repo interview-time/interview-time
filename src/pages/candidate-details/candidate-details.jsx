@@ -16,7 +16,7 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { MoreIcon } from "../../components/utils/icons";
 import { routeCandidates } from "../../components/utils/route";
 import CreateCandidate from "./create-candidate";
-import { getInterviewerName } from "../../components/utils/converters";
+import { selectCandidateInterviews } from "../../store/interviews/selector";
 
 /**
  *
@@ -61,7 +61,7 @@ const CandidateDetails = ({
 
     useEffect(() => {
         if (!isEmpty(interviews)) {
-            setCandidateInterviews(interviews.filter(interview => interview.candidateId === id));
+            setCandidateInterviews(interviews);
         }
         // eslint-disable-next-line
     }, [interviews]);
@@ -163,14 +163,16 @@ const CandidateDetails = ({
                             onUndoArchive={undoArchive}
                         />
                     )}
-                    {state === STATE_EDIT && <div className={styles.candidateInfoContainer}>
-                        <CreateCandidate
-                            onCancel={onEditCancel}
-                            candidate={candidate}
-                            teamId={profile.currentTeamId}
-                            onSave={onCandidateUpdate}
-                        />
-                    </div>}
+                    {state === STATE_EDIT && (
+                        <div className={styles.candidateInfoContainer}>
+                            <CreateCandidate
+                                onCancel={onEditCancel}
+                                candidate={candidate}
+                                teamId={profile.currentTeamId}
+                                onSave={onCandidateUpdate}
+                            />
+                        </div>
+                    )}
                 </div>
             ) : (
                 <Spinner />
@@ -188,22 +190,14 @@ const mapDispatch = {
     deleteCandidate,
 };
 
-const mapState = state => {
+const mapState = (state, ownProps) => {
     const candidatesState = state.candidates || {};
-    const interviewsState = state.interviews || {};
     const userState = state.user || {};
-
-    const interviews = cloneDeep(interviewsState.interviews);
-    interviews.forEach(interview => {
-        if (userState.teamMembers) {
-            interview.userName = getInterviewerName(userState.teamMembers, interview.userId);
-        }
-    });
 
     return {
         profile: userState.profile,
         candidates: candidatesState.candidates,
-        interviews: interviews,
+        interviews: selectCandidateInterviews(state, ownProps.match.params.id),
     };
 };
 
