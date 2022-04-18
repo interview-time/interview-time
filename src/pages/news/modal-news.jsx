@@ -6,8 +6,8 @@ import { getFormattedDateShort } from "../../components/utils/date";
 
 export const newsData = [
     {
-        version: "v1.150422",
-        date: moment("15/04/2022", "DD/MM/YYYY").valueOf(),
+        version: "v1.180422",
+        date: moment("18/04/2022", "DD/MM/YYYY").valueOf(),
         description: <div>
             <ul className={styles.list}>
                 <li>🆕 "Reports" page has been moved inside "Interviews" page.</li>
