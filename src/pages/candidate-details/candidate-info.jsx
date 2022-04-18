@@ -57,9 +57,11 @@ const CandidateInfo = ({ profile, candidate, interviews, onUpdateStatus, onDelet
                                 <Title level={5} style={{ marginBottom: 0 }}>
                                     {candidate.candidateName}
                                 </Title>
-                                {candidate.position && <Text type='secondary' className={styles.label}>
-                                    {candidate.position}
-                                </Text>}
+                                {candidate.position && (
+                                    <Text type='secondary' className={styles.label}>
+                                        {candidate.position}
+                                    </Text>
+                                )}
                             </div>
                             <Avatar src={null} className={styles.avatar} size={48} icon={<ProfileIcon />} />
                         </div>
@@ -91,7 +93,12 @@ const CandidateInfo = ({ profile, candidate, interviews, onUpdateStatus, onDelet
             <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>
                 Interviews
             </Title>
-            <InterviewsTable interviews={interviews} profile={profile} deleteInterview={onDeleteInterview} />
+            <InterviewsTable
+                interviews={interviews}
+                profile={profile}
+                deleteInterview={onDeleteInterview}
+                showFilter={false}
+            />
         </div>
     );
 };

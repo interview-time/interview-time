@@ -30,7 +30,7 @@ import styles from "../interviews/interviews.module.css";
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
+const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFilter = true }) => {
     const history = useHistory();
     const [interviewers, setInterviewers] = useState([]);
     const [interviewsData, setInterviews] = useState([]);
@@ -186,9 +186,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
             key: "interviewStartDateTimeDisplay",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => a.interviewStartDateTimeDisplay - b.interviewStartDateTimeDisplay,
-            render: interview => (
-                <TableText>{getFormattedDateTime(interview.interviewStartDateTimeDisplay)}</TableText>
-            ),
+            render: interview => <TableText>{getFormattedDateTime(interview.interviewStartDateTimeDisplay)}</TableText>,
         },
         {
             title: <TableHeader>INTERVIEWER</TableHeader>,
@@ -235,35 +233,37 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
 
     return (
         <div>
-            <div className={styles.filterSection}>
-                <Title level={5} style={{ marginBottom: 20 }}>
-                    Current
-                </Title>
+            {showFilter && (
+                <div className={styles.filterSection}>
+                    <Title level={5} style={{ marginBottom: 20 }}>
+                        Current
+                    </Title>
 
-                <div className={styles.divRight}>
-                    <Select
-                        className={styles.select}
-                        placeholder='Interviewer filter'
-                        onSelect={onInterviewerFilterChange}
-                        onClear={onInterviewerFilterClear}
-                        options={interviewers}
-                        showSearch
-                        allowClear
-                        filterOption={filterOptionLabel}
-                    />
-                    <Select
-                        className={styles.select}
-                        placeholder='Position filter'
-                        onSelect={onPositionFilterChange}
-                        onClear={onPositionFilterClear}
-                        options={interviewsPositionOptions(interviewsData)}
-                        showSearch
-                        allowClear
-                        filterOption={filterOptionLabel}
-                    />
+                    <div className={styles.divRight}>
+                        <Select
+                            className={styles.select}
+                            placeholder='Interviewer filter'
+                            onSelect={onInterviewerFilterChange}
+                            onClear={onInterviewerFilterClear}
+                            options={interviewers}
+                            showSearch
+                            allowClear
+                            filterOption={filterOptionLabel}
+                        />
+                        <Select
+                            className={styles.select}
+                            placeholder='Position filter'
+                            onSelect={onPositionFilterChange}
+                            onClear={onPositionFilterClear}
+                            options={interviewsPositionOptions(interviewsData)}
+                            showSearch
+                            allowClear
+                            filterOption={filterOptionLabel}
+                        />
+                    </div>
                 </div>
-            </div>
-
+            )}
+            
             <Card withPadding={false}>
                 <ConfigProvider
                     renderEmpty={() => (
@@ -277,7 +277,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview }) => {
                         pagination={{
                             style: { marginRight: 24 },
                             defaultPageSize: 10,
-                            hideOnSinglePage: true
+                            hideOnSinglePage: true,
                         }}
                         scroll={{
                             x: "max-content",

@@ -187,7 +187,7 @@ const mapState = state => {
     const interviewsState = state.interviews || {};
     const templateState = state.templates || {};
 
-    const interviews = reverse(sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"])).filter(
+    const interviews = sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"]).filter(
         interview => interview.userId === userState.profile.userId && interview.status !== Status.SUBMITTED
     );
 
