@@ -6,7 +6,6 @@ import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
-import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import { Status } from "../../components/utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
