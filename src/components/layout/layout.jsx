@@ -121,25 +121,12 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
     };
 
     const openTeamJoinSuccessNotification = team => {
-        const button = (
-            <Button
-                type='primary'
-                size='small'
-                onClick={() => {
-                    notification.close(joinTeamNotification);
-                    onTeamSelected(team);
-                }}
-            >
-                Switch team
-            </Button>
-        );
         notification["success"]({
             key: joinTeamNotification,
             message: "Team",
             description: `You have successfully joined '${team.teamName}' team.`,
-            btn: button,
-            duration: 30,
         });
+        onTeamSelected(team);
     };
 
     const onFeedbackClicked = () => {
