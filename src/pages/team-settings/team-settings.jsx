@@ -94,6 +94,10 @@ const TeamSettings = ({
                 text: "Same as Hiring Manager plus can manage its team.",
             },
             {
+                role: Roles.HR,
+                text: "Can view all interviews and assign new interviews to others.",
+            },
+            {
                 role: Roles.HIRING_MANAGER,
                 text: "Can view all interviews and assign new interviews to others.",
             },

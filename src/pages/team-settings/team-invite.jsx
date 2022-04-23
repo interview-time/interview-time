@@ -18,6 +18,7 @@ import { Option } from "antd/lib/mentions";
 const TeamInvite = ({ token, userName, teamName }) => {
     const ROLE_INTERVIEWER = "INTERVIEWER";
     const ROLE_HIRING_MANAGER = "HIRING_MANAGER";
+    const ROLE_HR = "HR";
 
     const [copied, setCopied] = useState(false);
     const [role, setRole] = useState(ROLE_INTERVIEWER);
@@ -66,6 +67,7 @@ const TeamInvite = ({ token, userName, teamName }) => {
                 >
                     <Option value={ROLE_INTERVIEWER}>Interviewer</Option>
                     <Option value={ROLE_HIRING_MANAGER}>Hiring Manager</Option>
+                    <Option value={ROLE_HR}>Recruiter</Option>
                 </Select>
                 <CopyToClipboard text={getSharedURL()} onCopy={onCopyClicked}>
                     <Button icon={copied ? <CheckIcon /> : <CopyIcon />} type='primary'>

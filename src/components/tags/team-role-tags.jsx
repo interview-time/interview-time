@@ -11,7 +11,9 @@ import { Roles } from "../utils/constants";
  */
 const TeamRoleTag = ({ role }) => {
     const getText = () => {
-        if (role === Roles.HIRING_MANAGER || role === Roles.HR) { // backward compatibility
+        if (role === Roles.HR) {
+            return "Recruiter";
+        } else if (role === Roles.HIRING_MANAGER) {
             return "Hiring Manager";
         } else if (role === Roles.ADMIN) {
             return "Admin";

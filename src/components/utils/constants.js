@@ -10,6 +10,7 @@ export const Roles = {
 };
 
 export const DisplayRoles = {
+    HR: "Recruiter",
     HIRING_MANAGER: "Hiring Manager",
     INTERVIEWER: "Interviewer",
     ADMIN: "Admin",
