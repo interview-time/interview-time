@@ -82,6 +82,18 @@ namespace CafApi.Controllers
             return team;
         }
 
+        [HttpPut("invite")]
+        public async Task Invite(InviteRequest request)
+        {
+            await _teamService.Invite(UserId, request.Email, request.TeamId, request.Role);
+        }
+
+        [HttpPut("accept-invite")]
+        public async Task AcceptInvite(AcceptInviteRequest request)
+        {
+            await _teamService.AcceptInvite(UserId, request.InviteToken);
+        }
+
         [HttpPut("leave")]
         public async Task LeaveTeam(LeaveTeamRequest request)
         {

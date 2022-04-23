@@ -20,6 +20,12 @@ namespace CafApi.Services
 
         Task<Team> JoinTeam(string userId, string token, string role = null);
 
+        Task<List<Invite>> GetPendingInvites(string userId, string teamId);
+
+        Task Invite(string userId, string inviteeEmail, string teamId, string role);
+
+        Task AcceptInvite(string userId, string inviteToken);
+
         Task LeaveTeam(string userId, string teamId);
 
         Task RemoveTeamMember(string adminId, string memberId, string teamId);
