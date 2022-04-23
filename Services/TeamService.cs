@@ -13,12 +13,14 @@ namespace CafApi.Services
     public class TeamService : ITeamService
     {
         private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
         private readonly DynamoDBContext _context;
 
-        public TeamService(IAmazonDynamoDB dynamoDbClient, IUserService userService)
+        public TeamService(IAmazonDynamoDB dynamoDbClient, IUserService userService, IEmailService emailService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _userService = userService;
+            _emailService = emailService;
         }
 
         public async Task<Team> GetTeam(string teamId)
@@ -183,6 +185,71 @@ namespace CafApi.Services
             }
 
             return team;
+        }
+
+        public async Task<List<Invite>> GetPendingInvites(string userId, string teamId)
+        {
+            var teamInvites = new List<Invite>();
+
+            var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
+            if (belongsToTeam)
+            {
+                var search = _context.FromQueryAsync<Invite>(new QueryOperationConfig()
+                {
+                    IndexName = "TeamId-index",
+                    Filter = new QueryFilter(nameof(CafApi.Models.Invite.TeamId), QueryOperator.Equal, teamId)
+                });
+
+                teamInvites = await search.GetRemainingAsync();
+                teamInvites = teamInvites.Where(i => !i.IsAccepted).ToList();
+            }
+
+            return teamInvites;
+        }
+
+        public async Task Invite(string userId, string inviteeEmail, string teamId, string role)
+        {
+            var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
+            if (belongsToTeam)
+            {
+                var invites = await GetPendingInvites(userId, teamId);
+                var invite = invites.FirstOrDefault(i => i.InviteeEmail == inviteeEmail);
+
+                if (invite == null)
+                {
+                    invite = new Invite
+                    {
+                        Token = StringHelper.GenerateToken(),
+                        InviteeEmail = inviteeEmail,
+                        TeamId = teamId,
+                        InvitedBy = userId,
+                        CreatedDate = DateTime.UtcNow,
+                        ModifiedDate = DateTime.UtcNow,
+                    };
+
+                    await _context.SaveAsync(invite);
+                }
+
+                var inviter = await _userService.GetProfile(userId);
+                var team = await GetTeam(teamId);
+
+                await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);
+            }
+        }
+
+        public async Task AcceptInvite(string userId, string inviteToken)
+        {
+            var invite = await _context.LoadAsync<Invite>(inviteToken);
+            if (invite != null)
+            {
+                invite.AcceptedBy = userId;
+                invite.IsAccepted = true;
+                invite.ModifiedDate = DateTime.UtcNow;
+
+                await _context.SaveAsync(invite);
+
+                await AddToTeam(userId, invite.TeamId, invite.Role);
+            }
         }
 
         public async Task LeaveTeam(string userId, string teamId)

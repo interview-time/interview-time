@@ -17,6 +17,7 @@ namespace CafApi.Services
         private readonly EmailAddress _fromAddress;
         private readonly IConfiguration _configuration;
         private readonly ILogger<EmailService> _logger;
+        private readonly string _appHostUri;
 
         public EmailService(ISendGridClient client, IConfiguration configuration, ILogger<EmailService> logger)
         {
@@ -24,6 +25,37 @@ namespace CafApi.Services
             _fromAddress = new EmailAddress("noreply@interviewer.space", "Interviewer.Space");
             _configuration = configuration;
             _logger = logger;
+            _appHostUri = _configuration["AppHostUri"];
+        }
+
+        public async Task SendInviteEmail(string inviteeEmail, string inviterName, string teamName, string token)
+        {
+            try
+            {
+                var to = new EmailAddress(inviteeEmail);
+
+                dynamic templateData = new
+                {
+                    inviterName = inviterName,
+                    teamName = teamName,
+                    inviteLink = $"{_appHostUri}?inviteToken={token}"
+                };
+
+                var templateId = _configuration["EmailTemplates:InviteTeamMember"];
+                SendGridMessage message = MailHelper.CreateSingleTemplateEmail(_fromAddress, to, templateId, templateData);
+
+
+                var response = await _client.SendEmailAsync(message).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorReason = await response.Body.ReadAsStringAsync();
+                    _logger.LogError($"Error sending email SendInviteEmail: {errorReason}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error sending email SendInviteEmail", ex);
+            }
         }
 
         public async Task SendNewInterviewInvitation(string toEmail, string interviewerName, string candidateName, DateTime interviewStartDateTime, DateTime interviewEndDateTime, string interviewId, string timezone, string teamId)
@@ -39,7 +71,7 @@ namespace CafApi.Services
                     if (interviewStartDateTime.Kind != DateTimeKind.Utc)
                     {
                         interviewStartDateTime = interviewStartDateTime.ToUniversalTime();
-                    }                    
+                    }
                     interviewStartDateTime = TimeZoneInfo.ConvertTimeFromUtc(interviewStartDateTime, tzi);
 
                     if (interviewEndDateTime.Kind != DateTimeKind.Utc)
@@ -55,7 +87,7 @@ namespace CafApi.Services
                     interviewerName = !interviewerName.Equals(toEmail) ? interviewerName : "there",
                     interviewDate = interviewStartDateTime.ToString("dd MMM yyyy h:mm tt"),
                     interviewTime = $"({timezone ?? "UTC"})",
-                    interviewScorecard = $"https://app.interviewer.space/interviews/scorecard/{interviewId}?teamId={teamId}"
+                    interviewScorecard = $"{_appHostUri}/interviews/scorecard/{interviewId}?teamId={teamId}"
                 };
 
                 var description = $"You have a new interview scheduled for {templateData.interviewDate} {templateData.interviewTime} with {candidateName}.\\n\\nHere is the link to the interview scorecard: {templateData.interviewScorecard}";
