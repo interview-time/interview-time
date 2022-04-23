@@ -30,6 +30,8 @@ import Text from "antd/lib/typography/Text";
  * @param deleteTeam
  * @param leaveTeam
  * @param loadTeamMembers
+ * @param changeRole
+ * @param removeMember
  * @returns {JSX.Element}
  * @constructor
  */
@@ -90,10 +92,6 @@ const TeamSettings = ({
             {
                 role: Roles.ADMIN,
                 text: "Same as Hiring Manager plus can manage its team.",
-            },
-            {
-                role: Roles.HR,
-                text: "Can view all interviews and assign new interviews to others.",
             },
             {
                 role: Roles.HIRING_MANAGER,
@@ -188,7 +186,7 @@ const TeamSettings = ({
             sorter: (a, b) => localeCompare(a.roles[0], b.roles[0]),
             render: member => <TeamRoleTag role={member.roles[0]} />,
         },
-        {
+        isAdmin() ? {
             key: "actions",
             render: teamMember =>
                 !teamMember.roles.includes(Roles.ADMIN) && (
@@ -200,8 +198,8 @@ const TeamSettings = ({
                         />
                     </Dropdown>
                 ),
-        },
-    ];
+        } : undefined
+    ].filter(column => column);
 
     const isLoading = () => !team || loading;
 
