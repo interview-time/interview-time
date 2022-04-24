@@ -140,7 +140,7 @@ const InterviewScorecard = ({
      */
     const onQuestionsAdded = template => {
         let newStructure = cloneDeep(interview.structure);
-        template.structure.groups.forEach(group => {
+        cloneDeep(template).structure.groups.forEach(group => {
             newStructure.groups.push({
                 ...group,
                 name: `${template.title} - ${group.name}`,
