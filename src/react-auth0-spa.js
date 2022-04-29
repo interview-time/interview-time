@@ -42,6 +42,7 @@ export const Auth0Provider = ({
     const [auth0Client, setAuth0] = useState();
     const [loading, setLoading] = useState(true);
     const [popupOpen, setPopupOpen] = useState(false);
+    const [appState, setAppState] = useState();
 
     useEffect(() => {
         const initAuth0 = async () => {
@@ -52,6 +53,7 @@ export const Auth0Provider = ({
 
             if (window.location.search.includes("code=")) {
                 const { appState } = await _client.handleRedirectCallback();
+                setAppState(appState);
                 onRedirectCallback(appState);
             }
 
@@ -99,6 +101,7 @@ export const Auth0Provider = ({
                 user,
                 loading,
                 popupOpen,
+                appState,
                 loginWithPopup,
                 handleRedirectCallback,
                 getIdTokenClaims: (...p) => auth0Client.getIdTokenClaims(...p),
