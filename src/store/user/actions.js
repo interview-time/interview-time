@@ -1,3 +1,7 @@
+import { getAccessTokenSilently } from "../../react-auth0-spa";
+import { config } from "../common";
+import axios from "axios";
+
 export const LOAD_PROFILE = "LOAD_PROFILE";
 export const SETUP_USER = "SETUP_USER";
 export const SET_PROFILE = "SET_PROFILE";
@@ -11,6 +15,8 @@ export const LOAD_TEAM_MEMBERS = "LOAD_TEAM_MEMBERS";
 export const SET_TEAM_MEMBERS = "SET_TEAM_MEMBERS";
 export const CHANGE_ROLE = "CHANGE_ROLE";
 export const REMOVE_MEMBER = "REMOVE_MEMBER";
+
+const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
 
 export const loadProfile = (name, email, forceFetch = false) => ({
     type: LOAD_PROFILE,
@@ -143,3 +149,20 @@ export const removeMember = (userId, teamId) => ({
         teamId,
     },
 });
+
+export const inviteUser = (email, role) => async (dispatch, getState) => {
+    const { user } = getState();
+    const token = await getAccessTokenSilently();
+
+    const request = {
+        email: email,
+        teamId: user.profile.currentTeamId,
+        role: role,
+    };
+
+    try {
+        await axios.put(`${URL_TEAMS}/invite`, request, config(token));
+    } catch (error) {
+        console.log(error);
+    }
+};

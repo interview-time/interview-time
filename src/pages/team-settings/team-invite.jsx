@@ -1,10 +1,11 @@
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { Button, Input, Select } from "antd";
 import Text from "antd/lib/typography/Text";
-import styles from "./team-settings.module.css";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { useEffect, useState } from "react";
-import { CheckIcon, CopyIcon } from "../../components/utils/icons";
+import { CheckIcon, MailIcon } from "../../components/utils/icons";
 import { Option } from "antd/lib/mentions";
+import { inviteUser } from "../../store/user/actions";
+import styles from "./team-settings.module.css";
 
 /**
  *
@@ -15,23 +16,26 @@ import { Option } from "antd/lib/mentions";
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamInvite = ({ token, userName, teamName }) => {
+const TeamInvite = ({ inviteUser }) => {
     const ROLE_INTERVIEWER = "INTERVIEWER";
     const ROLE_HIRING_MANAGER = "HIRING_MANAGER";
     const ROLE_HR = "HR";
 
-    const [copied, setCopied] = useState(false);
+    const [sent, setSent] = useState(false);
+    const [email, setEmail] = useState("");
     const [role, setRole] = useState(ROLE_INTERVIEWER);
 
     useEffect(() => {
         let timeoutId;
 
-        if (copied) {
+        if (sent) {
             if (timeoutId) {
                 clearTimeout(timeoutId);
             }
             timeoutId = setTimeout(function () {
-                setCopied(false);
+                setSent(false);
+                setEmail("");
+                setRole(ROLE_INTERVIEWER);
             }, 1000);
         }
 
@@ -40,43 +44,42 @@ const TeamInvite = ({ token, userName, teamName }) => {
                 clearTimeout(timeoutId);
             }
         };
-    }, [copied]);
-
-    const onCopyClicked = () => {
-        setCopied(true);
-    };
-
-    const getSharedURL = () =>
-        token
-            ? encodeURI(
-                  `https://app.interviewer.space/team/join/${token}?userName=${userName}&teamName=${teamName}&role=${role}`
-              )
-            : null;
-
-    const onRoleChanged = value => setRole(value);
+    }, [sent]);
 
     return (
         <div>
-            <Text type='secondary'>Anyone with the link can join your team</Text>
+            <Text type='secondary'>Invite interviewers, hiring managers or recruiters to your team</Text>
             <div className={styles.divRight}>
-                <Input style={{ marginRight: 12 }} value={getSharedURL()} />
+                <Input
+                    style={{ marginRight: 12 }}
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder='Email address'
+                />
                 <Select
                     defaultValue={ROLE_INTERVIEWER}
+                    value={role}
                     style={{ minWidth: 180, marginRight: 12 }}
-                    onChange={onRoleChanged}
+                    onChange={value => setRole(value)}
                 >
                     <Option value={ROLE_INTERVIEWER}>Interviewer</Option>
                     <Option value={ROLE_HIRING_MANAGER}>Hiring Manager</Option>
                     <Option value={ROLE_HR}>Recruiter</Option>
                 </Select>
-                <CopyToClipboard text={getSharedURL()} onCopy={onCopyClicked}>
-                    <Button icon={copied ? <CheckIcon /> : <CopyIcon />} type='primary'>
-                        {copied ? "Copied" : "Copy link"}
-                    </Button>
-                </CopyToClipboard>
+
+                <Button
+                    icon={sent ? <CheckIcon /> : <MailIcon />}
+                    type='primary'
+                    onClick={() => {
+                        inviteUser(email, role);
+                        setSent(true);
+                    }}
+                >
+                    {sent ? "Sent!" : "Send Invite"}
+                </Button>
             </div>
         </div>
     );
 };
 
-export default TeamInvite;
+export default connect(null, { inviteUser })(TeamInvite);
