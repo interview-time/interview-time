@@ -24,7 +24,7 @@ namespace CafApi.Services
 
         Task Invite(string userId, string inviteeEmail, string teamId, string role);
 
-        Task AcceptInvite(string userId, string inviteToken);
+        Task<string> AcceptInvite(string userId, string inviteToken);
 
         Task LeaveTeam(string userId, string teamId);
 

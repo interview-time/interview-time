@@ -222,6 +222,7 @@ namespace CafApi.Services
                         Token = StringHelper.GenerateToken(),
                         InviteeEmail = inviteeEmail,
                         TeamId = teamId,
+                        Role = role,
                         InvitedBy = userId,
                         CreatedDate = DateTime.UtcNow,
                         ModifiedDate = DateTime.UtcNow,
@@ -237,10 +238,12 @@ namespace CafApi.Services
             }
         }
 
-        public async Task AcceptInvite(string userId, string inviteToken)
+        public async Task<string> AcceptInvite(string userId, string inviteToken)
         {
+            string teamId = null;
+
             var invite = await _context.LoadAsync<Invite>(inviteToken);
-            if (invite != null)
+            if (invite != null && !invite.IsAccepted)
             {
                 invite.AcceptedBy = userId;
                 invite.IsAccepted = true;
@@ -249,7 +252,11 @@ namespace CafApi.Services
                 await _context.SaveAsync(invite);
 
                 await AddToTeam(userId, invite.TeamId, invite.Role);
+
+                teamId = invite.TeamId;
             }
+
+            return teamId;
         }
 
         public async Task LeaveTeam(string userId, string teamId)
