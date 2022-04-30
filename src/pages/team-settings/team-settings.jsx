@@ -243,13 +243,21 @@ const TeamSettings = ({
                         <Table columns={columns} dataSource={teamMembers} pagination={false} />
                     </Card>
 
-                    <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
-                        Invite your team
-                    </Title>
+                    {isAdmin() && (
+                        <>
+                            <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
+                                Invite your team
+                            </Title>
 
-                    <Card style={{ marginTop: 12 }}>
-                        <TeamInvite teamName={getTeamName()} userName={userName} token={team ? team.token : null} />
-                    </Card>
+                            <Card style={{ marginTop: 12 }}>
+                                <TeamInvite
+                                    teamName={getTeamName()}
+                                    userName={userName}
+                                    token={team ? team.token : null}
+                                />
+                            </Card>
+                        </>
+                    )}
                 </div>
             ) : (
                 <Spinner />
