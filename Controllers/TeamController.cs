@@ -17,6 +17,7 @@ namespace CafApi.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
 
         private string UserId
@@ -27,10 +28,11 @@ namespace CafApi.Controllers
             }
         }
 
-        public TeamController(ILogger<UserController> logger, ITeamService teamService)
+        public TeamController(ILogger<UserController> logger, ITeamService teamService, IUserService userService)
         {
             _logger = logger;
             _teamService = teamService;
+            _userService = userService;
         }
 
         [HttpPost()]
@@ -91,7 +93,12 @@ namespace CafApi.Controllers
         [HttpPut("accept-invite")]
         public async Task AcceptInvite(AcceptInviteRequest request)
         {
-            await _teamService.AcceptInvite(UserId, request.InviteToken);
+            var teamId = await _teamService.AcceptInvite(UserId, request.InviteToken);
+
+            if (teamId != null)
+            {
+                await _userService.UpdateCurrentTeam(UserId, teamId);
+            }
         }
 
         [HttpPut("leave")]
