@@ -4,7 +4,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import { connect } from "react-redux";
 import Spinner from "../spinner/spinner";
 import { loadProfile, acceptInvite } from "../../store/user/actions";
-import { getParameterByName, deleteParameterByName } from "../utils/route";
+import { getParameterByName } from "../utils/route";
 
 const PrivateRoute = ({ loadProfile, acceptInvite, profile, loadingProfile, component: Component, path, ...rest }) => {
     const { loading, isAuthenticated, loginWithRedirect, user, appState } = useAuth0();
@@ -13,12 +13,27 @@ const PrivateRoute = ({ loadProfile, acceptInvite, profile, loadingProfile, comp
     const history = useHistory();
 
     useEffect(() => {
-        const inviteToken = getParameterByName("inviteToken");
-        const mode = getParameterByName("mode");
+        if (!isAuthenticated && !loading) {
+            const mode = getParameterByName("mode");
+            const inviteToken = getParameterByName("inviteToken");
 
+            const fn = async () => {
+                await loginWithRedirect({
+                    appState: { targetUrl: path, inviteToken: inviteToken },
+                    screen_hint: mode,
+                });
+            };
+            fn();
+        }
+
+        // eslint-disable-next-line
+    }, [isAuthenticated, loading]);
+
+    useEffect(() => {
         if (isAuthenticated && user != null) {
+            const inviteToken = getParameterByName("inviteToken");
             const invite = inviteToken ?? appState?.inviteToken;
-            
+
             loadProfile(user.name, user.email, invite);
 
             if (inviteToken) {
@@ -32,18 +47,8 @@ const PrivateRoute = ({ loadProfile, acceptInvite, profile, loadingProfile, comp
             }
         }
 
-        if (loading || isAuthenticated) {
-            return;
-        }
-
-        const fn = async () => {
-            await loginWithRedirect({
-                appState: { targetUrl: path, inviteToken: inviteToken },
-                screen_hint: mode,
-            });
-        };
-        fn();
-    }, [loading, isAuthenticated, loginWithRedirect, path, loadProfile, acceptInvite, user]);
+        // eslint-disable-next-line
+    }, [isAuthenticated, user]);
 
     const render = props => (isAuthenticated === true ? <Component {...props} /> : null);
 
