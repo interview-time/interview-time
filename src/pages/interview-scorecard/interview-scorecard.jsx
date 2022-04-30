@@ -3,7 +3,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { Modal, Row } from "antd";
 import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview, updateScorecard } from "../../store/interviews/actions";
-import { loadTeamMembers, setActiveTeam } from "../../store/user/actions";
+import { loadTeamMembers, switchTeam } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { cloneDeep } from "lodash/lang";
@@ -36,7 +36,7 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  * @param loadTemplates,
  * @param updateScorecard
  * @param updateInterview
- * @param setActiveTeam
+ * @param switchTeam
  * @returns {JSX.Element}
  * @constructor
  */
@@ -54,7 +54,7 @@ const InterviewScorecard = ({
     loadTemplates,
     updateScorecard,
     updateInterview,
-    setActiveTeam,
+    switchTeam,
 }) => {
     /**
      * @type {Interview}
@@ -81,7 +81,7 @@ const InterviewScorecard = ({
         if (paramTeamId && profile.currentTeamId !== paramTeamId) {
             let team = teams.find(t => t.teamId === paramTeamId);
             if (team) {
-                setActiveTeam(team.teamId);
+                switchTeam(team.teamId);
             }
         }
 
@@ -264,9 +264,9 @@ const mapDispatch = {
     updateInterview,
     loadTeamMembers,
     loadCandidates,
-    setActiveTeam,
+    switchTeam,
 };
-const mapState = state => {
+const mapStateToProps = state => {
     const interviewsState = state.interviews || {};
     const userState = state.user || {};
     const candidatesState = state.candidates || {};
@@ -282,4 +282,4 @@ const mapState = state => {
     };
 };
 
-export default connect(mapState, mapDispatch)(InterviewScorecard);
+export default connect(mapStateToProps, mapDispatch)(InterviewScorecard);

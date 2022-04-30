@@ -1,31 +1,28 @@
 import {
+    setActiveTeam,
+    setProfile,
+    setTeamMembers,
     CHANGE_ROLE,
     CREATE_TEAM,
     DELETE_TEAM,
     JOIN_TEAM,
     LEAVE_TEAM,
-    LOAD_PROFILE,
     LOAD_TEAM_MEMBERS,
-    loadTeamMembers,
     REMOVE_MEMBER,
     SET_ACTIVE_TEAM,
     SET_PROFILE,
     SET_TEAM_MEMBERS,
-    setActiveTeam,
-    setProfile,
-    setTeamMembers,
     SETUP_USER,
-    setupUser,
     UPDATE_TEAM,
+    ACCEPT_INVITE,
+    REQUEST_STARTED,
+    REQUEST_FINISHED,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
-import { loadTemplates, setTemplates } from "../templates/actions";
-import { loadInterviews, setInterviews } from "../interviews/actions";
 import { log } from "../../components/utils/log";
-import { loadCandidates, setCandidates } from "../candidates/actions";
 
 /**
  *
@@ -36,6 +33,7 @@ const initialState = {
     loading: false,
     activeTeam: null,
     teamMembers: [],
+    acceptedInvites: [],
 };
 
 const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
@@ -45,31 +43,12 @@ const userReducer = (state = initialState, action) => {
     log(action.type);
 
     switch (action.type) {
-        case LOAD_PROFILE: {
-            const { name, email, forceFetch } = action.payload;
+        case REQUEST_STARTED: {
+            return { ...state, loading: true };
+        }
 
-            if (forceFetch || (!state.profile && !state.loading)) {
-                getAccessTokenSilently()
-                    .then(token => axios.get(URL_PROFILE, config(token)))
-                    .then(res => {
-                        if (!res.data) {
-                            const profile = {
-                                name: name,
-                                email: email,
-                                timezoneOffset: new Date().getTimezoneOffset(),
-                                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                            };
-                            store.dispatch(setupUser(profile));
-                        } else {
-                            store.dispatch(setProfile(res.data || []));
-                        }
-                    })
-                    .catch(reason => console.error(reason));
-
-                return { ...state, loading: true };
-            }
-
-            return { ...state };
+        case REQUEST_FINISHED: {
+            return { ...state, loading: false };
         }
 
         case SETUP_USER: {
@@ -104,31 +83,7 @@ const userReducer = (state = initialState, action) => {
         }
 
         case SET_ACTIVE_TEAM: {
-            const { teamId, reloadData } = action.payload;
-
-            const data = {
-                currentTeamId: teamId
-            }
-            getAccessTokenSilently()
-                .then(token => axios.put(`${URL_PROFILE}/current-team`, data, config(token)))
-                .then(() => log(`Active team set to: ${teamId}`))
-                .catch(reason => console.error(reason));
-
-            if (reloadData) {
-                Promise.resolve().then(() => {
-                    // clean data for current team
-                    store.dispatch(setTemplates([]));
-                    store.dispatch(setInterviews([]));
-                    store.dispatch(setCandidates([]));
-                    store.dispatch(setTeamMembers([]));
-
-                    // load new data for current team
-                    store.dispatch(loadTemplates());
-                    store.dispatch(loadInterviews());
-                    store.dispatch(loadCandidates());
-                    store.dispatch(loadTeamMembers(teamId));
-                });
-            }
+            const { teamId } = action.payload;
 
             return {
                 ...state,
@@ -319,6 +274,15 @@ const userReducer = (state = initialState, action) => {
                 .catch(reason => console.error(reason));
 
             return state;
+        }
+
+        case ACCEPT_INVITE: {
+            const { inviteToken } = action.payload;
+
+            return {
+                ...state,
+                acceptedInvites: [...state.acceptedInvites, inviteToken],
+            };
         }
 
         default:
