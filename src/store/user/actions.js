@@ -5,6 +5,7 @@ import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidates } from "../candidates/actions";
 
+export const LOAD_PROFILE = "LOAD_PROFILE";
 export const SETUP_USER = "SETUP_USER";
 export const SET_PROFILE = "SET_PROFILE";
 export const SET_ACTIVE_TEAM = "SET_ACTIVE_TEAM";
@@ -228,3 +229,20 @@ export const removeMember = (userId, teamId) => ({
         teamId,
     },
 });
+
+export const inviteUser = (email, role) => async (dispatch, getState) => {
+    const { user } = getState();
+    const token = await getAccessTokenSilently();
+
+    const request = {
+        email: email,
+        teamId: user.profile.currentTeamId,
+        role: role,
+    };
+
+    try {
+        await axios.put(`${URL_TEAMS}/invite`, request, config(token));
+    } catch (error) {
+        console.log(error);
+    }
+};
