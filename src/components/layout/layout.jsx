@@ -28,7 +28,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
-import { joinTeam, setActiveTeam } from "../../store/user/actions";
+import { joinTeam, switchTeam } from "../../store/user/actions";
 import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
@@ -50,12 +50,12 @@ import NewsModal from "../../pages/news/modal-news";
  * @param contentStyle
  * @param {UserProfile} profile
  * @param setTemplates
- * @param setActiveTeam
+ * @param switchTeam
  * @param joinTeam
  * @returns {JSX.Element}
  * @constructor
  */
-const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, joinTeam }) => {
+const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinTeam }) => {
     const location = useLocation();
     const history = useHistory();
     const { user } = useAuth0();
@@ -121,25 +121,12 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
     };
 
     const openTeamJoinSuccessNotification = team => {
-        const button = (
-            <Button
-                type='primary'
-                size='small'
-                onClick={() => {
-                    notification.close(joinTeamNotification);
-                    onTeamSelected(team);
-                }}
-            >
-                Switch team
-            </Button>
-        );
         notification["success"]({
             key: joinTeamNotification,
             message: "Team",
             description: `You have successfully joined '${team.teamName}' team.`,
-            btn: button,
-            duration: 30,
         });
+        onTeamSelected(team);
     };
 
     const onFeedbackClicked = () => {
@@ -164,7 +151,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
             teamName: team.teamName,
             teamId: team.teamId,
         };
-        setActiveTeam(selected.teamId);
+        switchTeam(selected.teamId);
         history.push(routeHome());
     };
 
@@ -306,7 +293,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, setActiveTeam, jo
     );
 };
 
-const mapDispatch = { setActiveTeam, joinTeam };
+const mapDispatch = { switchTeam, joinTeam };
 
 const mapState = state => {
     const userState = state.user || {};

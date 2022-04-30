@@ -30,6 +30,8 @@ import Text from "antd/lib/typography/Text";
  * @param deleteTeam
  * @param leaveTeam
  * @param loadTeamMembers
+ * @param changeRole
+ * @param removeMember
  * @returns {JSX.Element}
  * @constructor
  */
@@ -188,7 +190,7 @@ const TeamSettings = ({
             sorter: (a, b) => localeCompare(a.roles[0], b.roles[0]),
             render: member => <TeamRoleTag role={member.roles[0]} />,
         },
-        {
+        isAdmin() ? {
             key: "actions",
             render: teamMember =>
                 !teamMember.roles.includes(Roles.ADMIN) && (
@@ -200,8 +202,8 @@ const TeamSettings = ({
                         />
                     </Dropdown>
                 ),
-        },
-    ];
+        } : undefined
+    ].filter(column => column);
 
     const isLoading = () => !team || loading;
 
@@ -241,13 +243,21 @@ const TeamSettings = ({
                         <Table columns={columns} dataSource={teamMembers} pagination={false} />
                     </Card>
 
-                    <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
-                        Invite your team
-                    </Title>
+                    {isAdmin() && (
+                        <>
+                            <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
+                                Invite your team
+                            </Title>
 
-                    <Card style={{ marginTop: 12 }}>
-                        <TeamInvite teamName={getTeamName()} userName={userName} token={team ? team.token : null} />
-                    </Card>
+                            <Card style={{ marginTop: 12 }}>
+                                <TeamInvite
+                                    teamName={getTeamName()}
+                                    userName={userName}
+                                    token={team ? team.token : null}
+                                />
+                            </Card>
+                        </>
+                    )}
                 </div>
             ) : (
                 <Spinner />

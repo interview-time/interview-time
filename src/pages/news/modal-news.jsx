@@ -6,6 +6,16 @@ import { getFormattedDateShort } from "../../components/utils/date";
 
 export const newsData = [
     {
+        version: "v1.300422",
+        date: moment("30/04/2022", "DD/MM/YYYY").valueOf(),
+        description: <div>
+            <ul className={styles.list}>
+                <li>🆕 You can now invite team members by email.</li>
+                <li>🐛 Minor bug fixes.</li>
+            </ul>
+        </div>,
+    },
+    {
         version: "v1.180422",
         date: moment("18/04/2022", "DD/MM/YYYY").valueOf(),
         description: <div>
