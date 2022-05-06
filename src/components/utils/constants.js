@@ -1,7 +1,5 @@
 import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
 
-export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ";
-
 export const Roles = {
     HR: "HR",
     HIRING_MANAGER: "HIRING_MANAGER",
