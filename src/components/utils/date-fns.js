@@ -38,34 +38,26 @@ export const formatDateUTC = date => formatInTimeZone(date, "UTC", DATE_FORMAT_S
 
 /**
  * Returns formatted date taking into account locale
- * @param date {Date}
+ * @param date {Date|string|undefined}
  * @param dateFormat {string}
+ * @param defaultValue {string}
  * @returns {string}
  */
-export const formatDate = (date, dateFormat) => {
-    const browserLocale = locales[getNavigatorLanguage()];
-    return format(date, dateFormat, { locale: browserLocale ? browserLocale : enUS });
+export const formatDate = (date, dateFormat, defaultValue = "") => {
+    if (date) {
+        let parsedDate = date instanceof Date ? date : parseDate(date);
+        const browserLocale = locales[getNavigatorLanguage()];
+        return format(parsedDate, dateFormat, { locale: browserLocale ? browserLocale : enUS });
+    }
+    return defaultValue;
 };
 /**
  * Returns formatted date taking into account locale, format: Sat, 19 February 2022 at 10:00 AM (locale aware)
- * @param date {Date|undefined}
+ * @param date {Date|string|undefined}
  * @param defaultValue {string}
  * @returns {string}
  */
-export const getFormattedDateTime = (date, defaultValue = "") =>
-    date ? formatDate(date, "EEE, PP 'at' p") : defaultValue;
-
-/**
- * Returns formatted date taking into account locale
- * @param date {string|undefined}
- * @param dateFormat {string}
- * @param defaultValue {string}
- * @returns {string}
- */
-export const formatStringDate = (date, dateFormat, defaultValue = "") => {
-    let parsedDate = parseDate(date);
-    return parsedDate ? formatDate(parsedDate, dateFormat) : defaultValue;
-};
+export const getFormattedDateTime = (date, defaultValue = "") => formatDate(date, "EEE, PP 'at' p", defaultValue);
 
 /**
  * Returns locale aware date format

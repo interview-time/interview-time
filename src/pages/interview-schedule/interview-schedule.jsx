@@ -19,12 +19,11 @@ import { routeInterviews, routeTemplateLibrary } from "../../components/utils/ro
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import {
     DATE_FORMAT_SERVER,
-    datePickerFormat,
+    datePickerFormat, formatDate,
     formatDateUTC,
-    formatStringDate,
     generateTimeSlots,
     parseDate,
-    timePickerFormat,
+    timePickerFormat
 } from "../../components/utils/date-fns";
 import { filterOptionLabel, interviewsPositions } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
@@ -269,8 +268,8 @@ const InterviewSchedule = ({
         log("Interview start date (utc)", interview.interviewDateTime);
         log("Interview end date (utc)", interview.interviewEndDateTime);
 
-        log("Interview start date (local)", formatStringDate(interview.interviewDateTime, DATE_FORMAT_SERVER));
-        log("Interview end date (local)", formatStringDate(interview.interviewEndDateTime, DATE_FORMAT_SERVER));
+        log("Interview start date (local)", formatDate(interview.interviewDateTime, DATE_FORMAT_SERVER));
+        log("Interview end date (local)", formatDate(interview.interviewEndDateTime, DATE_FORMAT_SERVER));
     };
 
     const onSaveClicked = () => {
@@ -355,8 +354,8 @@ const InterviewSchedule = ({
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
                     date: parseDate(interview.interviewDateTime),
-                    startTime: formatStringDate(interview.interviewDateTime, timePickerFormat()),
-                    endTime: formatStringDate(interview.interviewEndDateTime, timePickerFormat()),
+                    startTime: formatDate(interview.interviewDateTime, timePickerFormat()),
+                    endTime: formatDate(interview.interviewEndDateTime, timePickerFormat()),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
