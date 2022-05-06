@@ -1,7 +1,4 @@
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using CafApi.Models;
 using CafApi.Services;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +9,24 @@ namespace CafApi.Controllers
     [ApiController]
     public class PublicController : ControllerBase
     {
-        private readonly ILogger<TemplateController> _logger;
+        private readonly ILogger<PublicController> _logger;
         private readonly ITemplateService _templateService;
         private readonly IUserService _userService;
+        private readonly IInterviewService _interviewService;
+        private readonly ICandidateService _candidateService;
 
-        public PublicController(ILogger<TemplateController> logger, ITemplateService templateService, IUserService userService)
+        public PublicController(
+            ILogger<PublicController> logger,
+            ITemplateService templateService,
+            IUserService userService,
+            IInterviewService interviewService,
+            ICandidateService candidateService)
         {
             _logger = logger;
             _templateService = templateService;
             _userService = userService;
+            _interviewService = interviewService;
+            _candidateService = candidateService;
         }
 
         [HttpGet("template/shared/{token}")]
@@ -63,6 +69,33 @@ namespace CafApi.Controllers
                 Description = template.Description,
                 Owner = owner.Name,
                 Structure = template.Structure
+            };
+        }
+
+        [HttpGet("public/scorecard/{token}")]
+        public async Task<ActionResult<SharedScorecardResponse>> GetShareScorecard(string token)
+        {
+            var interview = await _interviewService.GetSharedScorecard(token);
+            if (interview == null)
+            {
+                return NotFound();
+            }
+
+            var candidate = await _candidateService.GetCandidate(interview.TeamId, interview.CandidateId);
+            var interviewer = await _userService.GetProfile(interview.UserId);
+
+            return new SharedScorecardResponse
+            {
+                CandidateName = candidate?.CandidateName ?? interview.Candidate,
+                CandidateNotes = interview.CandidateNotes,
+                Position = interview.Position,
+                InterviewerName = interviewer.Name,
+                InterviewStartDateTime = interview.InterviewDateTime,
+                InterviewEndDateTime = interview.InterviewEndDateTime,
+                Status = interview.Status,
+                Decision = interview.Decision,
+                Notes = interview.Notes,
+                Structure = interview.Structure
             };
         }
     }

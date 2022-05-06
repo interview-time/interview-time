@@ -24,5 +24,11 @@ namespace CafApi.Services
         Task SubmitScorecard(string userId, ScoreCardRequest scoreCard);
 
         Task<Interview> CloneInterviewAsDemo(string fromUserId, string fromInterviewId, string toUserId, string toTeamId, string toTemplateId);
+
+        Task<string> ShareScorecard(string userId, string interviewId);
+
+        Task UnshareScorecard(string userId, string interviewId);
+
+        Task<Interview> GetSharedScorecard(string token);
     }
 }

@@ -24,6 +24,11 @@ namespace CafApi.Services
             _s3Client = s3Client;
         }
 
+        public async Task<Candidate> GetCandidate(string teamId, string candidateId)
+        {
+            return await _context.LoadAsync<Candidate>(teamId, candidateId);
+        }
+
         public async Task<List<Candidate>> GetCandidates(string userId, string teamId)
         {
             var candidates = new List<Candidate>();
@@ -58,7 +63,7 @@ namespace CafApi.Services
 
         public async Task<Candidate> UpdateCandidate(string userId, Candidate updatedCandidate)
         {
-            var candidate = await _context.LoadAsync<Candidate>(updatedCandidate.TeamId, updatedCandidate.CandidateId);
+            var candidate = await GetCandidate(updatedCandidate.TeamId, updatedCandidate.CandidateId);
             var isBelongToTeam = await BelongsToTeam(userId, updatedCandidate.TeamId);
 
             if (candidate != null && isBelongToTeam)

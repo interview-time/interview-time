@@ -3,6 +3,7 @@ namespace CafApi.Models
     public enum InterviewStatus
     {
         NEW,
-        COMPLETED
+        COMPLETED,
+        SUBMITTED
     }
 }
