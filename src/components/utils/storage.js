@@ -1,4 +1,3 @@
-import moment from "moment";
 import { newsData } from "../../pages/news/modal-news";
 
 const KEY_NEWS_VISIT_TIME = "news-visit-time-long";
@@ -8,11 +7,11 @@ const KEY_JOIN_TEAM = "selected-team-v1";
 
 export function isUpdateAvailable() {
     const newsVisitTime = localStorage.getItem(KEY_NEWS_VISIT_TIME);
-    return newsVisitTime === null || newsData[0].date > parseInt(newsVisitTime);
+    return newsVisitTime === null || newsData[0].date.getTime() > parseInt(newsVisitTime);
 }
 
 export function updateNewsVisitTime() {
-    localStorage.setItem(KEY_NEWS_VISIT_TIME, moment().valueOf().toString());
+    localStorage.setItem(KEY_NEWS_VISIT_TIME, new Date().getTime().toString());
 }
 
 export function isQuestionBankClicked() {

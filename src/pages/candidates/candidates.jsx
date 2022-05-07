@@ -7,7 +7,6 @@ import { localeCompare } from "../../components/utils/comparators";
 import TableText from "../../components/table/table-text";
 import { orderBy } from "lodash/collection";
 import Title from "antd/lib/typography/Title";
-import { getFormattedDateShort } from "../../components/utils/date";
 import TableHeader from "../../components/table/table-header";
 import { deleteCandidate, loadCandidates, updateCandidate } from "../../store/candidates/actions";
 import CandidateStatusTag, { getCandidateStatusText } from "../../components/tags/candidate-status-tag";
@@ -19,6 +18,7 @@ import { CandidateStatus } from "../../components/utils/constants";
 import { filterOptionLabel } from "../../components/utils/filters";
 import { MoreIcon } from "../../components/utils/icons";
 import { cloneDeep } from "lodash/lang";
+import { getFormattedDateShort } from "../../components/utils/date-fns";
 
 /**
  *

@@ -10,7 +10,6 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./store";
 import Auth0ProviderWithHistory from "./auth0-provider-with-history";
-import moment from "moment";
 
 Sentry.init({
     dsn: "https://8a5b19779cd84d55b20bcf766df59495@o519027.ingest.sentry.io/5628792",
@@ -18,8 +17,6 @@ Sentry.init({
     denyUrls: ["http://localhost:3000/"],
     tracesSampleRate: 1.0,
 });
-
-moment.locale(window.navigator.language);
 
 ReactDOM.render(
     <React.StrictMode>

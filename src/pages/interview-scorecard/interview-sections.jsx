@@ -21,9 +21,10 @@ import {
     UsersIcon,
 } from "../../components/utils/icons";
 import { getInterviewerName, interviewToTags } from "../../components/utils/converters";
-import { getFormattedDate, getFormattedDateTime, getFormattedTimeRange, isEmpty } from "../../components/utils/date";
+import { isEmpty } from "../../components/utils/date";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
+import { getFormattedDateTime, getFormattedDate, getFormattedTimeRange } from "../../components/utils/date-fns";
 
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;

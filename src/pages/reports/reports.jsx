@@ -5,7 +5,6 @@ import { loadInterviews } from "../../store/interviews/actions";
 import styles from "./reports.module.css";
 import { Input, Select, Table } from "antd";
 import { connect } from "react-redux";
-import moment from "moment";
 import { sortBy } from "lodash/collection";
 import { Status } from "../../components/utils/constants";
 import { getDecisionText, getOverallPerformancePercent } from "../../components/utils/assessment";
@@ -18,11 +17,11 @@ import { filterOptionLabel, interviewsPositionOptions } from "../../components/u
 import Card from "../../components/card/card";
 import TableHeader from "../../components/table/table-header";
 import TableText from "../../components/table/table-text";
-import { getFormattedDateTime } from "../../components/utils/date";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 import InterviewScoreTag from "../../components/tags/interview-score-tags";
 import InterviewCompetenceTag from "../../components/tags/interview-competence-tags";
 import { defaultTo } from "lodash/util";
+import { getFormattedDateTime } from "../../components/utils/date-fns";
 
 const { Search } = Input;
 
@@ -68,7 +67,6 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
                 item =>
                     item.candidate?.toLocaleLowerCase()?.includes(lowerCaseText) ||
                     item.position?.toLocaleLowerCase()?.includes(lowerCaseText) ||
-                    moment(item.interviewDateTime).format("lll").toLocaleLowerCase().includes(lowerCaseText) ||
                     getDecisionText(item.decision).toLocaleLowerCase().includes(lowerCaseText)
             )
         );
