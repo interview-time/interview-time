@@ -231,16 +231,15 @@ const InterviewSchedule = ({
     };
 
     const onDateChange = newDate => {
-        let interviewDateTime = parseDateISO(interview.interviewDateTime);
         interview.interviewDateTime = formatDateISO(
-            set(interviewDateTime, {
+            set(parseDateISO(interview.interviewDateTime), {
                 year: newDate.getFullYear(),
                 month: newDate.getMonth(),
                 date: newDate.getDate(),
             })
         );
         interview.interviewEndDateTime = formatDateISO(
-            set(interviewDateTime, {
+            set(parseDateISO(interview.interviewEndDateTime), {
                 year: newDate.getFullYear(),
                 month: newDate.getMonth(),
                 date: newDate.getDate(),
