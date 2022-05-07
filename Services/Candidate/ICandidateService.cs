@@ -6,6 +6,8 @@ namespace CafApi.Services
 {
     public interface ICandidateService
     {
+        Task<Candidate> GetCandidate(string teamId, string candidateId);
+
         Task<List<Candidate>> GetCandidates(string userId, string teamId);
 
         Task<Candidate> CreateCandidate(string userId, Candidate candidate);

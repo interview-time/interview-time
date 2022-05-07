@@ -173,5 +173,51 @@ namespace CafApi.Services
 
             return await AddInterview(fromInterview);
         }
+
+        public async Task<string> ShareScorecard(string userId, string interviewId)
+        {
+            var interview = await GetInterview(userId, interviewId);
+            if (interview != null && interview.Status == InterviewStatus.SUBMITTED.ToString())
+            {
+                if (string.IsNullOrWhiteSpace(interview.Token))
+                {
+                    interview.Token = StringHelper.GenerateToken();
+                }
+
+                interview.IsShared = true;
+                interview.ModifiedDate = DateTime.UtcNow;
+
+                await _context.SaveAsync(interview);
+
+                return interview.Token;
+            }
+
+            return null;
+        }
+
+        public async Task UnshareScorecard(string userId, string interviewId)
+        {
+            var interview = await GetInterview(userId, interviewId);
+            if (interview != null)
+            {
+                interview.IsShared = false;
+                interview.ModifiedDate = DateTime.UtcNow;
+
+                await _context.SaveAsync(interview);
+            }
+        }
+
+        public async Task<Interview> GetSharedScorecard(string token)
+        {
+            var config = new DynamoDBOperationConfig
+            {
+                IndexName = "Token-index"
+            };
+
+            var queryResult = await _context.QueryAsync<Interview>(token, config).GetRemainingAsync();
+            var interview = queryResult.FirstOrDefault(i => i.IsShared);
+
+            return interview;
+        }
     }
 }

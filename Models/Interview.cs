@@ -54,6 +54,10 @@ namespace CafApi.Models
 
         public string LinkId { get; set; }
 
+        public string Token { get; set; }
+
+        public bool IsShared { get; set; }
+
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 
