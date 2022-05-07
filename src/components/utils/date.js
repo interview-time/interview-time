@@ -52,55 +52,8 @@ export const getFormattedTimeRange = (start, end, defaultValue = "") => {
     return defaultValue;
 };
 
-/**
- * Returns locale aware time format
- * @returns {string} 'hh:mm A' or 'hh:mm'
- */
-export const timePickerFormat = () => {
-    let date = moment().format("LT");
-    if (date.includes("AM") || date.includes("PM")) {
-        return "hh:mm A";
-    } else {
-        return "hh:mm";
-    }
-};
-
-export const datePickerFormat = () => "ddd, ll"; // 18 Feb 2022
-
-/**
- *
- * @param {string} dateTime
- * @param defaultValue
- * @returns {undefined|moment.Moment}
- */
-export const getDate = (dateTime, defaultValue = undefined) => {
-    if (dateTime) {
-        const date = moment(dateTime);
-        return date.year() > 1 ? date : defaultValue;
-    }
-    return defaultValue;
-};
-
 export const orderByInterviewDate = interview => {
     const interviewDateTime = moment(interview.interviewDateTime);
     return interviewDateTime.year() > 1 ? interviewDateTime : moment(interview.modifiedDate);
 };
 
-export const generateTimeSlots = (duration = 15) => {
-    let format = timePickerFormat();
-
-    const timeSlots = [];
-    let start = moment().hour(9).minutes(0);
-    let end = start.clone().add(24, "hours");
-
-    let current = start.clone();
-    while(current.isBefore(end)) {
-        timeSlots.push({
-            label: current.format(format),
-            value: current.format()
-        });
-        current.add(duration, "minutes");
-    }
-
-    return timeSlots;
-};
