@@ -24,10 +24,10 @@ import TableHeader from "../../components/table/table-header";
 import { localeCompare } from "../../components/utils/comparators";
 import TableText from "../../components/table/table-text";
 import { defaultTo } from "lodash/util";
-import { getFormattedDateTime } from "../../components/utils/date";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
+import { getFormattedDateTime } from "../../components/utils/date-fns";
 
 const { Title } = Typography;
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };

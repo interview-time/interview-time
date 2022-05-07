@@ -1,4 +1,4 @@
-import { addHours, addMinutes, isBefore, set, parseISO, formatISO } from "date-fns";
+import { addHours, addMinutes, formatISO, isBefore, parseISO, set } from "date-fns";
 import { format } from "date-fns-tz";
 import { enAU, enCA, enGB, enIN, enNZ, enUS } from "date-fns/locale";
 
@@ -49,13 +49,49 @@ export const formatDate = (date, dateFormat, defaultValue = "") => {
     }
     return defaultValue;
 };
+
 /**
- * Returns formatted date taking into account locale, format: Sat, 19 February 2022 at 10:00 AM (locale aware)
+ * Returns formatted date taking into account locale, format: Sat, 19 February 2022 at 10:00 AM
  * @param date {Date|string|undefined}
  * @param defaultValue {string}
  * @returns {string}
  */
 export const getFormattedDateTime = (date, defaultValue = "") => formatDate(date, "EEE, PP 'at' p", defaultValue);
+
+/**
+ * Returns formatted date taking into account locale, format: Sat, 19 February 2022
+ * @param date {Date|string|undefined}
+ * @param defaultValue {string}
+ * @returns {string}
+ */
+export const getFormattedDate = (date, defaultValue = "") => formatDate(date, "EEE, PP", defaultValue);
+
+/**
+ * Returns formatted date taking into account locale, format: 19 February 2022
+ * @param date {Date|string|undefined}
+ * @param defaultValue {string}
+ * @returns {string}
+ */
+export const getFormattedDateShort = (date, defaultValue = "") => formatDate(date, "PP", defaultValue);
+
+/**
+ * Returns formatted time range taking into account locale, format: 20:00 - 21:00
+ * @param start {Date|string}
+ * @param end {Date|string}
+ * @param defaultValue {string}
+ * @returns {string}
+ */
+export const getFormattedTimeRange = (start, end, defaultValue = "") => {
+    const formattedDateStart = formatDate(start, "p");
+    const formattedDateEnd = formatDate(end, "p");
+
+    if (formattedDateStart && formattedDateEnd) {
+        return `${formattedDateStart} - ${formattedDateEnd}`;
+    } else if (formattedDateStart) {
+        return formattedDateStart;
+    }
+    return defaultValue;
+};
 
 /**
  * Returns locale aware date format
