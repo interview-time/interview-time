@@ -1,5 +1,5 @@
-import { addHours, addMinutes, isBefore, set } from "date-fns";
-import { format, formatInTimeZone } from "date-fns-tz";
+import { addHours, addMinutes, isBefore, set, parseISO, formatISO } from "date-fns";
+import { format } from "date-fns-tz";
 import { enAU, enCA, enGB, enIN, enNZ, enUS } from "date-fns/locale";
 
 const locales = {
@@ -13,28 +13,26 @@ const locales = {
 
 const DEFAULT_LOCALE = "en-US";
 
-export const DATE_FORMAT_SERVER = "yyyy-MM-dd'T'HH:mm:ssX";
-
 /**
- * Parse a date string into a Date object.
+ * Parse a date from ISO string into a Date object.
  * @param {string} dateTime
  * @param defaultValue
  * @returns {undefined|Date}
  */
-export const parseDate = (dateTime, defaultValue = undefined) => {
+export const parseDateISO = (dateTime, defaultValue = undefined) => {
     if (dateTime) {
-        const date = new Date(dateTime);
+        const date = parseISO(dateTime);
         return date.getFullYear() > 1 ? date : defaultValue;
     }
     return defaultValue;
 };
 
 /**
- * Returns formatted date in UTC timezone e.g. 2022-01-01T23:00:00Z
- * @param date {Date | string | number}
+ * Returns formatted date in ISO format, e.g. 2022-05-09T15:45:00+10:00
+ * @param date {Date | number}
  * @returns {string}
  */
-export const formatDateUTC = date => formatInTimeZone(date, "UTC", DATE_FORMAT_SERVER);
+export const formatDateISO = date => formatISO(date);
 
 /**
  * Returns formatted date taking into account locale
@@ -45,7 +43,7 @@ export const formatDateUTC = date => formatInTimeZone(date, "UTC", DATE_FORMAT_S
  */
 export const formatDate = (date, dateFormat, defaultValue = "") => {
     if (date) {
-        let parsedDate = date instanceof Date ? date : parseDate(date);
+        let parsedDate = date instanceof Date ? date : parseDateISO(date);
         const browserLocale = locales[getNavigatorLanguage()];
         return format(parsedDate, dateFormat, { locale: browserLocale ? browserLocale : enUS });
     }

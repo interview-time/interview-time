@@ -18,12 +18,12 @@ import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import {
-    DATE_FORMAT_SERVER,
-    datePickerFormat, formatDate,
-    formatDateUTC,
+    datePickerFormat,
+    formatDate,
+    formatDateISO,
     generateTimeSlots,
-    parseDate,
-    timePickerFormat
+    parseDateISO,
+    timePickerFormat,
 } from "../../components/utils/date-fns";
 import { filterOptionLabel, interviewsPositions } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
@@ -76,8 +76,8 @@ const InterviewSchedule = ({
         groups: [],
     };
 
-    const defaultStartDateTime = formatDateUTC(roundToNearestMinutes(new Date(), { nearestTo: 15 }));
-    const defaultEndDateTime = formatDateUTC(roundToNearestMinutes(addHours(new Date(), 1), { nearestTo: 15 }));
+    const defaultStartDateTime = formatDateISO(roundToNearestMinutes(new Date(), { nearestTo: 15 }));
+    const defaultEndDateTime = formatDateISO(roundToNearestMinutes(addHours(new Date(), 1), { nearestTo: 15 }));
 
     /**
      *
@@ -106,10 +106,10 @@ const InterviewSchedule = ({
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
             const existingInterview = cloneDeep(findInterview(id, interviews));
             // backwards compatibility for interviews without dates
-            if (!parseDate(existingInterview.interviewDateTime)) {
+            if (!parseDateISO(existingInterview.interviewDateTime)) {
                 existingInterview.interviewDateTime = defaultStartDateTime;
                 existingInterview.interviewEndDateTime = defaultEndDateTime;
-            } else if (!parseDate(existingInterview.interviewEndDateTime)) {
+            } else if (!parseDateISO(existingInterview.interviewEndDateTime)) {
                 // backwards compatibility for interviews without end date
                 existingInterview.interviewEndDateTime = existingInterview.interviewDateTime;
             }
@@ -231,15 +231,15 @@ const InterviewSchedule = ({
     };
 
     const onDateChange = newDate => {
-        let interviewDateTime = parseDate(interview.interviewDateTime);
-        interview.interviewDateTime = formatDateUTC(
+        let interviewDateTime = parseDateISO(interview.interviewDateTime);
+        interview.interviewDateTime = formatDateISO(
             set(interviewDateTime, {
                 year: newDate.getFullYear(),
                 month: newDate.getMonth(),
                 date: newDate.getDate(),
             })
         );
-        interview.interviewEndDateTime = formatDateUTC(
+        interview.interviewEndDateTime = formatDateISO(
             set(interviewDateTime, {
                 year: newDate.getFullYear(),
                 month: newDate.getMonth(),
@@ -251,25 +251,22 @@ const InterviewSchedule = ({
     };
 
     const onStartTimeChange = value => {
-        let interviewDateTime = parseDate(interview.interviewDateTime);
-        interview.interviewDateTime = formatDateUTC(parse(value, "HH:mm", interviewDateTime));
+        let interviewDateTime = parseDateISO(interview.interviewDateTime);
+        interview.interviewDateTime = formatDateISO(parse(value, "HH:mm", interviewDateTime));
 
         logInterviewDateTime();
     };
 
     const onEndTimeChange = value => {
-        let interviewDateTime = parseDate(interview.interviewDateTime);
-        interview.interviewEndDateTime = formatDateUTC(parse(value, "HH:mm", interviewDateTime));
+        let interviewDateTime = parseDateISO(interview.interviewDateTime);
+        interview.interviewEndDateTime = formatDateISO(parse(value, "HH:mm", interviewDateTime));
 
         logInterviewDateTime();
     };
 
     const logInterviewDateTime = () => {
-        log("Interview start date (utc)", interview.interviewDateTime);
-        log("Interview end date (utc)", interview.interviewEndDateTime);
-
-        log("Interview start date (local)", formatDate(interview.interviewDateTime, DATE_FORMAT_SERVER));
-        log("Interview end date (local)", formatDate(interview.interviewEndDateTime, DATE_FORMAT_SERVER));
+        log("Interview start date ", interview.interviewDateTime);
+        log("Interview end date ", interview.interviewEndDateTime);
     };
 
     const onSaveClicked = () => {
@@ -353,7 +350,7 @@ const InterviewSchedule = ({
                     template: interview.templateIds,
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
-                    date: parseDate(interview.interviewDateTime),
+                    date: parseDateISO(interview.interviewDateTime),
                     startTime: formatDate(interview.interviewDateTime, timePickerFormat()),
                     endTime: formatDate(interview.interviewEndDateTime, timePickerFormat()),
                     position: interview.position ? interview.position : undefined,
