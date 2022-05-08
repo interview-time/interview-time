@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { addHours, addMinutes, formatISO, isBefore, parseISO, set } from "date-fns";
 import { format } from "date-fns-tz";
 import { enAU, enCA, enGB, enIN, enNZ, enUS } from "date-fns/locale";
@@ -42,10 +43,14 @@ export const formatDateISO = date => formatISO(date);
  * @returns {string}
  */
 export const formatDate = (date, dateFormat, defaultValue = "") => {
-    if (date) {
-        let parsedDate = date instanceof Date ? date : parseDateISO(date);
-        const browserLocale = locales[getNavigatorLanguage()];
-        return format(parsedDate, dateFormat, { locale: browserLocale ? browserLocale : enUS });
+    try {
+        if (date) {
+            let parsedDate = date instanceof Date ? date : parseDateISO(date);
+            const browserLocale = locales[getNavigatorLanguage()];
+            return format(parsedDate, dateFormat, { locale: browserLocale ? browserLocale : enUS });
+        }
+    } catch (e) {
+        Sentry.captureException(e);
     }
     return defaultValue;
 };
@@ -82,8 +87,8 @@ export const getFormattedDateShort = (date, defaultValue = "") => formatDate(dat
  * @returns {string}
  */
 export const getFormattedTimeRange = (start, end, defaultValue = "") => {
-    const formattedDateStart = formatDate(start, "p");
-    const formattedDateEnd = formatDate(end, "p");
+    const formattedDateStart = formatDate(start, "p", defaultValue);
+    const formattedDateEnd = formatDate(end, "p", defaultValue);
 
     if (formattedDateStart && formattedDateEnd) {
         return `${formattedDateStart} - ${formattedDateEnd}`;
