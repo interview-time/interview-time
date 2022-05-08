@@ -23,7 +23,7 @@ import {
     formatDateISO,
     generateTimeSlots,
     parseDateISO,
-    timePickerFormat,
+    timePickerFormat
 } from "../../components/utils/date-fns";
 import { filterOptionLabel, interviewsPositions } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
@@ -253,12 +253,29 @@ const InterviewSchedule = ({
         let interviewDateTime = parseDateISO(interview.interviewDateTime);
         interview.interviewDateTime = formatDateISO(parse(value, "HH:mm", interviewDateTime));
 
+        interviewDateTime = parseDateISO(interview.interviewDateTime);
+        if (interviewDateTime > parseDateISO(interview.interviewEndDateTime)) {
+            interview.interviewEndDateTime = formatDateISO(addHours(interviewDateTime, 1));
+            form.setFieldsValue({
+                endTime: formatDate(interview.interviewEndDateTime, timePickerFormat()),
+            });
+        }
+
         logInterviewDateTime();
     };
 
     const onEndTimeChange = value => {
         let interviewDateTime = parseDateISO(interview.interviewDateTime);
         interview.interviewEndDateTime = formatDateISO(parse(value, "HH:mm", interviewDateTime));
+
+        interviewDateTime = parseDateISO(interview.interviewDateTime);
+        let interviewEndDateTime = parseDateISO(interview.interviewEndDateTime);
+        if (interviewDateTime > interviewEndDateTime) {
+            interview.interviewDateTime = formatDateISO(addHours(interviewEndDateTime, -1));
+            form.setFieldsValue({
+                startTime: formatDate(interview.interviewDateTime, timePickerFormat()),
+            });
+        }
 
         logInterviewDateTime();
     };
