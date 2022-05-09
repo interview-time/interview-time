@@ -9,10 +9,10 @@ import {
     getQuestionsWithAssessment,
 } from "../utils/assessment";
 import styles from "./export-notes.module.css";
-import moment from "moment";
 import { InterviewAssessment } from "../utils/constants";
 import { defaultTo } from "lodash/util";
 import { filterGroupsWithAssessment } from "../utils/filters";
+import { getFormattedDateTime } from "../utils/date-fns";
 
 const { TextArea } = Input;
 
@@ -68,7 +68,7 @@ Candidate Report
 
 Candidate Name: ${interview.candidate}
 Position: ${interview.position}
-Interview Date: ${moment(interview.interviewDateTime).format(DATE_FORMAT_DISPLAY)}
+Interview Date: ${getFormattedDateTime(interview.interviewDateTime)}
 
 Overall Performance Score: ${getOverallPerformancePercent(interview.structure.groups)}%
 Total questions asked: ${getQuestionsWithAssessment(interview.structure.groups).length}

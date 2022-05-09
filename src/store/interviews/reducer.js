@@ -20,6 +20,7 @@ import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { log } from "../../components/utils/log";
+import { formatDateISO } from "../../components/utils/date-fns";
 
 /**
  *
@@ -108,7 +109,7 @@ const interviewsReducer = (state = initialState, action) => {
         case UPDATE_SCORECARD: {
             const { interview } = action.payload;
 
-            interview.modifiedDate = new Date();
+            interview.modifiedDate = formatDateISO(new Date());
 
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))
