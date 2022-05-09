@@ -34,6 +34,7 @@ import { selectInterview } from "../../store/interviews/selector";
 import QuestionDifficultyChart from "../../components/charts/question-difficulty-chart";
 import QuestionAnswersChart from "../../components/charts/question-answers-chart";
 import CompetenceAreaChart from "../../components/charts/competence-area-chart";
+import ShareScorecard from "./share-scorecard";
 
 const { Text } = Typography;
 
@@ -51,6 +52,7 @@ const { Text } = Typography;
 const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, loadTeamMembers, loadCandidates }) => {
     const [expanded, setExpanded] = useState(false);
     const [showExportNotes, setShowExportNotes] = useState(false);
+    const [showShareScorecard, setShowShareScorecard] = useState(false);
 
     const history = useHistory();
 
@@ -116,6 +118,9 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
                             status={interview.status}
                         />
                         <Button onClick={onExportClicked}>Export</Button>
+                        <Button type='primary' onClick={() => setShowShareScorecard(true)}>
+                            Share
+                        </Button>
                     </Space>
                 }
             />
@@ -248,6 +253,7 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
             >
                 <ExportNotes interview={interview} />
             </Modal>
+            <ShareScorecard visible={showShareScorecard} onClose={() => setShowShareScorecard(false)} />
         </div>
     ) : (
         <Spinner />
