@@ -44,6 +44,14 @@ export const InterviewAssessment = {
 };
 
 export const QuestionAssessment = {
+    /**
+     * Candidate wasn't able to answer the question.
+     */
+    UNANSWERED: -1,
+    /**
+     * Question wasn't asked.
+     */
+    NO_ASSESSMENT: 0,
     POOR: 1,
     GOOD: 2,
     EXCELLENT: 3,
