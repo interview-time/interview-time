@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { shareScorecard, unshareScorecard } from "../../store/interviews/actions";
 import { selectInterview } from "../../store/interviews/selector";
 import Spinner from "../../components/spinner/spinner";
+import { getHost } from "../../components/utils/route";
 import styles from "./interview-scorecard.module.css";
 
 const ShareScorecard = ({ interviewId, visible, onClose, token, isShared, shareScorecard, unshareScorecard }) => {
@@ -39,7 +40,7 @@ const ShareScorecard = ({ interviewId, visible, onClose, token, isShared, shareS
         };
     }, [copied]);
 
-    const getSharedURL = () => (token ? encodeURI(`https://app.interviewer.space/public/scorecard/${token}`) : null);
+    const getSharedURL = () => (token ? encodeURI(`${getHost()}/public/scorecard/${token}`) : null);
 
     return (
         <Modal

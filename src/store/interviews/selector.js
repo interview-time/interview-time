@@ -127,3 +127,7 @@ export const selectCandidateInterviews = (state, candidateId) => {
 
     return selectSortedByDateInterviews(candidateInterviewsView);
 };
+
+export const selectSharedScorecard = (state, token) => {
+    return state.interviews.sharedScorecards.find(scorecard => scorecard.token === token);
+};

@@ -130,14 +130,13 @@ export const getSharedScorecard = token => async dispatch => {
     try {
         dispatch(requestStarted());
 
-        const authToken = await getAccessTokenSilently();
-        const scorecard = await axios.get(`${BASE_URL}/public/scorecard/${token}`, config(authToken));
+        const scorecard = await axios.get(`${BASE_URL}/public/scorecard/${token}`);
 
         dispatch({
             type: SET_SHARED_SCORECARD,
             payload: {
                 token,
-                scorecard,
+                scorecard: scorecard.data,
             },
         });
     } catch (error) {
