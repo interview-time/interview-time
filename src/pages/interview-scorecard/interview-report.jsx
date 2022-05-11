@@ -49,7 +49,15 @@ const { Text } = Typography;
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, loadTeamMembers, loadCandidates }) => {
+const InterviewReport = ({
+    interview,
+    teamMembers,
+    candidate,
+    profile,
+    loadInterviews,
+    loadTeamMembers,
+    loadCandidates,
+}) => {
     const [expanded, setExpanded] = useState(false);
     const [showExportNotes, setShowExportNotes] = useState(false);
     const [showShareScorecard, setShowShareScorecard] = useState(false);
@@ -118,9 +126,12 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
                             status={interview.status}
                         />
                         <Button onClick={onExportClicked}>Export</Button>
-                        <Button type='primary' onClick={() => setShowShareScorecard(true)}>
-                            Share
-                        </Button>
+
+                        {profile && profile.userId === interview.userId && (
+                            <Button type='primary' onClick={() => setShowShareScorecard(true)}>
+                                Share
+                            </Button>
+                        )}
                     </Space>
                 }
             />
@@ -253,7 +264,13 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
             >
                 <ExportNotes interview={interview} />
             </Modal>
-            <ShareScorecard visible={showShareScorecard} onClose={() => setShowShareScorecard(false)} />
+            {profile && profile.userId === interview.userId && (
+                <ShareScorecard
+                    interviewId={interview.interviewId}
+                    visible={showShareScorecard}
+                    onClose={() => setShowShareScorecard(false)}
+                />
+            )}
         </div>
     ) : (
         <Spinner />
@@ -263,17 +280,16 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
 const mapDispatch = { loadInterviews, loadTeamMembers, loadCandidates };
 
 const mapState = (state, ownProps) => {
-    const interviewsState = state.interviews || {};
     const userState = state.user || {};
-    const candidatesState = state.candidates || {};
 
-    const interview = selectInterview(interviewsState, ownProps.match.params.id);
-    const candidate = selectCandidate(candidatesState, interview?.candidateId);
+    const interview = selectInterview(state, ownProps.match.params.id);
+    const candidate = selectCandidate(state, interview?.candidateId);
 
     return {
         interview: interview,
         teamMembers: userState.teamMembers,
         candidate: candidate,
+        profile: userState.profile,
     };
 };
 

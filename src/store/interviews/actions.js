@@ -96,7 +96,7 @@ export const shareScorecard = interviewId => async dispatch => {
                 type: SHARE_SCORECARD,
                 payload: {
                     interviewId,
-                    token: result.data,
+                    token: result.data.token,
                 },
             });
         }
