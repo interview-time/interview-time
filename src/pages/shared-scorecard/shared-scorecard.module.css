@@ -19,7 +19,6 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 24px;
 }
 
 .reportInterviewInfoHolder {
@@ -129,4 +128,11 @@
 .candidate {
     display: flex;
     flex-direction: column;
+}
+
+.recommendation {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
 }

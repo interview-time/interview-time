@@ -10,7 +10,6 @@ import {
     getOverallPerformanceColor,
     getOverallPerformancePercent,
 } from "../../components/utils/assessment";
-import Header from "../../components/header/header";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import {
     filterGroupsWithAssessment,
@@ -89,7 +88,7 @@ const SharedScorecard = ({ scorecard, loading, getSharedScorecard }) => {
                             >
                                 <div className={styles.decisionTextHolder}>
                                     <div className={styles.candidate}>
-                                        <Title level={4} style={{ margin: "0 10px 0 0" }}>
+                                        <Title level={3} style={{ margin: "0 10px 0 0" }}>
                                             {scorecard.candidateName}
                                         </Title>
                                         <Text type='secondary' className={styles.subheader}>
@@ -97,8 +96,12 @@ const SharedScorecard = ({ scorecard, loading, getSharedScorecard }) => {
                                         </Text>
                                     </div>
 
-                                    <div>
+                                    <div className={styles.recommendation}>
                                         <InterviewDecisionTag decision={scorecard.decision} />
+
+                                        <Text type='secondary' className={styles.subheader}>
+                                            Hiring recommendation
+                                        </Text>
                                     </div>
                                 </div>
                             </Card>
@@ -108,7 +111,7 @@ const SharedScorecard = ({ scorecard, loading, getSharedScorecard }) => {
                             <Space direction='vertical' size={12}>
                                 <div className={styles.divHorizontal}>
                                     <UsersIcon style={iconStyle} />
-                                    <Text className={styles.reportLabel}>{scorecard.interviewerName}</Text>
+                                    <Text className={styles.reportLabel}>Interviewer: {scorecard.interviewerName}</Text>
                                 </div>
                                 <div className={styles.divHorizontal}>
                                     <CalendarIcon style={iconStyle} />

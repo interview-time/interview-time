@@ -10,9 +10,11 @@ import { getDecisionColor, getDecisionText } from "../utils/assessment";
  * @constructor
  */
 const InterviewDecisionTag = ({ decision }) => (
-    <Tag color={getDecisionColor(decision)} className={styles.tag}>
-        {getDecisionText(decision)}
-    </Tag>
+    <div>
+        <Tag color={getDecisionColor(decision)} className={styles.tag}>
+            {getDecisionText(decision)}
+        </Tag>
+    </div>
 );
 
 export default InterviewDecisionTag;
