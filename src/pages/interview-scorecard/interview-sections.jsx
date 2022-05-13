@@ -1,6 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag} from "antd";
+import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag } from "antd";
 import { createTagColors, InterviewAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -372,7 +372,7 @@ const InterviewQuestionsCard = ({
         },
         {
             title: "Assessment",
-            width: 140,
+            width: 180,
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: question => (
                 <AssessmentCheckbox
@@ -451,6 +451,7 @@ const InterviewQuestionsCard = ({
                 <div>
                     <div className={styles.divider} />
                     <Table
+                        rowClassName='assessment-question-row'
                         columns={columns}
                         scroll={{
                             x: screens.lg ? false : "max-content", // turn off table scrolling for 'lg' devices

@@ -37,13 +37,6 @@ const AssessmentCheckbox = ({ defaultValue, disabled, onChange }) => {
 
     return (
         <Space>
-            <div className={styles.crossHolder} onClick={onNoAnswerClicked}>
-                <Tooltip title='No answer'>
-                    <CrossCircleIcon
-                        style={{ color: value === QuestionAssessment.UNANSWERED ? "#EF4444" : "#D2D5DA" }}
-                    />
-                </Tooltip>
-            </div>
             <Rate
                 count={3}
                 defaultValue={defaultTo(defaultValue, 0)}
@@ -52,6 +45,18 @@ const AssessmentCheckbox = ({ defaultValue, disabled, onChange }) => {
                 value={value}
                 tooltips={["Poor answer", "Good answer", "Excellent answer"]}
             />
+            <div
+                className={`${styles.crossHolder} ${
+                    value === QuestionAssessment.UNANSWERED ? "assessed" : "not-assessed"
+                }`}
+                onClick={onNoAnswerClicked}
+            >
+                <Tooltip title='No answer'>
+                    <CrossCircleIcon
+                        style={{ color: value === QuestionAssessment.UNANSWERED ? "#EF4444" : "#D2D5DA" }}
+                    />
+                </Tooltip>
+            </div>
         </Space>
     );
 };
