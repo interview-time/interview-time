@@ -26,6 +26,7 @@ const DifficultyWeight = {
 };
 
 const QuestionAssessmentWeight = {
+    UNANSWERED: 0.0,
     POOR: 0.4,
     GOOD: 0.8,
     EXCELLENT: 1.0,
@@ -248,6 +249,8 @@ export const getQuestionsAssessment = questions => {
  */
 const getQuestionAssessmentWeight = assessment => {
     switch (assessment) {
+        case QuestionAssessment.UNANSWERED:
+            return QuestionAssessmentWeight.UNANSWERED;
         case QuestionAssessment.POOR:
             return QuestionAssessmentWeight.POOR;
         case QuestionAssessment.GOOD:
@@ -264,4 +267,4 @@ const getQuestionAssessmentWeight = assessment => {
  * @param {Question} question
  * @returns {boolean}
  */
-const hasAssessment = question => question.assessment && question.assessment !== 0;
+const hasAssessment = question => question.assessment && question.assessment !== QuestionAssessment.NO_ASSESSMENT;
