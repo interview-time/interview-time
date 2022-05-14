@@ -15,6 +15,8 @@ export const UNSHARE_SCORECARD = "UNSHARE_SCORECARD";
 export const SET_SHARED_SCORECARD = "SET_SHARED_SCORECARD";
 export const REQUEST_STARTED = "REQUEST_STARTED";
 export const REQUEST_FINISHED = "REQUEST_FINISHED";
+export const GENERATING_LINK_STARTED = "GENERATING_LINK_STARTED";
+export const GENERATING_LINK_FINISHED = "GENERATING_LINK_FINISHED";
 
 const BASE_URL = `${process.env.REACT_APP_API_URL}`;
 
@@ -83,6 +85,10 @@ export const deleteInterview = interviewId => ({
 
 export const shareScorecard = interviewId => async dispatch => {
     try {
+        dispatch({
+            type: GENERATING_LINK_STARTED,
+        });
+
         const authToken = await getAccessTokenSilently();
 
         const request = {
@@ -100,8 +106,15 @@ export const shareScorecard = interviewId => async dispatch => {
                 },
             });
         }
+
+        dispatch({
+            type: GENERATING_LINK_FINISHED,
+        });
     } catch (error) {
         logError(error);
+        dispatch({
+            type: GENERATING_LINK_FINISHED,
+        });
     }
 };
 

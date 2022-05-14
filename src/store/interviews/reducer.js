@@ -14,6 +14,8 @@ import {
     SET_SHARED_SCORECARD,
     REQUEST_STARTED,
     REQUEST_FINISHED,
+    GENERATING_LINK_STARTED,
+    GENERATING_LINK_FINISHED
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -31,6 +33,7 @@ const initialState = {
     loading: false,
     uploading: false,
     sharedScorecards: [],
+    generatingLink: false,
 };
 
 const URL = `${process.env.REACT_APP_API_URL}/interview`;
@@ -43,6 +46,14 @@ const interviewsReducer = (state = initialState, action) => {
 
         case REQUEST_FINISHED: {
             return { ...state, loading: false };
+        }
+
+        case GENERATING_LINK_STARTED: {
+            return { ...state, generatingLink: true };
+        }
+
+        case GENERATING_LINK_FINISHED: {
+            return { ...state, generatingLink: false };
         }
 
         case LOAD_INTERVIEWS: {
