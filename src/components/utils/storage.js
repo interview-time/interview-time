@@ -1,17 +1,17 @@
 import { newsData } from "../../pages/news/modal-news";
 
-const KEY_NEWS_VISIT_TIME = "news-visit-time-long";
+const KEY_NEWS_VISIT_INT = "news-visit-version-int";
 const KEY_QUICKSTART_QUESTION_BANK = "quickstart-question-bank";
 const KEY_NOTES_EXPANDED = "sticky-notes-enabled-v1";
 const KEY_JOIN_TEAM = "selected-team-v1";
 
 export function isUpdateAvailable() {
-    const newsVisitTime = localStorage.getItem(KEY_NEWS_VISIT_TIME);
-    return newsVisitTime === null || newsData[0].date.getTime() > parseInt(newsVisitTime);
+    const newsVisitTime = localStorage.getItem(KEY_NEWS_VISIT_INT);
+    return newsVisitTime === null || newsData[0].versionInt > parseInt(newsVisitTime);
 }
 
 export function updateNewsVisitTime() {
-    localStorage.setItem(KEY_NEWS_VISIT_TIME, new Date().getTime().toString());
+    localStorage.setItem(KEY_NEWS_VISIT_INT, newsData[0].versionInt);
 }
 
 export function isQuestionBankClicked() {
