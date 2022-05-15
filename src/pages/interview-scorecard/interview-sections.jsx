@@ -1,6 +1,6 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
-import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag} from "antd";
+import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag } from "antd";
 import { createTagColors, InterviewAssessment, Status } from "../../components/utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
@@ -21,9 +21,10 @@ import {
     UsersIcon,
 } from "../../components/utils/icons";
 import { getInterviewerName, interviewToTags } from "../../components/utils/converters";
-import { getFormattedDate, getFormattedDateTime, getFormattedTimeRange, isEmpty } from "../../components/utils/date";
+import { isEmpty } from "../../components/utils/date";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
+import { getFormattedDateTime, getFormattedDate, getFormattedTimeRange } from "../../components/utils/date-fns";
 
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;
@@ -371,7 +372,7 @@ const InterviewQuestionsCard = ({
         },
         {
             title: "Assessment",
-            width: 120,
+            width: 180,
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: question => (
                 <AssessmentCheckbox
@@ -450,6 +451,7 @@ const InterviewQuestionsCard = ({
                 <div>
                     <div className={styles.divider} />
                     <Table
+                        rowClassName='assessment-question-row'
                         columns={columns}
                         scroll={{
                             x: screens.lg ? false : "max-content", // turn off table scrolling for 'lg' devices

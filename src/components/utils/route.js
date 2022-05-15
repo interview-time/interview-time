@@ -74,6 +74,8 @@ export const routeTeamMembers = id => `/team/${id}/settings?tab=members`;
 
 export const routeTeamJoin = () => "/team/join/:id";
 
+export const routeSharedScorecard = () => "/public/scorecard/:token";
+
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -82,3 +84,5 @@ export const getParameterByName = (name, url = window.location.href) => {
     if (!results[2]) return "";
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
+
+export const getHost = () => window.location.protocol.concat("//").concat(window.location.host);

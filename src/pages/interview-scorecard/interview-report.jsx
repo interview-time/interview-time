@@ -34,6 +34,7 @@ import { selectInterview } from "../../store/interviews/selector";
 import QuestionDifficultyChart from "../../components/charts/question-difficulty-chart";
 import QuestionAnswersChart from "../../components/charts/question-answers-chart";
 import CompetenceAreaChart from "../../components/charts/competence-area-chart";
+import ShareScorecard from "./share-scorecard";
 
 const { Text } = Typography;
 
@@ -48,9 +49,18 @@ const { Text } = Typography;
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, loadTeamMembers, loadCandidates }) => {
+const InterviewReport = ({
+    interview,
+    teamMembers,
+    candidate,
+    profile,
+    loadInterviews,
+    loadTeamMembers,
+    loadCandidates,
+}) => {
     const [expanded, setExpanded] = useState(false);
     const [showExportNotes, setShowExportNotes] = useState(false);
+    const [showShareScorecard, setShowShareScorecard] = useState(false);
 
     const history = useHistory();
 
@@ -116,6 +126,12 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
                             status={interview.status}
                         />
                         <Button onClick={onExportClicked}>Export</Button>
+
+                        {profile && profile.userId === interview.userId && (
+                            <Button type='primary' onClick={() => setShowShareScorecard(true)}>
+                                Share
+                            </Button>
+                        )}
                     </Space>
                 }
             />
@@ -248,6 +264,13 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
             >
                 <ExportNotes interview={interview} />
             </Modal>
+            {profile && profile.userId === interview.userId && (
+                <ShareScorecard
+                    interviewId={interview.interviewId}
+                    visible={showShareScorecard}
+                    onClose={() => setShowShareScorecard(false)}
+                />
+            )}
         </div>
     ) : (
         <Spinner />
@@ -257,17 +280,16 @@ const InterviewReport = ({ interview, teamMembers, candidate, loadInterviews, lo
 const mapDispatch = { loadInterviews, loadTeamMembers, loadCandidates };
 
 const mapState = (state, ownProps) => {
-    const interviewsState = state.interviews || {};
     const userState = state.user || {};
-    const candidatesState = state.candidates || {};
 
-    const interview = selectInterview(interviewsState, ownProps.match.params.id);
-    const candidate = selectCandidate(candidatesState, interview?.candidateId);
+    const interview = selectInterview(state, ownProps.match.params.id);
+    const candidate = selectCandidate(state, interview?.candidateId);
 
     return {
         interview: interview,
         teamMembers: userState.teamMembers,
         candidate: candidate,
+        profile: userState.profile,
     };
 };
 

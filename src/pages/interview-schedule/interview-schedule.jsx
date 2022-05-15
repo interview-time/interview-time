@@ -1,13 +1,13 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { AutoComplete, Button, Col, DatePicker, Divider, Form, Input, message, Modal, Row, Select, Space } from "antd";
+import { AutoComplete, Button, Col, Divider, Form, Input, message, Modal, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import { cloneDeep } from "lodash/lang";
+import { cloneDeep, isEmpty } from "lodash/lang";
 import { findInterview, findTemplate } from "../../components/utils/converters";
-import { DATE_FORMAT_SERVER, POSITIONS, POSITIONS_OPTIONS, Status } from "../../components/utils/constants";
+import { POSITIONS, POSITIONS_OPTIONS, Status } from "../../components/utils/constants";
 import Layout from "../../components/layout/layout";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
@@ -17,15 +17,23 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { personalEvent } from "../../analytics";
 import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { datePickerFormat, generateTimeSlots, getDate, isEmpty, timePickerFormat } from "../../components/utils/date";
+import {
+    datePickerFormat,
+    formatDate,
+    formatDateISO,
+    generateTimeSlots,
+    parseDateISO,
+    timePickerFormat
+} from "../../components/utils/date-fns";
 import { filterOptionLabel, interviewsPositions } from "../../components/utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "../candidate-details/create-candidate";
 import Card from "../../components/card/card";
 import { log } from "../../components/utils/log";
-import moment from "moment";
 import { uniq } from "lodash/array";
+import DatePicker from "../../components/antd/DatePicker";
+import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
 
 /**
  *
@@ -68,8 +76,8 @@ const InterviewSchedule = ({
         groups: [],
     };
 
-    const defaultStartDateTime = moment().hour(9).minute(0).utc().format(DATE_FORMAT_SERVER);
-    const defaultEndDateTime = moment().hour(10).minute(0).utc().format(DATE_FORMAT_SERVER);
+    const defaultStartDateTime = formatDateISO(roundToNearestMinutes(new Date(), { nearestTo: 15 }));
+    const defaultEndDateTime = formatDateISO(roundToNearestMinutes(addHours(new Date(), 1), { nearestTo: 15 }));
 
     /**
      *
@@ -98,9 +106,12 @@ const InterviewSchedule = ({
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
             const existingInterview = cloneDeep(findInterview(id, interviews));
             // backwards compatibility for interviews without dates
-            if (!getDate(existingInterview.interviewDateTime)) {
+            if (!parseDateISO(existingInterview.interviewDateTime)) {
                 existingInterview.interviewDateTime = defaultStartDateTime;
                 existingInterview.interviewEndDateTime = defaultEndDateTime;
+            } else if (!parseDateISO(existingInterview.interviewEndDateTime)) {
+                // backwards compatibility for interviews without end date
+                existingInterview.interviewEndDateTime = existingInterview.interviewDateTime;
             }
             setInterview(existingInterview);
         } else if (isFromTemplateFlow() && interview.templateIds.length === 0 && templates.length !== 0) {
@@ -220,75 +231,58 @@ const InterviewSchedule = ({
     };
 
     const onDateChange = newDate => {
-        let interviewDateTime = getDate(interview.interviewDateTime);
-        if (interviewDateTime) {
-            interview.interviewDateTime = interviewDateTime
-                .clone()
-                .year(newDate.year())
-                .month(newDate.month())
-                .date(newDate.date())
-                .utc()
-                .format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = interviewDateTime
-                .clone()
-                .year(newDate.year())
-                .month(newDate.month())
-                .date(newDate.date())
-                .utc()
-                .format(DATE_FORMAT_SERVER);
-        } else {
-            // current time + selected date
-            interview.interviewDateTime = newDate.clone().utc().format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = newDate.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
-        }
+        interview.interviewDateTime = formatDateISO(
+            set(parseDateISO(interview.interviewDateTime), {
+                year: newDate.getFullYear(),
+                month: newDate.getMonth(),
+                date: newDate.getDate(),
+            })
+        );
+        interview.interviewEndDateTime = formatDateISO(
+            set(parseDateISO(interview.interviewEndDateTime), {
+                year: newDate.getFullYear(),
+                month: newDate.getMonth(),
+                date: newDate.getDate(),
+            })
+        );
 
         logInterviewDateTime();
     };
 
     const onStartTimeChange = value => {
-        let time = moment(value);
-        let interviewDateTime = getDate(interview.interviewDateTime);
-        if (interviewDateTime) {
-            interview.interviewDateTime = interviewDateTime
-                .clone()
-                .hour(time.hour())
-                .minute(time.minute())
-                .utc()
-                .format(DATE_FORMAT_SERVER);
-        } else {
-            // current date + selected time
-            interview.interviewDateTime = time.clone().utc().format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = time.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
+        let interviewDateTime = parseDateISO(interview.interviewDateTime);
+        interview.interviewDateTime = formatDateISO(parse(value, "HH:mm", interviewDateTime));
+
+        interviewDateTime = parseDateISO(interview.interviewDateTime);
+        if (interviewDateTime > parseDateISO(interview.interviewEndDateTime)) {
+            interview.interviewEndDateTime = formatDateISO(addHours(interviewDateTime, 1));
+            form.setFieldsValue({
+                endTime: formatDate(interview.interviewEndDateTime, timePickerFormat()),
+            });
         }
 
         logInterviewDateTime();
     };
 
     const onEndTimeChange = value => {
-        let time = moment(value);
-        let interviewDateTime = getDate(interview.interviewDateTime);
-        if (interviewDateTime) {
-            interview.interviewEndDateTime = interviewDateTime
-                .clone()
-                .hour(time.hour())
-                .minute(time.minute())
-                .utc()
-                .format(DATE_FORMAT_SERVER);
-        } else {
-            // current date + selected time
-            interview.interviewDateTime = time.clone().utc().format(DATE_FORMAT_SERVER);
-            interview.interviewEndDateTime = time.clone().add(1, "hour").utc().format(DATE_FORMAT_SERVER);
+        let interviewDateTime = parseDateISO(interview.interviewDateTime);
+        interview.interviewEndDateTime = formatDateISO(parse(value, "HH:mm", interviewDateTime));
+
+        interviewDateTime = parseDateISO(interview.interviewDateTime);
+        let interviewEndDateTime = parseDateISO(interview.interviewEndDateTime);
+        if (interviewDateTime > interviewEndDateTime) {
+            interview.interviewDateTime = formatDateISO(addHours(interviewEndDateTime, -1));
+            form.setFieldsValue({
+                startTime: formatDate(interview.interviewDateTime, timePickerFormat()),
+            });
         }
 
         logInterviewDateTime();
     };
 
     const logInterviewDateTime = () => {
-        log("Interview start date (utc)", interview.interviewDateTime);
-        log("Interview end date (utc)", interview.interviewEndDateTime);
-
-        log("Interview start date (local)", getDate(interview.interviewDateTime).format(DATE_FORMAT_SERVER));
-        log("Interview end date (local)", getDate(interview.interviewEndDateTime).format(DATE_FORMAT_SERVER));
+        log("Interview start date ", interview.interviewDateTime);
+        log("Interview end date ", interview.interviewEndDateTime);
     };
 
     const onSaveClicked = () => {
@@ -372,11 +366,9 @@ const InterviewSchedule = ({
                     template: interview.templateIds,
                     candidateId: interview.candidateId,
                     candidate: interview.candidate,
-                    date: getDate(interview.interviewDateTime),
-                    startTime: getDate(interview.interviewDateTime).format(timePickerFormat()),
-                    endTime: getDate(interview.interviewEndDateTime, moment(interview.interviewDateTime)).format(
-                        timePickerFormat()
-                    ),
+                    date: parseDateISO(interview.interviewDateTime),
+                    startTime: formatDate(interview.interviewDateTime, timePickerFormat()),
+                    endTime: formatDate(interview.interviewEndDateTime, timePickerFormat()),
                     position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}

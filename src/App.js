@@ -14,7 +14,7 @@ import {
     routeLibraryTemplatePreview,
     routeReports,
     routeSharedTemplate,
-    routeTeamJoin,
+    routeSharedScorecard,
     routeTeamNew,
     routeTeamSettings,
     routeTemplateBlank,
@@ -41,10 +41,10 @@ import TemplatePreview from "./pages/template-preview/template-preview";
 import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
 import TeamSettings from "./pages/team-settings/team-settings";
-import JoinTeam from "./pages/team-join/team-join";
 import InterviewReport from "./pages/interview-scorecard/interview-report";
 import Candidates from "./pages/candidates/candidates";
 import CandidateDetails from "./pages/candidate-details/candidate-details";
+import SharedScorecard from "./pages/shared-scorecard/shared-scorecard";
 
 function App({ history }) {
     useEffect(() => {
@@ -89,7 +89,7 @@ function App({ history }) {
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
-            <Route path={routeTeamJoin()} exact component={JoinTeam} />
+            <Route path={routeSharedScorecard()} exact component={SharedScorecard} />
         </Switch>
     );
 }

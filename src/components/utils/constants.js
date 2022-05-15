@@ -1,7 +1,5 @@
 import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
 
-export const DATE_FORMAT_SERVER = "YYYY-MM-DDTHH:mm:ssZ";
-
 export const Roles = {
     HR: "HR",
     HIRING_MANAGER: "HIRING_MANAGER",
@@ -46,6 +44,14 @@ export const InterviewAssessment = {
 };
 
 export const QuestionAssessment = {
+    /**
+     * Candidate wasn't able to answer the question.
+     */
+    UNANSWERED: -1,
+    /**
+     * Question wasn't asked.
+     */
+    NO_ASSESSMENT: 0,
     POOR: 1,
     GOOD: 2,
     EXCELLENT: 3,

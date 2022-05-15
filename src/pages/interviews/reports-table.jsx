@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Input, Select, Table, ConfigProvider, Space } from "antd";
 import Text from "antd/lib/typography/Text";
-import { getFormattedDateTime } from "../../components/utils/formatters";
 import { getDecisionText, getOverallPerformancePercent } from "../../components/utils/assessment";
 import { localeCompare } from "../../components/utils/comparators";
 import { routeInterviewReport } from "../../components/utils/route";
@@ -17,6 +16,7 @@ import InterviewCompetenceTag from "../../components/tags/interview-competence-t
 import { defaultTo } from "lodash/util";
 import emptyInterview from "../../assets/empty-interview.svg";
 import styles from "./reports-table.module.css";
+import { getFormattedDateTime } from "../../components/utils/date-fns";
 
 const { Search } = Input;
 

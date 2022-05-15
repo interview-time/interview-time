@@ -8,13 +8,21 @@ import {
     setInterviews,
     setUploading,
     UPDATE_INTERVIEW,
-    UPDATE_SCORECARD
+    UPDATE_SCORECARD,
+    SHARE_SCORECARD,
+    UNSHARE_SCORECARD,
+    SET_SHARED_SCORECARD,
+    REQUEST_STARTED,
+    REQUEST_FINISHED,
+    GENERATING_LINK_STARTED,
+    GENERATING_LINK_FINISHED
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { log } from "../../components/utils/log";
+import { formatDateISO } from "../../components/utils/date-fns";
 
 /**
  *
@@ -24,12 +32,30 @@ const initialState = {
     interviews: [],
     loading: false,
     uploading: false,
+    sharedScorecards: [],
+    generatingLink: false,
 };
 
 const URL = `${process.env.REACT_APP_API_URL}/interview`;
 
 const interviewsReducer = (state = initialState, action) => {
     switch (action.type) {
+        case REQUEST_STARTED: {
+            return { ...state, loading: true };
+        }
+
+        case REQUEST_FINISHED: {
+            return { ...state, loading: false };
+        }
+
+        case GENERATING_LINK_STARTED: {
+            return { ...state, generatingLink: true };
+        }
+
+        case GENERATING_LINK_FINISHED: {
+            return { ...state, generatingLink: false };
+        }
+
         case LOAD_INTERVIEWS: {
             const { forceFetch, teamId } = action.payload;
 
@@ -94,7 +120,7 @@ const interviewsReducer = (state = initialState, action) => {
         case UPDATE_SCORECARD: {
             const { interview } = action.payload;
 
-            interview.modifiedDate = new Date();
+            interview.modifiedDate = formatDateISO(new Date());
 
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))
@@ -170,6 +196,48 @@ const interviewsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 interviews: interviews,
+            };
+        }
+
+        case SHARE_SCORECARD: {
+            const { interviewId, token } = action.payload;
+
+            return {
+                ...state,
+                interviews: state.interviews.map(interview => {
+                    if (interview.interviewId === interviewId) {
+                        return { ...interview, isShared: true, token: token };
+                    } else {
+                        return interview;
+                    }
+                }),
+            };
+        }
+
+        case UNSHARE_SCORECARD: {
+            const { interviewId } = action.payload;
+
+            return {
+                ...state,
+                interviews: state.interviews.map(interview => {
+                    if (interview.interviewId === interviewId) {
+                        return { ...interview, isShared: false };
+                    } else {
+                        return interview;
+                    }
+                }),
+            };
+        }
+
+        case SET_SHARED_SCORECARD: {
+            const { token, scorecard } = action.payload;
+
+            return {
+                ...state,
+                sharedScorecards: [
+                    ...state.sharedScorecards.filter(scorecard => scorecard.token !== token),
+                    { ...scorecard, token: token },
+                ],
             };
         }
 

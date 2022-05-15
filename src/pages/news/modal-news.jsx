@@ -1,56 +1,70 @@
-import { List, Modal } from "antd";
-import React from "react";
-import moment from "moment";
+import { Button, Divider, Modal } from "antd";
+import React, { useEffect} from "react";
 import styles from "./modal-news.module.css";
-import { getFormattedDateShort } from "../../components/utils/date";
+import Title from "antd/lib/typography/Title";
+import shareScorecardImage from "../../assets/news-share-scorecard.gif";
+import noAnswerImage from "../../assets/no-answer.gif";
+import Text from "antd/lib/typography/Text";
+import { updateNewsVisitTime } from "../../components/utils/storage";
 
 export const newsData = [
     {
-        version: "v1.300422",
-        date: moment("30/04/2022", "DD/MM/YYYY").valueOf(),
-        description: <div>
-            <ul className={styles.list}>
-                <li>🆕 You can now invite team members by email.</li>
-                <li>🐛 Minor bug fixes.</li>
-            </ul>
-        </div>,
+        version: "v1.150522",
+        versionInt: 220515, // version reversed
+        content: (
+            <div className={styles.carouselItem}>
+                <Title level={5} className={styles.carouselTitle}>
+                    Share scorecard reports
+                </Title>
+                <Text type='secondary' className={styles.carouselDescription}>
+                    Create a public link of interview reports to share with anyone.
+                </Text>
+                <img alt='Share scorecard gif' src={shareScorecardImage} className={styles.carouselImage} />
+            </div>
+        ),
     },
     {
-        version: "v1.180422",
-        date: moment("18/04/2022", "DD/MM/YYYY").valueOf(),
-        description: <div>
-            <ul className={styles.list}>
-                <li>🆕 "Reports" page has been moved inside "Interviews" page.</li>
-                <li>🆕 Previously input interview positions are now populated in the autocomplete during the creation of a new interview.</li>
-                <li> New public interview template "iOS Engineer".</li>
-                <li>🐛 Minor bug fixes.</li>
-            </ul>
-        </div>,
+        version: "v1.150522",
+        versionInt: 220515, // version reversed
+        date: new Date(2022, 5, 15),
+        content: (
+            <div className={styles.carouselItem}>
+                <Title level={5} className={styles.carouselTitle}>
+                    Mark questions as unanswered
+                </Title>
+                <Text type='secondary' className={styles.carouselDescription}>
+                    You can now mark unanswered questions for better score calculation.
+                </Text>
+                <img alt='No answer gif' src={noAnswerImage} className={styles.carouselImage} />
+            </div>
+        ),
     },
-    {
-        version: "v1.060322",
-        date: moment("06/04/2022", "DD/MM/YYYY").valueOf(),
-        description: <div>
-            <ul className={styles.list}>
-                <li>🔥 Interview 'Report' page now displays charts based on answered questions that helps to make even better candidate assessment.</li>
-                <li>🆕 Added 'What's new' page.</li>
-                <li>🐛 Fixed issue when 'Report' page wasn't displaying questions with notes.</li>
-                <li>🐛 Fixed issue when 'Report' page was displaying interviewer name instead of candidate name.</li>
-            </ul>
-        </div>,
-    }
 ];
 
 const NewsModal = ({ visible, onClose }) => {
+    const [activeItem, setActiveItem] = React.useState(0);
+
+    useEffect(() => {
+        console.log("updateNewsVisitTime");
+        updateNewsVisitTime();
+    }, []);
 
     const onCancelClicked = () => {
         onClose();
     };
 
+    const onNextClicked = () => {
+        setActiveItem(prevState => (prevState < newsData.length - 1 ? prevState + 1 : prevState));
+    };
+
+    const onPreviousClicked = () => {
+        setActiveItem(prevState => (prevState > 0 ? prevState - 1 : prevState));
+    };
+
     return (
         <Modal
             destroyOnClose={true}
-            title={"Recent updates from the Interviewer team"}
+            title="What's New"
             visible={visible}
             closable={true}
             footer={null}
@@ -58,18 +72,19 @@ const NewsModal = ({ visible, onClose }) => {
             bodyStyle={{ padding: 0 }}
             onCancel={onCancelClicked}
         >
-            <List
-                size='large'
-                dataSource={newsData}
-                renderItem={item => (
-                    <List.Item>
-                        <List.Item.Meta
-                            title={`${getFormattedDateShort(item.date)}`}
-                            description={item.description}
-                        />
-                    </List.Item>
-                )}
-            />
+            <div className={styles.carousel}>
+                <Divider className={styles.divider} />
+                {newsData[activeItem].content}
+                <Divider className={styles.divider} />
+                <div className={styles.arrowHolder}>
+                    <Button type='text' disabled={activeItem === 0} onClick={onPreviousClicked}>
+                        ← Previous
+                    </Button>
+                    <Button type='text' disabled={activeItem === newsData.length - 1} onClick={onNextClicked}>
+                        Next →
+                    </Button>
+                </div>
+            </div>
         </Modal>
     );
 };
