@@ -26,7 +26,12 @@ namespace CafApi.Services
 
         public async Task<Candidate> GetCandidate(string teamId, string candidateId)
         {
-            return await _context.LoadAsync<Candidate>(teamId, candidateId);
+            if (!string.IsNullOrWhiteSpace(candidateId))
+            {
+                return await _context.LoadAsync<Candidate>(teamId, candidateId);
+            }
+
+            return null;
         }
 
         public async Task<List<Candidate>> GetCandidates(string userId, string teamId)
