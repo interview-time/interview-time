@@ -24,6 +24,8 @@ const ShareScorecard = ({
     const [isSharedSwitch, setIsSharedSwitch] = useState(isShared);
     const [requestLink, setRequestLink] = useState(false);
 
+    const getSharedURL = () => (token ? encodeURI(`${getHost()}/public/scorecard/${token}`) : null);
+
     useEffect(() => {
         let timeoutId;
 
@@ -46,18 +48,16 @@ const ShareScorecard = ({
     useEffect(() => {
         if (token && !generatingLink && isShared && requestLink) {
             setIsSharedSwitch(true);
-            copy(getSharedURL());
+            copy(encodeURI(`${getHost()}/public/scorecard/${token}`));
             setCopied(true);
-            setRequestLink(false);            
+            setRequestLink(false);
         }
-    }, [token, generatingLink, requestLink]);
+    }, [token, generatingLink, requestLink, isShared]);
 
     const createLinkAndCopy = () => {
         setRequestLink(true);
         shareScorecard(interviewId);
     };
-
-    const getSharedURL = () => (token ? encodeURI(`${getHost()}/public/scorecard/${token}`) : null);
 
     return (
         <Modal
