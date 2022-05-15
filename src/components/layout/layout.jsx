@@ -33,7 +33,7 @@ import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
-import { getJoinTeam, isUpdateAvailable, setJoinTeam, updateNewsVisitTime } from "../utils/storage";
+import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 
 /**
@@ -68,7 +68,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
     const MENU_KEY_CANDIDATES = "CANDIDATES";
 
     const [feedbackVisible, setFeedbackVisible] = React.useState(false);
-    const [newsVisible, setNewsVisible] = React.useState(false);
+    const [newsVisible, setNewsVisible] = React.useState(isUpdateAvailable());
 
     React.useEffect(() => {
         let team = getJoinTeam();
@@ -139,7 +139,6 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
 
     const onNewsClicked = () => {
         setNewsVisible(true);
-        updateNewsVisitTime();
     };
 
     const onNewsClose = () => {
