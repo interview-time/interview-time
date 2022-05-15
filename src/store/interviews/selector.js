@@ -1,7 +1,7 @@
 import { Status } from "../../components/utils/constants";
 
 export const selectInterview = (state, interviewId) => {
-    return state.interviews.find(i => i.interviewId === interviewId);
+    return state.interviews.interviews.find(i => i.interviewId === interviewId);
 };
 
 export const selectInterviews = state => {
@@ -126,4 +126,8 @@ export const selectCandidateInterviews = (state, candidateId) => {
     const candidateInterviewsView = selectInterviewsTable(candidateInterviews, state.user.profile);
 
     return selectSortedByDateInterviews(candidateInterviewsView);
+};
+
+export const selectSharedScorecard = (state, token) => {
+    return state.interviews.sharedScorecards.find(scorecard => scorecard.token === token);
 };

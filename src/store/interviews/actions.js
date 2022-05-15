@@ -1,3 +1,8 @@
+import { getAccessTokenSilently } from "../../react-auth0-spa";
+import axios from "axios";
+import { config } from "../common";
+import { logError } from "../../components/utils/log";
+
 export const LOAD_INTERVIEWS = "LOAD_INTERVIEWS";
 export const SET_INTERVIEWS = "SET_INTERVIEWS";
 export const SET_UPLOADING = "SET_UPLOADING";
@@ -5,6 +10,15 @@ export const ADD_INTERVIEW = "ADD_INTERVIEW";
 export const UPDATE_INTERVIEW = "UPDATE_INTERVIEW";
 export const DELETE_INTERVIEW = "DELETE_INTERVIEW";
 export const UPDATE_SCORECARD = "UPDATE_SCORECARD";
+export const SHARE_SCORECARD = "SHARE_SCORECARD";
+export const UNSHARE_SCORECARD = "UNSHARE_SCORECARD";
+export const SET_SHARED_SCORECARD = "SET_SHARED_SCORECARD";
+export const REQUEST_STARTED = "REQUEST_STARTED";
+export const REQUEST_FINISHED = "REQUEST_FINISHED";
+export const GENERATING_LINK_STARTED = "GENERATING_LINK_STARTED";
+export const GENERATING_LINK_FINISHED = "GENERATING_LINK_FINISHED";
+
+const BASE_URL = `${process.env.REACT_APP_API_URL}`;
 
 export function loadInterviews(forceFetch = false) {
     return (dispatch, getState) => {
@@ -67,4 +81,88 @@ export const deleteInterview = interviewId => ({
     payload: {
         interviewId,
     },
+});
+
+export const shareScorecard = interviewId => async dispatch => {
+    try {
+        dispatch({
+            type: GENERATING_LINK_STARTED,
+        });
+
+        const authToken = await getAccessTokenSilently();
+
+        const request = {
+            interviewId: interviewId,
+        };
+
+        const result = await axios.patch(`${BASE_URL}/scorecard/share`, request, config(authToken));
+
+        if (result.data) {
+            dispatch({
+                type: SHARE_SCORECARD,
+                payload: {
+                    interviewId,
+                    token: result.data.token,
+                },
+            });
+        }
+
+        dispatch({
+            type: GENERATING_LINK_FINISHED,
+        });
+    } catch (error) {
+        logError(error);
+        dispatch({
+            type: GENERATING_LINK_FINISHED,
+        });
+    }
+};
+
+export const unshareScorecard = interviewId => async dispatch => {
+    try {
+        const authToken = await getAccessTokenSilently();
+
+        const request = {
+            interviewId: interviewId,
+        };
+
+        await axios.patch(`${BASE_URL}/scorecard/unshare`, request, config(authToken));
+
+        dispatch({
+            type: UNSHARE_SCORECARD,
+            payload: {
+                interviewId,
+            },
+        });
+    } catch (error) {
+        logError(error);
+    }
+};
+
+export const getSharedScorecard = token => async dispatch => {
+    try {
+        dispatch(requestStarted());
+
+        const scorecard = await axios.get(`${BASE_URL}/public/scorecard/${token}`);
+
+        dispatch({
+            type: SET_SHARED_SCORECARD,
+            payload: {
+                token,
+                scorecard: scorecard.data,
+            },
+        });
+    } catch (error) {
+        logError(error);
+    } finally {
+        dispatch(requestFinished());
+    }
+};
+
+export const requestStarted = () => ({
+    type: REQUEST_STARTED,
+});
+
+export const requestFinished = () => ({
+    type: REQUEST_FINISHED,
 });
