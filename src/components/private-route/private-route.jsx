@@ -4,7 +4,8 @@ import { useAuth0 } from "../../react-auth0-spa";
 import { connect } from "react-redux";
 import Spinner from "../spinner/spinner";
 import { loadProfile, acceptInvite } from "../../store/user/actions";
-import { getParameterByName } from "../utils/route";
+import { getParameterByName, routeTeamNew } from "../utils/route";
+import { isEmpty } from "lodash/lang";
 
 const PrivateRoute = ({ loadProfile, acceptInvite, profile, loadingProfile, component: Component, path, ...rest }) => {
     const { loading, isAuthenticated, loginWithRedirect, user, appState } = useAuth0();
@@ -35,7 +36,6 @@ const PrivateRoute = ({ loadProfile, acceptInvite, profile, loadingProfile, comp
             const invite = inviteToken ?? appState?.inviteToken;
 
             loadProfile(user.name, user.email, invite);
-
             if (inviteToken) {
                 const queryParams = new URLSearchParams(location.search);
                 if (queryParams.has("inviteToken")) {
@@ -49,6 +49,14 @@ const PrivateRoute = ({ loadProfile, acceptInvite, profile, loadingProfile, comp
 
         // eslint-disable-next-line
     }, [isAuthenticated, user]);
+
+    useEffect(() => {
+        if (profile && isEmpty(profile.teams)) {
+            history.push(routeTeamNew(true));
+        }
+
+        // eslint-disable-next-line
+    }, [profile]);
 
     const render = props => (isAuthenticated === true ? <Component {...props} /> : null);
 

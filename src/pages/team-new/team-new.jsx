@@ -5,7 +5,7 @@ import Text from "antd/lib/typography/Text";
 import styles from "../team-new/team-new.module.css";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { routeTeamMembers } from "../../components/utils/route";
 import { createTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
@@ -22,6 +22,7 @@ const NewTeam = ({ teams, createTeam }) => {
     const [name, setName] = useState();
 
     const history = useHistory();
+    const location = useLocation();
 
     useEffect(() => {
         let team = teams.find(team => team.teamName === name);
@@ -33,6 +34,11 @@ const NewTeam = ({ teams, createTeam }) => {
         // eslint-disable-next-line
     }, [teams, name]);
 
+    const hideMenu = () => {
+        const params = new URLSearchParams(location.search);
+        return params.get("hideMenu");
+    };
+
     const onSaveClicked = values => {
         const teamName = values.name;
 
@@ -43,39 +49,40 @@ const NewTeam = ({ teams, createTeam }) => {
         });
     };
 
-    return (
-        <Layout>
-            <Col span={24} xl={{ span: 12, offset: 6 }} xxl={{ span: 12, offset: 6 }}>
-                <Spin spinning={loading} tip='Creating team...'>
-                    <Card style={{ marginTop: 12 }}>
-                        <Title level={4}>Create Team</Title>
-                        <Text type='secondary' style={{ marginTop: 12 }}>
-                            Share templates and interviews with your team.
-                        </Text>
-                        <Form style={{ marginTop: 24 }} name='basic' layout='vertical' onFinish={onSaveClicked}>
-                            <Form.Item
-                                name='name'
-                                label={<Text strong>Name</Text>}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Please enter team name",
-                                    },
-                                ]}
-                            >
-                                <Input placeholder='Team name' />
-                            </Form.Item>
-                            <div className={styles.divRight}>
-                                <Button type='primary' htmlType='submit'>
-                                    Create team
-                                </Button>
-                            </div>
-                        </Form>
-                    </Card>
-                </Spin>
-            </Col>
-        </Layout>
+    const Content = () => (
+        <Col span={24} xl={{ span: 12, offset: 6 }} xxl={{ span: 12, offset: 6 }}>
+            <Spin spinning={loading} tip='Creating team...'>
+                <Card style={{ marginTop: 12 }}>
+                    <Title level={4}>Create Team</Title>
+                    <Text type='secondary' style={{ marginTop: 12 }}>
+                        {hideMenu()
+                            ? "You are not part of any team, please create a team to get started."
+                            : "Share templates and interviews with your team."}
+                    </Text>
+                    <Form style={{ marginTop: 24 }} name='basic' layout='vertical' onFinish={onSaveClicked}>
+                        <Form.Item
+                            name='name'
+                            label={<Text strong>Name</Text>}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please enter team name",
+                                },
+                            ]}
+                        >
+                            <Input placeholder='Team name' />
+                        </Form.Item>
+                        <div className={styles.divRight}>
+                            <Button type='primary' htmlType='submit'>
+                                Create team
+                            </Button>
+                        </div>
+                    </Form>
+                </Card>
+            </Spin>
+        </Col>
     );
+    return hideMenu() ? <div className={styles.divContent}>{Content()}</div> : <Layout>{Content()}</Layout>;
 };
 
 const mapDispatch = { createTeam };

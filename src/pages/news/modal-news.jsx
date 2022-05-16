@@ -45,7 +45,6 @@ const NewsModal = ({ visible, onClose }) => {
     const [activeItem, setActiveItem] = React.useState(0);
 
     useEffect(() => {
-        console.log("updateNewsVisitTime");
         updateNewsVisitTime();
     }, []);
 
