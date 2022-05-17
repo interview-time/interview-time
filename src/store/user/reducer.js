@@ -1,7 +1,5 @@
 import {
-    setActiveTeam,
-    setProfile,
-    setTeamMembers,
+    ACCEPT_INVITE,
     CHANGE_ROLE,
     CREATE_TEAM,
     DELETE_TEAM,
@@ -9,20 +7,23 @@ import {
     LEAVE_TEAM,
     LOAD_TEAM_MEMBERS,
     REMOVE_MEMBER,
+    REQUEST_FINISHED,
+    REQUEST_STARTED,
     SET_ACTIVE_TEAM,
     SET_PROFILE,
     SET_TEAM_MEMBERS,
+    setActiveTeam,
+    setProfile,
+    setTeamMembers,
     SETUP_USER,
-    UPDATE_TEAM,
-    ACCEPT_INVITE,
-    REQUEST_STARTED,
-    REQUEST_FINISHED,
+    UPDATE_TEAM
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { log } from "../../components/utils/log";
+import { isEmpty } from "lodash/lang";
 
 /**
  *
@@ -71,7 +72,9 @@ const userReducer = (state = initialState, action) => {
             // active team is not set (old users only) or user is not member of active team
             if (!profile.currentTeamId || !profile.teams.find(team => team.teamId === profile.currentTeamId)) {
                 Promise.resolve().then(() => {
-                    store.dispatch(setActiveTeam(profile.teams[0].teamId));
+                    if (!isEmpty(profile.teams)) {
+                        store.dispatch(setActiveTeam(profile.teams[0].teamId));
+                    }
                 });
             }
 

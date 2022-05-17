@@ -63,7 +63,7 @@ export const routeAccount = () => "/account";
 
 export const routeSharedTemplate = () => "/template/shared/:token";
 
-export const routeTeamNew = () => "/team/new/";
+export const routeTeamNew = (hideMenu = false) => hideMenu ? "/team/new?hideMenu=true" : "/team/new/";
 
 export const routeTeamSettings = id => {
     const url = "/team/:id/settings";
