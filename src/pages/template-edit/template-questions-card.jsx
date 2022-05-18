@@ -19,9 +19,6 @@ const { TextArea } = Input;
  *
  * @param {Template} template
  * @param {TemplateGroup} group
- * @param onQuestionsSortChange
- * @param onAddQuestionClicked
- * @param onRemoveQuestionClicked
  * @param onGroupTitleClicked
  * @param onDeleteGroupClicked
  * @param onMoveGroupUpClicked
@@ -32,9 +29,6 @@ const { TextArea } = Input;
 const TemplateQuestionsCard = ({
     template,
     group,
-    onQuestionsSortChange,
-    onAddQuestionClicked,
-    onRemoveQuestionClicked,
     onGroupTitleClicked,
     onDeleteGroupClicked,
     onMoveGroupUpClicked,
@@ -58,6 +52,14 @@ const TemplateQuestionsCard = ({
         }
         // eslint-disable-next-line
     }, [group]);
+
+    React.useEffect(() => {
+        if(group) {
+            // child component manages it`s own state to improve render performance + silently updates parent object
+            group.questions = questions;
+        }
+        // eslint-disable-next-line
+    }, [questions]);
 
     const updateQuestionsTags = () => {
         const tags = [];
@@ -83,7 +85,6 @@ const TemplateQuestionsCard = ({
         if (oldIndex !== newIndex) {
             const updatedQuestions = arrayMove([].concat(questions), oldIndex, newIndex).filter(el => !!el);
             setQuestions(updatedQuestions);
-            onQuestionsSortChange(group.groupId, updatedQuestions);
         }
     };
 
@@ -108,22 +109,37 @@ const TemplateQuestionsCard = ({
 
     const DragHandle = SortableHandle(() => <ReorderIcon className={styles.reorderIcon} />);
 
+    const onAddQuestionClicked = () => {
+        const questionId = Date.now().toString();
+
+        const newQuestion = {
+            questionId: questionId,
+            question: "",
+            tags: [],
+            key: questions.length - 1,
+            index: questions.length - 1,
+        };
+
+        setQuestions([...questions, newQuestion]);
+    };
+
+    const onRemoveQuestionClicked = questionId => {
+        setQuestions(questions.filter(q => q.questionId !== questionId));
+    };
+
     const onQuestionChange = (questionId, question) => {
-        // no need to propagate to parent to re-render
+        // no need to update component state
         questions.find(q => q.questionId === questionId).question = question;
-        group.questions.find(q => q.questionId === questionId).question = question;
     };
 
     const onDifficultyChange = (questionId, difficulty) => {
-        // no need to propagate to parent to re-render
+        // no need to update component state
         questions.find(q => q.questionId === questionId).difficulty = difficulty;
-        group.questions.find(q => q.questionId === questionId).difficulty = difficulty;
     };
 
     const onTagsChange = (questionId, tags) => {
-        // no need to propagate to parent to re-render
+        // no need to update component state
         questions.find(q => q.questionId === questionId).tags = tags;
-        group.questions.find(q => q.questionId === questionId).tags = tags;
 
         updateQuestionsTags();
     };

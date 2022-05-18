@@ -138,32 +138,6 @@ const TemplateEdit = ({
         template.title = e.target.value;
     };
 
-    const onQuestionsSortChange = (groupId, questions) => {
-        // no need to update state
-        template.structure.groups.find(group => group.groupId === groupId).questions = questions;
-    };
-
-    const onAddQuestionClicked = groupId => {
-        const questionId = Date.now().toString();
-        const updatedTemplate = cloneDeep(template);
-        updatedTemplate.structure.groups
-            .find(group => group.groupId === groupId)
-            .questions.push({
-                questionId: questionId,
-                question: "",
-                tags: [],
-            });
-        setTemplate(updatedTemplate);
-    };
-
-    const onRemoveQuestionClicked = questionId => {
-        const updatedTemplate = cloneDeep(template);
-        updatedTemplate.structure.groups.forEach(
-            group => (group.questions = group.questions.filter(q => q.questionId !== questionId))
-        );
-        setTemplate(updatedTemplate);
-    };
-
     const onGroupTitleClicked = (id, name) => {
         setQuestionGroupModal({
             visible: true,
@@ -368,9 +342,6 @@ const TemplateEdit = ({
                                         <TemplateQuestionsCard
                                             template={template}
                                             group={group}
-                                            onQuestionsSortChange={onQuestionsSortChange}
-                                            onAddQuestionClicked={onAddQuestionClicked}
-                                            onRemoveQuestionClicked={onRemoveQuestionClicked}
                                             onGroupTitleClicked={onGroupTitleClicked}
                                             onDeleteGroupClicked={onDeleteGroupClicked}
                                             onMoveGroupUpClicked={onMoveGroupUpClicked}
