@@ -120,11 +120,11 @@ const TemplateQuestionsCard = ({
             index: questions.length - 1,
         };
 
-        setQuestions([...questions, newQuestion]);
+        setQuestions(questions => [...questions, newQuestion]);
     };
 
     const onRemoveQuestionClicked = questionId => {
-        setQuestions(questions.filter(q => q.questionId !== questionId));
+        setQuestions(questions => questions.filter(q => q.questionId !== questionId));
     };
 
     const onQuestionChange = (questionId, question) => {
