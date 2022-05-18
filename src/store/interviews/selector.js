@@ -11,7 +11,7 @@ export const selectInterviews = state => {
 
     const interviewsList = [];
 
-    const interviews = plainInterviews.reduce((prev, scorecard) => {
+    return plainInterviews.reduce((prev, scorecard) => {
         const interview = prev.find(i => scorecard.linkId && i.linkId === scorecard.linkId);
 
         if (!interview) {
@@ -29,7 +29,7 @@ export const selectInterviews = state => {
                 position: scorecard.position,
                 scorecards: [
                     {
-                        id: scorecard.interviewId,
+                        interviewId: scorecard.interviewId,
                         status: scorecard.status,
                         interviewer: teamMembers.find(user => user.userId === scorecard.userId),
                         decision: scorecard.decision,
@@ -42,7 +42,7 @@ export const selectInterviews = state => {
             });
         } else {
             interview.scorecards.push({
-                id: scorecard.interviewId,
+                interviewId: scorecard.interviewId,
                 status: scorecard.status,
                 interviewer: teamMembers.find(user => user.userId === scorecard.userId),
                 decision: scorecard.decision,
@@ -54,8 +54,6 @@ export const selectInterviews = state => {
 
         return interviewsList;
     }, []);
-
-    return interviews;
 };
 
 export const selectSortedByDateInterviews = (interviews, desc = false) => {
@@ -73,11 +71,11 @@ export const selectInterviewsTable = (interviews, profile) => {
             interview.scorecards.find(s => s.interviewer?.userId === profile.userId) ?? interview.scorecards[0];
 
         const coInterviewers = interview.scorecards
-            .filter(s => s.id !== scorecard.id)
+            .filter(s => s.interviewId !== scorecard.interviewId)
             .map(s => {
                 return {
-                    id: s.id,
-                    key: s.id,
+                    interviewId: s.interviewId,
+                    key: s.interviewId,
                     interviewerName: s.interviewer?.name,
                     interviewStartDateTime: interview.interviewStartDateTime,
                     structure: s.structure,
@@ -87,8 +85,8 @@ export const selectInterviewsTable = (interviews, profile) => {
             });
 
         return {
-            id: scorecard.id,
-            key: scorecard.id,
+            interviewId: scorecard.interviewId,
+            key: scorecard.interviewId,
             candidateName: interview.candidate,
             position: interview.position,
             interviewStartDateTimeDisplay: interview.interviewStartDateTime,

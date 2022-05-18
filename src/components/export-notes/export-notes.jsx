@@ -63,6 +63,8 @@ const ExportNotes = ({ interview }) => {
             });
         });
 
+        console.log(interview)
+
         return `
 Candidate Report
 
