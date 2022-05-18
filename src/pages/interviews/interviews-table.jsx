@@ -117,9 +117,9 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
 
     const onRowClicked = interview => {
         if (interview.status === Status.SUBMITTED || interview.interviewerId !== profile.userId) {
-            history.push(routeInterviewReport(interview.id));
+            history.push(routeInterviewReport(interview.interviewId));
         } else {
-            history.push(routeInterviewScorecard(interview.id));
+            history.push(routeInterviewScorecard(interview.interviewId));
         }
     };
 
@@ -222,7 +222,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
             key: "actions",
             render: interview => (
                 <Dropdown
-                    overlay={createMenu(interview.id, interview.status, interview.candidate)}
+                    overlay={createMenu(interview.interviewId, interview.status, interview.candidate)}
                     placement='bottomLeft'
                 >
                     <Button icon={<MoreIcon />} style={{ width: 36, height: 36 }} onClick={e => e.stopPropagation()} />
