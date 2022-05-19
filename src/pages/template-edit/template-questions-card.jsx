@@ -2,16 +2,16 @@ import styles from "./template.module.css";
 import { Button, Dropdown, Input, Menu, Space, Table, Tooltip } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
-import { cloneDeep, isEqual } from "lodash/lang";
+import { cloneDeep } from "lodash/lang";
 import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { isEmpty } from "../../components/utils/date";
-import { flatten, sortedUniq } from "lodash/array";
 import { createTagColors } from "../../components/utils/constants";
 import { TemplateTags } from "./template-tags";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
+import { interviewToTags } from "../../components/utils/converters";
 
 const { TextArea } = Input;
 
@@ -35,8 +35,8 @@ const TemplateQuestionsCard = ({
     onMoveGroupDownClicked,
 }) => {
     const [questions, setQuestions] = React.useState([]);
-    const [tagColors, setTagsColors] = React.useState(new Map());
-    const [questionsTags, setQuestionsTags] = React.useState([]);
+    const [allTagsColors, setAllTagsColors] = React.useState(new Map());
+    const [allTags, setAllTags] = React.useState([]);
     const [collapsed, setCollapsed] = React.useState(false);
 
     React.useEffect(() => {
@@ -48,38 +48,21 @@ const TemplateQuestionsCard = ({
                 item.index = index;
             });
             setQuestions(questions);
-            updateQuestionsTags();
+
+            const tags = interviewToTags(template);
+            setAllTags(tags);
+            setAllTagsColors(createTagColors(tags));
         }
         // eslint-disable-next-line
     }, [group]);
 
     React.useEffect(() => {
-        if(group) {
+        if (group) {
             // child component manages it`s own state to improve render performance + silently updates parent object
             group.questions = questions;
         }
         // eslint-disable-next-line
     }, [questions]);
-
-    const updateQuestionsTags = () => {
-        const tags = [];
-        template.structure.groups.forEach(group => {
-            group.questions.forEach(question => {
-                tags.push(question.tags);
-            });
-        });
-        const tagsFlat = flatten(tags).filter(tag => !isEmpty(tag));
-        const tagColorsNew = createTagColors(tagsFlat);
-        const questionsTagsNew = sortedUniq(tagsFlat.sort()).map(tag => ({ value: tag }));
-
-        if (!isEqual(tagColors, tagColorsNew)) {
-            setTagsColors(tagColorsNew);
-        }
-
-        if (!isEqual(questionsTags, questionsTagsNew)) {
-            setQuestionsTags(questionsTagsNew);
-        }
-    };
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
         if (oldIndex !== newIndex) {
@@ -137,11 +120,15 @@ const TemplateQuestionsCard = ({
         questions.find(q => q.questionId === questionId).difficulty = difficulty;
     };
 
-    const onTagsChange = (questionId, tags) => {
+    const onTagsChange = (questionId, questionTags) => {
         // no need to update component state
-        questions.find(q => q.questionId === questionId).tags = tags;
+        questions.find(q => q.questionId === questionId).tags = questionTags;
 
-        updateQuestionsTags();
+        const newTags = interviewToTags(template);
+        if (allTags.length !== newTags.length) {
+            setAllTags(newTags);
+            setAllTagsColors(createTagColors(newTags));
+        }
     };
 
     const onCollapseClicked = () => {
@@ -196,8 +183,11 @@ const TemplateQuestionsCard = ({
             render: question => (
                 <TemplateTags
                     question={question}
-                    tagColors={tagColors}
-                    questionsTags={questionsTags}
+                    allTagsColors={allTagsColors}
+                    allTags={allTags.map(tag => ({
+                        value: tag,
+                        label: tag,
+                    }))}
                     onTagsChange={onTagsChange}
                 />
             ),

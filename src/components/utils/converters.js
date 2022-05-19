@@ -4,6 +4,8 @@
  * @param {Question[]} questions
  * @returns {*}
  */
+import { sortBy } from "lodash/collection";
+
 export function findQuestion(id, questions) {
     return questions.find(question => question.questionId === id);
 }
@@ -112,7 +114,7 @@ export function interviewToTags(interview) {
             }
         });
     });
-    return [...tags];
+    return sortBy([...tags]);
 }
 
 /**
