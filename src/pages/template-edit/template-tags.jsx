@@ -6,15 +6,15 @@ import React from "react";
 /**
  *
  * @param {Question} question
- * @param {String[]} questionsTags
- * @param {Map} tagColors
+ * @param {[]} allTags
+ * @param {Map} allTagsColors
  * @param onTagsChange
  * @returns {JSX.Element}
  * @constructor
  */
-export const TemplateTags = ({ question, questionsTags, tagColors, onTagsChange }) => {
+export const TemplateTags = ({ question, allTags, allTagsColors, onTagsChange }) => {
     const tagRender = ({ label }) => (
-        <Tag className={styles.clickableTag} color={tagColors.get(label)} style={{ marginRight: 4 }}>
+        <Tag className={styles.clickableTag} color={allTagsColors.get(label)} style={{ marginRight: 4 }}>
             {label.toLowerCase()}
         </Tag>
     );
@@ -27,7 +27,7 @@ export const TemplateTags = ({ question, questionsTags, tagColors, onTagsChange 
             size='small'
             defaultValue={defaultTo(question.tags, [])}
             placeholder='Tags'
-            options={questionsTags}
+            options={allTags}
             tagRender={tagRender}
         />
     );
