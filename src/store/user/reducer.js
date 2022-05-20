@@ -16,7 +16,8 @@ import {
     setProfile,
     setTeamMembers,
     SETUP_USER,
-    UPDATE_TEAM
+    UPDATE_TEAM,
+    SET_INVITE_ERROR,
 } from "./actions";
 import axios from "axios";
 import { logError } from "../../components/utils/log";
@@ -36,6 +37,7 @@ const initialState = {
     activeTeam: null,
     teamMembers: [],
     acceptedInvites: [],
+    inviteError: false,
 };
 
 const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
@@ -45,6 +47,11 @@ const userReducer = (state = initialState, action) => {
     log(action.type);
 
     switch (action.type) {
+        case SET_INVITE_ERROR: {
+            const { isInviteError } = action.payload;
+            return { ...state, inviteError: isInviteError };
+        }
+
         case REQUEST_STARTED: {
             return { ...state, loading: true };
         }

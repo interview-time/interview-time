@@ -45,7 +45,7 @@ const TeamInvite = ({ inviteUser }) => {
                 clearTimeout(timeoutId);
             }
         };
-        // eslint-disable-next-line 
+        // eslint-disable-next-line
     }, [sent]);
 
     return (
@@ -68,11 +68,15 @@ const TeamInvite = ({ inviteUser }) => {
             >
                 <Form.Item
                     name='email'
-                    className={styles.inviteEmail}
+                    className={styles.inviteEmail}                   
                     rules={[
                         {
                             required: true,
                             message: "Please enter email address",
+                        },
+                        {
+                            type: "email",
+                            message: "Invalid email address",
                         },
                     ]}
                 >

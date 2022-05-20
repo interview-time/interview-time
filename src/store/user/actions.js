@@ -22,6 +22,7 @@ export const REMOVE_MEMBER = "REMOVE_MEMBER";
 export const ACCEPT_INVITE = "ACCEPT_INVITE";
 export const REQUEST_STARTED = "REQUEST_STARTED";
 export const REQUEST_FINISHED = "REQUEST_FINISHED";
+export const SET_INVITE_ERROR = "SET_INVITE_ERROR";
 
 const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
 const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
@@ -56,12 +57,13 @@ export const loadProfile = (name, email, inviteToken) => async (dispatch, getSta
                 try {
                     await axios.put(`${URL_TEAMS}/accept-invite`, acceptInviteRequest, config(token));
 
-                    dispatch(acceptInvite(inviteToken));                    
+                    dispatch(acceptInvite(inviteToken));
 
                     profile = await axios.get(URL_PROFILE, config(token));
                 } catch (error) {
                     if (error.response.status === 404) {
                         logError(`Invite '${inviteToken}' has expired or the team was deleted`);
+                        dispatch(setInviteError(true));
                     } else {
                         throw error;
                     }
@@ -113,6 +115,13 @@ export const requestStarted = () => ({
 
 export const requestFinished = () => ({
     type: REQUEST_FINISHED,
+});
+
+export const setInviteError = isInviteError => ({
+    type: SET_INVITE_ERROR,
+    payload: {
+        isInviteError: isInviteError,
+    },
 });
 
 export const setupUser = profile => ({
