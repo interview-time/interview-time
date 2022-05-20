@@ -35,7 +35,7 @@ import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
-import { permissionViewCandidates } from "../utils/permissions";
+import { permissionViewCandidates } from "../../store/user/permissions";
 
 /**
  * @typedef {Object} ActiveTeam
