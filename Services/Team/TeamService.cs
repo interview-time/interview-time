@@ -245,15 +245,16 @@ namespace CafApi.Services
             var invite = await _context.LoadAsync<Invite>(inviteToken);
             if (invite != null && !invite.IsAccepted)
             {
-                invite.AcceptedBy = userId;
-                invite.IsAccepted = true;
-                invite.ModifiedDate = DateTime.UtcNow;
+                if (await AddToTeam(userId, invite.TeamId, invite.Role))
+                {
+                    invite.AcceptedBy = userId;
+                    invite.IsAccepted = true;
+                    invite.ModifiedDate = DateTime.UtcNow;
 
-                await _context.SaveAsync(invite);
+                    await _context.SaveAsync(invite);
 
-                await AddToTeam(userId, invite.TeamId, invite.Role);
-
-                teamId = invite.TeamId;
+                    teamId = invite.TeamId;
+                }            
             }
 
             return teamId;
@@ -291,11 +292,12 @@ namespace CafApi.Services
             }
         }
 
-        private async Task AddToTeam(string userId, string teamId, string role = null)
+        private async Task<bool> AddToTeam(string userId, string teamId, string role = null)
         {
             var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
+            var team = await GetTeam(teamId);
 
-            if (teamMember == null)
+            if (teamMember == null && team != null)
             {
                 teamMember = new TeamMember
                 {
@@ -307,7 +309,11 @@ namespace CafApi.Services
                 };
 
                 await _context.SaveAsync(teamMember);
+
+                return true;
             }
+
+            return false;
         }
     }
 }

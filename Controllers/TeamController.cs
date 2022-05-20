@@ -91,14 +91,18 @@ namespace CafApi.Controllers
         }
 
         [HttpPut("accept-invite")]
-        public async Task AcceptInvite(AcceptInviteRequest request)
+        public async Task<ActionResult> AcceptInvite(AcceptInviteRequest request)
         {
             var teamId = await _teamService.AcceptInvite(UserId, request.InviteToken);
 
-            if (teamId != null)
+            if (teamId == null)
             {
-                await _userService.UpdateCurrentTeam(UserId, teamId);
+                return NotFound();
             }
+
+            await _userService.UpdateCurrentTeam(UserId, teamId);
+
+            return Ok();
         }
 
         [HttpPut("leave")]
