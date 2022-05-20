@@ -19,6 +19,7 @@ import {
     UPDATE_TEAM
 } from "./actions";
 import axios from "axios";
+import { logError } from "../../components/utils/log";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
@@ -61,7 +62,7 @@ const userReducer = (state = initialState, action) => {
                     store.dispatch(setProfile(res.data));
                 })
                 .then(() => log(`Profile added: ${JSON.stringify(profile)}`))
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return { ...state, loading: true };
         }
@@ -124,7 +125,7 @@ const userReducer = (state = initialState, action) => {
                     store.dispatch(setProfile(profile || []));
                     store.dispatch(setActiveTeam(team.teamId));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -149,7 +150,7 @@ const userReducer = (state = initialState, action) => {
                     const profile = res.data;
                     store.dispatch(setProfile(profile || []));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -167,7 +168,7 @@ const userReducer = (state = initialState, action) => {
                     };
                     store.dispatch(setProfile(profile));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -178,7 +179,7 @@ const userReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then(token => axios.get(`${URL_TEAMS}/members/${teamId}`, config(token)))
                 .then(res => store.dispatch(setTeamMembers(res.data || [])))
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -216,7 +217,7 @@ const userReducer = (state = initialState, action) => {
                     const profile = res.data;
                     store.dispatch(setProfile(profile || []));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -238,7 +239,7 @@ const userReducer = (state = initialState, action) => {
                     };
                     store.dispatch(setProfile(profile));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -274,7 +275,7 @@ const userReducer = (state = initialState, action) => {
                     const teamMembers = state.teamMembers.filter(tm => tm.userId !== userId);
                     store.dispatch(setTeamMembers(teamMembers));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }

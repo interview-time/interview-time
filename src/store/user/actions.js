@@ -1,6 +1,7 @@
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import axios from "axios";
 import { config } from "../common";
+import { logError } from "../../components/utils/log";
 import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidates } from "../candidates/actions";
@@ -52,21 +53,28 @@ export const loadProfile = (name, email, inviteToken) => async (dispatch, getSta
                     inviteToken: inviteToken,
                 };
 
-                await axios.put(`${URL_TEAMS}/accept-invite`, acceptInviteRequest, config(token));
+                try {
+                    await axios.put(`${URL_TEAMS}/accept-invite`, acceptInviteRequest, config(token));
 
-                dispatch(acceptInvite(inviteToken));
-                dispatch(setActiveTeam(profile.data.currentTeamId));
+                    dispatch(acceptInvite(inviteToken));                    
 
-                profile = await axios.get(URL_PROFILE, config(token));
+                    profile = await axios.get(URL_PROFILE, config(token));
+                } catch (error) {
+                    if (error.response.status === 404) {
+                        logError(`Invite '${inviteToken}' has expired or the team was deleted`);
+                    } else {
+                        throw error;
+                    }
+                }
             }
 
             dispatch(setProfile(profile.data));
             dispatch(resetData(profile.data.currentTeamId));
-
-            dispatch(requestFinished());
         }
     } catch (err) {
-        console.error(err);
+        logError(err);
+    } finally {
+        dispatch(requestFinished());
     }
 };
 
@@ -243,6 +251,6 @@ export const inviteUser = (email, role) => async (dispatch, getState) => {
     try {
         await axios.put(`${URL_TEAMS}/invite`, request, config(token));
     } catch (error) {
-        console.log(error);
+        logError(error);
     }
 };
