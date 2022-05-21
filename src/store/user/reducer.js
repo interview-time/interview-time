@@ -16,9 +16,11 @@ import {
     setProfile,
     setTeamMembers,
     SETUP_USER,
-    UPDATE_TEAM
+    UPDATE_TEAM,
+    SET_INVITE_ERROR,
 } from "./actions";
 import axios from "axios";
+import { logError } from "../../components/utils/log";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
@@ -35,6 +37,7 @@ const initialState = {
     activeTeam: null,
     teamMembers: [],
     acceptedInvites: [],
+    inviteError: false,
 };
 
 const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
@@ -44,6 +47,11 @@ const userReducer = (state = initialState, action) => {
     log(action.type);
 
     switch (action.type) {
+        case SET_INVITE_ERROR: {
+            const { isInviteError } = action.payload;
+            return { ...state, inviteError: isInviteError };
+        }
+
         case REQUEST_STARTED: {
             return { ...state, loading: true };
         }
@@ -61,7 +69,7 @@ const userReducer = (state = initialState, action) => {
                     store.dispatch(setProfile(res.data));
                 })
                 .then(() => log(`Profile added: ${JSON.stringify(profile)}`))
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return { ...state, loading: true };
         }
@@ -124,7 +132,7 @@ const userReducer = (state = initialState, action) => {
                     store.dispatch(setProfile(profile || []));
                     store.dispatch(setActiveTeam(team.teamId));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -149,7 +157,7 @@ const userReducer = (state = initialState, action) => {
                     const profile = res.data;
                     store.dispatch(setProfile(profile || []));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -167,7 +175,7 @@ const userReducer = (state = initialState, action) => {
                     };
                     store.dispatch(setProfile(profile));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -178,7 +186,7 @@ const userReducer = (state = initialState, action) => {
             getAccessTokenSilently()
                 .then(token => axios.get(`${URL_TEAMS}/members/${teamId}`, config(token)))
                 .then(res => store.dispatch(setTeamMembers(res.data || [])))
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -216,7 +224,7 @@ const userReducer = (state = initialState, action) => {
                     const profile = res.data;
                     store.dispatch(setProfile(profile || []));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -238,7 +246,7 @@ const userReducer = (state = initialState, action) => {
                     };
                     store.dispatch(setProfile(profile));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }
@@ -274,7 +282,7 @@ const userReducer = (state = initialState, action) => {
                     const teamMembers = state.teamMembers.filter(tm => tm.userId !== userId);
                     store.dispatch(setTeamMembers(teamMembers));
                 })
-                .catch(reason => console.error(reason));
+                .catch(reason => logError(reason));
 
             return state;
         }

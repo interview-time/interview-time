@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Input, Select } from "antd";
+import { Button, Input, Select, Form } from "antd";
 import Text from "antd/lib/typography/Text";
 import { CheckIcon, MailIcon } from "../../components/utils/icons";
 import { Option } from "antd/lib/mentions";
@@ -25,6 +25,8 @@ const TeamInvite = ({ inviteUser }) => {
     const [email, setEmail] = useState("");
     const [role, setRole] = useState(ROLE_INTERVIEWER);
 
+    const [form] = Form.useForm();
+
     useEffect(() => {
         let timeoutId;
 
@@ -34,8 +36,7 @@ const TeamInvite = ({ inviteUser }) => {
             }
             timeoutId = setTimeout(function () {
                 setSent(false);
-                setEmail("");
-                setRole(ROLE_INTERVIEWER);
+                form.resetFields();
             }, 1000);
         }
 
@@ -44,40 +45,56 @@ const TeamInvite = ({ inviteUser }) => {
                 clearTimeout(timeoutId);
             }
         };
+        // eslint-disable-next-line
     }, [sent]);
 
     return (
         <div>
             <Text type='secondary'>Invite interviewers, hiring managers or recruiters to your team</Text>
-            <div className={styles.divRight}>
-                <Input
-                    style={{ marginRight: 12 }}
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder='Email address'
-                />
-                <Select
-                    defaultValue={ROLE_INTERVIEWER}
-                    value={role}
-                    style={{ minWidth: 180, marginRight: 12 }}
-                    onChange={value => setRole(value)}
+            <Form
+                form={form}
+                name='invite'
+                layout='horizontal'
+                initialValues={{
+                    email: "",
+                    role: ROLE_INTERVIEWER,
+                }}
+                onFinish={() => {
+                    inviteUser(email, role);
+                    setSent(true);
+                }}
+                autoComplete='off'
+                className={styles.inviteForm}
+            >
+                <Form.Item
+                    name='email'
+                    className={styles.inviteEmail}                   
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please enter email address",
+                        },
+                        {
+                            type: "email",
+                            message: "Invalid email address",
+                        },
+                    ]}
                 >
-                    <Option value={ROLE_INTERVIEWER}>Interviewer</Option>
-                    <Option value={ROLE_HIRING_MANAGER}>Hiring Manager</Option>
-                    <Option value={ROLE_HR}>Recruiter</Option>
-                </Select>
+                    <Input value={email} onChange={e => setEmail(e.target.value)} placeholder='Email address' />
+                </Form.Item>
 
-                <Button
-                    icon={sent ? <CheckIcon /> : <MailIcon />}
-                    type='primary'
-                    onClick={() => {
-                        inviteUser(email, role);
-                        setSent(true);
-                    }}
-                >
+                <Form.Item name='role' className={styles.inviteRole}>
+                    <Select defaultValue={ROLE_INTERVIEWER} value={role} onChange={value => setRole(value)}>
+                        <Option value={ROLE_INTERVIEWER}>Interviewer</Option>
+                        <Option value={ROLE_HIRING_MANAGER}>Hiring Manager</Option>
+                        <Option value={ROLE_HR}>Recruiter</Option>
+                    </Select>
+                </Form.Item>
+
+                <Button icon={sent ? <CheckIcon /> : <MailIcon />} type='primary' htmlType='submit'>
                     {sent ? "Sent!" : "Send Invite"}
                 </Button>
-            </div>
+            </Form>
         </div>
     );
 };
