@@ -220,6 +220,7 @@ namespace CafApi.Services
                     invite = new Invite
                     {
                         Token = StringHelper.GenerateToken(),
+                        InviteId = Guid.NewGuid().ToString(),
                         InviteeEmail = inviteeEmail,
                         TeamId = teamId,
                         Role = role,
