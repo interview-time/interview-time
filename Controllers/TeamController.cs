@@ -76,14 +76,6 @@ namespace CafApi.Controllers
             }).ToList();
         }
 
-        [HttpPut("join")]
-        public async Task<Team> JoinTeam(JoinTeamRequest request)
-        {
-            var team = await _teamService.JoinTeam(UserId, request.Token, request.Role);
-
-            return team;
-        }
-
         [HttpPut("invite")]
         public async Task Invite(InviteRequest request)
         {
@@ -103,6 +95,22 @@ namespace CafApi.Controllers
             await _userService.UpdateCurrentTeam(UserId, teamId);
 
             return Ok();
+        }
+
+        [HttpGet("{teamId}/invites/pending")]
+        public async Task<List<PendingInviteResponse>> GetPendingInvites(string teamId)
+        {
+            var invites = await _teamService.GetPendingInvites(UserId, teamId);
+            var invitedByList = await _userService.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
+
+            return invites.Select(i => new PendingInviteResponse
+            {
+                InviteId = i.InviteId,
+                InviteeEmail = i.InviteeEmail,
+                Role = i.Role,
+                InvitedBy = invitedByList.FirstOrDefault(invitedBy => invitedBy.UserId == i.InvitedBy)?.Name,
+                InvitedDate = i.CreatedDate
+            }).ToList();
         }
 
         [HttpPut("leave")]

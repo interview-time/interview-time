@@ -10,6 +10,8 @@ namespace CafApi.Models
         [DynamoDBHashKey]
         public string Token { get; set; }
 
+        public string InviteId { get; set; }
+
         public string InviteeEmail { get; set; }
 
         public string Role { get; set; }
