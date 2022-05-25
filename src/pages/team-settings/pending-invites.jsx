@@ -10,7 +10,6 @@ import { getFormattedDateTime } from "../../components/utils/date-fns";
 import styles from "./team-settings.module.css";
 
 const PendingInvites = ({ pendingInvites, loading }) => {
-    console.log(pendingInvites);
     const columns = [
         {
             title: <TableHeader>EMAIL</TableHeader>,
