@@ -5,6 +5,7 @@ import { logError } from "../../components/utils/log";
 import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidates } from "../candidates/actions";
+import { getPendingInvites, setPendingInvites } from "../teams/actions";
 
 export const LOAD_PROFILE = "LOAD_PROFILE";
 export const SETUP_USER = "SETUP_USER";
@@ -97,11 +98,13 @@ export const resetData = teamId => dispatch => {
     dispatch(setInterviews([]));
     dispatch(setCandidates([]));
     dispatch(setTeamMembers([]));
+    dispatch(setPendingInvites([]));
 
     dispatch(loadTemplates());
     dispatch(loadInterviews());
     dispatch(loadCandidates());
     dispatch(loadTeamMembers(teamId));
+    dispatch(getPendingInvites(teamId));
 };
 
 export const acceptInvite = inviteToken => ({
