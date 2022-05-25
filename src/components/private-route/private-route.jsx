@@ -70,8 +70,6 @@ const PrivateRoute = ({
     }, [profile]);
 
     useEffect(() => {
-        console.log("notification enter");
-
         if (inviteError) {
             notification["error"]({
                 key: "team-invite-error",
