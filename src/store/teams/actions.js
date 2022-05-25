@@ -18,20 +18,23 @@ export const setPendingInvites = pendingInvites => ({
     payload: { pendingInvites },
 });
 
-export const getPendingInvites = teamId => async (dispatch, getState) => {
-    const { teams } = getState();
-    if (!teams.pendingInvites || teams.pendingInvites.length === 0) {
-        const token = await getAccessTokenSilently();
+export const loadPendingInvites =
+    (teamId, forceFetch = false) =>
+    async (dispatch, getState) => {
+        const { teams } = getState();
 
-        dispatch(setPendingInvitesLoading(true));
-        try {
-            const result = await axios.get(`${BASE_URI}/team/${teamId}/invites/pending`, config(token));
+        if (!teams.pendingInvites || teams.pendingInvites.length === 0 || forceFetch) {
+            const token = await getAccessTokenSilently();
 
-            dispatch(setPendingInvites(result.data));
-        } catch (error) {
-            logError(error);
-        } finally {
-            dispatch(setPendingInvitesLoading(false));
+            dispatch(setPendingInvitesLoading(true));
+            try {
+                const result = await axios.get(`${BASE_URI}/team/${teamId}/invites/pending`, config(token));
+
+                dispatch(setPendingInvites(result.data));
+            } catch (error) {
+                logError(error);
+            } finally {
+                dispatch(setPendingInvitesLoading(false));
+            }
         }
-    }
-};
+    };

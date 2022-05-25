@@ -7,7 +7,7 @@ import TeamDetails from "./team-details";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam, changeRole, removeMember } from "../../store/user/actions";
-import { getPendingInvites } from "../../store/teams/actions";
+import { loadPendingInvites } from "../../store/teams/actions";
 import { MoreIcon } from "../../components/utils/icons";
 import { defaultTo } from "lodash/util";
 import Spinner from "../../components/spinner/spinner";
@@ -47,7 +47,7 @@ const TeamSettings = ({
     loadTeamMembers,
     changeRole,
     removeMember,
-    getPendingInvites,
+    loadPendingInvites,
     pendingInvites,
     pendingInvitesLoading,
 }) => {
@@ -63,7 +63,7 @@ const TeamSettings = ({
             setTeam(currentTeam);
             setLoading(false);
             loadTeamMembers(currentTeam.teamId);
-            getPendingInvites(currentTeam.teamId);
+            loadPendingInvites(currentTeam.teamId);
         }
         // eslint-disable-next-line
     }, [id, teams]);
@@ -278,7 +278,7 @@ const TeamSettings = ({
     );
 };
 
-const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers, changeRole, removeMember, getPendingInvites };
+const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers, changeRole, removeMember, loadPendingInvites };
 
 const mapState = state => {
     const userState = state.user || {};
