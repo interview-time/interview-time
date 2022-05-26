@@ -62,7 +62,7 @@ const TemplateCategoriesIconStyle = { color: '#FFFFFF', fontSize: 32 };
 export const TemplateCategories = [
     {
         key: "DEVELOPMENT",
-        title: "Software Development",
+        title: "Engineering",
         color: "#1890FF",
         icon: <DevelopmentIcon style={TemplateCategoriesIconStyle} />
     },
