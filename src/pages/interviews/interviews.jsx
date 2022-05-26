@@ -64,22 +64,22 @@ const Interviews = ({
                     Interviews
                 </Title>
 
-                <Row gutter={32} style={{ marginBottom: 32 }}>
-                    <Col span={8}>
+                <Row gutter={[32, 32]} style={{ marginBottom: 32 }}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             icon={<CalendarIcon style={iconStyle} />}
                             title={getNewInterviews()}
                             text='Upcoming'
                         />
                     </Col>
-                    <Col span={8}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             icon={<IdeaIcon style={iconStyle} />}
                             title={getInProgressInterviews()}
                             text='In-progress'
                         />
                     </Col>
-                    <Col span={8}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             icon={<ArchiveIcon style={iconStyle} />}
                             title={completedInterviews.length}

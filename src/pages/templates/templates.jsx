@@ -62,8 +62,8 @@ const Templates = ({ templates, loadingTemplates, loadTemplates }) => {
                     Templates
                 </Title>
 
-                <Row gutter={32} style={{ marginBottom: 32 }}>
-                    <Col span={8}>
+                <Row gutter={[32, 32]}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             onClick={onAddTemplateClicked}
                             icon={<NewFileIcon style={iconStyle} />}
@@ -71,7 +71,7 @@ const Templates = ({ templates, loadingTemplates, loadTemplates }) => {
                             text='Start from scratch'
                         />
                     </Col>
-                    <Col span={8}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             onClick={onFromLibraryClicked}
                             icon={<DuplicateIcon style={iconStyle} />}
@@ -79,7 +79,7 @@ const Templates = ({ templates, loadingTemplates, loadTemplates }) => {
                             text='Find & customize a template'
                         />
                     </Col>
-                    <Col span={8}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             onClick={onImportClicked}
                             icon={<UploadIcon style={iconStyle} />}
