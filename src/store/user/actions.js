@@ -6,14 +6,10 @@ import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidates } from "../candidates/actions";
 import { loadPendingInvites, setPendingInvites } from "../teams/actions";
+import { isEmpty } from "lodash/lang";
 
-export const LOAD_PROFILE = "LOAD_PROFILE";
-export const SETUP_USER = "SETUP_USER";
 export const SET_PROFILE = "SET_PROFILE";
 export const SET_ACTIVE_TEAM = "SET_ACTIVE_TEAM";
-export const CREATE_TEAM = "CREATE_TEAM";
-export const UPDATE_TEAM = "UPDATE_TEAM";
-export const DELETE_TEAM = "DELETE_TEAM";
 export const JOIN_TEAM = "JOIN_TEAM";
 export const LEAVE_TEAM = "LEAVE_TEAM";
 export const LOAD_TEAM_MEMBERS = "LOAD_TEAM_MEMBERS";
@@ -81,16 +77,86 @@ export const loadProfile = (name, email, inviteToken) => async (dispatch, getSta
     }
 };
 
+export const setProfile = profile => async dispatch => {
+    dispatch({
+        type: SET_PROFILE,
+        payload: {
+            profile,
+        },
+    });
+};
+
+/**
+ * @param {Team} team
+ */
+export const createTeam = team => async dispatch => {
+    const token = await getAccessTokenSilently();
+    try {
+        const newTeam = await axios.post(URL_TEAMS, team, config(token));
+        const profile = await axios.get(URL_PROFILE, config(token));
+
+        dispatch(setProfile(profile.data));
+        dispatch(switchTeam(newTeam.data.teamId));
+    } catch (error) {
+        logError(error);
+    }
+};
+
+/**
+ * @param {string} teamId
+ */
+export const deleteTeam = teamId => async (dispatch, getState) => {
+    const { user } = getState();
+
+    const token = await getAccessTokenSilently();
+    try {
+        await axios.delete(`${URL_TEAMS}/${teamId}`, config(token));
+        const profile = {
+            ...user.profile,
+            teams: user.profile.teams.filter(team => team.teamId !== teamId),
+        };
+        dispatch(setProfile(profile));
+        if (!isEmpty(profile.teams)) {
+            dispatch(switchTeam(profile.teams[0].teamId));
+        }
+    } catch (error) {
+        logError(error);
+    }
+};
+
+/**
+ * @param {Team} team
+ */
+export const updateTeam = team => async (dispatch, getState) => {
+    const { user } = getState();
+
+    const token = await getAccessTokenSilently();
+    try {
+        await axios.put(URL_TEAMS, team, config(token));
+        const profile = {
+            ...user.profile,
+            teams: user.profile.teams.map(t => (t.teamId === team.teamId ? team : t)),
+        };
+        dispatch(setProfile(profile));
+    } catch (error) {
+        logError(error);
+    }
+};
+
 export const switchTeam = teamId => async dispatch => {
     const token = await getAccessTokenSilently();
-    const request = {
-        currentTeamId: teamId,
-    };
+    try {
+        const request = {
+            currentTeamId: teamId,
+        };
 
-    axios.put(`${URL_PROFILE}/current-team`, request, config(token));
+        axios.put(`${URL_PROFILE}/current-team`, request, config(token));
 
-    dispatch(setActiveTeam(teamId));
-    dispatch(resetData(teamId));
+        dispatch(setActiveTeam(teamId));
+        dispatch(resetData(teamId));
+    } catch (error) {
+        logError(error);
+    }
 };
 
 export const resetData = teamId => dispatch => {
@@ -127,61 +193,11 @@ export const setInviteError = isInviteError => ({
     },
 });
 
-export const setupUser = profile => ({
-    type: SETUP_USER,
-    payload: {
-        profile,
-    },
-});
-
-export const setProfile = profile => ({
-    type: SET_PROFILE,
-    payload: {
-        profile,
-    },
-});
-
 export const setActiveTeam = (teamId, reloadData = true) => ({
     type: SET_ACTIVE_TEAM,
     payload: {
         teamId,
         reloadData,
-    },
-});
-
-/**
- *
- * @param {Team} team
- * @returns {{payload: {team}, type: Team}}
- */
-export const createTeam = team => ({
-    type: CREATE_TEAM,
-    payload: {
-        team,
-    },
-});
-
-/**
- *
- * @param {Team} team
- * @returns {{payload: {team}, type: Team}}
- */
-export const updateTeam = team => ({
-    type: UPDATE_TEAM,
-    payload: {
-        team,
-    },
-});
-
-/**
- *
- * @param {String} teamId
- * @returns {{payload: {teamId}, type: String}}
- */
-export const deleteTeam = teamId => ({
-    type: DELETE_TEAM,
-    payload: {
-        teamId,
     },
 });
 
