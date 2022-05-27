@@ -10,8 +10,6 @@ import { isEmpty } from "lodash/lang";
 
 export const SET_PROFILE = "SET_PROFILE";
 export const SET_ACTIVE_TEAM = "SET_ACTIVE_TEAM";
-export const JOIN_TEAM = "JOIN_TEAM";
-export const LEAVE_TEAM = "LEAVE_TEAM";
 export const LOAD_TEAM_MEMBERS = "LOAD_TEAM_MEMBERS";
 export const SET_TEAM_MEMBERS = "SET_TEAM_MEMBERS";
 export const CHANGE_ROLE = "CHANGE_ROLE";
@@ -143,6 +141,9 @@ export const updateTeam = team => async (dispatch, getState) => {
     }
 };
 
+/**
+ * @param {string} teamId
+ */
 export const switchTeam = teamId => async dispatch => {
     const token = await getAccessTokenSilently();
     try {
@@ -154,6 +155,50 @@ export const switchTeam = teamId => async dispatch => {
 
         dispatch(setActiveTeam(teamId));
         dispatch(resetData(teamId));
+    } catch (error) {
+        logError(error);
+    }
+};
+
+/**
+ * @param {string} teamId
+ */
+export const leaveTeam = teamId => async (dispatch, getState) => {
+    const { user } = getState();
+
+    const token = await getAccessTokenSilently();
+    try {
+        const request = {
+            teamId: teamId,
+        };
+        await axios.put(`${URL_TEAMS}/leave`, request, config(token));
+        const profile = {
+            ...user.profile,
+            teams: user.profile.teams.filter(team => team.teamId !== teamId),
+        };
+        dispatch(setProfile(profile));
+        if (!isEmpty(profile.teams)) {
+            dispatch(switchTeam(profile.teams[0].teamId));
+        }
+    } catch (error) {
+        logError(error);
+    }
+};
+
+/**
+ * @param {{token: string, role: string}} team
+ */
+export const joinTeam = team => async dispatch => {
+    const token = await getAccessTokenSilently();
+    try {
+        const request = {
+            token: team.token,
+            role: team.role,
+        };
+        await axios.put(`${URL_TEAMS}/join`, request, config(token));
+        const profile = await axios.get(URL_PROFILE, config(token));
+
+        dispatch(setProfile(profile.data));
     } catch (error) {
         logError(error);
     }
@@ -206,18 +251,6 @@ export const setActiveTeam = (teamId, reloadData = true) => ({
  * @param {String} teamId
  * @returns {{payload: {teamId}, type: String}}
  */
-export const leaveTeam = teamId => ({
-    type: LEAVE_TEAM,
-    payload: {
-        teamId,
-    },
-});
-
-/**
- *
- * @param {String} teamId
- * @returns {{payload: {teamId}, type: String}}
- */
 export const loadTeamMembers = teamId => ({
     type: LOAD_TEAM_MEMBERS,
     payload: {
@@ -234,18 +267,6 @@ export const setTeamMembers = members => ({
     type: SET_TEAM_MEMBERS,
     payload: {
         members,
-    },
-});
-
-/**
- *
- * @param {{token: string, role: string}} team
- * @returns {{payload: {token: string, role: string}, type: String}}
- */
-export const joinTeam = team => ({
-    type: JOIN_TEAM,
-    payload: {
-        team,
     },
 });
 

@@ -1,8 +1,6 @@
 import {
     ACCEPT_INVITE,
     CHANGE_ROLE,
-    JOIN_TEAM,
-    LEAVE_TEAM,
     LOAD_TEAM_MEMBERS,
     REMOVE_MEMBER,
     REQUEST_FINISHED,
@@ -10,7 +8,6 @@ import {
     SET_ACTIVE_TEAM,
     SET_PROFILE,
     SET_TEAM_MEMBERS,
-    setProfile,
     setTeamMembers,
     SET_INVITE_ERROR,
 } from "./actions";
@@ -34,7 +31,6 @@ const initialState = {
     inviteError: false,
 };
 
-const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
 const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
 
 const userReducer = (state = initialState, action) => {
@@ -94,57 +90,6 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 teamMembers: members || [],
             };
-        }
-
-        case JOIN_TEAM: {
-            const { team } = action.payload;
-
-            const data = {
-                token: team.token,
-                role: team.role,
-            };
-
-            getAccessTokenSilently()
-                .then(token => {
-                    // join team
-                    const tokenPromise = Promise.resolve(token);
-                    const teamPromise = axios.put(`${URL_TEAMS}/join`, data, config(token));
-                    return Promise.all([tokenPromise, teamPromise]);
-                })
-                .then(res => {
-                    // load profile which contains teams array
-                    const token = res[0];
-                    return axios.get(URL_PROFILE, config(token));
-                })
-                .then(res => {
-                    const profile = res.data;
-                    store.dispatch(setProfile(profile || []));
-                })
-                .catch(reason => logError(reason));
-
-            return state;
-        }
-
-        case LEAVE_TEAM: {
-            const { teamId } = action.payload;
-
-            const data = {
-                teamId: teamId,
-            };
-
-            getAccessTokenSilently()
-                .then(token => axios.put(`${URL_TEAMS}/leave`, data, config(token)))
-                .then(() => {
-                    log("Team left.");
-                    const profile = {
-                        ...state.profile,
-                        teams: state.profile.teams.filter(team => team.teamId !== teamId),
-                    };
-                    store.dispatch(setProfile(profile));
-                })
-                .catch(reason => logError(reason));
-
-            return state;
         }
 
         case CHANGE_ROLE: {
