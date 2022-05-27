@@ -1,10 +1,6 @@
 import {
     ACCEPT_INVITE,
     CHANGE_ROLE,
-    CREATE_TEAM,
-    DELETE_TEAM,
-    JOIN_TEAM,
-    LEAVE_TEAM,
     LOAD_TEAM_MEMBERS,
     REMOVE_MEMBER,
     REQUEST_FINISHED,
@@ -12,11 +8,7 @@ import {
     SET_ACTIVE_TEAM,
     SET_PROFILE,
     SET_TEAM_MEMBERS,
-    setActiveTeam,
-    setProfile,
     setTeamMembers,
-    SETUP_USER,
-    UPDATE_TEAM,
     SET_INVITE_ERROR,
 } from "./actions";
 import axios from "axios";
@@ -25,7 +17,6 @@ import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { log } from "../../components/utils/log";
-import { isEmpty } from "lodash/lang";
 
 /**
  *
@@ -40,7 +31,6 @@ const initialState = {
     inviteError: false,
 };
 
-const URL_PROFILE = `${process.env.REACT_APP_API_URL}/user`;
 const URL_TEAMS = `${process.env.REACT_APP_API_URL}/team`;
 
 const userReducer = (state = initialState, action) => {
@@ -60,31 +50,8 @@ const userReducer = (state = initialState, action) => {
             return { ...state, loading: false };
         }
 
-        case SETUP_USER: {
-            const { profile } = action.payload;
-
-            getAccessTokenSilently()
-                .then(token => axios.post(URL_PROFILE, profile, config(token)))
-                .then(res => {
-                    store.dispatch(setProfile(res.data));
-                })
-                .then(() => log(`Profile added: ${JSON.stringify(profile)}`))
-                .catch(reason => logError(reason));
-
-            return { ...state, loading: true };
-        }
-
         case SET_PROFILE: {
             const { profile } = action.payload;
-
-            // active team is not set (old users only) or user is not member of active team
-            if (!profile.currentTeamId || !profile.teams.find(team => team.teamId === profile.currentTeamId)) {
-                Promise.resolve().then(() => {
-                    if (!isEmpty(profile.teams)) {
-                        store.dispatch(setActiveTeam(profile.teams[0].teamId));
-                    }
-                });
-            }
 
             return {
                 ...state,
@@ -105,81 +72,6 @@ const userReducer = (state = initialState, action) => {
             };
         }
 
-        case CREATE_TEAM: {
-            const { team } = action.payload;
-
-            getAccessTokenSilently()
-                .then(token => {
-                    // create team
-                    const tokenPromise = Promise.resolve(token);
-                    const teamPromise = axios.post(URL_TEAMS, team, config(token));
-                    return Promise.all([tokenPromise, teamPromise]);
-                })
-                .then(res => {
-                    // load profile which contains teams array
-                    const token = res[0];
-                    const team = res[1].data;
-
-                    const teamPromise = Promise.resolve(team);
-                    const profilePromise = axios.get(URL_PROFILE, config(token));
-
-                    return Promise.all([teamPromise, profilePromise]);
-                })
-                .then(res => {
-                    const team = res[0];
-                    const profile = res[1].data;
-
-                    store.dispatch(setProfile(profile || []));
-                    store.dispatch(setActiveTeam(team.teamId));
-                })
-                .catch(reason => logError(reason));
-
-            return state;
-        }
-
-        case UPDATE_TEAM: {
-            const { team } = action.payload;
-
-            getAccessTokenSilently()
-                .then(token => {
-                    // update team
-                    const tokenPromise = Promise.resolve(token);
-                    const teamPromise = axios.put(URL_TEAMS, team, config(token));
-
-                    return Promise.all([tokenPromise, teamPromise]);
-                })
-                .then(res => {
-                    // load profile which contains teams array
-                    const token = res[0];
-                    return axios.get(URL_PROFILE, config(token));
-                })
-                .then(res => {
-                    const profile = res.data;
-                    store.dispatch(setProfile(profile || []));
-                })
-                .catch(reason => logError(reason));
-
-            return state;
-        }
-
-        case DELETE_TEAM: {
-            const { teamId } = action.payload;
-
-            getAccessTokenSilently()
-                .then(token => axios.delete(`${URL_TEAMS}/${teamId}`, config(token)))
-                .then(() => {
-                    log("Team removed.");
-                    const profile = {
-                        ...state.profile,
-                        teams: state.profile.teams.filter(team => team.teamId !== teamId),
-                    };
-                    store.dispatch(setProfile(profile));
-                })
-                .catch(reason => logError(reason));
-
-            return state;
-        }
-
         case LOAD_TEAM_MEMBERS: {
             const { teamId } = action.payload;
 
@@ -198,57 +90,6 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 teamMembers: members || [],
             };
-        }
-
-        case JOIN_TEAM: {
-            const { team } = action.payload;
-
-            const data = {
-                token: team.token,
-                role: team.role,
-            };
-
-            getAccessTokenSilently()
-                .then(token => {
-                    // join team
-                    const tokenPromise = Promise.resolve(token);
-                    const teamPromise = axios.put(`${URL_TEAMS}/join`, data, config(token));
-                    return Promise.all([tokenPromise, teamPromise]);
-                })
-                .then(res => {
-                    // load profile which contains teams array
-                    const token = res[0];
-                    return axios.get(URL_PROFILE, config(token));
-                })
-                .then(res => {
-                    const profile = res.data;
-                    store.dispatch(setProfile(profile || []));
-                })
-                .catch(reason => logError(reason));
-
-            return state;
-        }
-
-        case LEAVE_TEAM: {
-            const { teamId } = action.payload;
-
-            const data = {
-                teamId: teamId,
-            };
-
-            getAccessTokenSilently()
-                .then(token => axios.put(`${URL_TEAMS}/leave`, data, config(token)))
-                .then(() => {
-                    log("Team left.");
-                    const profile = {
-                        ...state.profile,
-                        teams: state.profile.teams.filter(team => team.teamId !== teamId),
-                    };
-                    store.dispatch(setProfile(profile));
-                })
-                .catch(reason => logError(reason));
-
-            return state;
         }
 
         case CHANGE_ROLE: {
