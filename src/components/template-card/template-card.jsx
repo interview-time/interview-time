@@ -55,7 +55,7 @@ const TemplateCard = ({ template }) => {
                     {getQuestionsLabel()} • {getCategoriesLabel()}
                 </div>
             </Card>
-            <Card withPadding={false} className={styles.cardActions}>
+            <Card withPadding={false} className={styles.cardActions} style={{backgroundColor: '#ff000000'}}>
                 <div className={styles.cardButtons}>
                     <Button className={styles.cardButtonSecondary} onClick={onPreviewClicked}>
                         Preview
