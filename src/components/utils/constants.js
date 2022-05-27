@@ -63,39 +63,39 @@ export const TemplateCategories = [
     {
         key: "DEVELOPMENT",
         title: "Engineering",
-        color: "#1890FF",
+        color: "#64B5F6",
         icon: <DevelopmentIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "MANAGEMENT",
         title: "Management",
-        color: "#722ED1",
+        color: "#9575CD",
         icon: <ManagementIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "DESIGN",
         title: "Design",
         titleShort: "DESIGN",
-        color: "#F5222D",
+        color: "#E57373",
         icon: <DesignIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "CUSTOMER SERVICE",
         title: "Customer Service",
-        color: "#13C2C2",
+        color: "#4DD0E1",
         icon: <CustomerServiceIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "OTHER",
         title: "Other",
-        color: "#1F1F1F",
+        color: "#616161",
         icon: <OtherIcon style={TemplateCategoriesIconStyle} />
     },
 ];
 
 export const getTemplateCategoryBackground = key => {
     let category = TemplateCategories.find(category => category.key === key);
-    return category ? category.color : "#1F1F1F";
+    return category ? category.color : "#616161";
 };
 
 export const getTemplateCategoryIcon = key => {
