@@ -69,6 +69,18 @@ namespace CafApi.Services
             return await _context.LoadAsync<Template>(userId, templateId);
         }
 
+        public async Task<Template> GetTemplate(string templateId)
+        {
+            var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
+            {
+                IndexName = "TemplateId-index",
+                Filter = new QueryFilter(nameof(Template.TemplateId), QueryOperator.Equal, templateId)
+            });
+            var templates = await search.GetRemainingAsync();
+
+            return templates.FirstOrDefault();
+        }
+
         public async Task<Template> CreateTemplate(string userId, TemplateRequest newTemplate, bool isDemo = false)
         {
             var template = new Template
@@ -110,42 +122,47 @@ namespace CafApi.Services
 
         public async Task UpdateTemplate(string userId, TemplateRequest updatedTemplate)
         {
-            var template = await GetTemplate(userId, updatedTemplate.TemplateId);
-            template.Title = updatedTemplate.Title;
-            template.Type = updatedTemplate.Type;
-            template.Description = updatedTemplate.Description;
-            template.Structure = updatedTemplate.Structure;
-            template.ModifiedDate = DateTime.UtcNow;
-
-            if (string.IsNullOrWhiteSpace(template.Token))
+            var isBelongInTeam = await _userService.IsBelongInTeam(userId, updatedTemplate.TeamId);
+            if (isBelongInTeam)
             {
-                template.Token = StringHelper.GenerateToken();
-            }
+                var template = await GetTemplate(updatedTemplate.TemplateId);
 
-            // assign ids to groups if missing
-            if (template.Structure != null && template.Structure.Groups != null)
-            {
-                foreach (var group in template.Structure.Groups)
+                template.Title = updatedTemplate.Title;
+                template.Type = updatedTemplate.Type;
+                template.Description = updatedTemplate.Description;
+                template.Structure = updatedTemplate.Structure;
+                template.ModifiedDate = DateTime.UtcNow;
+
+                if (string.IsNullOrWhiteSpace(template.Token))
                 {
-                    if (string.IsNullOrWhiteSpace(group.GroupId))
-                    {
-                        group.GroupId = Guid.NewGuid().ToString();
-                    }
+                    template.Token = StringHelper.GenerateToken();
+                }
 
-                    if (group.Questions != null)
+                // assign ids to groups if missing
+                if (template.Structure != null && template.Structure.Groups != null)
+                {
+                    foreach (var group in template.Structure.Groups)
                     {
-                        foreach (var question in group.Questions)
+                        if (string.IsNullOrWhiteSpace(group.GroupId))
                         {
-                            if (string.IsNullOrWhiteSpace(question.QuestionId))
+                            group.GroupId = Guid.NewGuid().ToString();
+                        }
+
+                        if (group.Questions != null)
+                        {
+                            foreach (var question in group.Questions)
                             {
-                                question.QuestionId = Guid.NewGuid().ToString();
+                                if (string.IsNullOrWhiteSpace(question.QuestionId))
+                                {
+                                    question.QuestionId = Guid.NewGuid().ToString();
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            await _context.SaveAsync(template);
+                await _context.SaveAsync(template);
+            }
         }
 
         public async Task DeleteTemplate(string userId, string templateId)
