@@ -1,6 +1,5 @@
-import { Button, Divider, Dropdown, Menu, message } from "antd";
+import { Button, Col, Divider, Dropdown, Menu, message, Row } from "antd";
 import styles from "./template-preview.module.css";
-import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { IntroSection, SummarySection, TemplateGroupsSection } from "../interview-scorecard/interview-sections";
 import { addTemplate, deleteTemplate, loadTemplates, shareTemplate } from "../../store/templates/actions";
@@ -10,7 +9,6 @@ import React, { useEffect, useState } from "react";
 import { findTemplate } from "../../components/utils/converters";
 import Layout from "../../components/layout/layout";
 import {
-    ArrowLeftOutlined,
     CopyOutlined,
     DeleteOutlined,
     EditOutlined,
@@ -23,6 +21,8 @@ import { routeInterviewAddFromTemplate, routeTemplateEdit, routeTemplates } from
 import { cloneDeep } from "lodash/lang";
 import TemplateShareModal from "./template-share-modal";
 import Card from "../../components/card/card";
+import TitleBack from "../../components/title/title-back";
+import TemplateImage from "../../components/template-card/template-image";
 
 /**
  *
@@ -128,16 +128,22 @@ const TemplatePreview = ({ templates, loadTemplates, addTemplate, deleteTemplate
                 <>
                     <div>
                         <Card>
-                            <div className={styles.header} style={{ marginBottom: 24 }}>
-                                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                                    <ArrowLeftOutlined />
-                                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                                        Interview Template - {template.title}
-                                    </Title>
-                                </div>
-                            </div>
-
-                            <Text>Use this template to schedule new interview and customize as you go.</Text>
+                            <Row gutter={[32, 32]} wrap={false}>
+                                <Col flex='auto'>
+                                    <div style={{ marginBottom: 16 }}>
+                                        <TitleBack
+                                            title={`Interview Template - ${template.title}`}
+                                            onBackClicked={onBackClicked}
+                                        />
+                                    </div>
+                                    <Text type='secondary'>
+                                        Use this template to schedule new interview and customize as you go.
+                                    </Text>
+                                </Col>
+                                <Col>
+                                    <TemplateImage templateType={template.type} />
+                                </Col>
+                            </Row>
 
                             <Divider />
 
