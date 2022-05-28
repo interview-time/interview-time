@@ -105,8 +105,9 @@
 
 .headerTitleContainer {
     cursor: pointer;
-    display: flex;
+    display: inline;
     align-items: center;
+    margin-bottom: 12px;
 }
 
 .questionTextArea {

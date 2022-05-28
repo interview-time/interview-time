@@ -8,7 +8,7 @@ import {
     updateTemplate,
 } from "../../store/templates/actions";
 import { connect } from "react-redux";
-import { Button, Divider, Form, Input, message, Modal, Popover, Select, Space } from "antd";
+import { Button, Col, Divider, Form, Input, message, Modal, Popover, Row, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -22,10 +22,12 @@ import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
-import { ArrowLeftOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { filterOptionLabel } from "../../components/utils/filters";
 import Card from "../../components/card/card";
 import Spinner from "../../components/spinner/spinner";
+import TemplateImage from "../../components/template-card/template-image";
+import TitleBack from "../../components/title/title-back";
 
 const { TextArea } = Input;
 
@@ -131,11 +133,18 @@ const TemplateEdit = ({
     };
 
     const onCategoryChange = value => {
-        template.type = value;
+        setTemplate({
+            ...template,
+            type: value,
+        });
     };
 
     const onTitleChange = e => {
         template.title = e.target.value;
+    };
+
+    const onDescriptionChange = e => {
+        template.description = e.target.value;
     };
 
     const onGroupTitleClicked = (id, name) => {
@@ -237,156 +246,164 @@ const TemplateEdit = ({
         <Layout contentStyle={styles.rootContainer}>
             {template ? (
                 <>
-                    <div>
-                        <Form
-                            name='basic'
-                            layout='vertical'
-                            initialValues={{
-                                title: template.title,
-                                category: template.type,
-                            }}
-                            onFinish={onSaveClicked}
-                        >
-                            <Card>
-                                <div className={styles.header} style={{ marginBottom: 12 }}>
-                                    <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                                        <ArrowLeftOutlined />{" "}
-                                        <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                                            Interview Template
-                                        </Title>
+                    <Form
+                        name='basic'
+                        layout='vertical'
+                        initialValues={{
+                            title: template.title,
+                            category: template.type,
+                            description: template.description,
+                        }}
+                        onFinish={onSaveClicked}
+                    >
+                        <Card>
+                            <Row gutter={[32, 32]} wrap={false}>
+                                <Col flex='auto'>
+                                    <div style={{ marginBottom: 16 }}>
+                                        <TitleBack title="Interview Template" onBackClicked={onBackClicked} />
                                     </div>
-                                </div>
-                                <Text type='secondary'>
-                                    Enter template detail information so you can easily discover it among other
-                                    templates.
-                                </Text>
-                                <div className={styles.divSpaceBetween}>
-                                    <Space
-                                        direction='vertical'
-                                        className={styles.divFlexGrow}
-                                        style={{ marginRight: 16 }}
+                                    <Text type='secondary'>
+                                        Enter template detail information so you can easily discover it among other
+                                        templates.
+                                    </Text>
+                                </Col>
+                                <Col>
+                                    <TemplateImage templateType={template.type} />
+                                </Col>
+                            </Row>
+                            <Row gutter={[32, 32]} style={marginTop16}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        name='title'
+                                        label={<Text strong>Title</Text>}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: "Please enter template-edit title",
+                                            },
+                                        ]}
                                     >
-                                        <Form.Item
-                                            name='title'
-                                            label={<Text strong>Title</Text>}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "Please enter template-edit title",
-                                                },
-                                            ]}
-                                        >
-                                            <Input placeholder='e.g. Software Developer' onChange={onTitleChange} />
-                                        </Form.Item>
-                                    </Space>
-                                    <Space direction='vertical' className={styles.divFlexGrow}>
-                                        <Form.Item
-                                            name='category'
-                                            label={<Text strong>Category</Text>}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: "Please choose template-edit category",
-                                                },
-                                            ]}
-                                        >
-                                            <Select
-                                                style={{ width: "100%" }}
-                                                placeholder='Select category'
-                                                onSelect={onCategoryChange}
-                                                options={templateCategories}
-                                                showSearch
-                                                filterOption={filterOptionLabel}
-                                            />
-                                        </Form.Item>
-                                    </Space>
-                                </div>
-                            </Card>
-
-                            <Card className={styles.cardSpace}>
-                                <Title level={4}>Intro</Title>
-                                <Text type='secondary'>
-                                    Intro section serves as a reminder for what interviewer should do at the beginning
-                                    of the interview.
-                                </Text>
-                                <TextArea
-                                    style={marginTop16}
-                                    defaultValue={template.structure.header}
-                                    onChange={onHeaderChanged}
-                                    autoSize={{ minRows: 3, maxRows: 5 }}
-                                    placeholder='Take 10 minutes to introduce yourself and make the candidate comfortable.'
-                                />
-                            </Card>
-
-                            <Card className={styles.cardSpace}>
-                                <Space style={{ width: "100%" }}>
-                                    <Title level={4}>Questions</Title>
-                                    <Popover
-                                        content={
-                                            <img
-                                                alt='Interviewer'
-                                                style={{ width: 400 }}
-                                                src={process.env.PUBLIC_URL + "/app/interview-schedule-groups.png"}
-                                            />
-                                        }
+                                        <Input placeholder='e.g. Android' onChange={onTitleChange} />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                    <Form.Item
+                                        name='category'
+                                        label={<Text strong>Category</Text>}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: "Please choose template-edit category",
+                                            },
+                                        ]}
                                     >
-                                        <InfoCircleOutlined style={{ marginBottom: 12, cursor: "pointer" }} />
-                                    </Popover>
-                                </Space>
-                                <Text type='secondary'>
-                                    Grouping questions helps to evaluate skills in a particular competence area and make
-                                    a more granular assessment.
-                                </Text>
-                                <div>
-                                    {template.structure.groups.map(group => (
-                                        <TemplateQuestionsCard
-                                            template={template}
-                                            group={group}
-                                            onGroupTitleClicked={onGroupTitleClicked}
-                                            onDeleteGroupClicked={onDeleteGroupClicked}
-                                            onMoveGroupUpClicked={onMoveGroupUpClicked}
-                                            onMoveGroupDownClicked={onMoveGroupDownClicked}
+                                        <Select
+                                            style={{ width: "100%" }}
+                                            placeholder='Select category'
+                                            onSelect={onCategoryChange}
+                                            options={templateCategories}
+                                            showSearch
+                                            filterOption={filterOptionLabel}
                                         />
-                                    ))}
-                                </div>
-                                <Button
-                                    style={marginTop12}
-                                    icon={<PlusOutlined />}
-                                    type='primary'
-                                    ghost
-                                    onClick={onAddQuestionGroupClicked}
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+
+                            <Row gutter={[32, 32]}>
+                                <Col span={12}>
+                                    <Form.Item name='description' label={<Text strong>Description</Text>}>
+                                        <Input
+                                            placeholder='e.g. Entry-level software engineer'
+                                            onChange={onDescriptionChange}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+
+                        <Card className={styles.cardSpace}>
+                            <Title level={4}>Intro</Title>
+                            <Text type='secondary'>
+                                Intro section serves as a reminder for what interviewer should do at the beginning of
+                                the interview.
+                            </Text>
+                            <TextArea
+                                style={marginTop16}
+                                defaultValue={template.structure.header}
+                                onChange={onHeaderChanged}
+                                autoSize={{ minRows: 3, maxRows: 5 }}
+                                placeholder='Take 10 minutes to introduce yourself and make the candidate comfortable.'
+                            />
+                        </Card>
+
+                        <Card className={styles.cardSpace}>
+                            <Space style={{ width: "100%" }}>
+                                <Title level={4}>Questions</Title>
+                                <Popover
+                                    content={
+                                        <img
+                                            alt='Interviewer'
+                                            style={{ width: 400 }}
+                                            src={process.env.PUBLIC_URL + "/app/interview-schedule-groups.png"}
+                                        />
+                                    }
                                 >
-                                    New question group
-                                </Button>
-                            </Card>
+                                    <InfoCircleOutlined style={{ marginBottom: 12, cursor: "pointer" }} />
+                                </Popover>
+                            </Space>
+                            <Text type='secondary'>
+                                Grouping questions helps to evaluate skills in a particular competence area and make a
+                                more granular assessment.
+                            </Text>
+                            <div>
+                                {template.structure.groups.map(group => (
+                                    <TemplateQuestionsCard
+                                        template={template}
+                                        group={group}
+                                        onGroupTitleClicked={onGroupTitleClicked}
+                                        onDeleteGroupClicked={onDeleteGroupClicked}
+                                        onMoveGroupUpClicked={onMoveGroupUpClicked}
+                                        onMoveGroupDownClicked={onMoveGroupDownClicked}
+                                    />
+                                ))}
+                            </div>
+                            <Button
+                                style={marginTop12}
+                                icon={<PlusOutlined />}
+                                type='primary'
+                                ghost
+                                onClick={onAddQuestionGroupClicked}
+                            >
+                                New question group
+                            </Button>
+                        </Card>
 
-                            <Card className={styles.cardSpace}>
-                                <Title level={4}>End of interview</Title>
-                                <Text type='secondary'>
-                                    This section serves as a reminder for what interviewer should do at the end of the
-                                    interview.
-                                </Text>
-                                <TextArea
-                                    style={marginTop12}
-                                    defaultValue={template.structure.footer}
-                                    onChange={onFooterChanged}
-                                    autoSize={{ minRows: 3, maxRows: 5 }}
-                                    placeholder='Allow 10 minutes at the end for the candidate to ask questions.'
-                                />
-                                <Divider />
+                        <Card className={styles.cardSpace}>
+                            <Title level={4}>End of interview</Title>
+                            <Text type='secondary'>
+                                This section serves as a reminder for what interviewer should do at the end of the
+                                interview.
+                            </Text>
+                            <TextArea
+                                style={marginTop12}
+                                defaultValue={template.structure.footer}
+                                onChange={onFooterChanged}
+                                autoSize={{ minRows: 3, maxRows: 5 }}
+                                placeholder='Allow 10 minutes at the end for the candidate to ask questions.'
+                            />
+                            <Divider />
 
-                                <div className={styles.divSpaceBetween}>
-                                    <Text />
-                                    <Space>
-                                        <Button onClick={onPreviewClicked}>Preview</Button>
-                                        <Button type='primary' htmlType='submit'>
-                                            Save template
-                                        </Button>
-                                    </Space>
-                                </div>
-                            </Card>
-                        </Form>
-                    </div>
+                            <div className={styles.divSpaceBetween}>
+                                <Text />
+                                <Space>
+                                    <Button onClick={onPreviewClicked}>Preview</Button>
+                                    <Button type='primary' htmlType='submit'>
+                                        Save template
+                                    </Button>
+                                </Space>
+                            </div>
+                        </Card>
+                    </Form>
 
                     <TemplateGroupModal
                         visible={questionGroupModal.visible}

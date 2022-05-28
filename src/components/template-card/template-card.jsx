@@ -2,15 +2,15 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
 import { routeInterviewAddFromTemplate, routeTemplatePreview } from "../utils/route";
-import { getTemplateCategoryBackground, getTemplateCategoryIcon, TemplateCategories } from "../utils/constants";
+import { TemplateCategories } from "../utils/constants";
 import styles from "./template-card.module.css";
 import Card from "../card/card";
 import { defaultTo } from "lodash/util";
 import pluralize from "pluralize";
-import { TemplateIcon } from "../utils/icons";
 import { Button } from "antd";
 import DemoTag from "../demo/demo-tag";
 import Title from "antd/lib/typography/Title";
+import TemplateImage from "./template-image";
 
 /**
  *
@@ -37,13 +37,7 @@ const TemplateCard = ({ template }) => {
     return (
         <>
             <Card className={styles.card}>
-                <div className={styles.iconContainer}>
-                    <TemplateIcon
-                        className={styles.iconBackground}
-                        style={{ color: getTemplateCategoryBackground(template.type) }}
-                    />
-                    <div className={styles.icon}>{getTemplateCategoryIcon(template.type)}</div>
-                </div>
+                <TemplateImage templateType={template.type} />
                 <div className={styles.tagHolder}>
                     <DemoTag isDemo={template.isDemo} />
                 </div>
