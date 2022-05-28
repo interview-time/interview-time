@@ -9,7 +9,7 @@ import {
     InterviewIcon,
     ProfileIcon,
     TextNoteIcon,
-    UserAddIcon,
+    UserAddIcon
 } from "../utils/icons";
 import {
     routeAccount,
@@ -21,7 +21,7 @@ import {
     routeTeamNew,
     routeTeamSettings,
     routeTemplateLibrary,
-    routeTemplates,
+    routeTemplates
 } from "../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
@@ -35,6 +35,7 @@ import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
+import { permissionViewCandidates } from "../../store/user/permissions";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -248,12 +249,14 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                             <Link to={routeTemplates()}>
                                 <span className='nav-text'>Templates</span>
                             </Link>
-                        </Menu.Item>                  
-                        <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<CandidatesIcon />}>
-                            <Link to={routeCandidates()}>
-                                <span className='nav-text'>Candidates</span>
-                            </Link>
                         </Menu.Item>
+                        {permissionViewCandidates(profile) && (
+                            <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<CandidatesIcon />}>
+                                <Link to={routeCandidates()}>
+                                    <span className='nav-text'>Candidates</span>
+                                </Link>
+                            </Menu.Item>
+                        )}
                         <Divider className={styles.divider} />
                         <Menu.Item key='settings' className={styles.menuItem} icon={<UserAddIcon />}>
                             <Link to={routeTeamSettings(profile.currentTeamId)}>

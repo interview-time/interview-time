@@ -39,3 +39,19 @@
     width: 40px;
     text-align: right;
 }
+
+.inviteForm {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+.inviteEmail {
+    flex: 1;
+    margin-right: 12px;
+}
+
+.inviteRole {
+    min-width: 180px;
+    margin-right: 12px;
+}

@@ -4,6 +4,7 @@ import templates from "./templates/reducer";
 import interviews from "./interviews/reducer";
 import user from "./user/reducer";
 import candidates from "./candidates/reducer";
+import teams from "./teams/reducer";
 
 // remove 'middleware' when we fix all issues found by immutableStateInvariant https://redux-toolkit.js.org/api/getDefaultMiddleware
 export default configureStore({
@@ -13,5 +14,6 @@ export default configureStore({
         interviews: interviews,
         templates: templates,
         candidates: candidates,
+        teams: teams,
     },
 });

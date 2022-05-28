@@ -9,6 +9,23 @@
     justify-content: center;
 }
 
+.card {
+    display: flex;
+}
+
+.textHolder {
+    margin-left: 24px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .label {
     font-size: 14px;
     color: #6B7280;

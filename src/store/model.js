@@ -82,6 +82,7 @@
  * @property {string} createdDate
  * @property {string} token
  * @property {boolean} isShared
+ * @property {boolean} isDemo
  * @property {TemplateStructure} structure
  */
 

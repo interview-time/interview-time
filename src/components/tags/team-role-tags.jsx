@@ -10,7 +10,7 @@ import { Roles } from "../utils/constants";
  * @constructor
  */
 const TeamRoleTag = ({ role }) => {
-    const getText = () => {
+    const getText = () => {        
         if (role === Roles.HR) {
             return "Recruiter";
         } else if (role === Roles.HIRING_MANAGER) {

@@ -7,10 +7,10 @@ import TeamDetails from "./team-details";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam, changeRole, removeMember } from "../../store/user/actions";
+import { loadPendingInvites } from "../../store/teams/actions";
 import { MoreIcon } from "../../components/utils/icons";
 import { defaultTo } from "lodash/util";
 import Spinner from "../../components/spinner/spinner";
-import styles from "./team-settings.module.css";
 import TeamInvite from "./team-invite";
 import Card from "../../components/card/card";
 import TeamRoleTag from "../../components/tags/team-role-tags";
@@ -19,7 +19,9 @@ import { localeCompare } from "../../components/utils/comparators";
 import TableText from "../../components/table/table-text";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { DisplayRoles, Roles } from "../../components/utils/constants";
+import PendingInvites from "./pending-invites";
 import Text from "antd/lib/typography/Text";
+import styles from "./team-settings.module.css";
 
 /**
  *
@@ -45,6 +47,9 @@ const TeamSettings = ({
     loadTeamMembers,
     changeRole,
     removeMember,
+    loadPendingInvites,
+    pendingInvites,
+    pendingInvitesLoading,
 }) => {
     const [loading, setLoading] = useState(false);
     const [team, setTeam] = useState(/** @type {Team|undefined} */ undefined);
@@ -58,6 +63,7 @@ const TeamSettings = ({
             setTeam(currentTeam);
             setLoading(false);
             loadTeamMembers(currentTeam.teamId);
+            loadPendingInvites(currentTeam.teamId);
         }
         // eslint-disable-next-line
     }, [id, teams]);
@@ -190,19 +196,21 @@ const TeamSettings = ({
             sorter: (a, b) => localeCompare(a.roles[0], b.roles[0]),
             render: member => <TeamRoleTag role={member.roles[0]} />,
         },
-        isAdmin() ? {
-            key: "actions",
-            render: teamMember =>
-                !teamMember.roles.includes(Roles.ADMIN) && (
-                    <Dropdown overlay={createMenu(teamMember)} placement='bottomLeft'>
-                        <Button
-                            icon={<MoreIcon />}
-                            style={{ width: 36, height: 36 }}
-                            onClick={e => e.stopPropagation()}
-                        />
-                    </Dropdown>
-                ),
-        } : undefined
+        isAdmin()
+            ? {
+                  key: "actions",
+                  render: teamMember =>
+                      !teamMember.roles.includes(Roles.ADMIN) && (
+                          <Dropdown overlay={createMenu(teamMember)} placement='bottomLeft'>
+                              <Button
+                                  icon={<MoreIcon />}
+                                  style={{ width: 36, height: 36 }}
+                                  onClick={e => e.stopPropagation()}
+                              />
+                          </Dropdown>
+                      ),
+              }
+            : undefined,
     ].filter(column => column);
 
     const isLoading = () => !team || loading;
@@ -243,6 +251,10 @@ const TeamSettings = ({
                         <Table columns={columns} dataSource={teamMembers} pagination={false} />
                     </Card>
 
+                    {pendingInvites && pendingInvites.length > 0 && (
+                        <PendingInvites pendingInvites={pendingInvites} loading={pendingInvitesLoading} />
+                    )}
+
                     {isAdmin() && (
                         <>
                             <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
@@ -266,7 +278,7 @@ const TeamSettings = ({
     );
 };
 
-const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers, changeRole, removeMember };
+const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers, changeRole, removeMember, loadPendingInvites };
 
 const mapState = state => {
     const userState = state.user || {};
@@ -277,6 +289,8 @@ const mapState = state => {
         userName: profile.name,
         teams: defaultTo(profile.teams, []),
         teamMembers: teamMembers,
+        pendingInvites: state.teams.pendingInvites,
+        pendingInvitesLoading: state.teams.pendingInvitesLoading,
     };
 };
 

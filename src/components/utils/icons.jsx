@@ -630,3 +630,14 @@ const CrossCircleSvg = () => (
 );
 
 export const CrossCircleIcon = props => <Icon component={CrossCircleSvg} {...props} />;
+
+const TemplateIconSvg = () => (
+    <svg width='64' height='64' viewBox='0 0 64 64' fill='none'>
+        <path
+            d='M0 32C0 5.648 5.648 0 32 0C58.352 0 64 5.648 64 32C64 58.352 58.352 64 32 64C5.648 64 0 58.352 0 32Z'
+            fill='currentColor'
+        />
+    </svg>
+);
+
+export const TemplateIcon = props => <Icon component={TemplateIconSvg} {...props} />;

@@ -110,8 +110,8 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
                     Dashboard
                 </Title>
 
-                <Row gutter={32} style={{ marginBottom: 32 }}>
-                    <Col span={8}>
+                <Row gutter={[32, 32]}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             onClick={onScheduleInterviewClicked}
                             icon={<CalendarIcon style={iconStyle} />}
@@ -119,7 +119,7 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
                             text='Use one of your interview templates'
                         />
                     </Col>
-                    <Col span={8}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             onClick={onNewTemplateClicked}
                             icon={<NewFileIcon style={iconStyle} />}
@@ -127,7 +127,7 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
                             text='Blank or from public library of templates'
                         />
                     </Col>
-                    <Col span={8}>
+                    <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
                         <CardHero
                             onClick={onInviteTeamMembers}
                             icon={<UserAddIcon style={iconStyle} />}

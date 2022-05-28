@@ -160,7 +160,7 @@ const ReportsTable = ({ interviews, loading }) => {
                         loading={loading}
                         rowClassName={styles.row}
                         onRow={record => ({
-                            onClick: () => history.push(routeInterviewReport(record.id)),
+                            onClick: () => history.push(routeInterviewReport(record.interviewId)),
                         })}
                     />
                 </ConfigProvider>
