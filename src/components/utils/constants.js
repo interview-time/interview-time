@@ -57,63 +57,50 @@ export const QuestionAssessment = {
     EXCELLENT: 3,
 };
 
+const TemplateCategoriesIconStyle = { color: '#FFFFFF', fontSize: 32 };
+
 export const TemplateCategories = [
     {
         key: "DEVELOPMENT",
-        title: "Software Development",
-        titleShort: "DEVELOPMENT",
-        color: "#1890FF",
-        backgroundColor: "#BAE7FF",
+        title: "Engineering",
+        color: "#64B5F6",
+        icon: <DevelopmentIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "MANAGEMENT",
         title: "Management",
-        titleShort: "MANAGEMENT",
-        color: "#722ED1",
-        backgroundColor: "#EFDBFF",
+        color: "#9575CD",
+        icon: <ManagementIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "DESIGN",
         title: "Design",
         titleShort: "DESIGN",
-        color: "#F5222D",
-        backgroundColor: "#FFCCC7",
+        color: "#E57373",
+        icon: <DesignIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "CUSTOMER SERVICE",
         title: "Customer Service",
-        titleShort: "CUSTOMER SERVICE",
-        color: "#13C2C2",
-        backgroundColor: "#B5F5EC",
+        color: "#4DD0E1",
+        icon: <CustomerServiceIcon style={TemplateCategoriesIconStyle} />
     },
     {
         key: "OTHER",
         title: "Other",
-        titleShort: "OTHER",
-        color: "#1F1F1F",
-        backgroundColor: "#FAFAFA",
+        color: "#616161",
+        icon: <OtherIcon style={TemplateCategoriesIconStyle} />
     },
 ];
 
 export const getTemplateCategoryBackground = key => {
     let category = TemplateCategories.find(category => category.key === key);
-    return category ? category.backgroundColor : "#FAFAFA";
+    return category ? category.color : "#616161";
 };
 
 export const getTemplateCategoryIcon = key => {
-    if (key === TemplateCategories[0].key) {
-        return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 20 }} />;
-    } else if (key === TemplateCategories[1].key) {
-        return <ManagementIcon style={{ color: TemplateCategories[1].color, fontSize: 20 }} />;
-    } else if (key === TemplateCategories[2].key) {
-        return <DesignIcon style={{ color: TemplateCategories[2].color, fontSize: 20 }} />;
-    } else if (key === TemplateCategories[3].key) {
-        return <CustomerServiceIcon style={{ color: TemplateCategories[3].color, fontSize: 20 }} />;
-    } else if (key === TemplateCategories[4].key) {
-        return <OtherIcon style={{ color: TemplateCategories[4].color, fontSize: 20 }} />;
-    }
-
-    return <DevelopmentIcon style={{ color: TemplateCategories[0].color, fontSize: 20 }} />;
+    let category = TemplateCategories.find(category => category.key === key);
+    return category ? category.icon : <OtherIcon style={TemplateCategoriesIconStyle} />;
 };
 
 export const getStatusColor = status => {
