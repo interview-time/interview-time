@@ -19,7 +19,7 @@ Sentry.init({
 });
 
 ReactDOM.render(
-    <React.StrictMode>
+    <div>
         <Provider store={store}>
             <BrowserRouter>
                 <Auth0ProviderWithHistory>
@@ -27,7 +27,7 @@ ReactDOM.render(
                 </Auth0ProviderWithHistory>
             </BrowserRouter>
         </Provider>
-    </React.StrictMode>,
+    </div>,
     document.getElementById("root")
 );
 
