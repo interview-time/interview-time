@@ -128,7 +128,8 @@ namespace CafApi.Controllers
                 Name = profile.Name,
                 Email = profile.Email,
                 TimezoneOffset = profile.TimezoneOffset,
-                Teams = teams
+                Teams = teams,
+                CurrentTeamId = profile.CurrentTeamId
             };
         }
 
