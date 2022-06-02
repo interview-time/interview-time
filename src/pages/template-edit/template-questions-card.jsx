@@ -17,8 +17,9 @@ const { TextArea } = Input;
 
 /**
  *
- * @param {Template} template
  * @param {TemplateGroup} group
+ * @param {boolean} isFirstGroup
+ * @param {boolean} isLastGroup
  * @param {[]} allTags
  * @param notifyTagsChange
  * @param onGroupTitleClicked
@@ -29,8 +30,9 @@ const { TextArea } = Input;
  * @constructor
  */
 const TemplateQuestionsCardInternal = ({
-    template,
     group,
+    isFirstGroup,
+    isLastGroup,
     allTags,
     notifyTagsChange,
     onGroupTitleClicked,
@@ -198,13 +200,10 @@ const TemplateQuestionsCardInternal = ({
     ];
 
     const menu = () => {
-        const groups = template.structure.groups;
-        const isFirst = groups.findIndex(g => g.groupId === group.groupId) === 0;
-        const isLast = groups.findIndex(g => g.groupId === group.groupId) === groups.length - 1;
         return (
             <Menu>
-                {!isFirst && <Menu.Item onClick={() => onMoveGroupUpClicked(group.groupId)}>Move Up</Menu.Item>}
-                {!isLast && <Menu.Item onClick={() => onMoveGroupDownClicked(group.groupId)}>Move Down</Menu.Item>}
+                {!isFirstGroup && <Menu.Item onClick={() => onMoveGroupUpClicked(group.groupId)}>Move Up</Menu.Item>}
+                {!isLastGroup && <Menu.Item onClick={() => onMoveGroupDownClicked(group.groupId)}>Move Down</Menu.Item>}
                 <Menu.Divider />
                 <Menu.Item onClick={() => onGroupTitleClicked(group.groupId, group.name)}>Rename</Menu.Item>
                 <Menu.Item danger onClick={() => onDeleteGroupClicked(group.groupId)}>
@@ -271,7 +270,7 @@ const TemplateQuestionsCardInternal = ({
 const areEqual = (prevProps, nextProps) => {
     const templateGroupStateChanged =
         isEqual(prevProps.group, nextProps.group) && isEqual(prevProps.allTags, nextProps.allTags);
-    log("TemplateGroupStateChanged", templateGroupStateChanged);
+    log(`TemplateGroupStateChanged ${nextProps.group.name}`, templateGroupStateChanged);
     return templateGroupStateChanged;
 };
 

@@ -13,11 +13,7 @@ import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import {
-    findLibraryTemplate,
-    findTemplate,
-    interviewToTags
-} from "../../components/utils/converters";
+import { findLibraryTemplate, findTemplate, interviewToTags } from "../../components/utils/converters";
 import Layout from "../../components/layout/layout";
 import { personalEvent } from "../../analytics";
 import { routeTemplates } from "../../components/utils/route";
@@ -31,6 +27,7 @@ import TemplateHeaderCard from "./template-header-card";
 import TemplateFooterCard from "./template-footer-card";
 import { TemplateMetaCard } from "./template-meta-card";
 import { TemplateQuestionsCard } from "./template-questions-card";
+import produce from "immer";
 
 /**
  *
@@ -72,12 +69,9 @@ const TemplateEdit = ({
 
     React.useEffect(() => {
         if (isExistingTemplateFlow() && templates.length !== 0) {
-            const template = cloneDeep(findTemplate(id, templates))
-            updateAllTags(template);
-            setTemplate(template);
+            setTemplate(cloneDeep(findTemplate(id, templates)));
         } else if (isFromLibraryFlow() && library.length !== 0) {
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library));
-            updateAllTags(parent);
             setTemplate({
                 ...template,
                 parentId: fromLibraryId(),
@@ -86,9 +80,7 @@ const TemplateEdit = ({
                 structure: parent.structure,
             });
         } else if (sharedTemplateToken() && sharedTemplate) {
-            const template = cloneDeep(sharedTemplate);
-            updateAllTags(template);
-            setTemplate(template);
+            setTemplate(cloneDeep(sharedTemplate));
         }
         // eslint-disable-next-line
     }, [templates, library, id, sharedTemplate]);
@@ -113,6 +105,12 @@ const TemplateEdit = ({
 
         // eslint-disable-next-line
     }, []);
+
+    React.useEffect(() => {
+        if(template) {
+            updateAllTags(template)
+        }
+    }, [template]);
 
     const isExistingTemplateFlow = () => id;
 
@@ -194,7 +192,6 @@ const TemplateEdit = ({
     };
 
     const onDeleteGroupClicked = id => {
-        // TODO no need to copy
         const updatedTemplate = cloneDeep(template);
         updatedTemplate.structure.groups = updatedTemplate.structure.groups.filter(g => g.groupId !== id);
         setTemplate(updatedTemplate);
@@ -303,10 +300,11 @@ const TemplateEdit = ({
                                 more granular assessment.
                             </Text>
                             <div>
-                                {template.structure.groups.map(group => (
+                                {template.structure.groups.map((group, index) => (
                                     <TemplateQuestionsCard
-                                        template={template}
                                         group={group}
+                                        isFirstGroup={index === 0}
+                                        isLastGroup={index === template.structure.groups.length - 1}
                                         allTags={allTags}
                                         notifyTagsChange={notifyTagsChange}
                                         onGroupTitleClicked={onGroupTitleClicked}
