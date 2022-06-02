@@ -8,10 +8,10 @@ import { SortableContainer, SortableElement, SortableHandle } from "react-sortab
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { isEmpty } from "../../components/utils/date";
-import { createTagColors } from "../../components/utils/constants";
 import { TemplateTags } from "./template-tags";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
-import { interviewToTags } from "../../components/utils/converters";
+import { isEqual } from "lodash";
+import { log } from "../../components/utils/log";
 
 const { TextArea } = Input;
 
@@ -19,6 +19,8 @@ const { TextArea } = Input;
  *
  * @param {Template} template
  * @param {TemplateGroup} group
+ * @param {[]} allTags
+ * @param notifyTagsChange
  * @param onGroupTitleClicked
  * @param onDeleteGroupClicked
  * @param onMoveGroupUpClicked
@@ -26,17 +28,17 @@ const { TextArea } = Input;
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplateQuestionsCard = ({
+const TemplateQuestionsCardInternal = ({
     template,
     group,
+    allTags,
+    notifyTagsChange,
     onGroupTitleClicked,
     onDeleteGroupClicked,
     onMoveGroupUpClicked,
     onMoveGroupDownClicked,
 }) => {
     const [questions, setQuestions] = React.useState([]);
-    const [allTagsColors, setAllTagsColors] = React.useState(new Map());
-    const [allTags, setAllTags] = React.useState([]);
     const [collapsed, setCollapsed] = React.useState(false);
 
     React.useEffect(() => {
@@ -49,9 +51,6 @@ const TemplateQuestionsCard = ({
             });
             setQuestions(questions);
 
-            const tags = interviewToTags(template);
-            setAllTags(tags);
-            setAllTagsColors(createTagColors(tags));
         }
         // eslint-disable-next-line
     }, [group]);
@@ -110,25 +109,21 @@ const TemplateQuestionsCard = ({
         setQuestions(questions => questions.filter(q => q.questionId !== questionId));
     };
 
-    const onQuestionChange = (questionId, question) => {
+    const onQuestionChange = (question, text) => {
         // no need to update component state
-        questions.find(q => q.questionId === questionId).question = question;
+        question.question = text;
     };
 
-    const onDifficultyChange = (questionId, difficulty) => {
+    const onDifficultyChange = (question, difficulty) => {
         // no need to update component state
-        questions.find(q => q.questionId === questionId).difficulty = difficulty;
+        question.difficulty = difficulty;
     };
 
-    const onTagsChange = (questionId, questionTags) => {
+    const onTagsChange = (question, questionTags) => {
         // no need to update component state
-        questions.find(q => q.questionId === questionId).tags = questionTags;
+        question.tags = questionTags;
 
-        const newTags = interviewToTags(template);
-        if (allTags.length !== newTags.length) {
-            setAllTags(newTags);
-            setAllTagsColors(createTagColors(newTags));
-        }
+        notifyTagsChange()
     };
 
     const onCollapseClicked = () => {
@@ -153,7 +148,7 @@ const TemplateQuestionsCard = ({
                     children: (
                         <QuestionDifficultyTag
                             difficulty={question.difficulty}
-                            onChange={difficulty => onDifficultyChange(question.questionId, difficulty)}
+                            onChange={difficulty => onDifficultyChange(question, difficulty)}
                             editable={true}
                         />
                     ),
@@ -171,7 +166,7 @@ const TemplateQuestionsCard = ({
                     autoSize={true}
                     autoFocus={isEmpty(question.question)}
                     defaultValue={question.question}
-                    onChange={e => onQuestionChange(question.questionId, e.target.value)}
+                    onChange={e => onQuestionChange(question, e.target.value)}
                     onPressEnter={e => e.target.blur()}
                 />
             ),
@@ -183,11 +178,7 @@ const TemplateQuestionsCard = ({
             render: question => (
                 <TemplateTags
                     question={question}
-                    allTagsColors={allTagsColors}
-                    allTags={allTags.map(tag => ({
-                        value: tag,
-                        label: tag,
-                    }))}
+                    allTags={allTags}
                     onTagsChange={onTagsChange}
                 />
             ),
@@ -277,4 +268,11 @@ const TemplateQuestionsCard = ({
     );
 };
 
-export default TemplateQuestionsCard;
+const areEqual = (prevProps, nextProps) => {
+    const templateGroupStateChanged =
+        isEqual(prevProps.group, nextProps.group) && isEqual(prevProps.allTags, nextProps.allTags);
+    log("TemplateGroupStateChanged", templateGroupStateChanged);
+    return templateGroupStateChanged;
+};
+
+export const TemplateQuestionsCard = React.memo(TemplateQuestionsCardInternal, areEqual);

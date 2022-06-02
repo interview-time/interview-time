@@ -17,7 +17,7 @@ import { TemplateCategories } from "../../components/utils/constants";
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplateMetaCard = ({
+const TemplateMetaCardInternal = ({
     templateType,
     onBackClicked,
     onTitleChange,
@@ -95,5 +95,6 @@ const TemplateMetaCard = ({
       </Row>
   </Card>
 }
+const areEqual = (prevProps, nextProps) => prevProps.templateType === nextProps.templateType;
 
-export default TemplateMetaCard
+export const TemplateMetaCard  = React.memo(TemplateMetaCardInternal, areEqual)

@@ -5,7 +5,7 @@ import {
     loadLibrary,
     loadSharedTemplate,
     loadTemplates,
-    updateTemplate,
+    updateTemplate
 } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { Button, Form, message, Modal } from "antd";
@@ -13,7 +13,11 @@ import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import { findLibraryTemplate, findTemplate } from "../../components/utils/converters";
+import {
+    findLibraryTemplate,
+    findTemplate,
+    interviewToTags
+} from "../../components/utils/converters";
 import Layout from "../../components/layout/layout";
 import { personalEvent } from "../../analytics";
 import { routeTemplates } from "../../components/utils/route";
@@ -23,10 +27,10 @@ import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sec
 import { PlusOutlined } from "@ant-design/icons";
 import Card from "../../components/card/card";
 import Spinner from "../../components/spinner/spinner";
-import TemplateMetaCard from "./template-meta-card";
 import TemplateHeaderCard from "./template-header-card";
 import TemplateFooterCard from "./template-footer-card";
-import TemplateQuestionsCard from "./template-questions-card";
+import { TemplateMetaCard } from "./template-meta-card";
+import { TemplateQuestionsCard } from "./template-questions-card";
 
 /**
  *
@@ -56,7 +60,9 @@ const TemplateEdit = ({
     const { id } = useParams();
     const location = useLocation();
 
-    const [template, setTemplate] = useState(/** @type {Template|undefined} */);
+    const [template, setTemplate] = useState(/** @type {Template|undefined} */undefined);
+    const [allTags, setAllTags] = useState([]);
+
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [questionGroupModal, setQuestionGroupModal] = useState({
         visible: false,
@@ -66,9 +72,12 @@ const TemplateEdit = ({
 
     React.useEffect(() => {
         if (isExistingTemplateFlow() && templates.length !== 0) {
-            setTemplate(cloneDeep(findTemplate(id, templates)));
+            const template = cloneDeep(findTemplate(id, templates))
+            updateAllTags(template);
+            setTemplate(template);
         } else if (isFromLibraryFlow() && library.length !== 0) {
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library));
+            updateAllTags(parent);
             setTemplate({
                 ...template,
                 parentId: fromLibraryId(),
@@ -77,7 +86,9 @@ const TemplateEdit = ({
                 structure: parent.structure,
             });
         } else if (sharedTemplateToken() && sharedTemplate) {
-            setTemplate(cloneDeep(sharedTemplate));
+            const template = cloneDeep(sharedTemplate);
+            updateAllTags(template);
+            setTemplate(template);
         }
         // eslint-disable-next-line
     }, [templates, library, id, sharedTemplate]);
@@ -200,7 +211,10 @@ const TemplateEdit = ({
         const updatedTemplate = cloneDeep(template);
         updatedTemplate.structure.groups.find(group => group.groupId === id).name = name;
         setTemplate(updatedTemplate);
-        setQuestionGroupModal(false);
+        setQuestionGroupModal({
+            ...questionGroupModal,
+            visible: false,
+        });
     };
 
     const onGroupModalAdd = name => {
@@ -212,7 +226,10 @@ const TemplateEdit = ({
             questions: [],
         });
         setTemplate(updatedTemplate);
-        setQuestionGroupModal(false);
+        setQuestionGroupModal({
+            ...questionGroupModal,
+            visible: false,
+        });
     };
 
     const onMoveGroupUpClicked = id => {
@@ -230,6 +247,20 @@ const TemplateEdit = ({
         updatedTemplate.structure.groups = arrayMove(updatedTemplate.structure.groups, fromIndex, toIndex);
         setTemplate(updatedTemplate);
     };
+
+    // MARK: Tags
+
+    const updateAllTags = template => {
+        const newTags = interviewToTags(template).map(tag => ({
+            value: tag,
+            label: tag,
+        }));
+        setAllTags(newTags);
+    };
+
+    const notifyTagsChange = () => {
+        updateAllTags(template)
+    }
 
     // MARK: Preview
 
@@ -276,6 +307,8 @@ const TemplateEdit = ({
                                     <TemplateQuestionsCard
                                         template={template}
                                         group={group}
+                                        allTags={allTags}
+                                        notifyTagsChange={notifyTagsChange}
                                         onGroupTitleClicked={onGroupTitleClicked}
                                         onDeleteGroupClicked={onDeleteGroupClicked}
                                         onMoveGroupUpClicked={onMoveGroupUpClicked}
