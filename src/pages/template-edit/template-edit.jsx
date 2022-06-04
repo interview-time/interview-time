@@ -27,7 +27,9 @@ import TemplateHeaderCard from "./template-header-card";
 import TemplateFooterCard from "./template-footer-card";
 import { TemplateMetaCard } from "./template-meta-card";
 import { TemplateQuestionsCard } from "./template-questions-card";
-import produce from "immer";
+import { isEqual } from "lodash";
+import { swap } from "../../components/utils/arrays";
+import { remove } from "lodash/array";
 
 /**
  *
@@ -173,6 +175,63 @@ const TemplateEdit = ({
         template.structure.footer = e.target.value;
     };
 
+    // MARK: Questions
+
+    const onAddQuestionClicked = (groupId) => {
+        setTemplate(prevState => {
+            const template = cloneDeep(prevState)
+            const group = template.structure.groups.find(group => group.groupId === groupId)
+            const questionIndex = group.questions.length - 1;
+            const question = {
+                questionId: Date.now().toString(),
+                question: "",
+                tags: [],
+                key: questionIndex,
+                index: questionIndex,
+            }
+            group.questions.push(question)
+            return template
+        });
+    };
+
+    const onRemoveQuestionClicked = (groupId, questionId) => {
+        setTemplate(prevState => {
+            const template = cloneDeep(prevState);
+            const group = template.structure.groups.find(group => group.groupId === groupId);
+            remove(group.questions, (question => question.questionId === questionId))
+
+            return template
+        });
+    }
+
+    const onQuestionSorted = (groupId, oldIndex, newIndex) => {
+        if (oldIndex !== newIndex) {
+            setTemplate(prevState => {
+                const template = cloneDeep(prevState);
+                const group = template.structure.groups.find(group => group.groupId === groupId);
+                swap(group.questions, oldIndex, newIndex);
+                return template;
+            });
+        }
+    };
+
+    const onQuestionChange = (question, text) => {
+        // no need to update component state
+        question.question = text;
+    };
+
+    const onDifficultyChange = (question, difficulty) => {
+        // no need to update component state
+        question.difficulty = difficulty;
+    };
+
+    const onTagsChange = (question, questionTags) => {
+        // no need to update component state
+        question.tags = questionTags;
+
+        updateAllTags(template)
+    };
+
     // MARK: Groups management
 
     const onGroupTitleClicked = (id, name) => {
@@ -252,12 +311,8 @@ const TemplateEdit = ({
             value: tag,
             label: tag,
         }));
-        setAllTags(newTags);
+        setAllTags(prevState => (!isEqual(newTags, prevState) ? newTags : prevState));
     };
-
-    const notifyTagsChange = () => {
-        updateAllTags(template)
-    }
 
     // MARK: Preview
 
@@ -306,7 +361,12 @@ const TemplateEdit = ({
                                         isFirstGroup={index === 0}
                                         isLastGroup={index === template.structure.groups.length - 1}
                                         allTags={allTags}
-                                        notifyTagsChange={notifyTagsChange}
+                                        onAddQuestionClicked={onAddQuestionClicked}
+                                        onRemoveQuestionClicked={onRemoveQuestionClicked}
+                                        onQuestionSorted={onQuestionSorted}
+                                        onQuestionChange={onQuestionChange}
+                                        onDifficultyChange={onDifficultyChange}
+                                        onTagsChange={onTagsChange}
                                         onGroupTitleClicked={onGroupTitleClicked}
                                         onDeleteGroupClicked={onDeleteGroupClicked}
                                         onMoveGroupUpClicked={onMoveGroupUpClicked}

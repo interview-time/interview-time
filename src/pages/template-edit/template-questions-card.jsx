@@ -2,8 +2,6 @@ import styles from "./template.module.css";
 import { Button, Dropdown, Input, Menu, Space, Table, Tooltip } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
-import { cloneDeep } from "lodash/lang";
-import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
@@ -21,7 +19,12 @@ const { TextArea } = Input;
  * @param {boolean} isFirstGroup
  * @param {boolean} isLastGroup
  * @param {[]} allTags
- * @param notifyTagsChange
+ * @param onAddQuestionClicked
+ * @param onRemoveQuestionClicked
+ * @param onDifficultyChange
+ * @param onQuestionSorted
+ * @param onQuestionChange
+ * @param onTagsChange
  * @param onGroupTitleClicked
  * @param onDeleteGroupClicked
  * @param onMoveGroupUpClicked
@@ -34,42 +37,26 @@ const TemplateQuestionsCardInternal = ({
     isFirstGroup,
     isLastGroup,
     allTags,
-    notifyTagsChange,
+    onAddQuestionClicked,
+    onRemoveQuestionClicked,
+    onDifficultyChange,
+    onQuestionSorted,
+    onQuestionChange,
+    onTagsChange,
     onGroupTitleClicked,
     onDeleteGroupClicked,
     onMoveGroupUpClicked,
     onMoveGroupDownClicked,
 }) => {
-    const [questions, setQuestions] = React.useState([]);
     const [collapsed, setCollapsed] = React.useState(false);
 
-    React.useEffect(() => {
-        if (group.questions) {
-            let questions = cloneDeep(group.questions);
-            // question key and index required for drag & drop sorting
-            questions.forEach((item, index) => {
-                item.key = index;
-                item.index = index;
-            });
-            setQuestions(questions);
-
-        }
-        // eslint-disable-next-line
-    }, [group]);
-
-    React.useEffect(() => {
-        if (group) {
-            // child component manages it`s own state to improve render performance + silently updates parent object
-            group.questions = questions;
-        }
-        // eslint-disable-next-line
-    }, [questions]);
+    group?.questions?.forEach((item, index) => {
+        item.key = index;
+        item.index = index;
+    });
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
-        if (oldIndex !== newIndex) {
-            const updatedQuestions = arrayMove([].concat(questions), oldIndex, newIndex).filter(el => !!el);
-            setQuestions(updatedQuestions);
-        }
+        onQuestionSorted(group.groupId, oldIndex, newIndex)
     };
 
     const SortableContainerQuestion = SortableContainer(props => <tbody {...props} />);
@@ -85,48 +72,14 @@ const TemplateQuestionsCardInternal = ({
     );
 
     const SortableElementQuestion = SortableElement(props => <tr {...props} />);
+
     const DraggableBodyRow = ({ className, style, ...restProps }) => {
         // function findIndex base on Table rowKey props and should always be a right array index
-        const index = questions.findIndex(x => x.index === restProps["data-row-key"]);
+        const index = group.questions.findIndex(question => question.index === restProps["data-row-key"]);
         return <SortableElementQuestion index={index} {...restProps} />;
     };
 
     const DragHandle = SortableHandle(() => <ReorderIcon className={styles.reorderIcon} />);
-
-    const onAddQuestionClicked = () => {
-        const questionId = Date.now().toString();
-
-        const newQuestion = {
-            questionId: questionId,
-            question: "",
-            tags: [],
-            key: questions.length - 1,
-            index: questions.length - 1,
-        };
-
-        setQuestions(questions => [...questions, newQuestion]);
-    };
-
-    const onRemoveQuestionClicked = questionId => {
-        setQuestions(questions => questions.filter(q => q.questionId !== questionId));
-    };
-
-    const onQuestionChange = (question, text) => {
-        // no need to update component state
-        question.question = text;
-    };
-
-    const onDifficultyChange = (question, difficulty) => {
-        // no need to update component state
-        question.difficulty = difficulty;
-    };
-
-    const onTagsChange = (question, questionTags) => {
-        // no need to update component state
-        question.tags = questionTags;
-
-        notifyTagsChange()
-    };
 
     const onCollapseClicked = () => {
         setCollapsed(!collapsed);
@@ -193,7 +146,7 @@ const TemplateQuestionsCardInternal = ({
                 <DeleteTwoTone
                     twoToneColor='red'
                     className={styles.removeIcon}
-                    onClick={() => onRemoveQuestionClicked(record.questionId)}
+                    onClick={() => onRemoveQuestionClicked(group.groupId, record.questionId)}
                 />
             ),
         },
@@ -246,7 +199,7 @@ const TemplateQuestionsCardInternal = ({
                         scroll={{
                             x: "max-content",
                         }}
-                        dataSource={questions}
+                        dataSource={group.questions}
                         columns={columns}
                         rowKey='index'
                         components={{
@@ -268,10 +221,9 @@ const TemplateQuestionsCardInternal = ({
 };
 
 const areEqual = (prevProps, nextProps) => {
-    const templateGroupStateChanged =
-        isEqual(prevProps.group, nextProps.group) && isEqual(prevProps.allTags, nextProps.allTags);
-    log(`TemplateGroupStateChanged ${nextProps.group.name}`, templateGroupStateChanged);
-    return templateGroupStateChanged;
+    const statesAreEqual = isEqual(prevProps.group, nextProps.group) && isEqual(prevProps.allTags, nextProps.allTags);
+    log("TemplateQuestionsCard", nextProps.group.name, "state changed", !statesAreEqual);
+    return statesAreEqual;
 };
 
 export const TemplateQuestionsCard = React.memo(TemplateQuestionsCardInternal, areEqual);
