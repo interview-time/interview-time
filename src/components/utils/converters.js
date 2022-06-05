@@ -63,7 +63,7 @@ export function findGroup(id, groups) {
 /**
  *
  * @param {String} id
- * @param {InterviewGroup[]} groups
+ * @param {InterviewGroup[]|TemplateGroup[]} groups
  * @returns {Question}
  */
 export function findQuestionInGroups(id, groups) {

@@ -8,30 +8,35 @@ import {
     updateTemplate,
 } from "../../store/templates/actions";
 import { connect } from "react-redux";
-import { Button, Col, Divider, Form, Input, message, Modal, Popover, Row, Select, Space } from "antd";
+import { Button, Form, message, Modal } from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep } from "lodash/lang";
-import { findLibraryTemplate, findTemplate } from "../../components/utils/converters";
-import { TemplateCategories } from "../../components/utils/constants";
-import TemplateQuestionsCard from "./template-questions-card";
+import { findLibraryTemplate, findTemplate, interviewToTags } from "../../components/utils/converters";
 import Layout from "../../components/layout/layout";
 import { personalEvent } from "../../analytics";
 import { routeTemplates } from "../../components/utils/route";
 import TemplateGroupModal from "./template-group-modal";
 import arrayMove from "array-move";
 import { TemplateDetailsPreviewCard } from "../interview-scorecard/interview-sections";
-import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { filterOptionLabel } from "../../components/utils/filters";
+import { PlusOutlined } from "@ant-design/icons";
 import Card from "../../components/card/card";
 import Spinner from "../../components/spinner/spinner";
-import TemplateImage from "../../components/template-card/template-image";
-import TitleBack from "../../components/title/title-back";
-
-const { TextArea } = Input;
+import TemplateHeaderCard from "./template-header-card";
+import TemplateFooterCard from "./template-footer-card";
+import { TemplateMetaCard } from "./template-meta-card";
+import { TemplateQuestionsCard } from "./template-questions-card";
+import { swap } from "../../components/utils/arrays";
+import { remove } from "lodash/array";
+import { sortBy } from "lodash/collection";
 
 /**
+ * Template Edit component is a heavy component which renders a lot of data, therefore performance optimization
+ * techniques have been added to improve performance:
+ * - all state updates are done through parent component
+ * - every question group is split into separate component with `React.memo` wrapper with custom `areEqual` function to re-render components only when group questions changed
+ * - template state update is only done when necessary, e.g. when user adds question we trigger state update, but when user edit template title we modify state directly
  *
  * @param {Template[]} templates
  * @param {Template[]} library
@@ -54,16 +59,14 @@ const TemplateEdit = ({
     updateTemplate,
     loadSharedTemplate,
 }) => {
-    const templateCategories = TemplateCategories.map(category => ({
-        value: category.key,
-        label: category.title,
-    }));
     const history = useHistory();
 
     const { id } = useParams();
     const location = useLocation();
 
-    const [template, setTemplate] = useState();
+    const [template, setTemplate] = useState(/** @type {Template|undefined} */ undefined);
+    const [allTags, setAllTags] = useState([]);
+
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [questionGroupModal, setQuestionGroupModal] = useState({
         visible: false,
@@ -73,9 +76,12 @@ const TemplateEdit = ({
 
     React.useEffect(() => {
         if (isExistingTemplateFlow() && templates.length !== 0) {
-            setTemplate(cloneDeep(findTemplate(id, templates)));
+            const template = cloneDeep(findTemplate(id, templates));
+            setAllTags(interviewToTags(template));
+            setTemplate(template);
         } else if (isFromLibraryFlow() && library.length !== 0) {
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library));
+            setAllTags(interviewToTags(parent));
             setTemplate({
                 ...template,
                 parentId: fromLibraryId(),
@@ -84,7 +90,9 @@ const TemplateEdit = ({
                 structure: parent.structure,
             });
         } else if (sharedTemplateToken() && sharedTemplate) {
-            setTemplate(cloneDeep(sharedTemplate));
+            const template = cloneDeep(sharedTemplate);
+            setAllTags(interviewToTags(template));
+            setTemplate(template);
         }
         // eslint-disable-next-line
     }, [templates, library, id, sharedTemplate]);
@@ -132,6 +140,20 @@ const TemplateEdit = ({
         history.goBack();
     };
 
+    const onSaveClicked = () => {
+        if (isExistingTemplateFlow()) {
+            updateTemplate(template);
+            message.success(`Template '${template.title}' updated.`);
+        } else {
+            personalEvent("Template created");
+            addTemplate(template);
+            message.success(`Template '${template.title}' created.`);
+        }
+        history.push(routeTemplates());
+    };
+
+    // MARK: Template metadata
+
     const onCategoryChange = value => {
         setTemplate({
             ...template,
@@ -146,6 +168,81 @@ const TemplateEdit = ({
     const onDescriptionChange = e => {
         template.description = e.target.value;
     };
+
+    // MARK: Reminders
+
+    const onHeaderChanged = e => {
+        template.structure.header = e.target.value;
+    };
+
+    const onFooterChanged = e => {
+        template.structure.footer = e.target.value;
+    };
+
+    // MARK: Questions
+
+    const onAddQuestionClicked = groupId => {
+        setTemplate(prevState => {
+            const template = cloneDeep(prevState);
+            const group = template.structure.groups.find(group => group.groupId === groupId);
+            const questionIndex = group.questions.length - 1;
+            const question = {
+                questionId: Date.now().toString(),
+                question: "",
+                tags: [],
+                key: questionIndex,
+                index: questionIndex,
+            };
+            group.questions.push(question);
+            return template;
+        });
+    };
+
+    const onRemoveQuestionClicked = (groupId, questionId) => {
+        setTemplate(prevState => {
+            const template = cloneDeep(prevState);
+            const group = template.structure.groups.find(group => group.groupId === groupId);
+            remove(group.questions, question => question.questionId === questionId);
+
+            return template;
+        });
+    };
+
+    const onQuestionSorted = (groupId, oldIndex, newIndex) => {
+        if (oldIndex !== newIndex) {
+            setTemplate(prevState => {
+                const template = cloneDeep(prevState);
+                const group = template.structure.groups.find(group => group.groupId === groupId);
+                swap(group.questions, oldIndex, newIndex);
+                return template;
+            });
+        }
+    };
+
+    const onQuestionChange = (question, text) => {
+        // no need to update component state
+        question.question = text;
+    };
+
+    const onDifficultyChange = (question, difficulty) => {
+        // no need to update component state
+        question.difficulty = difficulty;
+    };
+
+    const onTagsChange = (question, questionTags) => {
+        // no need to update component state
+        question.tags = questionTags;
+
+        // only update state if new tag was added
+        const newTags = questionTags.filter(tag => !allTags.includes(tag));
+        if (newTags.length !== 0) {
+            setAllTags(allTags => {
+                return sortBy(allTags.concat(newTags));
+            });
+        }
+    };
+
+    // MARK: Groups management
 
     const onGroupTitleClicked = (id, name) => {
         setQuestionGroupModal({
@@ -169,26 +266,6 @@ const TemplateEdit = ({
         setTemplate(updatedTemplate);
     };
 
-    const onSaveClicked = () => {
-        if (isExistingTemplateFlow()) {
-            updateTemplate(template);
-            message.success(`Template '${template.title}' updated.`);
-        } else {
-            personalEvent("Template created");
-            addTemplate(template);
-            message.success(`Template '${template.title}' created.`);
-        }
-        history.push(routeTemplates());
-    };
-
-    const onHeaderChanged = e => {
-        template.structure.header = e.target.value;
-    };
-
-    const onFooterChanged = e => {
-        template.structure.footer = e.target.value;
-    };
-
     const onGroupModalCancel = () => {
         setQuestionGroupModal({
             ...questionGroupModal,
@@ -200,7 +277,10 @@ const TemplateEdit = ({
         const updatedTemplate = cloneDeep(template);
         updatedTemplate.structure.groups.find(group => group.groupId === id).name = name;
         setTemplate(updatedTemplate);
-        setQuestionGroupModal(false);
+        setQuestionGroupModal({
+            ...questionGroupModal,
+            visible: false,
+        });
     };
 
     const onGroupModalAdd = name => {
@@ -212,7 +292,10 @@ const TemplateEdit = ({
             questions: [],
         });
         setTemplate(updatedTemplate);
-        setQuestionGroupModal(false);
+        setQuestionGroupModal({
+            ...questionGroupModal,
+            visible: false,
+        });
     };
 
     const onMoveGroupUpClicked = id => {
@@ -231,6 +314,8 @@ const TemplateEdit = ({
         setTemplate(updatedTemplate);
     };
 
+    // MARK: Preview
+
     const onPreviewClosed = () => {
         setPreviewModalVisible(false);
     };
@@ -238,9 +323,6 @@ const TemplateEdit = ({
     const onPreviewClicked = () => {
         setPreviewModalVisible(true);
     };
-
-    const marginTop12 = { marginTop: 12 };
-    const marginTop16 = { marginTop: 16 };
 
     return (
         <Layout contentStyle={styles.rootContainer}>
@@ -256,110 +338,36 @@ const TemplateEdit = ({
                         }}
                         onFinish={onSaveClicked}
                     >
-                        <Card>
-                            <Row gutter={[32, 32]} wrap={false}>
-                                <Col flex='auto'>
-                                    <div style={{ marginBottom: 16 }}>
-                                        <TitleBack title="Interview Template" onBackClicked={onBackClicked} />
-                                    </div>
-                                    <Text type='secondary'>
-                                        Enter template detail information so you can easily discover it among other
-                                        templates.
-                                    </Text>
-                                </Col>
-                                <Col>
-                                    <TemplateImage templateType={template.type} />
-                                </Col>
-                            </Row>
-                            <Row gutter={[32, 32]} style={marginTop16}>
-                                <Col span={12}>
-                                    <Form.Item
-                                        name='title'
-                                        label={<Text strong>Title</Text>}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: "Please enter template-edit title",
-                                            },
-                                        ]}
-                                    >
-                                        <Input placeholder='e.g. Android' onChange={onTitleChange} />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={12}>
-                                    <Form.Item
-                                        name='category'
-                                        label={<Text strong>Category</Text>}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: "Please choose template-edit category",
-                                            },
-                                        ]}
-                                    >
-                                        <Select
-                                            style={{ width: "100%" }}
-                                            placeholder='Select category'
-                                            onSelect={onCategoryChange}
-                                            options={templateCategories}
-                                            showSearch
-                                            filterOption={filterOptionLabel}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
+                        <TemplateMetaCard
+                            templateType={template.type}
+                            onBackClicked={onBackClicked}
+                            onTitleChange={onTitleChange}
+                            onCategoryChange={onCategoryChange}
+                            onDescriptionChange={onDescriptionChange}
+                        />
 
-                            <Row gutter={[32, 32]}>
-                                <Col span={12}>
-                                    <Form.Item name='description' label={<Text strong>Description</Text>}>
-                                        <Input
-                                            placeholder='e.g. Entry-level software engineer'
-                                            onChange={onDescriptionChange}
-                                        />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        </Card>
+                        <TemplateHeaderCard header={template.structure.header} onHeaderChanged={onHeaderChanged} />
 
                         <Card className={styles.cardSpace}>
-                            <Title level={4}>Intro</Title>
-                            <Text type='secondary'>
-                                Intro section serves as a reminder for what interviewer should do at the beginning of
-                                the interview.
-                            </Text>
-                            <TextArea
-                                style={marginTop16}
-                                defaultValue={template.structure.header}
-                                onChange={onHeaderChanged}
-                                autoSize={{ minRows: 3, maxRows: 5 }}
-                                placeholder='Take 10 minutes to introduce yourself and make the candidate comfortable.'
-                            />
-                        </Card>
-
-                        <Card className={styles.cardSpace}>
-                            <Space style={{ width: "100%" }}>
-                                <Title level={4}>Questions</Title>
-                                <Popover
-                                    content={
-                                        <img
-                                            alt='Interviewer'
-                                            style={{ width: 400 }}
-                                            src={process.env.PUBLIC_URL + "/app/interview-schedule-groups.png"}
-                                        />
-                                    }
-                                >
-                                    <InfoCircleOutlined style={{ marginBottom: 12, cursor: "pointer" }} />
-                                </Popover>
-                            </Space>
+                            <Title level={4}>Questions</Title>
                             <Text type='secondary'>
                                 Grouping questions helps to evaluate skills in a particular competence area and make a
                                 more granular assessment.
                             </Text>
                             <div>
-                                {template.structure.groups.map(group => (
+                                {template.structure.groups.map((group, index) => (
                                     <TemplateQuestionsCard
-                                        template={template}
+                                        key={group.groupId}
                                         group={group}
+                                        isFirstGroup={index === 0}
+                                        isLastGroup={index === template.structure.groups.length - 1}
+                                        allTags={allTags}
+                                        onAddQuestionClicked={onAddQuestionClicked}
+                                        onRemoveQuestionClicked={onRemoveQuestionClicked}
+                                        onQuestionSorted={onQuestionSorted}
+                                        onQuestionChange={onQuestionChange}
+                                        onDifficultyChange={onDifficultyChange}
+                                        onTagsChange={onTagsChange}
                                         onGroupTitleClicked={onGroupTitleClicked}
                                         onDeleteGroupClicked={onDeleteGroupClicked}
                                         onMoveGroupUpClicked={onMoveGroupUpClicked}
@@ -368,7 +376,7 @@ const TemplateEdit = ({
                                 ))}
                             </div>
                             <Button
-                                style={marginTop12}
+                                style={{ marginTop: 12 }}
                                 icon={<PlusOutlined />}
                                 type='primary'
                                 ghost
@@ -378,31 +386,11 @@ const TemplateEdit = ({
                             </Button>
                         </Card>
 
-                        <Card className={styles.cardSpace}>
-                            <Title level={4}>End of interview</Title>
-                            <Text type='secondary'>
-                                This section serves as a reminder for what interviewer should do at the end of the
-                                interview.
-                            </Text>
-                            <TextArea
-                                style={marginTop12}
-                                defaultValue={template.structure.footer}
-                                onChange={onFooterChanged}
-                                autoSize={{ minRows: 3, maxRows: 5 }}
-                                placeholder='Allow 10 minutes at the end for the candidate to ask questions.'
-                            />
-                            <Divider />
-
-                            <div className={styles.divSpaceBetween}>
-                                <Text />
-                                <Space>
-                                    <Button onClick={onPreviewClicked}>Preview</Button>
-                                    <Button type='primary' htmlType='submit'>
-                                        Save template
-                                    </Button>
-                                </Space>
-                            </div>
-                        </Card>
+                        <TemplateFooterCard
+                            footer={template.structure.footer}
+                            onFooterChanged={onFooterChanged}
+                            onPreviewClicked={onPreviewClicked}
+                        />
                     </Form>
 
                     <TemplateGroupModal
