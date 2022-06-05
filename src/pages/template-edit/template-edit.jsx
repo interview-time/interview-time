@@ -27,9 +27,9 @@ import TemplateHeaderCard from "./template-header-card";
 import TemplateFooterCard from "./template-footer-card";
 import { TemplateMetaCard } from "./template-meta-card";
 import { TemplateQuestionsCard } from "./template-questions-card";
-import { isEqual } from "lodash";
 import { swap } from "../../components/utils/arrays";
 import { remove } from "lodash/array";
+import { sortBy } from "lodash/collection";
 
 /**
  *
@@ -71,9 +71,12 @@ const TemplateEdit = ({
 
     React.useEffect(() => {
         if (isExistingTemplateFlow() && templates.length !== 0) {
-            setTemplate(cloneDeep(findTemplate(id, templates)));
+            const template = cloneDeep(findTemplate(id, templates));
+            setAllTags(interviewToTags(template))
+            setTemplate(template);
         } else if (isFromLibraryFlow() && library.length !== 0) {
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library));
+            setAllTags(interviewToTags(parent))
             setTemplate({
                 ...template,
                 parentId: fromLibraryId(),
@@ -82,7 +85,9 @@ const TemplateEdit = ({
                 structure: parent.structure,
             });
         } else if (sharedTemplateToken() && sharedTemplate) {
-            setTemplate(cloneDeep(sharedTemplate));
+            const template = cloneDeep(sharedTemplate);
+            setAllTags(interviewToTags(template))
+            setTemplate(template);
         }
         // eslint-disable-next-line
     }, [templates, library, id, sharedTemplate]);
@@ -107,12 +112,6 @@ const TemplateEdit = ({
 
         // eslint-disable-next-line
     }, []);
-
-    React.useEffect(() => {
-        if(template) {
-            updateAllTags(template)
-        }
-    }, [template]);
 
     const isExistingTemplateFlow = () => id;
 
@@ -229,7 +228,13 @@ const TemplateEdit = ({
         // no need to update component state
         question.tags = questionTags;
 
-        updateAllTags(template)
+        // only update state if new tag was added
+        const newTags = questionTags.filter(tag => !allTags.includes(tag));
+        if (newTags.length !== 0) {
+            setAllTags(allTags => {
+                return sortBy(allTags.concat(newTags));
+            });
+        }
     };
 
     // MARK: Groups management
@@ -302,16 +307,6 @@ const TemplateEdit = ({
         const toIndex = fromIndex + 1;
         updatedTemplate.structure.groups = arrayMove(updatedTemplate.structure.groups, fromIndex, toIndex);
         setTemplate(updatedTemplate);
-    };
-
-    // MARK: Tags
-
-    const updateAllTags = template => {
-        const newTags = interviewToTags(template).map(tag => ({
-            value: tag,
-            label: tag,
-        }));
-        setAllTags(prevState => (!isEqual(newTags, prevState) ? newTags : prevState));
     };
 
     // MARK: Preview

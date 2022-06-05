@@ -50,6 +50,11 @@ const TemplateQuestionsCardInternal = ({
 }) => {
     const [collapsed, setCollapsed] = React.useState(false);
 
+    const templateTags = allTags.map(tag => ({
+        value: tag,
+        label: tag,
+    }));
+
     group?.questions?.forEach((item, index) => {
         item.key = index;
         item.index = index;
@@ -133,7 +138,7 @@ const TemplateQuestionsCardInternal = ({
             render: question => (
                 <TemplateTags
                     question={question}
-                    allTags={allTags}
+                    allTags={templateTags}
                     onTagsChange={onTagsChange}
                 />
             ),
