@@ -5,7 +5,7 @@ import {
     loadLibrary,
     loadSharedTemplate,
     loadTemplates,
-    updateTemplate
+    updateTemplate,
 } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { Button, Form, message, Modal } from "antd";
@@ -32,6 +32,11 @@ import { remove } from "lodash/array";
 import { sortBy } from "lodash/collection";
 
 /**
+ * Template Edit component is a heavy component which renders a lot of data, therefore performance optimization
+ * techniques have been added to improve performance:
+ * - all state updates are done through parent component
+ * - every question group is split into separate component with `React.memo` wrapper with custom `areEqual` function to re-render components only when group questions changed
+ * - template state update is only done when necessary, e.g. when user adds question we trigger state update, but when user edit template title we modify state directly
  *
  * @param {Template[]} templates
  * @param {Template[]} library
@@ -59,7 +64,7 @@ const TemplateEdit = ({
     const { id } = useParams();
     const location = useLocation();
 
-    const [template, setTemplate] = useState(/** @type {Template|undefined} */undefined);
+    const [template, setTemplate] = useState(/** @type {Template|undefined} */ undefined);
     const [allTags, setAllTags] = useState([]);
 
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -72,11 +77,11 @@ const TemplateEdit = ({
     React.useEffect(() => {
         if (isExistingTemplateFlow() && templates.length !== 0) {
             const template = cloneDeep(findTemplate(id, templates));
-            setAllTags(interviewToTags(template))
+            setAllTags(interviewToTags(template));
             setTemplate(template);
         } else if (isFromLibraryFlow() && library.length !== 0) {
             let parent = cloneDeep(findLibraryTemplate(fromLibraryId(), library));
-            setAllTags(interviewToTags(parent))
+            setAllTags(interviewToTags(parent));
             setTemplate({
                 ...template,
                 parentId: fromLibraryId(),
@@ -86,7 +91,7 @@ const TemplateEdit = ({
             });
         } else if (sharedTemplateToken() && sharedTemplate) {
             const template = cloneDeep(sharedTemplate);
-            setAllTags(interviewToTags(template))
+            setAllTags(interviewToTags(template));
             setTemplate(template);
         }
         // eslint-disable-next-line
@@ -176,10 +181,10 @@ const TemplateEdit = ({
 
     // MARK: Questions
 
-    const onAddQuestionClicked = (groupId) => {
+    const onAddQuestionClicked = groupId => {
         setTemplate(prevState => {
-            const template = cloneDeep(prevState)
-            const group = template.structure.groups.find(group => group.groupId === groupId)
+            const template = cloneDeep(prevState);
+            const group = template.structure.groups.find(group => group.groupId === groupId);
             const questionIndex = group.questions.length - 1;
             const question = {
                 questionId: Date.now().toString(),
@@ -187,9 +192,9 @@ const TemplateEdit = ({
                 tags: [],
                 key: questionIndex,
                 index: questionIndex,
-            }
-            group.questions.push(question)
-            return template
+            };
+            group.questions.push(question);
+            return template;
         });
     };
 
@@ -197,11 +202,11 @@ const TemplateEdit = ({
         setTemplate(prevState => {
             const template = cloneDeep(prevState);
             const group = template.structure.groups.find(group => group.groupId === groupId);
-            remove(group.questions, (question => question.questionId === questionId))
+            remove(group.questions, question => question.questionId === questionId);
 
-            return template
+            return template;
         });
-    }
+    };
 
     const onQuestionSorted = (groupId, oldIndex, newIndex) => {
         if (oldIndex !== newIndex) {
@@ -352,6 +357,7 @@ const TemplateEdit = ({
                             <div>
                                 {template.structure.groups.map((group, index) => (
                                     <TemplateQuestionsCard
+                                        key={group.groupId}
                                         group={group}
                                         isFirstGroup={index === 0}
                                         isLastGroup={index === template.structure.groups.length - 1}

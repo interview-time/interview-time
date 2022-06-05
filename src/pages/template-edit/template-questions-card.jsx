@@ -61,7 +61,7 @@ const TemplateQuestionsCardInternal = ({
     });
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
-        onQuestionSorted(group.groupId, oldIndex, newIndex)
+        onQuestionSorted(group.groupId, oldIndex, newIndex);
     };
 
     const SortableContainerQuestion = SortableContainer(props => <tbody {...props} />);
@@ -135,13 +135,7 @@ const TemplateQuestionsCardInternal = ({
             key: "tags",
             width: 200,
             className: styles.tagsVisible,
-            render: question => (
-                <TemplateTags
-                    question={question}
-                    allTags={templateTags}
-                    onTagsChange={onTagsChange}
-                />
-            ),
+            render: question => <TemplateTags question={question} allTags={templateTags} onTagsChange={onTagsChange} />,
         },
         {
             key: "action",
