@@ -16,7 +16,6 @@ const Score = {
     MAX: 100,
     HIGHLY_SKILLED: 80,
     SKILLED: 60,
-    LOW_SKILLS: 40,
 };
 
 const DifficultyWeight = {
@@ -67,10 +66,9 @@ export const getOverallPerformanceColor = groups => {
         return COLOR_GREEN_DARK;
     } else if (performance >= Score.SKILLED) {
         return COLOR_ORANGE_DARK;
-    } else if (performance >= Score.LOW_SKILLS) {
+    } else {
         return COLOR_RED_5;
     }
-    return COLOR_NEUTRAL_6;
 };
 
 /**
@@ -82,8 +80,8 @@ export const getOverallPerformancePercent = groups => {
     let totalScore = 0;
     let totalGroupsWithAssessment = 0;
     groups.forEach(group => {
-        const groupAssessmentNumber = getQuestionsAssessment(group.questions);
-        if (groupAssessmentNumber > 0) {
+        if (groupHasAssessment(group)) {
+            const groupAssessmentNumber = getQuestionsAssessment(group.questions);
             totalScore += groupAssessmentNumber;
             totalGroupsWithAssessment++;
         }
@@ -114,7 +112,7 @@ export const getGroupAssessmentEmoji = score => {
         emojiColor = "🟩";
     } else if (score >= Score.SKILLED) {
         emojiColor = "🟨";
-    } else if (score >= Score.LOW_SKILLS) {
+    } else {
         emojiColor = "🟥";
     }
 
@@ -156,10 +154,9 @@ const getGroupAssessmentText = score => {
         return "highly skilled";
     } else if (score >= Score.SKILLED) {
         return "skilled";
-    } else if (score >= Score.LOW_SKILLS) {
+    } else {
         return "low skills";
     }
-    return "no data";
 };
 
 /**
@@ -172,10 +169,9 @@ const getGroupAssessmentColor = score => {
         return COLOR_GREEN_LIGHT;
     } else if (score >= Score.SKILLED) {
         return COLOR_ORANGE_LIGHT;
-    } else if (score >= Score.LOW_SKILLS) {
+    } else {
         return COLOR_RED_5;
     }
-    return COLOR_NEUTRAL_6;
 };
 
 /**
@@ -268,3 +264,17 @@ const getQuestionAssessmentWeight = assessment => {
  * @returns {boolean}
  */
 const hasAssessment = question => question.assessment && question.assessment !== QuestionAssessment.NO_ASSESSMENT;
+
+/**
+ *
+ * @param {InterviewGroup} group
+ * @returns {boolean}
+ */
+const groupHasAssessment = group => {
+    for (const question of group.questions) {
+        if (hasAssessment(question)) {
+            return true;
+        }
+    }
+    return false;
+};
