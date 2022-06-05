@@ -22,7 +22,7 @@ const InterviewCompetenceTag = ({ interview }) => {
             content={
                 <Space direction='vertical' className={styles.assessmentPopup}>
                     {data.map(({ assessment, group }) => (
-                        <Row gutter={16}>
+                        <Row gutter={16} key={group.groupId}>
                             <Col span={12}>{group.name}</Col>
                             <Col span={12}>
                                 <span

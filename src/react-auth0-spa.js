@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
 import { log } from "./utils/log";
+import Cookies from "universal-cookie";
+import { addYears } from "date-fns";
 
-const DEFAULT_REDIRECT_CALLBACK = () =>
-    window.history.replaceState({}, document.title, window.location.pathname);
+const DEFAULT_REDIRECT_CALLBACK = () => window.history.replaceState({}, document.title, window.location.pathname);
 
 export const Auth0Context = React.createContext();
 export const useAuth0 = () => useContext(Auth0Context);
@@ -11,32 +12,28 @@ export const useAuth0 = () => useContext(Auth0Context);
 let _initOptions, _client;
 
 const getAuth0Client = () => {
-  return new Promise(async (resolve, reject) => {
-    let client;
-    if (!client)  {
-      try {
-        client = await createAuth0Client(_initOptions);
-        resolve(client);
-      } catch (e) {
-        reject(new Error('getAuth0Client Error', e));
-      }
-    }
-  })
-}
+    return new Promise(async (resolve, reject) => {
+        let client;
+        if (!client) {
+            try {
+                client = await createAuth0Client(_initOptions);
+                resolve(client);
+            } catch (e) {
+                reject(new Error("getAuth0Client Error", e));
+            }
+        }
+    });
+};
 
 export const getAccessTokenSilently = async (...p) => {
-  if(!_client) {
-      _client = await getAuth0Client();
-  }
-  
-  return await _client.getTokenSilently(...p);
-}
+    if (!_client) {
+        _client = await getAuth0Client();
+    }
 
-export const Auth0Provider = ({
-    children,
-    onRedirectCallback = DEFAULT_REDIRECT_CALLBACK,
-    ...initOptions
-}) => {
+    return await _client.getTokenSilently(...p);
+};
+
+export const Auth0Provider = ({ children, onRedirectCallback = DEFAULT_REDIRECT_CALLBACK, ...initOptions }) => {
     const [isAuthenticated, setIsAuthenticated] = useState();
     const [user, setUser] = useState();
     const [auth0Client, setAuth0] = useState();
@@ -63,7 +60,15 @@ export const Auth0Provider = ({
 
             if (isAuthenticated) {
                 const user = await _client.getUser();
-                setUser(user);                
+                setUser(user);
+
+                const cookies = new Cookies();
+
+                cookies.set("USER_LOGGED_IN", "true", {
+                    path: "/",
+                    domain: "interviewer.space",
+                    expires: addYears(new Date(), 1),
+                });
             }
 
             setLoading(false);
@@ -108,7 +113,12 @@ export const Auth0Provider = ({
                 loginWithRedirect: (...p) => auth0Client.loginWithRedirect(...p),
                 getTokenSilently: (...p) => auth0Client.getTokenSilently(...p),
                 getTokenWithPopup: (...p) => auth0Client.getTokenWithPopup(...p),
-                logout: (...p) => auth0Client.logout(...p)
+                logout: (...p) => {
+                    const cookies = new Cookies();
+                    cookies.remove("USER_LOGGED_IN");
+
+                    auth0Client.logout(...p);
+                },
             }}
         >
             {children}

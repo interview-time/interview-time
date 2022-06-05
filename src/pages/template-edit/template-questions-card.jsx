@@ -2,23 +2,29 @@ import styles from "./template.module.css";
 import { Button, Dropdown, Input, Menu, Space, Table, Tooltip } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
-import { cloneDeep } from "lodash/lang";
-import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
 import { isEmpty } from "../../utils/date";
-import { createTagColors } from "../../utils/constants";
 import { TemplateTags } from "./template-tags";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
-import { interviewToTags } from "../../utils/converters";
+import { isEqual } from "lodash";
+import { log } from "../../utils/log";
 
 const { TextArea } = Input;
 
 /**
  *
- * @param {Template} template
  * @param {TemplateGroup} group
+ * @param {boolean} isFirstGroup
+ * @param {boolean} isLastGroup
+ * @param {[]} allTags
+ * @param onAddQuestionClicked
+ * @param onRemoveQuestionClicked
+ * @param onDifficultyChange
+ * @param onQuestionSorted
+ * @param onQuestionChange
+ * @param onTagsChange
  * @param onGroupTitleClicked
  * @param onDeleteGroupClicked
  * @param onMoveGroupUpClicked
@@ -26,49 +32,36 @@ const { TextArea } = Input;
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplateQuestionsCard = ({
-    template,
+const TemplateQuestionsCardInternal = ({
     group,
+    isFirstGroup,
+    isLastGroup,
+    allTags,
+    onAddQuestionClicked,
+    onRemoveQuestionClicked,
+    onDifficultyChange,
+    onQuestionSorted,
+    onQuestionChange,
+    onTagsChange,
     onGroupTitleClicked,
     onDeleteGroupClicked,
     onMoveGroupUpClicked,
     onMoveGroupDownClicked,
 }) => {
-    const [questions, setQuestions] = React.useState([]);
-    const [allTagsColors, setAllTagsColors] = React.useState(new Map());
-    const [allTags, setAllTags] = React.useState([]);
     const [collapsed, setCollapsed] = React.useState(false);
 
-    React.useEffect(() => {
-        if (group.questions) {
-            let questions = cloneDeep(group.questions);
-            // question key and index required for drag & drop sorting
-            questions.forEach((item, index) => {
-                item.key = index;
-                item.index = index;
-            });
-            setQuestions(questions);
+    const templateTags = allTags.map(tag => ({
+        value: tag,
+        label: tag,
+    }));
 
-            const tags = interviewToTags(template);
-            setAllTags(tags);
-            setAllTagsColors(createTagColors(tags));
-        }
-        // eslint-disable-next-line
-    }, [group]);
-
-    React.useEffect(() => {
-        if (group) {
-            // child component manages it`s own state to improve render performance + silently updates parent object
-            group.questions = questions;
-        }
-        // eslint-disable-next-line
-    }, [questions]);
+    group?.questions?.forEach((item, index) => {
+        item.key = index;
+        item.index = index;
+    });
 
     const onSortEnd = ({ oldIndex, newIndex }) => {
-        if (oldIndex !== newIndex) {
-            const updatedQuestions = arrayMove([].concat(questions), oldIndex, newIndex).filter(el => !!el);
-            setQuestions(updatedQuestions);
-        }
+        onQuestionSorted(group.groupId, oldIndex, newIndex);
     };
 
     const SortableContainerQuestion = SortableContainer(props => <tbody {...props} />);
@@ -84,52 +77,14 @@ const TemplateQuestionsCard = ({
     );
 
     const SortableElementQuestion = SortableElement(props => <tr {...props} />);
+
     const DraggableBodyRow = ({ className, style, ...restProps }) => {
         // function findIndex base on Table rowKey props and should always be a right array index
-        const index = questions.findIndex(x => x.index === restProps["data-row-key"]);
+        const index = group.questions.findIndex(question => question.index === restProps["data-row-key"]);
         return <SortableElementQuestion index={index} {...restProps} />;
     };
 
     const DragHandle = SortableHandle(() => <ReorderIcon className={styles.reorderIcon} />);
-
-    const onAddQuestionClicked = () => {
-        const questionId = Date.now().toString();
-
-        const newQuestion = {
-            questionId: questionId,
-            question: "",
-            tags: [],
-            key: questions.length - 1,
-            index: questions.length - 1,
-        };
-
-        setQuestions(questions => [...questions, newQuestion]);
-    };
-
-    const onRemoveQuestionClicked = questionId => {
-        setQuestions(questions => questions.filter(q => q.questionId !== questionId));
-    };
-
-    const onQuestionChange = (questionId, question) => {
-        // no need to update component state
-        questions.find(q => q.questionId === questionId).question = question;
-    };
-
-    const onDifficultyChange = (questionId, difficulty) => {
-        // no need to update component state
-        questions.find(q => q.questionId === questionId).difficulty = difficulty;
-    };
-
-    const onTagsChange = (questionId, questionTags) => {
-        // no need to update component state
-        questions.find(q => q.questionId === questionId).tags = questionTags;
-
-        const newTags = interviewToTags(template);
-        if (allTags.length !== newTags.length) {
-            setAllTags(newTags);
-            setAllTagsColors(createTagColors(newTags));
-        }
-    };
 
     const onCollapseClicked = () => {
         setCollapsed(!collapsed);
@@ -153,7 +108,7 @@ const TemplateQuestionsCard = ({
                     children: (
                         <QuestionDifficultyTag
                             difficulty={question.difficulty}
-                            onChange={difficulty => onDifficultyChange(question.questionId, difficulty)}
+                            onChange={difficulty => onDifficultyChange(question, difficulty)}
                             editable={true}
                         />
                     ),
@@ -171,7 +126,7 @@ const TemplateQuestionsCard = ({
                     autoSize={true}
                     autoFocus={isEmpty(question.question)}
                     defaultValue={question.question}
-                    onChange={e => onQuestionChange(question.questionId, e.target.value)}
+                    onChange={e => onQuestionChange(question, e.target.value)}
                     onPressEnter={e => e.target.blur()}
                 />
             ),
@@ -180,17 +135,7 @@ const TemplateQuestionsCard = ({
             key: "tags",
             width: 200,
             className: styles.tagsVisible,
-            render: question => (
-                <TemplateTags
-                    question={question}
-                    allTagsColors={allTagsColors}
-                    allTags={allTags.map(tag => ({
-                        value: tag,
-                        label: tag,
-                    }))}
-                    onTagsChange={onTagsChange}
-                />
-            ),
+            render: question => <TemplateTags question={question} allTags={templateTags} onTagsChange={onTagsChange} />,
         },
         {
             key: "action",
@@ -200,20 +145,17 @@ const TemplateQuestionsCard = ({
                 <DeleteTwoTone
                     twoToneColor='red'
                     className={styles.removeIcon}
-                    onClick={() => onRemoveQuestionClicked(record.questionId)}
+                    onClick={() => onRemoveQuestionClicked(group.groupId, record.questionId)}
                 />
             ),
         },
     ];
 
     const menu = () => {
-        const groups = template.structure.groups;
-        const isFirst = groups.findIndex(g => g.groupId === group.groupId) === 0;
-        const isLast = groups.findIndex(g => g.groupId === group.groupId) === groups.length - 1;
         return (
             <Menu>
-                {!isFirst && <Menu.Item onClick={() => onMoveGroupUpClicked(group.groupId)}>Move Up</Menu.Item>}
-                {!isLast && <Menu.Item onClick={() => onMoveGroupDownClicked(group.groupId)}>Move Down</Menu.Item>}
+                {!isFirstGroup && <Menu.Item onClick={() => onMoveGroupUpClicked(group.groupId)}>Move Up</Menu.Item>}
+                {!isLastGroup && <Menu.Item onClick={() => onMoveGroupDownClicked(group.groupId)}>Move Down</Menu.Item>}
                 <Menu.Divider />
                 <Menu.Item onClick={() => onGroupTitleClicked(group.groupId, group.name)}>Rename</Menu.Item>
                 <Menu.Item danger onClick={() => onDeleteGroupClicked(group.groupId)}>
@@ -256,7 +198,7 @@ const TemplateQuestionsCard = ({
                         scroll={{
                             x: "max-content",
                         }}
-                        dataSource={questions}
+                        dataSource={group.questions}
                         columns={columns}
                         rowKey='index'
                         components={{
@@ -277,4 +219,10 @@ const TemplateQuestionsCard = ({
     );
 };
 
-export default TemplateQuestionsCard;
+const areEqual = (prevProps, nextProps) => {
+    const statesAreEqual = isEqual(prevProps.group, nextProps.group) && isEqual(prevProps.allTags, nextProps.allTags);
+    log("TemplateQuestionsCard", nextProps.group.name, "state changed", !statesAreEqual);
+    return statesAreEqual;
+};
+
+export const TemplateQuestionsCard = React.memo(TemplateQuestionsCardInternal, areEqual);

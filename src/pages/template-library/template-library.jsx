@@ -49,7 +49,7 @@ const TemplateLibrary = ({ loadLibrary, library, loading }) => {
                 {!loading && (
                     <Row gutter={[32, 32]}>
                         {library.map(template => (
-                            <Col span={24} lg={{ span: 8 }}>
+                            <Col span={24} lg={{ span: 8 }} key={template.templateId}>
                                 <LibraryCard template={template} />
                             </Col>
                         ))}

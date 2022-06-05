@@ -110,7 +110,7 @@ const Templates = ({ templates, loadingTemplates, loadTemplates }) => {
                 {!initialTemplatesLoading() && (
                     <Row gutter={[32, 32]}>
                         {templates.map(template => (
-                            <Col span={24} xl={{ span: 8 }} md={{ span: 12 }}>
+                            <Col span={24} xl={{ span: 8 }} md={{ span: 12 }} key={template.templateId}>
                                 <TemplateCard key={template.templateId} template={template} />
                             </Col>
                         ))}

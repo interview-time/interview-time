@@ -1,4 +1,5 @@
 import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
+import { hashCode } from "./string";
 
 export const Roles = {
     HR: "HR",
@@ -121,6 +122,7 @@ export const getStatusText = status => {
 
 export const colors = [
     "#D8E7E2",
+    "#D8E7E2",
     "#D6E4F7",
     "#FCD6D5",
     "#DFD4F7",
@@ -131,30 +133,10 @@ export const colors = [
     "#E6D7D0",
 ];
 
-export const getAvatarColor = text => {
-    let stringIndex = Math.abs(text.charCodeAt(0)).toString();
-    let index = parseInt(stringIndex.charAt(0));
-    return colors[index];
-};
-
-/**
- *
- * @param {string[]} tags
- * @returns {Map<string, string>}
- */
-export const createTagColors = tags => {
-    let tagColorsMap = new Map();
-    let colorIndex = 0;
-    tags.forEach(tag => {
-        if (!tagColorsMap.has(tag)) {
-            tagColorsMap.set(tag, colors[colorIndex]);
-            colorIndex++;
-            if (colorIndex >= colors.length) {
-                colorIndex = 0;
-            }
-        }
-    });
-    return tagColorsMap;
+export const getTagColor = label => {
+    const hash = Math.abs(hashCode(label));
+    const hashFirstDigit = Number(String(hash).charAt(0));
+    return colors[hashFirstDigit];
 };
 
 export const POSITIONS = [
