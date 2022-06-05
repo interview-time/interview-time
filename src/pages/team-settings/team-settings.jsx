@@ -1,24 +1,23 @@
+import React, { useEffect } from "react";
 import Layout from "../../components/layout/layout";
 import { Button, message, Modal, Space, Table, Menu, Dropdown } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import { connect } from "react-redux";
 import TeamDetails from "./team-details";
-import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam, changeRole, removeMember } from "../../store/user/actions";
-import { loadPendingInvites } from "../../store/teams/actions";
-import { MoreIcon } from "../../components/utils/icons";
-import { defaultTo } from "lodash/util";
+import { loadPendingInvites, loadTeam } from "../../store/team/actions";
+import { MoreIcon } from "../../utils/icons";
 import Spinner from "../../components/spinner/spinner";
 import TeamInvite from "./team-invite";
 import Card from "../../components/card/card";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import TableHeader from "../../components/table/table-header";
-import { localeCompare } from "../../components/utils/comparators";
+import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { DisplayRoles, Roles } from "../../components/utils/constants";
+import { DisplayRoles, Roles } from "../../utils/constants";
 import PendingInvites from "./pending-invites";
 import Text from "antd/lib/typography/Text";
 import styles from "./team-settings.module.css";
@@ -39,34 +38,25 @@ import styles from "./team-settings.module.css";
  */
 const TeamSettings = ({
     userName,
-    teams,
-    teamMembers,
     updateTeam,
     deleteTeam,
     leaveTeam,
-    loadTeamMembers,
     changeRole,
     removeMember,
-    loadPendingInvites,
-    pendingInvites,
     pendingInvitesLoading,
+    loadTeam,
+    team,
+    loading,
 }) => {
-    const [loading, setLoading] = useState(false);
-    const [team, setTeam] = useState(/** @type {Team|undefined} */ undefined);
-
     const history = useHistory();
     const { id } = useParams();
 
     useEffect(() => {
-        const currentTeam = teams.find(team => team.teamId === id);
-        if (currentTeam) {
-            setTeam(currentTeam);
-            setLoading(false);
-            loadTeamMembers(currentTeam.teamId);
-            loadPendingInvites(currentTeam.teamId);
+        if (id) {
+            loadTeam(id);
         }
         // eslint-disable-next-line
-    }, [id, teams]);
+    }, [id]);
 
     const getTeamName = () => (team ? team.teamName : "Team");
 
@@ -77,7 +67,7 @@ const TeamSettings = ({
             ...team,
             teamName: teamName,
         };
-        setLoading(true);
+
         updateTeam(newTeam);
     };
 
@@ -213,11 +203,9 @@ const TeamSettings = ({
             : undefined,
     ].filter(column => column);
 
-    const isLoading = () => !team || loading;
-
     return (
         <Layout contentStyle={styles.rootContainer}>
-            {!isLoading() ? (
+            {!loading ? (
                 <div>
                     <Title level={4} style={{ marginBottom: 0 }}>
                         Team settings
@@ -247,12 +235,14 @@ const TeamSettings = ({
                         </Button>
                     </div>
 
-                    <Card withPadding={false} style={{ marginTop: 12 }}>
-                        <Table columns={columns} dataSource={teamMembers} pagination={false} />
-                    </Card>
+                    {team && team.teamMembers && team.teamMembers.length > 0 && (
+                        <Card withPadding={false} style={{ marginTop: 12 }}>
+                            <Table columns={columns} dataSource={team.teamMembers} pagination={false} />
+                        </Card>
+                    )}
 
-                    {pendingInvites && pendingInvites.length > 0 && (
-                        <PendingInvites pendingInvites={pendingInvites} loading={pendingInvitesLoading} />
+                    {team && team.pendingInvites && team.pendingInvites.length > 0 && (
+                        <PendingInvites pendingInvites={team.pendingInvites} loading={pendingInvitesLoading} />
                     )}
 
                     {isAdmin() && (
@@ -278,19 +268,26 @@ const TeamSettings = ({
     );
 };
 
-const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers, changeRole, removeMember, loadPendingInvites };
+const mapDispatch = {
+    updateTeam,
+    deleteTeam,
+    leaveTeam,
+    loadTeamMembers,
+    changeRole,
+    removeMember,
+    loadPendingInvites,
+    loadTeam,
+};
 
 const mapState = state => {
     const userState = state.user || {};
     const profile = userState.profile || {};
-    const teamMembers = userState.teamMembers || [];
 
     return {
         userName: profile.name,
-        teams: defaultTo(profile.teams, []),
-        teamMembers: teamMembers,
-        pendingInvites: state.teams.pendingInvites,
-        pendingInvitesLoading: state.teams.pendingInvitesLoading,
+        pendingInvitesLoading: state.team.pendingInvitesLoading,
+        team: state.team.details,
+        loading: state.team.loading,
     };
 };
 

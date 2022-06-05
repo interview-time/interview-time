@@ -1,7 +1,7 @@
 import styles from "./status-tags.module.css";
 import { Tag } from "antd";
 import React from "react";
-import { Status } from "../utils/constants";
+import { Status } from "../../utils/constants";
 
 /**
  *

@@ -3,7 +3,7 @@ import Layout from "../../components/layout/layout";
 import { Button, Checkbox, Dropdown, Menu, Modal, Select, Table } from "antd";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
-import { localeCompare } from "../../components/utils/comparators";
+import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
 import { orderBy } from "lodash/collection";
 import Title from "antd/lib/typography/Title";
@@ -11,14 +11,14 @@ import TableHeader from "../../components/table/table-header";
 import { deleteCandidate, loadCandidates, updateCandidate } from "../../store/candidates/actions";
 import CandidateStatusTag, { getCandidateStatusText } from "../../components/tags/candidate-status-tag";
 import styles from "./candidates.module.css";
-import { routeCandidateDetails, routeCandidates } from "../../components/utils/route";
+import { routeCandidateDetails, routeCandidates } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import ArchivedTag from "../../components/tags/candidate-archived-tag";
-import { CandidateStatus } from "../../components/utils/constants";
-import { filterOptionLabel } from "../../components/utils/filters";
-import { MoreIcon } from "../../components/utils/icons";
+import { CandidateStatus } from "../../utils/constants";
+import { filterOptionLabel } from "../../utils/filters";
+import { MoreIcon } from "../../utils/icons";
 import { cloneDeep } from "lodash/lang";
-import { getFormattedDateShort } from "../../components/utils/date-fns";
+import { getFormattedDateShort } from "../../utils/date-fns";
 
 /**
  *

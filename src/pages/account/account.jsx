@@ -2,13 +2,13 @@ import styles from "./account.module.css";
 import Layout from "../../components/layout/layout";
 import { Button, Card, Col, Divider, Row, Space, Switch } from "antd";
 import React from "react";
-import { ProfileIcon } from "../../components/utils/icons";
+import { ProfileIcon } from "../../utils/icons";
 import Avatar from "antd/es/avatar/avatar";
 import { useAuth0 } from "../../react-auth0-spa";
 import Meta from "antd/lib/card/Meta";
 import StickyHeader from "../../components/layout/header-sticky";
 import Text from "antd/lib/typography/Text";
-import { isNotesExpanded, setNotesExpanded } from "../../components/utils/storage";
+import { isNotesExpanded, setNotesExpanded } from "../../utils/storage";
 import Title from "antd/lib/typography/Title";
 
 const Account = () => {

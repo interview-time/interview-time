@@ -1,4 +1,4 @@
-import { newsData } from "../../pages/news/modal-news";
+import { newsData } from "../pages/news/modal-news";
 
 const KEY_NEWS_VISIT_INT = "news-visit-version-int";
 const KEY_QUICKSTART_QUESTION_BANK = "quickstart-question-bank";

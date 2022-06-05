@@ -1,6 +1,6 @@
 import styles from "./template-card.module.css";
-import { getTemplateCategoryBackground, getTemplateCategoryIcon } from "../utils/constants";
-import { TemplateIcon } from "../utils/icons";
+import { getTemplateCategoryBackground, getTemplateCategoryIcon } from "../../utils/constants";
+import { TemplateIcon } from "../../utils/icons";
 
 /**
  *

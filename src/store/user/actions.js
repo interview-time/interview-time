@@ -1,11 +1,11 @@
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import axios from "axios";
 import { config } from "../common";
-import { logError } from "../../components/utils/log";
+import { logError } from "../../utils/log";
 import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidates } from "../candidates/actions";
-import { loadPendingInvites, setPendingInvites } from "../teams/actions";
+import { loadPendingInvites, setPendingInvites } from "../team/actions";
 import { isEmpty } from "lodash/lang";
 
 export const SET_PROFILE = "SET_PROFILE";

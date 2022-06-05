@@ -8,10 +8,10 @@ import { loadLibrary } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { findLibraryTemplate } from "../../components/utils/converters";
+import { findLibraryTemplate } from "../../utils/converters";
 import Layout from "../../components/layout/layout";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { routeTemplateBlankFromLibrary } from "../../components/utils/route";
+import { routeTemplateBlankFromLibrary } from "../../utils/route";
 import Card from "../../components/card/card";
 
 /**

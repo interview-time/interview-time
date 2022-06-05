@@ -8,12 +8,12 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { cloneDeep } from "lodash/lang";
 import { debounce } from "lodash/function";
-import { routeInterviewReport } from "../../components/utils/route";
-import { findInterview, findQuestionInGroups } from "../../components/utils/converters";
+import { routeInterviewReport } from "../../utils/route";
+import { findInterview, findQuestionInGroups } from "../../utils/converters";
 
 import Spinner from "../../components/spinner/spinner";
 
-import { Status } from "../../components/utils/constants";
+import { Status } from "../../utils/constants";
 import { personalEvent } from "../../analytics";
 import Assessment from "./assessment";
 import Evaluation from "./evaluation";

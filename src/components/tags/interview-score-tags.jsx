@@ -1,7 +1,7 @@
 import styles from "./interview-score-tags.module.css";
 import { Tag } from "antd";
 import React from "react";
-import { getOverallPerformanceColor, getOverallPerformancePercent } from "../utils/assessment";
+import { getOverallPerformanceColor, getOverallPerformancePercent } from "../../utils/assessment";
 
 /**
  *

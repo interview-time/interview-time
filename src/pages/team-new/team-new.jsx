@@ -6,7 +6,7 @@ import styles from "../team-new/team-new.module.css";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { routeTeamMembers } from "../../components/utils/route";
+import { routeTeamMembers } from "../../utils/route";
 import { createTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
 

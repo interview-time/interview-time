@@ -5,13 +5,13 @@ import Text from "antd/lib/typography/Text";
 import { cloneDeep } from "lodash/lang";
 import arrayMove from "array-move";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
-import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
+import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
-import { isEmpty } from "../../components/utils/date";
-import { createTagColors } from "../../components/utils/constants";
+import { isEmpty } from "../../utils/date";
+import { createTagColors } from "../../utils/constants";
 import { TemplateTags } from "./template-tags";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
-import { interviewToTags } from "../../components/utils/converters";
+import { interviewToTags } from "../../utils/converters";
 
 const { TextArea } = Input;
 

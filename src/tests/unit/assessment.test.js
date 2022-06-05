@@ -1,5 +1,5 @@
-import { Difficulty, QuestionAssessment } from "../../components/utils/constants";
-import { getQuestionsAssessment } from "../../components/utils/assessment";
+import { Difficulty, QuestionAssessment } from "../../utils/constants";
+import { getQuestionsAssessment } from "../../utils/assessment";
 
 test('test getQuestionsAssessment all EASY all EXCELLENT', () => {
     let questions = [

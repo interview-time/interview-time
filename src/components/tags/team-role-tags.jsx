@@ -1,7 +1,7 @@
 import styles from "./status-tags.module.css";
 import { Tag } from "antd";
 import React from "react";
-import { Roles } from "../utils/constants";
+import { Roles } from "../../utils/constants";
 
 /**
  *

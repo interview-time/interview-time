@@ -1,4 +1,4 @@
-import { Status } from "../../components/utils/constants";
+import { Status } from "../../utils/constants";
 
 export const selectInterview = (state, interviewId) => {
     return state.interviews.interviews.find(i => i.interviewId === interviewId);

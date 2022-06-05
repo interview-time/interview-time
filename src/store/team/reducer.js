@@ -1,9 +1,12 @@
-import { SET_PENDING_INVITES_LOADING, SET_PENDING_INVITES } from "./actions";
-import { log } from "../../components/utils/log";
+import { SET_PENDING_INVITES_LOADING, SET_PENDING_INVITES, SET_TEAM, SET_LOADING, SET_ERROR } from "./actions";
+import { log } from "../../utils/log";
 
 const initialState = {
     pendingInvites: [],
     pendingInvitesLoading: false,
+    loading: false,
+    error: false,
+    details: null,
 };
 
 const teamsReducer = (state = initialState, action) => {
@@ -18,6 +21,21 @@ const teamsReducer = (state = initialState, action) => {
         case SET_PENDING_INVITES: {
             const { pendingInvites } = action.payload;
             return { ...state, pendingInvites: pendingInvites };
+        }
+
+        case SET_LOADING: {
+            const { loading } = action.payload;
+            return { ...state, loading: loading };
+        }
+
+        case SET_ERROR: {
+            const { error } = action.payload;
+            return { ...state, error: error };
+        }
+
+        case SET_TEAM: {
+            const { team } = action.payload;
+            return { ...state, details: team };
         }
 
         default:

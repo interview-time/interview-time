@@ -17,9 +17,9 @@ import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { cloneDeep } from "lodash/lang";
 import { orderBy } from "lodash/collection";
-import { findCategory } from "../../components/utils/converters";
+import { findCategory } from "../../utils/converters";
 import { findIndex } from "lodash/array";
-import { log } from "../../components/utils/log";
+import { log } from "../../utils/log";
 
 /**
  *

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CheckIcon, CopyIcon, LinkIcon } from "../../components/utils/icons";
+import { CheckIcon, CopyIcon, LinkIcon } from "../../utils/icons";
 import { Button, Input, Modal, Switch } from "antd";
 import Text from "antd/lib/typography/Text";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -7,7 +7,7 @@ import copy from "copy-to-clipboard";
 import { connect } from "react-redux";
 import { shareScorecard, unshareScorecard } from "../../store/interviews/actions";
 import { selectInterview } from "../../store/interviews/selector";
-import { getHost } from "../../components/utils/route";
+import { getHost } from "../../utils/route";
 import styles from "./interview-scorecard.module.css";
 
 const ShareScorecard = ({

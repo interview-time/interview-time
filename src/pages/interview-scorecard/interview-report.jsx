@@ -5,7 +5,7 @@ import {
     getGroupAssessment,
     getOverallPerformanceColor,
     getOverallPerformancePercent,
-} from "../../components/utils/assessment";
+} from "../../utils/assessment";
 import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
 import Title from "antd/lib/typography/Title";
@@ -14,8 +14,8 @@ import {
     filterGroupsWithAssessment,
     filterGroupsWithAssessmentNotes,
     filterQuestionsWithAssessmentNotes,
-} from "../../components/utils/filters";
-import { CloseIcon } from "../../components/utils/icons";
+} from "../../utils/filters";
+import { CloseIcon } from "../../utils/icons";
 import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";

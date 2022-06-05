@@ -1,4 +1,4 @@
-import { Roles } from "../../components/utils/constants";
+import { Roles } from "../../utils/constants";
 
 /**
  *

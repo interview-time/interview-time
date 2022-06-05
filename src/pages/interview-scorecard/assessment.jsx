@@ -11,13 +11,13 @@ import NotesSection from "./notes-section";
 import TimeAgo from "../../components/time-ago/time-ago";
 import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
-import { BackIcon, CloseIcon } from "../../components/utils/icons";
+import { BackIcon, CloseIcon } from "../../utils/icons";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 import Text from "antd/lib/typography/Text";
 import { PlusOutlined } from "@ant-design/icons";
-import { routeHome } from "../../components/utils/route";
+import { routeHome } from "../../utils/route";
 
 /**
  *
