@@ -154,6 +154,7 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
                         scroll={{
                             x: "max-content",
                         }}
+                        rowKey='interviewId'
                         pagination={false}
                         columns={columns}
                         dataSource={interviews}
@@ -171,7 +172,7 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
             </Title>
             <Row gutter={[32, 32]}>
                 {templates.map(template => (
-                    <Col span={24} lg={{ span: 8 }}>
+                    <Col span={24} lg={{ span: 8 }} key={template.templateId}>
                         <TemplateCard key={template.templateId} template={template} />
                     </Col>
                 ))}
