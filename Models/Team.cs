@@ -14,6 +14,10 @@ namespace CafApi.Models
 
         public string Name { get; set; }
 
+        public int Seats { get; set; }
+
+        public string Plan { get; set; }
+
         public string Token { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
