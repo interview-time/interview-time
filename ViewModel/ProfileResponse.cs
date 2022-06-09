@@ -10,6 +10,8 @@ namespace CafApi.ViewModel
 
         public string Email { get; set; }
 
+        public string Position { get; set; }
+
         public int TimezoneOffset { get; set; }
 
         public List<TeamResponse> Teams { get; set; }
