@@ -133,6 +133,12 @@ namespace CafApi.Controllers
             };
         }
 
+        [HttpPut]
+        public async Task UpdateUser(UpdateUserRequest request)
+        {
+            await _userService.UpdateProfile(UserId, request.Name, request.Email, request.Position, request.TimezoneOffset, request.Timezone, request.CurrentTeamId);
+        }
+
         [HttpPut("current-team")]
         public async Task UpdateCurrentTeam(UpdateCurrentTeamRequest request)
         {
