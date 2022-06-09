@@ -14,6 +14,8 @@ namespace CafApi.Models
 
         public string Email { get; set; }
 
+        public string Position { get; set; }
+
         public int TimezoneOffset { get; set; }
 
         public string Timezone { get; set; }
