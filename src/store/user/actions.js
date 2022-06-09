@@ -75,6 +75,16 @@ export const loadProfile = (name, email, inviteToken) => async (dispatch, getSta
     }
 };
 
+export const updateProfile = profile => async dispatch => {
+    try {
+        const token = await getAccessTokenSilently();
+        await axios.put(URL_PROFILE, profile, config(token));
+        dispatch(setProfile(profile));
+    } catch (error) {
+        logError(error);
+    }
+};
+
 export const setProfile = profile => async dispatch => {
     dispatch({
         type: SET_PROFILE,

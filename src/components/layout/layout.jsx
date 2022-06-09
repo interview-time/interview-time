@@ -12,7 +12,7 @@ import {
     UserAddIcon
 } from "../utils/icons";
 import {
-    routeAccount,
+    routeProfile,
     routeCandidates,
     routeHome,
     routeInterviewAdd,
@@ -36,6 +36,7 @@ import Text from "antd/lib/typography/Text";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 import { permissionViewCandidates } from "../../store/user/permissions";
+import { selectProfileName } from "../../store/user/user";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -101,7 +102,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
             return MENU_KEY_REPORTS;
         } else if (location.pathname.includes(routeCandidates())) {
             return MENU_KEY_CANDIDATES;
-        } else if (location.pathname.includes(routeAccount())) {
+        } else if (location.pathname.includes(routeProfile())) {
             return MENU_KEY_PROFILE;
         } else if (location.pathname.includes("settings")) {
             return "settings";
@@ -171,7 +172,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
     }));
 
     const getProfileName = () =>
-        truncate(profile.name, {
+        truncate(selectProfileName(profile), {
             length: 20,
         });
 
@@ -196,7 +197,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                         selectedKeys={[getSelectedMenuKey()]}
                         className={styles.menu}
                     >
-                        <Link to={routeAccount()} className={styles.profileHolder}>
+                        <Link to={routeProfile()} className={styles.profileHolder}>
                             <Avatar
                                 src={user ? user.picture : null}
                                 className={styles.avatar}
