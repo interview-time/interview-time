@@ -25,10 +25,10 @@ const premium = [
     { name: "Candidate comparison", available: true },
     { name: "Interview insights", available: true },
     { name: "Workflow integrations", available: true },
-    { name: "Limited to 2 members", available: true },
+    { name: "Unlimited members", available: true },
 ];
 
-const Subscription = ({ currentPlan, loading, email }) => {
+const Subscription = ({ currentPlan, loading, email, teamId }) => {
     if (loading) {
         return <Spinner />;
     }
@@ -44,6 +44,7 @@ const Subscription = ({ currentPlan, loading, email }) => {
                         features={starter}
                         currentPlan={currentPlan}
                         email={email}
+                        teamId={teamId}
                     />
                 </Col>
                 <Col span={24} lg={{ span: 6 }}>
@@ -56,6 +57,7 @@ const Subscription = ({ currentPlan, loading, email }) => {
                         priceId={process.env.REACT_APP_PREMIUM_PRICE_ID}
                         currentPlan={currentPlan}
                         email={email}
+                        teamId={teamId}
                     />
                 </Col>
             </Row>
@@ -68,6 +70,7 @@ const mapState = state => {
         currentPlan: state.team.details?.plan,
         loading: state.team.loading,
         email: state.user.profile.email,
+        teamId: state.user.profile.currentTeamId,
     };
 };
 

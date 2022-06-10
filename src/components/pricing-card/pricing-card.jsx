@@ -28,7 +28,7 @@ const PricingCard = ({ plan, title, subtitle, features, priceId, currentPlan, em
             </ul>
             <div>
                 {plan === SubscriptionPlans.Premium ? (
-                    <form action={`${process.env.REACT_APP_API_URL}/subscription/stripe-session`} method='POST'>
+                    <form action={`${process.env.REACT_APP_API_URL}/payments/stripe-session`} method='POST'>
                         <input type='hidden' name='PriceId' value={priceId} />
                         <input type='hidden' name='SuccessUrl' value={`${getHost()}${routeTeamSettings(teamId)}`} />
                         <input type='hidden' name='CancelUrl' value={`${getHost()}${routeTeamSettings(teamId)}`} />
