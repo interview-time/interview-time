@@ -36,7 +36,7 @@ import Text from "antd/lib/typography/Text";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 import { permissionViewCandidates } from "../../store/user/permissions";
-import { selectProfileName } from "../../store/user/user";
+import { selectProfileName } from "../../store/user/selector";
 
 /**
  * @typedef {Object} ActiveTeam

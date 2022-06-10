@@ -3,7 +3,7 @@ import { Menu } from "antd";
 import styles from "./account-menu.module.css";
 import React from "react";
 import { truncate } from "lodash/string";
-import { selectProfileName } from "../../store/user/user";
+import { selectProfileName } from "../../store/user/selector";
 import { routeProfile } from "../../components/utils/route";
 
 /**
