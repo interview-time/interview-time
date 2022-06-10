@@ -114,7 +114,14 @@ namespace CafApi.Controllers
                     _logger.LogInformation("Payment is successful and the subscription is created.");
 
                     var checkoutSession = stripeEvent.Data.Object as Stripe.Checkout.Session;
-                    await _teamService.UpdateSubscription(checkoutSession.ClientReferenceId, SubscriptionPlan.PREMIUM, checkoutSession.LineItems.Count(), checkoutSession.Customer.Id);
+                
+                    var quantity = checkoutSession.Subscription?.Items?.FirstOrDefault()?.Quantity;
+                    if (quantity == null)
+                    {
+                        throw new ArgumentNullException("Stripe API: Quantity is missing");
+                    }
+
+                    await _teamService.UpdateSubscription(checkoutSession.ClientReferenceId, SubscriptionPlan.PREMIUM, (int)quantity.Value, checkoutSession.CustomerId);
 
                     break;
 
