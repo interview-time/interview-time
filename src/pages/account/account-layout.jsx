@@ -4,7 +4,7 @@ import AccountMenu from "./account-menu";
 import React from "react";
 import Layout from "../../components/layout/layout";
 import { connect } from "react-redux";
-import { routeProfile } from "../../components/utils/route";
+import { routeProfile } from "../../utils/route";
 import { useHistory, useLocation } from "react-router-dom";
 
 /**
