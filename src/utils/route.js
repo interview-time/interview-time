@@ -59,7 +59,7 @@ export const routeTemplateLibrary = () => "/templates/library/";
 
 export const routeQuestionBankCategory = id => `/question-bank/${id}`;
 
-export const routeAccount = () => "/account";
+export const routeProfile = () => "/account/profile";
 
 export const routeSharedTemplate = () => "/template/shared/:token";
 
