@@ -95,7 +95,8 @@ namespace CafApi.Controllers
                 teams.Add(new TeamItemResponse
                 {
                     TeamId = team.TeamId,
-                    TeamName = team.Name
+                    TeamName = team.Name,
+                    Roles = new List<string> { TeamRole.ADMIN.ToString() }
                 });
 
                 // populate demo data            
