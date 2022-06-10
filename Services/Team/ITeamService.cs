@@ -30,6 +30,10 @@ namespace CafApi.Services
 
         Task RemoveTeamMember(string adminId, string memberId, string teamId);
 
-        Task UpdateMemberRole(string adminId, string memberId, string teamId, string newRole);
+        Task UpdateMemberRole(string adminId, string memberId, string teamId, string newRole);  
+
+        Task<int> GetAvailableSeats(string teamId); 
+
+        Task UpdateSubscription(string teamId, SubscriptionPlan plan, int seats, string stripeCustomerId);     
     }
 }

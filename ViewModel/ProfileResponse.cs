@@ -14,18 +14,16 @@ namespace CafApi.ViewModel
 
         public int TimezoneOffset { get; set; }
 
-        public List<TeamResponse> Teams { get; set; }
+        public List<TeamItemResponse> Teams { get; set; }
 
         public string CurrentTeamId { get; set; }
     }
 
-    public class TeamResponse
+    public class TeamItemResponse
     {
         public string TeamId { get; set; }
 
         public string TeamName { get; set; }
-
-        public string Token { get; set; }
 
         public List<string> Roles { get; set; }
     }

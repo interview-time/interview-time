@@ -35,6 +35,48 @@ namespace CafApi.Controllers
             _userService = userService;
         }
 
+        [HttpGet("{teamId}")]
+        public async Task<ActionResult<TeamResponse>> GetTeam(string teamId)
+        {
+            var team = await _teamService.GetTeam(teamId);
+            if (team == null)
+            {
+                return NotFound();
+            }
+
+            List<(Profile Profile, TeamMember TeamMember)> members = await _teamService.GetTeamMembers(UserId, teamId);
+            var invites = await _teamService.GetPendingInvites(UserId, teamId);
+            var invitedByList = await _userService.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
+            var availableSeats = await _teamService.GetAvailableSeats(teamId);
+
+            return new TeamResponse
+            {
+                TeamId = team.TeamId,
+                TeamName = team.Name,
+                TeamMembers = members.Select(m => new TeamMembersResponse
+                {
+                    UserId = m.Profile.UserId,
+                    Name = m.Profile.Name,
+                    Email = m.Profile.Email,
+                    IsAdmin = m.Profile.UserId == team.OwnerId,
+                    Roles = m.TeamMember.Roles
+                }).ToList(),
+                PendingInvites = invites.Select(i => new PendingInviteResponse
+                {
+                    InviteId = i.InviteId,
+                    InviteeEmail = i.InviteeEmail,
+                    Role = i.Role,
+                    InvitedBy = invitedByList.FirstOrDefault(invitedBy => invitedBy.UserId == i.InvitedBy)?.Name,
+                    InvitedDate = i.CreatedDate
+                }).ToList(),
+                Token = team.Token,
+                Roles = members.FirstOrDefault(m => m.TeamMember.UserId == UserId).TeamMember?.Roles,
+                Seats = team.Seats == 0 ? 2 : team.Seats,
+                Plan = team.Plan ?? SubscriptionPlan.STARTER.ToString(),
+                AvailableSeats = availableSeats
+            };
+        }
+
         [HttpPost()]
         public async Task<Team> CreateTeam(CreateTeamRequest request)
         {

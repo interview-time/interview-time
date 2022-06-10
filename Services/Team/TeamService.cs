@@ -35,6 +35,8 @@ namespace CafApi.Services
                 TeamId = Guid.NewGuid().ToString(),
                 OwnerId = userId,
                 Name = name,
+                Seats = 2,
+                Plan = SubscriptionPlan.STARTER.ToString(),
                 Token = StringHelper.GenerateToken(),
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
@@ -209,34 +211,50 @@ namespace CafApi.Services
 
         public async Task Invite(string userId, string inviteeEmail, string teamId, string role)
         {
-            var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
-            if (belongsToTeam)
+            var availableSeats = await GetAvailableSeats(teamId);
+            if (availableSeats > 0)
             {
-                var invites = await GetPendingInvites(userId, teamId);
-                var invite = invites.FirstOrDefault(i => i.InviteeEmail == inviteeEmail);
-
-                if (invite == null)
+                var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
+                if (belongsToTeam)
                 {
-                    invite = new Invite
+                    var invites = await GetPendingInvites(userId, teamId);
+                    var invite = invites.FirstOrDefault(i => i.InviteeEmail == inviteeEmail);
+
+                    if (invite == null)
                     {
-                        Token = StringHelper.GenerateToken(),
-                        InviteId = Guid.NewGuid().ToString(),
-                        InviteeEmail = inviteeEmail,
-                        TeamId = teamId,
-                        Role = role,
-                        InvitedBy = userId,
-                        CreatedDate = DateTime.UtcNow,
-                        ModifiedDate = DateTime.UtcNow,
-                    };
+                        invite = new Invite
+                        {
+                            Token = StringHelper.GenerateToken(),
+                            InviteId = Guid.NewGuid().ToString(),
+                            InviteeEmail = inviteeEmail,
+                            TeamId = teamId,
+                            Role = role,
+                            InvitedBy = userId,
+                            CreatedDate = DateTime.UtcNow,
+                            ModifiedDate = DateTime.UtcNow,
+                        };
 
-                    await _context.SaveAsync(invite);
+                        await _context.SaveAsync(invite);
+                    }
+
+                    var inviter = await _userService.GetProfile(userId);
+                    var team = await GetTeam(teamId);
+
+                    await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);
                 }
-
-                var inviter = await _userService.GetProfile(userId);
-                var team = await GetTeam(teamId);
-
-                await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);
             }
+        }
+
+        public async Task<int> GetAvailableSeats(string teamId)
+        {
+            var team = await GetTeam(teamId);
+            var teamMembers = await GetTeamMembers(teamId);
+            var pendingInvites = await GetPendingInvites(teamId);
+
+            var totalUsedSeats = teamMembers.Count + pendingInvites.Count(p => !p.IsAccepted);
+            var seats = team.Seats == 0 ? 2 : team.Seats;
+
+            return (seats - totalUsedSeats);
         }
 
         public async Task<string> AcceptInvite(string userId, string inviteToken)
@@ -255,7 +273,7 @@ namespace CafApi.Services
                     await _context.SaveAsync(invite);
 
                     teamId = invite.TeamId;
-                }            
+                }
             }
 
             return teamId;
@@ -291,6 +309,43 @@ namespace CafApi.Services
                     await _context.SaveAsync(member);
                 }
             }
+        }
+
+        public async Task UpdateSubscription(string teamId, SubscriptionPlan plan, int seats, string stripeCustomerId)
+        {
+            var team = await GetTeam(teamId);
+            if (team == null)
+            {
+                throw new ArgumentException($"Team {teamId} not found");
+            }
+
+            team.Plan = plan.ToString();
+            team.Seats = team.Seats + seats;
+            team.StripeCustomerId = stripeCustomerId;
+            team.ModifiedDate = DateTime.UtcNow;
+
+            await _context.SaveAsync(team);
+        }
+
+        private async Task<List<Invite>> GetPendingInvites(string teamId)
+        {
+            var teamInvites = new List<Invite>();
+
+            var search = _context.FromQueryAsync<Invite>(new QueryOperationConfig()
+            {
+                IndexName = "TeamId-index",
+                Filter = new QueryFilter(nameof(CafApi.Models.Invite.TeamId), QueryOperator.Equal, teamId)
+            });
+
+            teamInvites = await search.GetRemainingAsync();
+            teamInvites = teamInvites.Where(i => !i.IsAccepted).ToList();
+
+            return teamInvites;
+        }
+
+        private async Task<List<TeamMember>> GetTeamMembers(string teamId)
+        {
+            return await _context.QueryAsync<TeamMember>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
         }
 
         private async Task<bool> AddToTeam(string userId, string teamId, string role = null)

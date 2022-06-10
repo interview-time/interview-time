@@ -73,11 +73,10 @@ namespace CafApi.Controllers
                 Position = profile.Position,
                 TimezoneOffset = profile.TimezoneOffset,
                 CurrentTeamId = profile.CurrentTeamId,
-                Teams = teams.Select(t => new TeamResponse
+                Teams = teams.Select(t => new TeamItemResponse
                 {
                     TeamId = t.Team.TeamId,
                     TeamName = t.Team.Name,
-                    Token = t.Team.Token,
                     Roles = t.TeamMember.Roles
                 }).ToList()
             };
@@ -87,18 +86,17 @@ namespace CafApi.Controllers
         public async Task<ProfileResponse> SetupUser(SetupUserRequest request)
         {
             var profile = await _userService.GetProfile(UserId);
-            var teams = new List<TeamResponse>();
+            var teams = new List<TeamItemResponse>();
 
             if (profile == null)
             {
                 var team = await _teamService.CreateTeam(UserId, "Personal Team");
                 profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset, request.Timezone, team.TeamId);
 
-                teams.Add(new TeamResponse
+                teams.Add(new TeamItemResponse
                 {
                     TeamId = team.TeamId,
                     TeamName = team.Name,
-                    Token = team.Token,
                     Roles = new List<string> { TeamRole.ADMIN.ToString() }
                 });
 
