@@ -46,7 +46,7 @@ namespace CafApi.Controllers
         [HttpPost("stripe-session")]
         public async Task<ActionResult> CreateStripeSession([FromForm] StripeSessionRequest request)
         {
-            StripeConfiguration.ApiKey = _configuration["StripeApiKey"];
+            StripeConfiguration.ApiKey = _configuration["Stripe:ApiKey"];
 
             var options = new SessionCreateOptions
             {
