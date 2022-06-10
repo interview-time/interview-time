@@ -6,15 +6,20 @@ namespace CafApi.ViewModel
     {
         public string Name { get; set; }
 
-        public string Email { get; set; }
-
         public string Position { get; set; }
 
         public int TimezoneOffset { get; set; }
 
         public string Timezone { get; set; }
+    }
 
-        public string CurrentTeamId { get; set; }
+    public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
+    {
+        public UpdateUserRequestValidator()
+        {
+            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Timezone).NotEmpty();
+        }
     }
 
     public class UpdateCurrentTeamRequest
