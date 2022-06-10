@@ -60,18 +60,16 @@ namespace CafApi.Services
             return profile;
         }
 
-        public async Task UpdateProfile(string userId, string name, string email, string position, int timezoneOffset, string timezone, string currentTeamId)
+        public async Task UpdateProfile(string userId, string name, string position, int timezoneOffset, string timezone)
         {
             var profile = await GetProfile(userId);
             if (profile != null)
             {
                 profile.ModifiedDate = DateTime.UtcNow;
                 profile.Name = name;
-                profile.Email = email;
                 profile.Position = position;
                 profile.TimezoneOffset = timezoneOffset;
                 profile.Timezone = timezone;
-                profile.CurrentTeamId = currentTeamId;
 
                  await _context.SaveAsync(profile);
             }

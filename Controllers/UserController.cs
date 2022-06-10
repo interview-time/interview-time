@@ -70,6 +70,7 @@ namespace CafApi.Controllers
                 UserId = profile.UserId,
                 Name = profile.Name,
                 Email = profile.Email,
+                Position = profile.Position,
                 TimezoneOffset = profile.TimezoneOffset,
                 CurrentTeamId = profile.CurrentTeamId,
                 Teams = teams.Select(t => new TeamResponse
@@ -136,7 +137,7 @@ namespace CafApi.Controllers
         [HttpPut]
         public async Task UpdateUser(UpdateUserRequest request)
         {
-            await _userService.UpdateProfile(UserId, request.Name, request.Email, request.Position, request.TimezoneOffset, request.Timezone, request.CurrentTeamId);
+            await _userService.UpdateProfile(UserId, request.Name, request.Position, request.TimezoneOffset, request.Timezone);
         }
 
         [HttpPut("current-team")]
