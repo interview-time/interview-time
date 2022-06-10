@@ -121,6 +121,7 @@
  * @property {string} name
  * @property {string} email
  * @property {string} userId
+ * @property {string} position
  * @property {string} currentTeamId
  * @property {number} timezoneOffset
  * @property {Team[]} teams

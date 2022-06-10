@@ -2,7 +2,7 @@ import "./App.less";
 import React, { useEffect } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
-    routeAccount,
+    routeProfile,
     routeCandidateDetails,
     routeCandidates,
     routeHome,
@@ -30,7 +30,7 @@ import InterviewSchedule from "./pages/interview-schedule/interview-schedule";
 import Templates from "./pages/templates/templates";
 import TemplateEdit from "./pages/template-edit/template-edit";
 import Reports from "./pages/reports/reports";
-import Account from "./pages/account/account";
+import Profile from "./pages/account/profile";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import ReactGA from "react-ga";
@@ -83,7 +83,7 @@ function App({ history }) {
             <PrivateRoute path={routeTemplateEdit()} exact component={TemplateEdit} />
             <PrivateRoute path={routeTemplatePreview()} exact component={TemplatePreview} />
             <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />
-            <PrivateRoute path={routeAccount()} exact component={Account} />
+            <PrivateRoute path={routeProfile()} exact component={Profile} />
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
             <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
