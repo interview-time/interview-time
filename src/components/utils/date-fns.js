@@ -1,7 +1,8 @@
 import * as Sentry from "@sentry/react";
 import { addHours, addMinutes, formatISO, isBefore, parseISO, set } from "date-fns";
-import { format } from "date-fns-tz";
+import { format, getTimezoneOffset } from "date-fns-tz";
 import { enAU, enCA, enGB, enIN, enNZ, enUS } from "date-fns/locale";
+import { log } from "./log";
 
 const locales = {
     "en-CA": enCA,
@@ -143,4 +144,38 @@ const getNavigatorLanguage = () => {
     } else {
         return navigator.language || DEFAULT_LOCALE;
     }
+};
+
+/**
+ *
+ * @returns {{offsetMinutes: number, timezone: string}}
+ */
+export const getCurrentTimezone = () => ({
+    offsetMinutes: new Date().getTimezoneOffset(),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+});
+
+const timezones = [];
+
+export const getAllTimezones = () => {
+    if (timezones.length === 0) {
+        log("TimezoneSelectorData is empty, populating array...");
+        const timezonesIntl = Intl.supportedValuesOf("timeZone");
+        const date = new Date();
+
+        timezonesIntl.forEach(timezone => {
+            const offsetLabel = format(date, "OOOO", { timeZone: timezone }); // GMT+10:00
+            let offsetMinutes = getTimezoneOffset(timezone) / 1000 / 60; // GMT+10:00 = 600, GMT-10:00 = -600
+            offsetMinutes *= -1; // convert to 'Date.getTimezoneOffset' (opposite value to what 'date-fns-tz' returns
+            timezones.push({
+                timezone: timezone,
+                label: `(${offsetLabel}) ${timezone}`, // '(GMT+10:00) Australia/Sydney'
+                offsetMinutes: offsetMinutes,
+            });
+        });
+
+        console.log(timezones);
+    }
+
+    return timezones;
 };
