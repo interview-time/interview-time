@@ -7,6 +7,7 @@ import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidates } from "../candidates/actions";
 import { resetTeam, loadTeam } from "../team/actions";
 import { isEmpty } from "lodash/lang";
+import { getCurrentTimezone } from "../../components/utils/date-fns";
 
 export const SET_PROFILE = "SET_PROFILE";
 export const SET_ACTIVE_TEAM = "SET_ACTIVE_TEAM";
@@ -37,8 +38,8 @@ export const loadProfile = (name, email, inviteToken) => async (dispatch, getSta
                 const request = {
                     name: name,
                     email: email,
-                    timezoneOffset: new Date().getTimezoneOffset(),
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    timezoneOffset: getCurrentTimezone().offsetMinutes,
+                    timezone: getCurrentTimezone().timezone,
                 };
 
                 profile = await axios.post(URL_PROFILE, request, config(token));
@@ -77,6 +78,12 @@ export const loadProfile = (name, email, inviteToken) => async (dispatch, getSta
 
 export const updateProfile = profile => async dispatch => {
     try {
+        if (!profile.timezoneOffset) {
+            profile.timezoneOffset = getCurrentTimezone().offsetMinutes;
+        }
+        if (!profile.timezone) {
+            profile.timezone = getCurrentTimezone().timezone;
+        }
         const token = await getAccessTokenSilently();
         await axios.put(URL_PROFILE, profile, config(token));
         dispatch(setProfile(profile));

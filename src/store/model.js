@@ -124,6 +124,7 @@
  * @property {string} position
  * @property {string} currentTeamId
  * @property {number} timezoneOffset
+ * @property {string} timezone
  * @property {Team[]} teams
  */
 

@@ -8,8 +8,10 @@ import { connect } from "react-redux";
 import AccountLayout from "./account-layout";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { Button, Col, Form, Input, message, Row, Space } from "antd";
+import { Button, Col, Form, Input, message, Row, Select, Space } from "antd";
 import { updateProfile } from "../../store/user/actions";
+import { getAllTimezones, getCurrentTimezone } from "../../components/utils/date-fns";
+import { log } from "../../components/utils/log";
 
 /**
  *
@@ -22,15 +24,26 @@ const Profile = ({ profile, updateProfile }) => {
     const { user } = useAuth0();
     const { logout } = useAuth0();
 
+    const timezoneSelector = getAllTimezones().map(item => ({
+        label: item.label,
+        value: item.timezone,
+    }));
+
     const onSignOutClicked = () => {
         logout({ returnTo: window.location.origin });
     };
 
     const onSaveClicked = values => {
+        const timezoneLabel = values.timezone ?? getCurrentTimezone().timezone;
+        const timezone = getAllTimezones().find(item => item.timezone === timezoneLabel);
+
+        log(timezone);
         updateProfile({
             ...profile,
             name: values.name,
             position: values.position,
+            timezone: timezone.timezone,
+            timezoneOffset: timezone.offsetMinutes,
         });
         message.success("Profile updated");
     };
@@ -50,7 +63,9 @@ const Profile = ({ profile, updateProfile }) => {
                             onFinish={onSaveClicked}
                             initialValues={{
                                 name: profile.name,
+                                position: profile.position,
                                 email: profile.email,
+                                timezone: profile.timezone,
                             }}
                         >
                             <Form.Item name='name' label={<Text strong>Full name</Text>}>
@@ -63,6 +78,17 @@ const Profile = ({ profile, updateProfile }) => {
 
                             <Form.Item name='email' label={<Text strong>Email</Text>}>
                                 <Input placeholder='Email' disabled={true} />
+                            </Form.Item>
+
+                            <Form.Item name='timezone' label={<Text strong>Time zone</Text>}>
+                                <Select
+                                    showSearch
+                                    placeholder='Australia/Sydney'
+                                    options={timezoneSelector}
+                                    filterOption={(inputValue, option) =>
+                                        option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                                    }
+                                />
                             </Form.Item>
 
                             <Space>
