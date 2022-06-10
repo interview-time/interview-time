@@ -20,6 +20,8 @@ namespace CafApi.Models
 
         public string Token { get; set; }
 
+        public string StripeCustomerId { get; set; }
+
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 

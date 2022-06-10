@@ -11,5 +11,7 @@ namespace CafApi.ViewModel.Subscription
         public string CancelUrl { get; set; }
 
         public string Email { get; set; }
+
+        public string TeamId { get; set; }
     }
 }

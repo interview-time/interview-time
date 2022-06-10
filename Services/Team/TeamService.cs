@@ -311,6 +311,22 @@ namespace CafApi.Services
             }
         }
 
+        public async Task UpdateSubscription(string teamId, SubscriptionPlan plan, int seats, string stripeCustomerId)
+        {
+            var team = await GetTeam(teamId);
+            if (team == null)
+            {
+                throw new ArgumentException($"Team {teamId} not found");
+            }
+
+            team.Plan = plan.ToString();
+            team.Seats = team.Seats + seats;
+            team.StripeCustomerId = stripeCustomerId;
+            team.ModifiedDate = DateTime.UtcNow;
+
+            await _context.SaveAsync(team);
+        }
+
         private async Task<List<Invite>> GetPendingInvites(string teamId)
         {
             var teamInvites = new List<Invite>();
