@@ -72,6 +72,7 @@ namespace CafApi.Controllers
                 Email = profile.Email,
                 Position = profile.Position,
                 TimezoneOffset = profile.TimezoneOffset,
+                Timezone = profile.Timezone,
                 CurrentTeamId = profile.CurrentTeamId,
                 Teams = teams.Select(t => new TeamItemResponse
                 {
@@ -127,6 +128,7 @@ namespace CafApi.Controllers
                 Name = profile.Name,
                 Email = profile.Email,
                 TimezoneOffset = profile.TimezoneOffset,
+                Timezone = profile.Timezone,
                 Teams = teams,
                 CurrentTeamId = profile.CurrentTeamId
             };
