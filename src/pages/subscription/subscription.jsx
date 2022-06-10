@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { SubscriptionPlans } from "../../utils/constants";
 import LayoutWide from "../../components/layout-wide/layout-wide";
 import PricingCard from "../../components/pricing-card/pricing-card";
+import Spinner from "../../components/spinner/spinner";
 
 const starter = [
     { name: "Centralized workspace", available: true },
@@ -27,38 +28,34 @@ const premium = [
     { name: "Limited to 2 members", available: true },
 ];
 
-const Subscription = ({ currentPlan }) => {
+const Subscription = ({ currentPlan, loading, email }) => {
+    if (loading) {
+        return <Spinner />;
+    }
     return (
         <LayoutWide header='Why go premium?'>
             <Row gutter={[32, 32]}>
                 <Col span={24} lg={{ offset: 6, span: 6 }}>
                     <PricingCard
-                        name='Starter'
+                        key={SubscriptionPlans.Starter}
+                        plan={SubscriptionPlans.Starter}
                         title='Free forever'
                         subtitle='For individuals and startups'
                         features={starter}
-                        onClick={
-                            currentPlan === SubscriptionPlans.Premium
-                                ? () => {
-                                      console.log("Downgrade to starter");
-                                  }
-                                : null
-                        }
+                        currentPlan={currentPlan}
+                        email={email}
                     />
                 </Col>
                 <Col span={24} lg={{ span: 6 }}>
                     <PricingCard
-                        name='Premium'
+                        key={SubscriptionPlans.Premium}
+                        plan={SubscriptionPlans.Premium}
                         title='$15 / per member / per month'
                         subtitle='For small and big companies'
                         features={premium}
-                        onClick={
-                            currentPlan === SubscriptionPlans.Starter
-                                ? () => {
-                                      console.log("Go to premium");
-                                  }
-                                : null
-                        }
+                        priceId={process.env.REACT_APP_PREMIUM_PRICE_ID}
+                        currentPlan={currentPlan}
+                        email={email}
                     />
                 </Col>
             </Row>
@@ -66,12 +63,12 @@ const Subscription = ({ currentPlan }) => {
     );
 };
 
-const mapDispatch = {};
-
 const mapState = state => {
     return {
-        currentPlan: state.team.currentPlan,
+        currentPlan: state.team.details?.plan,
+        loading: state.team.loading,
+        email: state.user.profile.email,
     };
 };
 
-export default connect(mapState, mapDispatch)(Subscription);
+export default connect(mapState, null)(Subscription);

@@ -19,9 +19,9 @@ import {
     TextNoteIcon,
     TimeIcon,
     UsersIcon,
-} from "../../components/utils/icons";
-import { getInterviewerName} from "../../components/utils/converters";
-import { isEmpty } from "../../components/utils/date";
+} from "../../utils/icons";
+import { getInterviewerName} from "../../utils/converters";
+import { isEmpty } from "../../utils/date";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 import { getFormattedDateTime, getFormattedDate, getFormattedTimeRange } from "../../utils/date-fns";

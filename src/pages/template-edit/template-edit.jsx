@@ -27,7 +27,7 @@ import TemplateHeaderCard from "./template-header-card";
 import TemplateFooterCard from "./template-footer-card";
 import { TemplateMetaCard } from "./template-meta-card";
 import { TemplateQuestionsCard } from "./template-questions-card";
-import { swap } from "../../components/utils/arrays";
+import { swap } from "../../utils/arrays";
 import { remove } from "lodash/array";
 import { sortBy } from "lodash/collection";
 

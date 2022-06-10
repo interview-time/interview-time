@@ -9,6 +9,7 @@ export const SET_PENDING_INVITES = "SET_PENDING_INVITES";
 export const SET_TEAM = "SET_TEAM";
 export const SET_LOADING = "SET_LOADING";
 export const SET_ERROR = "SET_ERROR";
+export const RESET_TEAM = "RESET_TEAM";
 
 const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 
@@ -63,7 +64,7 @@ export const loadTeam =
     async (dispatch, getState) => {
         const { team } = getState();
 
-        if (!team.pendingInvites || team.pendingInvites.length === 0 || forceFetch) {
+        if (!team.detail || forceFetch) {
             const token = await getAccessTokenSilently();
 
             dispatch(setLoading(true));
@@ -81,3 +82,7 @@ export const loadTeam =
             }
         }
     };
+
+export const resetTeam = () => ({
+    type: RESET_TEAM,
+});

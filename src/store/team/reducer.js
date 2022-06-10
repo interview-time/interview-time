@@ -1,4 +1,11 @@
-import { SET_PENDING_INVITES_LOADING, SET_PENDING_INVITES, SET_TEAM, SET_LOADING, SET_ERROR } from "./actions";
+import {
+    SET_PENDING_INVITES_LOADING,
+    SET_PENDING_INVITES,
+    SET_TEAM,
+    SET_LOADING,
+    SET_ERROR,
+    RESET_TEAM,
+} from "./actions";
 import { log } from "../../utils/log";
 
 const initialState = {
@@ -36,6 +43,10 @@ const teamsReducer = (state = initialState, action) => {
         case SET_TEAM: {
             const { team } = action.payload;
             return { ...state, details: team };
+        }
+
+        case RESET_TEAM: {
+            return { ...state, details: null, loading: false, error: false };
         }
 
         default:
