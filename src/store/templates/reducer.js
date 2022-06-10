@@ -18,7 +18,7 @@ import axios from "axios";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
-import { log } from "../../components/utils/log";
+import { log } from "../../utils/log";
 
 /**
  *

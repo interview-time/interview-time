@@ -63,7 +63,7 @@ export const routeProfile = () => "/account/profile";
 
 export const routeSharedTemplate = () => "/template/shared/:token";
 
-export const routeTeamNew = (hideMenu = false) => hideMenu ? "/team/new?hideMenu=true" : "/team/new/";
+export const routeTeamNew = (hideMenu = false) => (hideMenu ? "/team/new?hideMenu=true" : "/team/new/");
 
 export const routeTeamSettings = id => {
     const url = "/team/:id/settings";
@@ -75,6 +75,8 @@ export const routeTeamMembers = id => `/team/${id}/settings?tab=members`;
 export const routeTeamJoin = () => "/team/join/:id";
 
 export const routeSharedScorecard = () => "/public/scorecard/:token";
+
+export const routeSubscription = () => "/subscription";
 
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");

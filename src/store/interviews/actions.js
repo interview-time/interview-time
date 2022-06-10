@@ -1,7 +1,7 @@
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import axios from "axios";
 import { config } from "../common";
-import { logError } from "../../components/utils/log";
+import { logError } from "../../utils/log";
 
 export const LOAD_INTERVIEWS = "LOAD_INTERVIEWS";
 export const SET_INTERVIEWS = "SET_INTERVIEWS";

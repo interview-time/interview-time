@@ -6,14 +6,14 @@ import styles from "./reports.module.css";
 import { Input, Select, Table } from "antd";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
-import { Status } from "../../components/utils/constants";
-import { getDecisionText, getOverallPerformancePercent } from "../../components/utils/assessment";
-import { localeCompare } from "../../components/utils/comparators";
+import { Status } from "../../utils/constants";
+import { getDecisionText, getOverallPerformancePercent } from "../../utils/assessment";
+import { localeCompare } from "../../utils/comparators";
 import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
-import { routeInterviewReport } from "../../components/utils/route";
+import { routeInterviewReport } from "../../utils/route";
 import Title from "antd/lib/typography/Title";
-import { filterOptionLabel, interviewsPositionOptions } from "../../components/utils/filters";
+import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import Card from "../../components/card/card";
 import TableHeader from "../../components/table/table-header";
 import TableText from "../../components/table/table-text";
@@ -21,7 +21,7 @@ import InterviewDecisionTag from "../../components/tags/interview-decision-tags"
 import InterviewScoreTag from "../../components/tags/interview-score-tags";
 import InterviewCompetenceTag from "../../components/tags/interview-competence-tags";
 import { defaultTo } from "lodash/util";
-import { getFormattedDateTime } from "../../components/utils/date-fns";
+import { getFormattedDateTime } from "../../utils/date-fns";
 
 const { Search } = Input;
 

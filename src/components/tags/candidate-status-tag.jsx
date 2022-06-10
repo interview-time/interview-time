@@ -1,6 +1,6 @@
 import React from "react";
 import { Tag } from "antd";
-import { CandidateStatus } from "../utils/constants";
+import { CandidateStatus } from "../../utils/constants";
 import styles from "./status-tags.module.css";
 
 /**

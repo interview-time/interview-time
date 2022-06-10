@@ -3,13 +3,13 @@ import { Button, Dropdown, Input, Menu, Space, Table, Tooltip } from "antd";
 import React from "react";
 import Text from "antd/lib/typography/Text";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
-import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../components/utils/icons";
+import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
-import { isEmpty } from "../../components/utils/date";
+import { isEmpty } from "../../utils/date";
 import { TemplateTags } from "./template-tags";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
 import { isEqual } from "lodash";
-import { log } from "../../components/utils/log";
+import { log } from "../../utils/log";
 
 const { TextArea } = Input;
 

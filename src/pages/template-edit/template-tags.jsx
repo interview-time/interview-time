@@ -2,7 +2,7 @@ import { defaultTo } from "lodash/util";
 import { Select, Tag } from "antd";
 import styles from "./template.module.css";
 import React from "react";
-import { getTagColor } from "../../components/utils/constants";
+import { getTagColor } from "../../utils/constants";
 
 /**
  *

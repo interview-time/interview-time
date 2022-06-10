@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { filterQuestionsWithAssessment } from "../utils/filters";
-import { QuestionAssessment } from "../utils/constants";
+import { filterQuestionsWithAssessment } from "../../utils/filters";
+import { QuestionAssessment } from "../../utils/constants";
 import { Bar } from "react-chartjs-2";
 import styles from "./charts.module.css";
 import { Button, Tooltip } from "antd";

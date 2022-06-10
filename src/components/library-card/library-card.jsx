@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { routeLibraryTemplatePreview } from "../utils/route";
+import { routeLibraryTemplatePreview } from "../../utils/route";
 import defaultIcon from "../../assets/layout.png";
 import styles from "./library-card.module.css";
 import Card from "../card/card";

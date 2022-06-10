@@ -5,7 +5,7 @@ import Title from "antd/lib/typography/Title";
 import shareScorecardImage from "../../assets/news-share-scorecard.gif";
 import noAnswerImage from "../../assets/no-answer.gif";
 import Text from "antd/lib/typography/Text";
-import { updateNewsVisitTime } from "../../components/utils/storage";
+import { updateNewsVisitTime } from "../../utils/storage";
 
 export const newsData = [
     {

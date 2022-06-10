@@ -22,7 +22,8 @@ import {
     routeTemplateLibrary,
     routeTemplatePreview,
     routeTemplates,
-} from "./components/utils/route";
+    routeSubscription
+} from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
 import InterviewScorecard from "./pages/interview-scorecard/interview-scorecard";
@@ -45,6 +46,7 @@ import InterviewReport from "./pages/interview-scorecard/interview-report";
 import Candidates from "./pages/candidates/candidates";
 import CandidateDetails from "./pages/candidate-details/candidate-details";
 import SharedScorecard from "./pages/shared-scorecard/shared-scorecard";
+import Subscription from "./pages/subscription/subscription";
 
 function App({ history }) {
     useEffect(() => {
@@ -88,6 +90,7 @@ function App({ history }) {
             <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
+            <PrivateRoute path={routeSubscription()} exact component={Subscription} />            
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
             <Route path={routeSharedScorecard()} exact component={SharedScorecard} />
         </Switch>

@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./profile.module.css";
-import { ProfileIcon } from "../../components/utils/icons";
+import { ProfileIcon } from "../../utils/icons";
 import Avatar from "antd/es/avatar/avatar";
 import { useAuth0 } from "../../react-auth0-spa";
 import Card from "../../components/card/card";
@@ -10,8 +10,8 @@ import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { Button, Col, Form, Input, message, Row, Select, Space } from "antd";
 import { updateProfile } from "../../store/user/actions";
-import { getAllTimezones, getCurrentTimezone } from "../../components/utils/date-fns";
-import { log } from "../../components/utils/log";
+import { getAllTimezones, getCurrentTimezone } from "../../utils/date-fns";
+import { log } from "../../utils/log";
 
 /**
  *

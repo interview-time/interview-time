@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Col, Input, Space, Switch } from "antd";
-import { Status } from "../../components/utils/constants";
+import { Status } from "../../utils/constants";
 import styles from "./interview-sections.module.css";
-import { LightingIcon, LightingSmallIcon } from "../../components/utils/icons";
+import { LightingIcon, LightingSmallIcon } from "../../utils/icons";
 import Text from "antd/lib/typography/Text";
-import { isNotesExpanded, setNotesExpanded } from "../../components/utils/storage";
+import { isNotesExpanded, setNotesExpanded } from "../../utils/storage";
 
 const { TextArea } = Input;
 

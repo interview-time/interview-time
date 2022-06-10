@@ -1,74 +1,62 @@
+import React, { useEffect } from "react";
 import Layout from "../../components/layout/layout";
 import { Button, message, Modal, Space, Table, Menu, Dropdown } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import Title from "antd/lib/typography/Title";
 import { connect } from "react-redux";
 import TeamDetails from "./team-details";
-import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam, changeRole, removeMember } from "../../store/user/actions";
-import { loadPendingInvites } from "../../store/teams/actions";
-import { MoreIcon } from "../../components/utils/icons";
-import { defaultTo } from "lodash/util";
-import Spinner from "../../components/spinner/spinner";
+import { loadTeam } from "../../store/team/actions";
+import { MoreIcon } from "../../utils/icons";
+import Alert from "../../components/alert/alert";
 import TeamInvite from "./team-invite";
 import Card from "../../components/card/card";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import TableHeader from "../../components/table/table-header";
-import { localeCompare } from "../../components/utils/comparators";
+import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { DisplayRoles, Roles } from "../../components/utils/constants";
+import { DisplayRoles, Roles } from "../../utils/constants";
 import PendingInvites from "./pending-invites";
 import Text from "antd/lib/typography/Text";
+import { SubscriptionPlans } from "../../utils/constants";
 import styles from "./team-settings.module.css";
 
 /**
  *
  * @param {String} userName
- * @param {Team[]} teams
- * @param {TeamMember[]} teamMembers
  * @param updateTeam
  * @param deleteTeam
  * @param leaveTeam
- * @param loadTeamMembers
  * @param changeRole
  * @param removeMember
+ * @param loadTeam
+ * @param {boolean} loading
  * @returns {JSX.Element}
  * @constructor
  */
 const TeamSettings = ({
     userName,
-    teams,
-    teamMembers,
     updateTeam,
     deleteTeam,
     leaveTeam,
-    loadTeamMembers,
     changeRole,
     removeMember,
-    loadPendingInvites,
-    pendingInvites,
-    pendingInvitesLoading,
+    loadTeam,
+    team,
+    loading,
 }) => {
-    const [loading, setLoading] = useState(false);
-    const [team, setTeam] = useState(/** @type {Team|undefined} */ undefined);
-
     const history = useHistory();
     const { id } = useParams();
 
     useEffect(() => {
-        const currentTeam = teams.find(team => team.teamId === id);
-        if (currentTeam) {
-            setTeam(currentTeam);
-            setLoading(false);
-            loadTeamMembers(currentTeam.teamId);
-            loadPendingInvites(currentTeam.teamId);
+        console.log(`id: ${id}`);
+        if (id) {
+            loadTeam(id);
         }
         // eslint-disable-next-line
-    }, [id, teams]);
-
-    const getTeamName = () => (team ? team.teamName : "Team");
+    }, [id]);
 
     const isAdmin = () => (team ? team.roles.some(role => role === Roles.ADMIN) : false);
 
@@ -77,19 +65,19 @@ const TeamSettings = ({
             ...team,
             teamName: teamName,
         };
-        setLoading(true);
+
         updateTeam(newTeam);
     };
 
     const onDeleteClicked = () => {
         deleteTeam(team.teamId);
-        message.success(`Team '${getTeamName()}' has been removed.`);
+        message.success(`Team '${team.teamName}' has been removed.`);
         history.push("/");
     };
 
     const onLeaveClicked = () => {
         leaveTeam(team.teamId);
-        message.success(`You left '${getTeamName()}' team.`);
+        message.success(`You left '${team.teamName}' team.`);
         history.push("/");
     };
 
@@ -213,84 +201,95 @@ const TeamSettings = ({
             : undefined,
     ].filter(column => column);
 
-    const isLoading = () => !team || loading;
-
     return (
         <Layout contentStyle={styles.rootContainer}>
-            {!isLoading() ? (
-                <div>
-                    <Title level={4} style={{ marginBottom: 0 }}>
-                        Team settings
+            <div>
+                {team && team.plan === SubscriptionPlans.Starter && (
+                    <Alert
+                        title={`${team.seats}/${team.seats} seats used`}
+                        subtitle={`If you want to have more than ${team.seats} users on your team you need to upgrade your plan`}
+                        ctaText='Upgrade to Premium'
+                    />
+                )}
+
+                {team && team.plan === SubscriptionPlans.Premium && (
+                    <Alert
+                        title={`${team.seats}/${team.seats} seats used`}
+                        subtitle={`If you want to have more than ${team.seats} users on your team you need to purchase more seats`}
+                        ctaText='Buy More Seats'
+                    />
+                )}
+
+                <Title level={4} style={{ marginBottom: 0 }}>
+                    Team settings
+                </Title>
+
+                <Card style={{ marginTop: 12 }}>
+                    <TeamDetails
+                        teamName={team?.teamName}
+                        isAdmin={isAdmin()}
+                        onSaveClicked={onSaveClicked}
+                        onDeleteClicked={onDeleteClicked}
+                        onLeaveClicked={onLeaveClicked}
+                    />
+                </Card>
+
+                <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
+                    <Title level={5} style={{ marginBottom: 0 }}>
+                        Your team members
                     </Title>
-
-                    <Card style={{ marginTop: 12 }}>
-                        <TeamDetails
-                            teamName={getTeamName()}
-                            isAdmin={isAdmin()}
-                            onSaveClicked={onSaveClicked}
-                            onDeleteClicked={onDeleteClicked}
-                            onLeaveClicked={onLeaveClicked}
-                        />
-                    </Card>
-
-                    <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
-                        <Title level={5} style={{ marginBottom: 0 }}>
-                            Your team members
-                        </Title>
-                        <Button
-                            type='text'
-                            className={styles.rolesButton}
-                            onClick={rolesInfoDialog}
-                            icon={<InfoCircleOutlined />}
-                        >
-                            Roles permissions
-                        </Button>
-                    </div>
-
-                    <Card withPadding={false} style={{ marginTop: 12 }}>
-                        <Table columns={columns} dataSource={teamMembers} pagination={false} />
-                    </Card>
-
-                    {pendingInvites && pendingInvites.length > 0 && (
-                        <PendingInvites pendingInvites={pendingInvites} loading={pendingInvitesLoading} />
-                    )}
-
-                    {isAdmin() && (
-                        <>
-                            <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
-                                Invite your team
-                            </Title>
-
-                            <Card style={{ marginTop: 12 }}>
-                                <TeamInvite
-                                    teamName={getTeamName()}
-                                    userName={userName}
-                                    token={team ? team.token : null}
-                                />
-                            </Card>
-                        </>
-                    )}
+                    <Button
+                        type='text'
+                        className={styles.rolesButton}
+                        onClick={rolesInfoDialog}
+                        icon={<InfoCircleOutlined />}
+                    >
+                        Roles permissions
+                    </Button>
                 </div>
-            ) : (
-                <Spinner />
-            )}
+
+                <Card withPadding={false} style={{ marginTop: 12 }}>
+                    <Table columns={columns} dataSource={team?.teamMembers} pagination={false} loading={loading} />
+                </Card>
+
+                {team && team.pendingInvites && team.pendingInvites.length > 0 && (
+                    <PendingInvites pendingInvites={team?.pendingInvites} loading={loading} />
+                )}
+
+                {isAdmin() && (
+                    <>
+                        <Title level={5} style={{ marginBottom: 0, marginTop: 32 }}>
+                            Invite your team
+                        </Title>
+
+                        <Card style={{ marginTop: 12 }}>
+                            <TeamInvite teamName={team.teamName} userName={userName} token={team ? team.token : null} />
+                        </Card>
+                    </>
+                )}
+            </div>
         </Layout>
     );
 };
 
-const mapDispatch = { updateTeam, deleteTeam, leaveTeam, loadTeamMembers, changeRole, removeMember, loadPendingInvites };
+const mapDispatch = {
+    updateTeam,
+    deleteTeam,
+    leaveTeam,
+    loadTeamMembers,
+    changeRole,
+    removeMember,
+    loadTeam,
+};
 
 const mapState = state => {
     const userState = state.user || {};
     const profile = userState.profile || {};
-    const teamMembers = userState.teamMembers || [];
 
     return {
         userName: profile.name,
-        teams: defaultTo(profile.teams, []),
-        teamMembers: teamMembers,
-        pendingInvites: state.teams.pendingInvites,
-        pendingInvitesLoading: state.teams.pendingInvitesLoading,
+        team: state.team.details,
+        loading: state.team.loading,
     };
 };
 

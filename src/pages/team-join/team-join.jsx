@@ -4,8 +4,8 @@ import styles from "./team-join.module.css";
 import React from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import Paragraph from "antd/lib/typography/Paragraph";
-import { routeHome } from "../../components/utils/route";
-import { setJoinTeam } from "../../components/utils/storage";
+import { routeHome } from "../../utils/route";
+import { setJoinTeam } from "../../utils/storage";
 
 const { Text, Link } = Typography;
 const JoinTeam = () => {

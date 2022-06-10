@@ -1,7 +1,7 @@
 import styles from "./interview-decision-tags.module.css";
 import { Tag } from "antd";
 import React from "react";
-import { getDecisionColor, getDecisionText } from "../utils/assessment";
+import { getDecisionColor, getDecisionText } from "../../utils/assessment";
 
 /**
  *

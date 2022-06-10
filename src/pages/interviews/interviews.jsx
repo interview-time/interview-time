@@ -4,9 +4,9 @@ import { deleteInterview, loadInterviews } from "../../store/interviews/actions"
 import { loadCandidates } from "../../store/candidates/actions";
 import { Col, Row } from "antd";
 import { connect } from "react-redux";
-import { Status } from "../../components/utils/constants";
+import { Status } from "../../utils/constants";
 import Title from "antd/lib/typography/Title";
-import { ArchiveIcon, CalendarIcon, IdeaIcon } from "../../components/utils/icons";
+import { ArchiveIcon, CalendarIcon, IdeaIcon } from "../../utils/icons";
 import { loadTeamMembers } from "../../store/user/actions";
 import CardHero from "../../components/card/card-hero";
 import InterviewsTable from "./interviews-table";

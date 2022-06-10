@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Input, Select, Form } from "antd";
 import Text from "antd/lib/typography/Text";
-import { CheckIcon, MailIcon } from "../../components/utils/icons";
+import { CheckIcon, MailIcon } from "../../utils/icons";
 import { Option } from "antd/lib/mentions";
 import { inviteUser } from "../../store/user/actions";
 import styles from "./team-settings.module.css";

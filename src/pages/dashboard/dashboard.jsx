@@ -7,27 +7,27 @@ import { loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
 import { cloneDeep } from "lodash/lang";
-import { Status } from "../../components/utils/constants";
+import { Status } from "../../utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
 import {
     routeInterviewAdd,
     routeInterviewScorecard,
     routeTeamSettings,
     routeTemplates,
-} from "../../components/utils/route";
+} from "../../utils/route";
 import styles from "./dashboard.module.css";
 import DemoTag from "../../components/demo/demo-tag";
-import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../components/utils/icons";
+import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../utils/icons";
 import Card from "../../components/card/card";
 import CardHero from "../../components/card/card-hero";
 import TableHeader from "../../components/table/table-header";
-import { localeCompare } from "../../components/utils/comparators";
+import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
 import { defaultTo } from "lodash/util";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
-import { getFormattedDateTime } from "../../components/utils/date-fns";
+import { getFormattedDateTime } from "../../utils/date-fns";
 
 const { Title } = Typography;
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };

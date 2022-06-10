@@ -12,7 +12,7 @@ import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../../store/common";
 import styles from "../interview-schedule/interview-schedule.module.css";
 import Card from "../../components/card/card";
-import { log } from "../../components/utils/log";
+import { log } from "../../utils/log";
 import { cloneDeep } from "lodash/lang";
 
 const { Dragger } = Upload;

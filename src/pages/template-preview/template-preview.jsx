@@ -6,7 +6,7 @@ import { addTemplate, deleteTemplate, loadTemplates, shareTemplate } from "../..
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { findTemplate } from "../../components/utils/converters";
+import { findTemplate } from "../../utils/converters";
 import Layout from "../../components/layout/layout";
 import {
     CopyOutlined,
@@ -17,7 +17,7 @@ import {
 } from "@ant-design/icons";
 import Spinner from "../../components/spinner/spinner";
 import confirm from "antd/lib/modal/confirm";
-import { routeInterviewAddFromTemplate, routeTemplateEdit, routeTemplates } from "../../components/utils/route";
+import { routeInterviewAddFromTemplate, routeTemplateEdit, routeTemplates } from "../../utils/route";
 import { cloneDeep } from "lodash/lang";
 import TemplateShareModal from "./template-share-modal";
 import Card from "../../components/card/card";

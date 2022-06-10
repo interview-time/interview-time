@@ -58,39 +58,39 @@ export const QuestionAssessment = {
     EXCELLENT: 3,
 };
 
-const TemplateCategoriesIconStyle = { color: '#FFFFFF', fontSize: 32 };
+const TemplateCategoriesIconStyle = { color: "#FFFFFF", fontSize: 32 };
 
 export const TemplateCategories = [
     {
         key: "DEVELOPMENT",
         title: "Engineering",
         color: "#64B5F6",
-        icon: <DevelopmentIcon style={TemplateCategoriesIconStyle} />
+        icon: <DevelopmentIcon style={TemplateCategoriesIconStyle} />,
     },
     {
         key: "MANAGEMENT",
         title: "Management",
         color: "#9575CD",
-        icon: <ManagementIcon style={TemplateCategoriesIconStyle} />
+        icon: <ManagementIcon style={TemplateCategoriesIconStyle} />,
     },
     {
         key: "DESIGN",
         title: "Design",
         titleShort: "DESIGN",
         color: "#E57373",
-        icon: <DesignIcon style={TemplateCategoriesIconStyle} />
+        icon: <DesignIcon style={TemplateCategoriesIconStyle} />,
     },
     {
         key: "CUSTOMER SERVICE",
         title: "Customer Service",
         color: "#4DD0E1",
-        icon: <CustomerServiceIcon style={TemplateCategoriesIconStyle} />
+        icon: <CustomerServiceIcon style={TemplateCategoriesIconStyle} />,
     },
     {
         key: "OTHER",
         title: "Other",
         color: "#616161",
-        icon: <OtherIcon style={TemplateCategoriesIconStyle} />
+        icon: <OtherIcon style={TemplateCategoriesIconStyle} />,
     },
 ];
 
@@ -167,3 +167,8 @@ export const POSITIONS_OPTIONS = POSITIONS.map(position => ({
     value: position,
     label: position,
 }));
+
+export const SubscriptionPlans = {
+    Starter: "STARTER",
+    Premium: "PREMIUM",
+};

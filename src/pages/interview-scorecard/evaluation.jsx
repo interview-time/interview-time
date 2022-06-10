@@ -5,17 +5,17 @@ import {
     getGroupAssessment,
     getOverallPerformanceColor,
     getOverallPerformancePercent,
-} from "../../components/utils/assessment";
+} from "../../utils/assessment";
 import Header from "../../components/header/header";
 import styles from "./interview-scorecard.module.css";
 import Title from "antd/lib/typography/Title";
-import { Status } from "../../components/utils/constants";
+import { Status } from "../../utils/constants";
 import TextArea from "antd/lib/input/TextArea";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import TimeAgo from "../../components/time-ago/time-ago";
-import { filterGroupsWithAssessmentNotes, filterQuestionsWithAssessmentNotes } from "../../components/utils/filters";
-import { CloseIcon } from "../../components/utils/icons";
-import { routeInterviews } from "../../components/utils/route";
+import { filterGroupsWithAssessmentNotes, filterQuestionsWithAssessmentNotes } from "../../utils/filters";
+import { CloseIcon } from "../../utils/icons";
+import { routeInterviews } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";

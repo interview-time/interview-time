@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
-import { log } from "./components/utils/log";
+import { log } from "./utils/log";
 import Cookies from "universal-cookie";
 import { addYears } from "date-fns";
 

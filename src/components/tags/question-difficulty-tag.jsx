@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./question-difficulty-tag.module.css";
-import { Difficulty } from "../utils/constants";
+import { Difficulty } from "../../utils/constants";
 import { Dropdown, Menu, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 

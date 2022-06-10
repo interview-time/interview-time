@@ -1,11 +1,11 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
 import { Col, Dropdown, Grid, Input, Menu, message, Modal, Row, Space, Table, Tag } from "antd";
-import { getTagColor, InterviewAssessment, Status } from "../../components/utils/constants";
+import { getTagColor, InterviewAssessment, Status } from "../../utils/constants";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
-import { localeCompare, localeCompareArray } from "../../components/utils/comparators";
+import { localeCompare, localeCompareArray } from "../../utils/comparators";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import { CloseOutlined, DeleteOutlined, EditOutlined, GithubFilled, LinkedinFilled } from "@ant-design/icons";
 import {
@@ -19,12 +19,12 @@ import {
     TextNoteIcon,
     TimeIcon,
     UsersIcon,
-} from "../../components/utils/icons";
-import { getInterviewerName} from "../../components/utils/converters";
-import { isEmpty } from "../../components/utils/date";
+} from "../../utils/icons";
+import { getInterviewerName} from "../../utils/converters";
+import { isEmpty } from "../../utils/date";
 import Card from "../../components/card/card";
 import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag";
-import { getFormattedDateTime, getFormattedDate, getFormattedTimeRange } from "../../components/utils/date-fns";
+import { getFormattedDateTime, getFormattedDate, getFormattedTimeRange } from "../../utils/date-fns";
 
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;

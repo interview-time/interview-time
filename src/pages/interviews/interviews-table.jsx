@@ -3,23 +3,23 @@ import Title from "antd/lib/typography/Title";
 import Card from "../../components/card/card";
 import React, { useState } from "react";
 import TableHeader from "../../components/table/table-header";
-import { localeCompare } from "../../components/utils/comparators";
+import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
 import DemoTag from "../../components/demo/demo-tag";
 import { defaultTo } from "lodash/util";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
-import { MoreIcon } from "../../components/utils/icons";
-import { Status } from "../../components/utils/constants";
-import { routeInterviewDetails, routeInterviewReport, routeInterviewScorecard } from "../../components/utils/route";
+import { MoreIcon } from "../../utils/icons";
+import { Status } from "../../utils/constants";
+import { routeInterviewDetails, routeInterviewReport, routeInterviewScorecard } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
 import { sortBy } from "lodash/collection";
 import { truncate } from "lodash/string";
 import { uniqBy } from "lodash/array";
-import { filterOptionLabel, interviewsPositionOptions } from "../../components/utils/filters";
+import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import styles from "../interviews/interviews.module.css";
-import { getFormattedDateTime } from "../../components/utils/date-fns";
+import { getFormattedDateTime } from "../../utils/date-fns";
 
 /**
  *

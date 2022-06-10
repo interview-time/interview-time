@@ -10,7 +10,7 @@ import {
     ProfileIcon,
     TextNoteIcon,
     UserAddIcon
-} from "../utils/icons";
+} from "../../utils/icons";
 import {
     routeProfile,
     routeCandidates,
@@ -22,7 +22,7 @@ import {
     routeTeamSettings,
     routeTemplateLibrary,
     routeTemplates
-} from "../utils/route";
+} from "../../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
 import Avatar from "antd/es/avatar/avatar";
@@ -33,7 +33,7 @@ import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
-import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../utils/storage";
+import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 import { permissionViewCandidates } from "../../store/user/permissions";
 import { selectProfileName } from "../../store/user/selector";

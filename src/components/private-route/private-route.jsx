@@ -4,7 +4,7 @@ import { useAuth0 } from "../../react-auth0-spa";
 import { connect } from "react-redux";
 import Spinner from "../spinner/spinner";
 import { loadProfile, acceptInvite, setInviteError } from "../../store/user/actions";
-import { getParameterByName, routeTeamNew } from "../utils/route";
+import { getParameterByName, routeTeamNew } from "../../utils/route";
 import { isEmpty } from "lodash/lang";
 import { notification } from "antd";
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { filterQuestionsWithAssessment } from "../utils/filters";
+import { filterQuestionsWithAssessment } from "../../utils/filters";
 import { Pie } from "react-chartjs-2";
 import styles from "./charts.module.css";
 import { Button, Tooltip } from "antd";

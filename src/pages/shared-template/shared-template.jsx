@@ -4,7 +4,7 @@ import { IntroSection, SummarySection, TemplateGroupsSection } from "../intervie
 import { connect } from "react-redux";
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { routeTemplateBlankFromSharedTemplate } from "../../components/utils/route";
+import { routeTemplateBlankFromSharedTemplate } from "../../utils/route";
 import Spinner from "../../components/spinner/spinner";
 import { loadSharedTemplate } from "../../store/templates/actions";
 import styles from "./shared-template.module.css";

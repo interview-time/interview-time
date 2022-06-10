@@ -4,7 +4,7 @@ import styles from "./account-menu.module.css";
 import React from "react";
 import { truncate } from "lodash/string";
 import { selectProfileName } from "../../store/user/selector";
-import { routeProfile } from "../../components/utils/route";
+import { routeProfile } from "../../utils/route";
 
 /**
  *

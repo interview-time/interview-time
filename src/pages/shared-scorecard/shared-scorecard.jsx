@@ -9,14 +9,14 @@ import {
     getGroupAssessment,
     getOverallPerformanceColor,
     getOverallPerformancePercent,
-} from "../../components/utils/assessment";
+} from "../../utils/assessment";
 import AssessmentCheckbox from "../../components/questions/assessment-checkbox";
 import {
     filterGroupsWithAssessment,
     filterGroupsWithAssessmentNotes,
     filterQuestionsWithAssessmentNotes,
-} from "../../components/utils/filters";
-import { CalendarIcon, TimeIcon, UsersIcon } from "../../components/utils/icons";
+} from "../../utils/filters";
+import { CalendarIcon, TimeIcon, UsersIcon } from "../../utils/icons";
 import Spinner from "../../components/spinner/spinner";
 import Card from "../../components/card/card";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
@@ -24,7 +24,7 @@ import QuestionDifficultyTag from "../../components/tags/question-difficulty-tag
 import QuestionDifficultyChart from "../../components/charts/question-difficulty-chart";
 import QuestionAnswersChart from "../../components/charts/question-answers-chart";
 import CompetenceAreaChart from "../../components/charts/competence-area-chart";
-import { getFormattedDate, getFormattedTimeRange } from "../../components/utils/date-fns";
+import { getFormattedDate, getFormattedTimeRange } from "../../utils/date-fns";
 import logo from "../../assets/logo-horiz.png";
 import styles from "./shared-scorecard.module.css";
 
