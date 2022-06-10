@@ -11,6 +11,7 @@ import Text from "antd/lib/typography/Text";
 import { Button, Col, Form, Input, message, Row, Select, Space } from "antd";
 import { updateProfile } from "../../store/user/actions";
 import { getAllTimezones, getCurrentTimezone } from "../../components/utils/date-fns";
+import { log } from "../../components/utils/log";
 
 /**
  *
@@ -36,11 +37,13 @@ const Profile = ({ profile, updateProfile }) => {
         const timezoneLabel = values.timezone ?? getCurrentTimezone().timezone;
         const timezone = getAllTimezones().find(item => item.timezone === timezoneLabel);
 
-        console.log(timezone);
+        log(timezone);
         updateProfile({
             ...profile,
             name: values.name,
             position: values.position,
+            timezone: timezone.timezone,
+            timezoneOffset: timezone.offsetMinutes,
         });
         message.success("Profile updated");
     };
