@@ -14,6 +14,8 @@ namespace CafApi.ViewModel
 
         public int TimezoneOffset { get; set; }
 
+        public string Timezone { get; set; }
+
         public List<TeamItemResponse> Teams { get; set; }
 
         public string CurrentTeamId { get; set; }
