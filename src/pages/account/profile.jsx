@@ -10,8 +10,8 @@ import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { Button, Col, Form, Input, message, Row, Select, Space } from "antd";
 import { updateProfile } from "../../store/user/actions";
-import { getAllTimezones, getCurrentTimezone } from "../../components/utils/date-fns";
-import { log } from "../../components/utils/log";
+import { getAllTimezones, getCurrentTimezone } from "../../utils/date-fns";
+import { log } from "../../utils/log";
 
 /**
  *

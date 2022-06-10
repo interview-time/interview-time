@@ -7,7 +7,7 @@ import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidates } from "../candidates/actions";
 import { resetTeam, loadTeam } from "../team/actions";
 import { isEmpty } from "lodash/lang";
-import { getCurrentTimezone } from "../../components/utils/date-fns";
+import { getCurrentTimezone } from "../../utils/date-fns";
 
 export const SET_PROFILE = "SET_PROFILE";
 export const SET_ACTIVE_TEAM = "SET_ACTIVE_TEAM";
