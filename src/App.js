@@ -2,7 +2,6 @@ import "./App.less";
 import React, { useEffect } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
-    routeProfile,
     routeCandidateDetails,
     routeCandidates,
     routeHome,
@@ -12,10 +11,12 @@ import {
     routeInterviews,
     routeInterviewScorecard,
     routeLibraryTemplatePreview,
+    routeProfile,
     routeReports,
-    routeSharedTemplate,
     routeSharedScorecard,
+    routeSharedTemplate,
     routeTeamNew,
+    routeTeamProfile,
     routeTeamSettings,
     routeTemplateBlank,
     routeTemplateEdit,
@@ -47,6 +48,7 @@ import Candidates from "./pages/candidates/candidates";
 import CandidateDetails from "./pages/candidate-details/candidate-details";
 import SharedScorecard from "./pages/shared-scorecard/shared-scorecard";
 import Subscription from "./pages/subscription/subscription";
+import TeamProfile from "./pages/account/team-profile";
 
 function App({ history }) {
     useEffect(() => {
@@ -87,10 +89,11 @@ function App({ history }) {
             <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />
             <PrivateRoute path={routeProfile()} exact component={Profile} />
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
+            <PrivateRoute path={routeTeamProfile()} exact component={TeamProfile} />
             <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
-            <PrivateRoute path={routeSubscription()} exact component={Subscription} />            
+            <PrivateRoute path={routeSubscription()} exact component={Subscription} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
             <Route path={routeSharedScorecard()} exact component={SharedScorecard} />
         </Switch>

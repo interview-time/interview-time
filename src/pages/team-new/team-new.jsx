@@ -6,7 +6,7 @@ import styles from "../team-new/team-new.module.css";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { routeTeamMembers } from "../../utils/route";
+import { routeTeamSettings } from "../../utils/route";
 import { createTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
 
@@ -28,7 +28,7 @@ const NewTeam = ({ teams, createTeam }) => {
         let team = teams.find(team => team.teamName === name);
         if (team) {
             message.success("Team has been create.");
-            history.push(routeTeamMembers(team.teamId));
+            history.push(routeTeamSettings(team.teamId));
         }
 
         // eslint-disable-next-line
