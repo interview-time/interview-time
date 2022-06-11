@@ -6,15 +6,16 @@ import Title from "antd/lib/typography/Title";
 import { selectActiveTeam } from "../../store/user/selector";
 import { isTeamAdmin } from "../../store/user/permissions";
 import TeamInvite from "./team-members-invite";
-import styles from "../team-settings/team-settings.module.css";
+import styles from "./team-members.module.css";
 import { Button, Modal, Space } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Roles } from "../../utils/constants";
+import { Roles, SubscriptionPlans } from "../../utils/constants";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import Text from "antd/lib/typography/Text";
 import { TeamMembersTable } from "./team-members-table";
 import { loadTeam } from "../../store/team/actions";
 import TeamMembersPendingInvites from "./team-members-pending-invites";
+import Alert from "../../components/alert/alert";
 
 /**
  *
@@ -73,6 +74,21 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
 
     return (
         <AccountLayout>
+            {teamDetails && teamDetails.plan === SubscriptionPlans.Starter && (
+                <Alert
+                    title={`${teamDetails.seats}/${teamDetails.seats} seats used`}
+                    subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to upgrade your plan`}
+                    ctaText='Upgrade to Premium'
+                />
+            )}
+
+            {teamDetails && teamDetails.plan === SubscriptionPlans.Premium && (
+                <Alert
+                    title={`${teamDetails.seats}/${teamDetails.seats} seats used`}
+                    subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats`}
+                    ctaText='Buy More Seats'
+                />
+            )}
             <Card>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Team

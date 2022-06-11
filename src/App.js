@@ -19,7 +19,6 @@ import {
     routeTeamMembers,
     routeTeamNew,
     routeTeamProfile,
-    routeTeamSettings,
     routeTemplateBlank,
     routeTemplateEdit,
     routeTemplateLibrary,
@@ -43,7 +42,6 @@ import { useAuth0 } from "./react-auth0-spa";
 import TemplatePreview from "./pages/template-preview/template-preview";
 import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
-import TeamSettings from "./pages/team-settings/team-settings";
 import InterviewReport from "./pages/interview-scorecard/interview-report";
 import Candidates from "./pages/candidates/candidates";
 import CandidateDetails from "./pages/candidate-details/candidate-details";
@@ -93,7 +91,6 @@ function App({ history }) {
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
             <PrivateRoute path={routeTeamProfile()} exact component={TeamProfile} />
             <PrivateRoute path={routeTeamMembers()} exact component={TeamMembers} />
-            <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
             <PrivateRoute path={routeSubscription()} exact component={Subscription} />

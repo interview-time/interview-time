@@ -67,11 +67,6 @@ export const routeSharedTemplate = () => "/template/shared/:token";
 
 export const routeTeamNew = (hideMenu = false) => (hideMenu ? "/team/new?hideMenu=true" : "/team/new/");
 
-export const routeTeamSettings = id => {
-    const url = "/team/:id/settings";
-    return id ? url.replace(":id", id) : url;
-};
-
 export const routeTeamJoin = () => "/team/join/:id";
 
 export const routeSharedScorecard = () => "/public/scorecard/:token";

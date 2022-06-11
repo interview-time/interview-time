@@ -4,7 +4,15 @@ import { useHistory } from "react-router-dom";
 import { routeSubscription } from "../../utils/route";
 import styles from "./alert.module.css";
 
-const Alert = ({ title, subtitle, ctaText, onClose }) => {
+/**
+ *
+ * @param {string} title
+ * @param {string} subtitle
+ * @param {string} ctaText
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Alert = ({ title, subtitle, ctaText }) => {
     const history = useHistory();
 
     return (
