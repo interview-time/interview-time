@@ -21,6 +21,7 @@ import { DisplayRoles, Roles } from "../../utils/constants";
 import PendingInvites from "./pending-invites";
 import Text from "antd/lib/typography/Text";
 import { SubscriptionPlans } from "../../utils/constants";
+import { routeSubscription } from "../../utils/route";
 import styles from "./team-settings.module.css";
 
 /**
@@ -206,15 +207,16 @@ const TeamSettings = ({
             <div>
                 {team && team.plan === SubscriptionPlans.Starter && (
                     <Alert
-                        title={`${team.seats}/${team.seats} seats used`}
+                        title={`${team.seats - team.availableSeats}/${team.seats} seats used`}
                         subtitle={`If you want to have more than ${team.seats} users on your team you need to upgrade your plan`}
                         ctaText='Upgrade to Premium'
+                        onCtaClick={() => history.push(routeSubscription())}
                     />
                 )}
 
                 {team && team.plan === SubscriptionPlans.Premium && (
                     <Alert
-                        title={`${team.seats}/${team.seats} seats used`}
+                        title={`${team.seats - team.availableSeats}/${team.seats} seats used`}
                         subtitle={`If you want to have more than ${team.seats} users on your team you need to purchase more seats`}
                         ctaText='Buy More Seats'
                     />
@@ -224,15 +226,17 @@ const TeamSettings = ({
                     Team settings
                 </Title>
 
-                <Card style={{ marginTop: 12 }}>
-                    <TeamDetails
-                        teamName={team?.teamName}
-                        isAdmin={isAdmin()}
-                        onSaveClicked={onSaveClicked}
-                        onDeleteClicked={onDeleteClicked}
-                        onLeaveClicked={onLeaveClicked}
-                    />
-                </Card>
+                {team && (
+                    <Card style={{ marginTop: 12 }}>
+                        <TeamDetails
+                            teamName={team?.teamName}
+                            isAdmin={isAdmin()}
+                            onSaveClicked={onSaveClicked}
+                            onDeleteClicked={onDeleteClicked}
+                            onLeaveClicked={onLeaveClicked}
+                        />
+                    </Card>
+                )}
 
                 <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
                     <Title level={5} style={{ marginBottom: 0 }}>
@@ -263,7 +267,7 @@ const TeamSettings = ({
                         </Title>
 
                         <Card style={{ marginTop: 12 }}>
-                            <TeamInvite teamName={team.teamName} userName={userName} token={team ? team.token : null} />
+                            <TeamInvite disabled={team.availableSeats <= 0} />
                         </Card>
                     </>
                 )}

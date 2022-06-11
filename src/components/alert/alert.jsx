@@ -1,22 +1,22 @@
 import React from "react";
 import { Button } from "antd";
-import { useHistory } from "react-router-dom";
-import { routeSubscription } from "../../utils/route";
+import { AlertIcon } from "../../utils/icons";
 import styles from "./alert.module.css";
 
-const Alert = ({ title, subtitle, ctaText, onClose }) => {
-    const history = useHistory();
-
+const Alert = ({ title, subtitle, ctaText, onCtaClick }) => {
     return (
         <div className={styles.alert}>
-            <div className={styles.leftF}>
+            <div className={styles.left}>
+                <AlertIcon style={{ marginRight: 4 }} />
                 <span className={styles.title}>{title}</span>
                 <span>{subtitle}</span>
             </div>
             <div>
-                <Button className={styles.ctaButton} type='default' onClick={() => history.push(routeSubscription())}>
-                    {ctaText}
-                </Button>
+                {onCtaClick && (
+                    <Button className={styles.ctaButton} type='default' onClick={onCtaClick}>
+                        {ctaText}
+                    </Button>
+                )}
             </div>
         </div>
     );
