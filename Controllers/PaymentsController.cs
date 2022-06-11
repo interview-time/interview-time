@@ -117,14 +117,14 @@ namespace CafApi.Controllers
 
                     var service = new SubscriptionService();
                     var subscription = service.Get(checkoutSession.SubscriptionId);
-                    
+
                     var quantity = subscription?.Items?.FirstOrDefault()?.Quantity;
                     if (quantity == null)
                     {
                         throw new ArgumentNullException("Stripe API: Quantity is missing");
                     }
 
-                    await _teamService.UpdateSubscription(checkoutSession.ClientReferenceId, SubscriptionPlan.PREMIUM, (int)quantity.Value, checkoutSession.Customer.Id);
+                    await _teamService.UpdateSubscription(checkoutSession.ClientReferenceId, SubscriptionPlan.PREMIUM, (int)quantity.Value, checkoutSession.CustomerId);
 
                     break;
 
