@@ -15,6 +15,7 @@ import {
     routeReports,
     routeSharedScorecard,
     routeSharedTemplate,
+    routeSubscription,
     routeTeamNew,
     routeTeamProfile,
     routeTeamSettings,
@@ -23,7 +24,6 @@ import {
     routeTemplateLibrary,
     routeTemplatePreview,
     routeTemplates,
-    routeSubscription
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";

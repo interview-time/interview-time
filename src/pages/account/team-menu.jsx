@@ -2,7 +2,7 @@ import Card from "../../components/card/card";
 import { Menu } from "antd";
 import styles from "./team-menu.module.css";
 import React from "react";
-import { routeTeam, routeTeamProfile } from "../../components/utils/route";
+import { routeTeam, routeTeamProfile } from "../../utils/route";
 
 /**
  *
