@@ -219,6 +219,7 @@ const TeamSettings = ({
                         title={`${team.seats - team.availableSeats}/${team.seats} seats used`}
                         subtitle={`If you want to have more than ${team.seats} users on your team you need to purchase more seats`}
                         ctaText='Buy More Seats'
+                        onCtaClick={() => history.push(routeSubscription())}
                     />
                 )}
 
