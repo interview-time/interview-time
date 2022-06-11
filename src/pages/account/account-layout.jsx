@@ -4,7 +4,7 @@ import AccountMenu from "./account-menu";
 import React from "react";
 import Layout from "../../components/layout/layout";
 import { connect } from "react-redux";
-import { routeProfile, routeTeam, routeTeamProfile } from "../../utils/route";
+import { routeProfile, routeTeamMembers, routeTeamProfile } from "../../utils/route";
 import { useHistory, useLocation } from "react-router-dom";
 import TeamMenu from "./team-menu";
 import { selectActiveTeam } from "../../store/user/selector";
@@ -29,7 +29,7 @@ const AccountLayout = ({ profile, children }) => {
     };
 
     const onTeamClicked = () => {
-        history.push(routeTeam());
+        history.push(routeTeamMembers());
     };
 
     return (

@@ -2,7 +2,7 @@ import Card from "../../components/card/card";
 import { Menu } from "antd";
 import styles from "./team-menu.module.css";
 import React from "react";
-import { routeTeam, routeTeamProfile } from "../../utils/route";
+import { routeTeamMembers, routeTeamProfile } from "../../utils/route";
 
 /**
  *
@@ -16,13 +16,13 @@ import { routeTeam, routeTeamProfile } from "../../utils/route";
  */
 const TeamMenu = ({ team, location, onTeamProfileClicked, onTeamClicked, style }) => {
     const MENU_KEY_TEAM_PROFILE = "TEAM_PROFILE";
-    const MENU_KEY_TEAM = "TEAM";
+    const MENU_KEY_TEAM_MEMBERS = "TEAM_MEMBERS";
 
     const getSelectedMenuKey = () => {
         if (location.pathname.includes(routeTeamProfile())) {
             return MENU_KEY_TEAM_PROFILE;
-        } else if (location.pathname.includes(routeTeam())) {
-            return MENU_KEY_TEAM;
+        } else if (location.pathname.includes(routeTeamMembers())) {
+            return MENU_KEY_TEAM_MEMBERS;
         }
     };
 
@@ -33,10 +33,10 @@ const TeamMenu = ({ team, location, onTeamProfileClicked, onTeamClicked, style }
 
                 <Menu className={styles.menu} theme='light' mode='vertical' selectedKeys={[getSelectedMenuKey()]}>
                     <Menu.Item key={MENU_KEY_TEAM_PROFILE} onClick={onTeamProfileClicked}>
-                        <span className={styles.menuItem}>Company Profile</span>
+                        <span className={styles.menuItem}>Company profile</span>
                     </Menu.Item>
-                    <Menu.Item key={MENU_KEY_TEAM} onClick={onTeamClicked}>
-                        <span className={styles.menuItem}>Team</span>
+                    <Menu.Item key={MENU_KEY_TEAM_MEMBERS} onClick={onTeamClicked}>
+                        <span className={styles.menuItem}>Team members</span>
                     </Menu.Item>
                 </Menu>
             </Card>

@@ -61,7 +61,7 @@ export const routeProfile = () => "/account/profile";
 
 export const routeTeamProfile = () => "/account/team-profile";
 
-export const routeTeam = () => "/account/team";
+export const routeTeamMembers = () => "/account/team-members";
 
 export const routeSharedTemplate = () => "/template/shared/:token";
 

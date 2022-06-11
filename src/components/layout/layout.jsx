@@ -19,9 +19,8 @@ import {
     routeInterviews,
     routeReports,
     routeTeamNew,
-    routeTeamSettings,
     routeTemplateLibrary,
-    routeTemplates
+    routeTemplates, routeTeamMembers
 } from "../../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
@@ -260,8 +259,8 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                         )}
                         <Divider className={styles.divider} />
                         <Menu.Item key='settings' className={styles.menuItem} icon={<UserAddIcon />}>
-                            <Link to={routeTeamSettings(profile.currentTeamId)}>
-                                <span className='nav-text'>Team settings</span>
+                            <Link to={routeTeamMembers()}>
+                                <span className='nav-text'>Team members</span>
                             </Link>
                         </Menu.Item>
                         <Menu.Item

@@ -10,7 +10,7 @@ import { deleteTeam, leaveTeam, loadTeamMembers, updateTeam, changeRole, removeM
 import { loadTeam } from "../../store/team/actions";
 import { MoreIcon } from "../../utils/icons";
 import Alert from "../../components/alert/alert";
-import TeamInvite from "./team-invite";
+import TeamInvite from "../account/team-members-invite";
 import Card from "../../components/card/card";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import TableHeader from "../../components/table/table-header";
@@ -18,7 +18,7 @@ import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { DisplayRoles, Roles } from "../../utils/constants";
-import PendingInvites from "./pending-invites";
+import TeamMembersPendingInvites from "../account/team-members-pending-invites";
 import Text from "antd/lib/typography/Text";
 import { SubscriptionPlans } from "../../utils/constants";
 import styles from "./team-settings.module.css";
@@ -253,7 +253,7 @@ const TeamSettings = ({
                 </Card>
 
                 {team && team.pendingInvites && team.pendingInvites.length > 0 && (
-                    <PendingInvites pendingInvites={team?.pendingInvites} loading={loading} />
+                    <TeamMembersPendingInvites pendingInvites={team?.pendingInvites} loading={loading} />
                 )}
 
                 {isAdmin() && (
