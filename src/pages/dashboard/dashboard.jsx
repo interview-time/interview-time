@@ -12,8 +12,8 @@ import TemplateCard from "../../components/template-card/template-card";
 import {
     routeInterviewAdd,
     routeInterviewScorecard,
-    routeTeamSettings,
-    routeTemplates,
+    routeTeamMembers,
+    routeTemplates
 } from "../../utils/route";
 import styles from "./dashboard.module.css";
 import DemoTag from "../../components/demo/demo-tag";
@@ -56,7 +56,7 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
 
     const onScheduleInterviewClicked = () => history.push(routeInterviewAdd());
 
-    const onInviteTeamMembers = () => history.push(routeTeamSettings(profile.currentTeamId));
+    const onInviteTeamMembers = () => history.push(routeTeamMembers());
 
     const onRowClicked = interview => history.push(routeInterviewScorecard(interview.interviewId));
 
