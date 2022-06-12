@@ -3,7 +3,7 @@ import { Button, Card } from "antd";
 import { SubscriptionPlans } from "../../utils/constants";
 import yesImg from "../../assets/yes.png";
 import noImg from "../../assets/no.png";
-import { getHost, routeTeamSettings } from "../../utils/route";
+import { getHost, routeTeamMembers } from "../../utils/route";
 import styles from "./pricing-card.module.css";
 
 const PricingCard = ({ plan, title, subtitle, features, priceId, currentPlan, email, teamId }) => {
@@ -30,8 +30,8 @@ const PricingCard = ({ plan, title, subtitle, features, priceId, currentPlan, em
                 {plan === SubscriptionPlans.Premium ? (
                     <form action={`${process.env.REACT_APP_API_URL}/payments/stripe-session`} method='POST'>
                         <input type='hidden' name='PriceId' value={priceId} />
-                        <input type='hidden' name='SuccessUrl' value={`${getHost()}${routeTeamSettings(teamId)}`} />
-                        <input type='hidden' name='CancelUrl' value={`${getHost()}${routeTeamSettings(teamId)}`} />
+                        <input type='hidden' name='SuccessUrl' value={`${getHost()}${routeTeamMembers()}`} />
+                        <input type='hidden' name='CancelUrl' value={`${getHost()}${routeTeamMembers()}`} />
                         <input type='hidden' name='Email' value={email} />
                         <input type='hidden' name='TeamId' value={teamId} />
 

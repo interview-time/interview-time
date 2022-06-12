@@ -2,7 +2,6 @@ import "./App.less";
 import React, { useEffect } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
-    routeProfile,
     routeCandidateDetails,
     routeCandidates,
     routeHome,
@@ -12,17 +11,19 @@ import {
     routeInterviews,
     routeInterviewScorecard,
     routeLibraryTemplatePreview,
+    routeProfile,
     routeReports,
-    routeSharedTemplate,
     routeSharedScorecard,
+    routeSharedTemplate,
+    routeSubscription,
+    routeTeamMembers,
     routeTeamNew,
-    routeTeamSettings,
+    routeTeamProfile,
     routeTemplateBlank,
     routeTemplateEdit,
     routeTemplateLibrary,
     routeTemplatePreview,
     routeTemplates,
-    routeSubscription
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -41,12 +42,13 @@ import { useAuth0 } from "./react-auth0-spa";
 import TemplatePreview from "./pages/template-preview/template-preview";
 import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
-import TeamSettings from "./pages/team-settings/team-settings";
 import InterviewReport from "./pages/interview-scorecard/interview-report";
 import Candidates from "./pages/candidates/candidates";
 import CandidateDetails from "./pages/candidate-details/candidate-details";
 import SharedScorecard from "./pages/shared-scorecard/shared-scorecard";
 import Subscription from "./pages/subscription/subscription";
+import TeamProfile from "./pages/account/team-profile";
+import TeamMembers from "./pages/account/team-members";
 
 function App({ history }) {
     useEffect(() => {
@@ -87,10 +89,11 @@ function App({ history }) {
             <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />
             <PrivateRoute path={routeProfile()} exact component={Profile} />
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
-            <PrivateRoute path={routeTeamSettings()} exact component={TeamSettings} />
+            <PrivateRoute path={routeTeamProfile()} exact component={TeamProfile} />
+            <PrivateRoute path={routeTeamMembers()} exact component={TeamMembers} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
-            <PrivateRoute path={routeSubscription()} exact component={Subscription} />            
+            <PrivateRoute path={routeSubscription()} exact component={Subscription} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
             <Route path={routeSharedScorecard()} exact component={SharedScorecard} />
         </Switch>
