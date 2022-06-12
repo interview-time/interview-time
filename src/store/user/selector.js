@@ -11,3 +11,10 @@ export const selectProfileName = profile => {
     }
     return name;
 };
+
+/**
+ *
+ * @param profile
+ * @returns {Team}
+ */
+export const selectActiveTeam = profile => profile.teams.find(team => team.teamId === profile.currentTeamId);

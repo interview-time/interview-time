@@ -28,7 +28,7 @@ const NewTeam = ({ teams, createTeam }) => {
         let team = teams.find(team => team.teamName === name);
         if (team) {
             message.success("Team has been create.");
-            history.push(routeTeamMembers(team.teamId));
+            history.push(routeTeamMembers());
         }
 
         // eslint-disable-next-line
