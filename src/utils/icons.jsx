@@ -605,7 +605,7 @@ const EditSvg = () => (
 export const EditIcon = props => <Icon component={EditSvg} {...props} />;
 
 const AlertSvg = () => (
-    <svg width='20' height='20' viewBox='0 0 20 20' fill='none'>
+    <svg width='40' height='40' viewBox='0 0 20 20' fill='none'>
         <path
             d='M10 8.4326V10.0001M10 13.1352H10.0078M4.56988 16.2703H15.4301C16.6368 16.2703 17.391 14.964 16.7877 13.919L11.3575 4.51375C10.7542 3.46872 9.24582 3.46872 8.64247 4.51375L3.21235 13.919C2.609 14.964 3.36319 16.2703 4.56988 16.2703Z'
             stroke='#8C2BE3'
