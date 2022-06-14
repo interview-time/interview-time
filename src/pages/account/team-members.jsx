@@ -6,6 +6,7 @@ import Title from "antd/lib/typography/Title";
 import { selectActiveTeam } from "../../store/user/selector";
 import { isTeamAdmin } from "../../store/user/permissions";
 import TeamInvite from "./team-members-invite";
+import { useHistory } from "react-router-dom";
 import styles from "./team-members.module.css";
 import { Button, Modal, Space } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -16,6 +17,8 @@ import { TeamMembersTable } from "./team-members-table";
 import { loadTeam } from "../../store/team/actions";
 import TeamMembersPendingInvites from "./team-members-pending-invites";
 import Alert from "../../components/alert/alert";
+import { routeSubscription } from "../../utils/route";
+import Spinner from "../../components/spinner/spinner";
 
 /**
  *
@@ -28,6 +31,7 @@ import Alert from "../../components/alert/alert";
  */
 const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
     const isAdmin = isTeamAdmin(team);
+    const history = useHistory();
 
     useEffect(() => {
         loadTeam(team.teamId);
@@ -74,45 +78,53 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
 
     return (
         <AccountLayout>
-            {teamDetails && teamDetails.plan === SubscriptionPlans.Starter && (
-                <Alert
-                    title={`${teamDetails.seats}/${teamDetails.seats} seats used`}
-                    subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to upgrade your plan`}
-                    ctaText='Upgrade to Premium'
-                />
-            )}
+            {!loading && teamDetails ? (
+                <>
+                    {teamDetails && teamDetails.plan === SubscriptionPlans.Starter && (
+                        <Alert
+                            title={`${teamDetails.seats - teamDetails.availableSeats}/${teamDetails.seats} seats used`}
+                            subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to upgrade your plan`}
+                            ctaText='Upgrade to Premium'
+                            onCtaClick={() => history.push(routeSubscription())}
+                        />
+                    )}
 
-            {teamDetails && teamDetails.plan === SubscriptionPlans.Premium && (
-                <Alert
-                    title={`${teamDetails.seats}/${teamDetails.seats} seats used`}
-                    subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats`}
-                    ctaText='Buy More Seats'
-                />
-            )}
-            <Card>
-                <Title level={4} style={{ marginBottom: 20 }}>
-                    Team
-                </Title>
+                    {teamDetails && teamDetails.plan === SubscriptionPlans.Premium && (
+                        <Alert
+                            title={`${teamDetails.seats - teamDetails.availableSeats}/${teamDetails.seats} seats used`}
+                            subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats`}
+                            ctaText='Buy More Seats'
+                            onCtaClick={() => history.push(routeSubscription())}
+                        />
+                    )}
+                    <Card>
+                        <Title level={4} style={{ marginBottom: 20 }}>
+                            Team
+                        </Title>
 
-                {isAdmin && <TeamInvite />}
-            </Card>
-            <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
-                <Title level={5} style={{ marginBottom: 0 }}>
-                    Your team members
-                </Title>
-                <Button
-                    type='text'
-                    className={styles.rolesButton}
-                    onClick={rolesInfoDialog}
-                    icon={<InfoCircleOutlined />}
-                >
-                    Roles permissions
-                </Button>
-            </div>
-            <TeamMembersTable teamDetails={teamDetails} loading={loading} isAdmin={isAdmin} />
+                        {isAdmin && <TeamInvite disabled={teamDetails.availableSeats <= 0} />}
+                    </Card>
+                    <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
+                        <Title level={5} style={{ marginBottom: 0 }}>
+                            Your team members
+                        </Title>
+                        <Button
+                            type='text'
+                            className={styles.rolesButton}
+                            onClick={rolesInfoDialog}
+                            icon={<InfoCircleOutlined />}
+                        >
+                            Roles permissions
+                        </Button>
+                    </div>
+                    <TeamMembersTable teamDetails={teamDetails} loading={loading} isAdmin={isAdmin} />
 
-            {teamDetails && teamDetails.pendingInvites && teamDetails.pendingInvites.length > 0 && (
-                <TeamMembersPendingInvites pendingInvites={teamDetails.pendingInvites} loading={loading} />
+                    {teamDetails && teamDetails.pendingInvites && teamDetails.pendingInvites.length > 0 && (
+                        <TeamMembersPendingInvites pendingInvites={teamDetails.pendingInvites} loading={loading} />
+                    )}
+                </>
+            ) : (
+                <Spinner />
             )}
         </AccountLayout>
     );

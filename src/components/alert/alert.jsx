@@ -1,30 +1,24 @@
 import React from "react";
 import { Button } from "antd";
-import { useHistory } from "react-router-dom";
-import { routeSubscription } from "../../utils/route";
+import { AlertIcon } from "../../utils/icons";
 import styles from "./alert.module.css";
 
-/**
- *
- * @param {string} title
- * @param {string} subtitle
- * @param {string} ctaText
- * @returns {JSX.Element}
- * @constructor
- */
-const Alert = ({ title, subtitle, ctaText }) => {
-    const history = useHistory();
-
+const Alert = ({ title, subtitle, ctaText, onCtaClick }) => {
     return (
         <div className={styles.alert}>
-            <div className={styles.leftF}>
-                <span className={styles.title}>{title}</span>
-                <span>{subtitle}</span>
+            <div className={styles.left}>
+                <AlertIcon style={{ marginRight: 10 }} />
+                <div>
+                    <div className={styles.title}>{title}</div>
+                    <div className={styles.subtitle}>{subtitle}</div>
+                </div>
             </div>
-            <div>
-                <Button className={styles.ctaButton} type='default' onClick={() => history.push(routeSubscription())}>
-                    {ctaText}
-                </Button>
+            <div className={styles.action}>
+                {onCtaClick && (
+                    <Button className={styles.ctaButton} type='default' onClick={onCtaClick}>
+                        {ctaText}
+                    </Button>
+                )}
             </div>
         </div>
     );
