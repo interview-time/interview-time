@@ -13,7 +13,7 @@ import styles from "./team-members.module.css";
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamMembersInvite = ({ inviteUser, disabled = false }) => {
+const TeamMembersInvite = ({ inviteUser }) => {
     const ROLE_INTERVIEWER = "INTERVIEWER";
     const ROLE_HIRING_MANAGER = "HIRING_MANAGER";
     const ROLE_HR = "HR";
@@ -88,7 +88,7 @@ const TeamMembersInvite = ({ inviteUser, disabled = false }) => {
                     </Select>
                 </Form.Item>
 
-                <Button icon={sent ? <CheckIcon /> : <MailIcon />} type='primary' htmlType='submit' disabled={disabled}>
+                <Button icon={sent ? <CheckIcon /> : <MailIcon />} type='primary' htmlType='submit'>
                     {sent ? "Sent!" : "Send Invite"}
                 </Button>
             </Form>

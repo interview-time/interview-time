@@ -10,15 +10,15 @@ import { useHistory } from "react-router-dom";
 import styles from "./team-members.module.css";
 import { Button, Modal, Space } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Roles, SubscriptionPlans } from "../../utils/constants";
+import { Roles } from "../../utils/constants";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import Text from "antd/lib/typography/Text";
 import { TeamMembersTable } from "./team-members-table";
 import { loadTeam } from "../../store/team/actions";
 import TeamMembersPendingInvites from "./team-members-pending-invites";
-import Alert from "../../components/alert/alert";
-import { routeSubscription } from "../../utils/route";
 import Spinner from "../../components/spinner/spinner";
+import { ErrorIllustration } from "../../utils/illustrations";
+import { routeSubscription } from "../../utils/route";
 
 /**
  *
@@ -76,33 +76,41 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
         });
     };
 
+    const onBuyMoreSeatsClicked = () => {
+        history.push(routeSubscription());
+    };
+
     return (
         <AccountLayout>
             {!loading && teamDetails ? (
                 <>
-                    {teamDetails && teamDetails.plan === SubscriptionPlans.Starter && (
-                        <Alert
-                            title={`${teamDetails.seats - teamDetails.availableSeats}/${teamDetails.seats} seats used`}
-                            subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to upgrade your plan`}
-                            ctaText='Upgrade to Premium'
-                            onCtaClick={() => history.push(routeSubscription())}
-                        />
-                    )}
-
-                    {teamDetails && teamDetails.plan === SubscriptionPlans.Premium && (
-                        <Alert
-                            title={`${teamDetails.seats - teamDetails.availableSeats}/${teamDetails.seats} seats used`}
-                            subtitle={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats`}
-                            ctaText='Buy More Seats'
-                            onCtaClick={() => history.push(routeSubscription())}
-                        />
-                    )}
                     <Card>
                         <Title level={4} style={{ marginBottom: 20 }}>
                             Team
                         </Title>
 
-                        {isAdmin && <TeamInvite disabled={teamDetails.availableSeats <= 0} />}
+                        {isAdmin && teamDetails.availableSeats > 0 && <TeamInvite />}
+
+                        {isAdmin && teamDetails.availableSeats <= 0 && (
+                            <div className={styles.moreSeatsRoot}>
+                                <div className={styles.moreSeatsIllustrationDiv}>
+                                    <ErrorIllustration />
+                                    <div className={styles.moreSeatsDiv}>
+                                        <Text className={styles.moreSeatsTitle}>
+                                            Oh no, you can't invite more team members
+                                        </Text>
+                                        <Text
+                                            className={styles.moreSeatsDescription}
+                                        >{`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats.`}</Text>
+                                        <div className={styles.moreSeatsButtonDiv}>
+                                            <Button type='primary' onClick={onBuyMoreSeatsClicked}>
+                                                Buy More Seats
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </Card>
                     <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
                         <Title level={5} style={{ marginBottom: 0 }}>
