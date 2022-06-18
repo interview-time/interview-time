@@ -25,7 +25,7 @@ import Card from "../../components/card/card";
 import Spinner from "../../components/spinner/spinner";
 import TemplateHeaderCard from "./template-header-card";
 import TemplateFooterCard from "./template-footer-card";
-import { TemplateMetaCard } from "./template-meta-card";
+import TemplateMetaCard from "./template-meta-card";
 import { TemplateQuestionsCard } from "./template-questions-card";
 import { swap } from "../../utils/arrays";
 import { remove } from "lodash/array";
