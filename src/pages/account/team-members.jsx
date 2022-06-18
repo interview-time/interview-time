@@ -17,8 +17,9 @@ import { TeamMembersTable } from "./team-members-table";
 import { loadTeam } from "../../store/team/actions";
 import TeamMembersPendingInvites from "./team-members-pending-invites";
 import Spinner from "../../components/spinner/spinner";
-import { ErrorIllustration } from "../../utils/illustrations";
 import { routeSubscription } from "../../utils/route";
+import IllustrationSection from "./illustration-section";
+import ErrorImage from "../../assets/error.svg";
 
 /**
  *
@@ -82,37 +83,28 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
 
     return (
         <AccountLayout>
-            {!loading && teamDetails ? (
+            {teamDetails ? (
                 <>
-                    <Card>
-                        <Title level={4} style={{ marginBottom: 20 }}>
-                            Team
-                        </Title>
+                    {isAdmin && (
+                        <Card style={{ marginBottom: 32 }}>
+                            <Title level={4} style={{ marginBottom: 20 }}>
+                                Team
+                            </Title>
 
-                        {isAdmin && teamDetails.availableSeats > 0 && <TeamInvite />}
+                            {teamDetails.availableSeats > 0 && <TeamInvite />}
 
-                        {isAdmin && teamDetails.availableSeats <= 0 && (
-                            <div className={styles.moreSeatsRoot}>
-                                <div className={styles.moreSeatsIllustrationDiv}>
-                                    <ErrorIllustration />
-                                    <div className={styles.moreSeatsDiv}>
-                                        <Text className={styles.moreSeatsTitle}>
-                                            Oh no, you can't invite more team members
-                                        </Text>
-                                        <Text
-                                            className={styles.moreSeatsDescription}
-                                        >{`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats.`}</Text>
-                                        <div className={styles.moreSeatsButtonDiv}>
-                                            <Button type='primary' onClick={onBuyMoreSeatsClicked}>
-                                                Buy More Seats
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </Card>
-                    <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
+                            {teamDetails.availableSeats <= 0 && (
+                                <IllustrationSection
+                                    title="Oh no, you can't invite more team members"
+                                    description={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats.`}
+                                    buttonText='Buy More Seats'
+                                    onButtonClicked={onBuyMoreSeatsClicked}
+                                    illustration={<img src={ErrorImage} alt='Error' />}
+                                />
+                            )}
+                        </Card>
+                    )}
+                    <div className={styles.divSpaceBetween}>
                         <Title level={5} style={{ marginBottom: 0 }}>
                             Your team members
                         </Title>

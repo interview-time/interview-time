@@ -34,35 +34,3 @@
     font-size: 14px;
     color: #6b7280;
 }
-
-.moreSeatsRoot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.moreSeatsIllustrationDiv {
-    display: flex;
-}
-
-.moreSeatsDiv {
-    display: flex;
-    flex-direction: column;
-}
-
-.moreSeatsTitle {
-    font-family: "Inter var", "system-ui", serif;
-    font-weight: 600;
-    font-size: 18px;
-}
-
-.moreSeatsDescription {
-    color: #63737A;
-    margin-top: 12px;
-    max-width: 440px;
-}
-
-.moreSeatsButtonDiv {
-    margin-top: 20px;
-    text-align: center;
-}

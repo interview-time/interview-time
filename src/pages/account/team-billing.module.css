@@ -1,0 +1,36 @@
+.priceHolder {
+    display: flex;
+}
+
+.buttonHolder {
+    text-align: right;
+}
+
+.priceLabel {
+    color: #6B7280;
+    margin-left: 6px;
+}
+
+.noMargin {
+    margin: 0;
+}
+
+.featuresRow {
+    background-color: #F9FAFB;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 24px;
+    border-radius: 8px;
+    margin-top: 24px;
+}
+
+.featureText {
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 22px;
+}

@@ -641,3 +641,29 @@ const TemplateIconSvg = () => (
 );
 
 export const TemplateIcon = props => <Icon component={TemplateIconSvg} {...props} />;
+
+const CheckFilledIconSvg = () => (
+    <svg width='26' height='26' viewBox='0 0 26 26' fill='none'>
+        <path
+            fill-rule='evenodd'
+            clip-rule='evenodd'
+            d='M13 26C20.1797 26 26 20.1797 26 13C26 5.8203 20.1797 0 13 0C5.8203 0 0 5.8203 0 13C0 20.1797 5.8203 26 13 26ZM12.8355 16.2959L17.8779 11.0959L16.4421 9.70358L12.0894 14.1923L9.5295 11.7554L8.15054 13.204L11.4281 16.324L12.1458 17.0072L12.8355 16.2959Z'
+            fill='#54BD95'
+        />
+    </svg>
+);
+
+export const CheckFilledIcon = props => <Icon component={CheckFilledIconSvg} {...props} />;
+
+const UncheckFilledIconSvg = () => (
+    <svg width='26' height='26' viewBox='0 0 26 26' fill='none'>
+        <path
+            fill-rule='evenodd'
+            clip-rule='evenodd'
+            d='M13 26C20.1797 26 26 20.1797 26 13C26 5.8203 20.1797 0 13 0C5.8203 0 0 5.8203 0 13C0 20.1797 5.8203 26 13 26ZM8 14H11.9394H18V12H11.9394H8V14Z'
+            fill='#6B7280'
+        />
+    </svg>
+);
+
+export const UncheckFilledIcon = props => <Icon component={UncheckFilledIconSvg} {...props} />;

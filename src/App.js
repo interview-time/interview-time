@@ -16,6 +16,7 @@ import {
     routeSharedScorecard,
     routeSharedTemplate,
     routeSubscription,
+    routeTeamBilling,
     routeTeamMembers,
     routeTeamNew,
     routeTeamProfile,
@@ -49,6 +50,7 @@ import SharedScorecard from "./pages/shared-scorecard/shared-scorecard";
 import Subscription from "./pages/subscription/subscription";
 import TeamProfile from "./pages/account/team-profile";
 import TeamMembers from "./pages/account/team-members";
+import TeamBilling from "./pages/account/team-billing";
 
 function App({ history }) {
     useEffect(() => {
@@ -91,6 +93,7 @@ function App({ history }) {
             <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
             <PrivateRoute path={routeTeamProfile()} exact component={TeamProfile} />
             <PrivateRoute path={routeTeamMembers()} exact component={TeamMembers} />
+            <PrivateRoute path={routeTeamBilling()} exact component={TeamBilling} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
             <PrivateRoute path={routeSubscription()} exact component={Subscription} />
