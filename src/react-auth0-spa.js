@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
 import { log } from "./utils/log";
 import Cookies from "universal-cookie";
-import { addYears } from "date-fns";
+import { addDays } from "date-fns";
 
 const DEFAULT_REDIRECT_CALLBACK = () => window.history.replaceState({}, document.title, window.location.pathname);
 
@@ -67,7 +67,7 @@ export const Auth0Provider = ({ children, onRedirectCallback = DEFAULT_REDIRECT_
                 cookies.set("USER_LOGGED_IN", "true", {
                     path: "/",
                     domain: "interviewer.space",
-                    expires: addYears(new Date(), 1),
+                    expires: addDays(new Date(), 30),
                 });
             }
 
