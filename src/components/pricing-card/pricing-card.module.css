@@ -1,5 +1,5 @@
 .card {
-    padding: 40px 40px 25px;
+    padding: 24px;
 }
 
 .name {
@@ -50,6 +50,9 @@ ul.features {
     margin-top: 0;
     margin-bottom: 10px;
     margin-bottom: 60px;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    padding: 32px;
 }
 
 .feature {
