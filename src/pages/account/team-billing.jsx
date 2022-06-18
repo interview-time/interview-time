@@ -6,7 +6,7 @@ import AccountLayout from "./account-layout";
 import Spinner from "../../components/spinner/spinner";
 import Title from "antd/lib/typography/Title";
 import Card from "../../components/card/card";
-import { Col, Row } from "antd";
+import { Button, Col, Modal, Row } from "antd";
 import Text from "antd/lib/typography/Text";
 import styles from "./team-billing.module.css";
 import { CheckFilledIcon, UncheckFilledIcon } from "../../utils/icons";
@@ -52,6 +52,13 @@ const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }) => {
         setFeedbackVisible(false);
     };
 
+    const onChangePlanClicked = () => {
+        Modal.error({
+            title: "Error",
+            content: "Only the team administrator has permission to change the team plan.",
+        });
+    };
+
     return (
         <AccountLayout>
             {teamDetails ? (
@@ -92,12 +99,19 @@ const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }) => {
                             </Col>
                             <Col span={6}>
                                 <div className={styles.buttonHolder}>
-                                    <PaymentForm
-                                        buttonText={isStarterPlan() ? "Go Premium" : "Buy More Seats"}
-                                        priceId={process.env.REACT_APP_PREMIUM_PRICE_ID}
-                                        userEmail={userEmail}
-                                        teamId={teamDetails.teamId}
-                                    />
+                                    {isAdmin && (
+                                        <PaymentForm
+                                            buttonText={isStarterPlan() ? "Go Premium" : "Buy More Seats"}
+                                            priceId={process.env.REACT_APP_PREMIUM_PRICE_ID}
+                                            userEmail={userEmail}
+                                            teamId={teamDetails.teamId}
+                                        />
+                                    )}
+                                    {!isAdmin && (
+                                        <Button type='primary' onClick={onChangePlanClicked}>
+                                            {isStarterPlan() ? "Go Premium" : "Buy More Seats"}
+                                        </Button>
+                                    )}
                                 </div>
                             </Col>
                         </Row>
