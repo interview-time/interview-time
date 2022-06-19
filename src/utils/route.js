@@ -59,9 +59,11 @@ export const routeTemplateLibrary = () => "/templates/library/";
 
 export const routeProfile = () => "/account/profile";
 
-export const routeTeamProfile = () => "/account/team-profile";
+export const routeTeamProfile = () => "/account/team/profile";
 
-export const routeTeamMembers = () => "/account/team-members";
+export const routeTeamMembers = () => "/account/team/members";
+
+export const routeTeamBilling = () => "/account/team/billing";
 
 export const routeSharedTemplate = () => "/template/shared/:token";
 

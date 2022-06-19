@@ -113,6 +113,7 @@
  * @property {string} teamId
  * @property {string} teamName
  * @property {string} token
+ * @property {string} plan
  * @property {number} availableSeats
  * @property {number} seats
  * @property {string[]} pendingInvites

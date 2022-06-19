@@ -4,7 +4,7 @@ import AccountMenu from "./account-menu";
 import React from "react";
 import Layout from "../../components/layout/layout";
 import { connect } from "react-redux";
-import { routeProfile, routeTeamMembers, routeTeamProfile } from "../../utils/route";
+import { routeProfile, routeTeamBilling, routeTeamMembers, routeTeamProfile } from "../../utils/route";
 import { useHistory, useLocation } from "react-router-dom";
 import TeamMenu from "./team-menu";
 import { selectActiveTeam } from "../../store/user/selector";
@@ -32,16 +32,25 @@ const AccountLayout = ({ profile, children }) => {
         history.push(routeTeamMembers());
     };
 
+    const onTeamBillingClicked = () => {
+        history.push(routeTeamBilling());
+    };
+
     return (
         <Layout contentStyle={styles.rootContainer}>
             <Row gutter={[24, 24]}>
                 <Col span={6}>
-                    <AccountMenu profile={profile} location={location} onProfileClicked={onProfileClicked} />
+                    <AccountMenu
+                        profile={profile}
+                        location={location}
+                        onProfileClicked={onProfileClicked}
+                    />
                     <TeamMenu
                         team={selectActiveTeam(profile)}
                         location={location}
                         onTeamProfileClicked={onTeamProfileClicked}
                         onTeamClicked={onTeamClicked}
+                        onTeamBillingClicked={onTeamBillingClicked}
                         style={{ marginTop: 24 }}
                     />
                 </Col>
