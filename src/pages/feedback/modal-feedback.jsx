@@ -2,10 +2,19 @@ import { message, Modal } from "antd";
 import React, { useState } from "react";
 import Text from "antd/es/typography/Text";
 import TextArea from "antd/lib/input/TextArea";
-import { sendFeedback } from "../../components/utils/feedback";
+import { sendFeedback } from "../../utils/feedback";
 import { useAuth0 } from "../../react-auth0-spa";
 
-const FeedbackModal = ({ visible, onClose }) => {
+/**
+ *
+ * @param {string} title
+ * @param {string} description
+ * @param {boolean} visible
+ * @param {function} onClose
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const FeedbackModal = ({ title = "Feedback", description = "Your feedback", visible, onClose }) => {
     const { user } = useAuth0();
     const [feedback, setFeedback] = useState(null);
     const [confirmLoading, setConfirmLoading] = React.useState(false);
@@ -34,7 +43,7 @@ const FeedbackModal = ({ visible, onClose }) => {
             sendFeedback(getUserName(), getUserEmail(), feedback, () => {
                 setConfirmLoading(false);
                 onClose();
-                message.success("Thank you for your feedback");
+                message.success("Your request has been sent");
             });
         }
     };
@@ -46,20 +55,20 @@ const FeedbackModal = ({ visible, onClose }) => {
     return (
         <Modal
             destroyOnClose={true}
-            title={"Feedback"}
+            title={title}
             visible={visible}
             closable={false}
-            okText={"Send feedback"}
+            okText={"Send"}
             cancelText='Cancel'
             confirmLoading={confirmLoading}
             onOk={onSendClicked}
             onCancel={onCancelClicked}
         >
-            <Text>Your feedback</Text>
+            <Text>{description}</Text>
             <TextArea
                 autoSize={{ minRows: 3, maxRows: 5 }}
                 style={{ marginTop: 16 }}
-                placeholder='Describe your issue or share your ideas...'
+                placeholder='Enter text here'
                 onChange={onFeedbackChange}
             />
         </Modal>

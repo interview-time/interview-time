@@ -5,11 +5,11 @@ import Card from "../../components/card/card";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import TableHeader from "../../components/table/table-header";
 import TableText from "../../components/table/table-text";
-import { localeCompare } from "../../components/utils/comparators";
-import { getFormattedDateTime } from "../../components/utils/date-fns";
-import styles from "./team-settings.module.css";
+import { localeCompare } from "../../utils/comparators";
+import { getFormattedDateTime } from "../../utils/date-fns";
+import styles from "./team-members.module.css";
 
-const PendingInvites = ({ pendingInvites, loading }) => {
+const TeamMembersPendingInvites = ({ pendingInvites, loading }) => {
     const columns = [
         {
             title: <TableHeader>EMAIL</TableHeader>,
@@ -62,4 +62,4 @@ const PendingInvites = ({ pendingInvites, loading }) => {
     );
 };
 
-export default PendingInvites;
+export default TeamMembersPendingInvites;

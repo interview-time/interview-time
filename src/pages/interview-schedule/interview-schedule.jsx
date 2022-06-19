@@ -6,8 +6,8 @@ import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { cloneDeep, isEmpty } from "lodash/lang";
-import { findInterview, findTemplate } from "../../components/utils/converters";
-import { POSITIONS, POSITIONS_OPTIONS, Status } from "../../components/utils/constants";
+import { findInterview, findTemplate } from "../../utils/converters";
+import { POSITIONS, POSITIONS_OPTIONS, Status } from "../../utils/constants";
 import Layout from "../../components/layout/layout";
 import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
@@ -15,7 +15,7 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { personalEvent } from "../../analytics";
-import { routeInterviews, routeTemplateLibrary } from "../../components/utils/route";
+import { routeInterviews, routeTemplateLibrary } from "../../utils/route";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import {
     datePickerFormat,
@@ -24,13 +24,13 @@ import {
     generateTimeSlots,
     parseDateISO,
     timePickerFormat
-} from "../../components/utils/date-fns";
-import { filterOptionLabel, interviewsPositions } from "../../components/utils/filters";
+} from "../../utils/date-fns";
+import { filterOptionLabel, interviewsPositions } from "../../utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
 import CreateCandidate from "../candidate-details/create-candidate";
 import Card from "../../components/card/card";
-import { log } from "../../components/utils/log";
+import { log } from "../../utils/log";
 import { uniq } from "lodash/array";
 import DatePicker from "../../components/antd/DatePicker";
 import { addHours, parse, roundToNearestMinutes, set } from "date-fns";

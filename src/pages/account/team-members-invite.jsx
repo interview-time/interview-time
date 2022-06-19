@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Input, Select, Form } from "antd";
+import { Button, Form, Input, Select } from "antd";
 import Text from "antd/lib/typography/Text";
-import { CheckIcon, MailIcon } from "../../components/utils/icons";
+import { CheckIcon, MailIcon } from "../../utils/icons";
 import { Option } from "antd/lib/mentions";
 import { inviteUser } from "../../store/user/actions";
-import styles from "./team-settings.module.css";
+import styles from "./team-members.module.css";
 
 /**
  *
  * @param {String} token
- * @param {String} userName
- * @param {String} teamName
- * @param {TeamMember[]} teamMembers
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamInvite = ({ inviteUser }) => {
+const TeamMembersInvite = ({ inviteUser }) => {
     const ROLE_INTERVIEWER = "INTERVIEWER";
     const ROLE_HIRING_MANAGER = "HIRING_MANAGER";
     const ROLE_HR = "HR";
@@ -68,7 +65,7 @@ const TeamInvite = ({ inviteUser }) => {
             >
                 <Form.Item
                     name='email'
-                    className={styles.inviteEmail}                   
+                    className={styles.inviteEmail}
                     rules={[
                         {
                             required: true,
@@ -98,5 +95,6 @@ const TeamInvite = ({ inviteUser }) => {
         </div>
     );
 };
+const mapDispatch = { inviteUser };
 
-export default connect(null, { inviteUser })(TeamInvite);
+export default connect(null, mapDispatch)(TeamMembersInvite);

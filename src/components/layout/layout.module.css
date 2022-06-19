@@ -3,6 +3,7 @@
     --menu-height: calc(100% - var(--logo-height));
     --color-primary: #8C2BE3;
     --color-background: #F9FAFB;
+    --color-strong: #541A88;
 }
 
 .pageHeader {

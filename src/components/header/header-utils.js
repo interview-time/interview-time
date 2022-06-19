@@ -1,6 +1,6 @@
 import { Button, Space } from "antd";
-import { BackIcon, CloseIcon } from "../utils/icons";
-import { routeHome } from "../utils/route";
+import { BackIcon, CloseIcon } from "../../utils/icons";
+import { routeHome } from "../../utils/route";
 
 export const createCloseBackButton = (history) => (
     <Space size={16}>

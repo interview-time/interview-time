@@ -2,10 +2,10 @@ import { Col, Form, Input, Row, Select } from "antd";
 import TitleBack from "../../components/title/title-back";
 import Text from "antd/lib/typography/Text";
 import TemplateImage from "../../components/template-card/template-image";
-import { filterOptionLabel } from "../../components/utils/filters";
+import { filterOptionLabel } from "../../utils/filters";
 import Card from "../../components/card/card";
 import React from "react";
-import { TemplateCategories } from "../../components/utils/constants";
+import { TemplateCategories } from "../../utils/constants";
 
 /**
  *
@@ -17,7 +17,7 @@ import { TemplateCategories } from "../../components/utils/constants";
  * @returns {JSX.Element}
  * @constructor
  */
-const TemplateMetaCardInternal = ({
+const TemplateMetaCard = ({
     templateType,
     onBackClicked,
     onTitleChange,
@@ -95,6 +95,5 @@ const TemplateMetaCardInternal = ({
       </Row>
   </Card>
 }
-const areEqual = (prevProps, nextProps) => prevProps.templateType === nextProps.templateType;
 
-export const TemplateMetaCard  = React.memo(TemplateMetaCardInternal, areEqual)
+export default TemplateMetaCard

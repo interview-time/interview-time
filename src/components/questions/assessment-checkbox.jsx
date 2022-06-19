@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styles from "./assessment-checkbox.module.css";
 import { Rate, Space, Tooltip } from "antd";
 import { defaultTo } from "lodash/util";
-import { CrossCircleIcon } from "../utils/icons";
-import { QuestionAssessment } from "../utils/constants";
+import { CrossCircleIcon } from "../../utils/icons";
+import { QuestionAssessment } from "../../utils/constants";
 
 /**
  *

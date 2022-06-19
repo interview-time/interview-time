@@ -5,10 +5,10 @@ import InterviewsTable from "../interviews/interviews-table";
 import Title from "antd/lib/typography/Title";
 import Card from "../../components/card/card";
 import Text from "antd/lib/typography/Text";
-import { CandidateStatus } from "../../components/utils/constants";
+import { CandidateStatus } from "../../utils/constants";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import { Option } from "antd/lib/mentions";
-import { AlertIcon, ProfileIcon } from "../../components/utils/icons";
+import { AlertIcon, ProfileIcon } from "../../utils/icons";
 import Avatar from "antd/es/avatar/avatar";
 import { CandidateInfoSection } from "../interview-scorecard/interview-sections";
 

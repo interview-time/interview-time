@@ -1,8 +1,8 @@
 import styles from "./interview-competence-tags.module.css";
 import { Col, Popover, Row, Space } from "antd";
 import React from "react";
-import { getGroupAssessment } from "../utils/assessment";
-import { filterGroupsWithAssessment } from "../utils/filters";
+import { getGroupAssessment } from "../../utils/assessment";
+import { filterGroupsWithAssessment } from "../../utils/filters";
 
 /**
  *

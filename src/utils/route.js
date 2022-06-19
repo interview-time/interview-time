@@ -57,24 +57,23 @@ export const routeLibraryTemplatePreview = id => {
 
 export const routeTemplateLibrary = () => "/templates/library/";
 
-export const routeQuestionBankCategory = id => `/question-bank/${id}`;
+export const routeProfile = () => "/account/profile";
 
-export const routeAccount = () => "/account";
+export const routeTeamProfile = () => "/account/team/profile";
+
+export const routeTeamMembers = () => "/account/team/members";
+
+export const routeTeamBilling = () => "/account/team/billing";
 
 export const routeSharedTemplate = () => "/template/shared/:token";
 
-export const routeTeamNew = (hideMenu = false) => hideMenu ? "/team/new?hideMenu=true" : "/team/new/";
-
-export const routeTeamSettings = id => {
-    const url = "/team/:id/settings";
-    return id ? url.replace(":id", id) : url;
-};
-
-export const routeTeamMembers = id => `/team/${id}/settings?tab=members`;
+export const routeTeamNew = (hideMenu = false) => (hideMenu ? "/team/new?hideMenu=true" : "/team/new/");
 
 export const routeTeamJoin = () => "/team/join/:id";
 
 export const routeSharedScorecard = () => "/public/scorecard/:token";
+
+export const routeSubscription = () => "/subscription";
 
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");

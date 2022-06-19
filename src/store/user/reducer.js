@@ -12,11 +12,11 @@ import {
     SET_INVITE_ERROR,
 } from "./actions";
 import axios from "axios";
-import { logError } from "../../components/utils/log";
+import { logError } from "../../utils/log";
 import store from "../../store";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
-import { log } from "../../components/utils/log";
+import { log } from "../../utils/log";
 
 /**
  *

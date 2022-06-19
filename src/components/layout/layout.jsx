@@ -10,19 +10,18 @@ import {
     ProfileIcon,
     TextNoteIcon,
     UserAddIcon
-} from "../utils/icons";
+} from "../../utils/icons";
 import {
-    routeAccount,
+    routeProfile,
     routeCandidates,
     routeHome,
     routeInterviewAdd,
     routeInterviews,
     routeReports,
     routeTeamNew,
-    routeTeamSettings,
     routeTemplateLibrary,
-    routeTemplates
-} from "../utils/route";
+    routeTemplates, routeTeamMembers
+} from "../../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
 import Avatar from "antd/es/avatar/avatar";
@@ -33,9 +32,10 @@ import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
 import Text from "antd/lib/typography/Text";
-import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../utils/storage";
+import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 import { permissionViewCandidates } from "../../store/user/permissions";
+import { selectProfileName } from "../../store/user/selector";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -101,7 +101,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
             return MENU_KEY_REPORTS;
         } else if (location.pathname.includes(routeCandidates())) {
             return MENU_KEY_CANDIDATES;
-        } else if (location.pathname.includes(routeAccount())) {
+        } else if (location.pathname.includes(routeProfile())) {
             return MENU_KEY_PROFILE;
         } else if (location.pathname.includes("settings")) {
             return "settings";
@@ -171,7 +171,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
     }));
 
     const getProfileName = () =>
-        truncate(profile.name, {
+        truncate(selectProfileName(profile), {
             length: 20,
         });
 
@@ -196,7 +196,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                         selectedKeys={[getSelectedMenuKey()]}
                         className={styles.menu}
                     >
-                        <Link to={routeAccount()} className={styles.profileHolder}>
+                        <Link to={routeProfile()} className={styles.profileHolder}>
                             <Avatar
                                 src={user ? user.picture : null}
                                 className={styles.avatar}
@@ -259,8 +259,8 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                         )}
                         <Divider className={styles.divider} />
                         <Menu.Item key='settings' className={styles.menuItem} icon={<UserAddIcon />}>
-                            <Link to={routeTeamSettings(profile.currentTeamId)}>
-                                <span className='nav-text'>Team settings</span>
+                            <Link to={routeTeamMembers()}>
+                                <span className='nav-text'>Team members</span>
                             </Link>
                         </Menu.Item>
                         <Menu.Item

@@ -1,8 +1,8 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
-import { routeInterviewAddFromTemplate, routeTemplatePreview } from "../utils/route";
-import { TemplateCategories } from "../utils/constants";
+import { routeInterviewAddFromTemplate, routeTemplatePreview } from "../../utils/route";
+import { TemplateCategories } from "../../utils/constants";
 import styles from "./template-card.module.css";
 import Card from "../card/card";
 import { defaultTo } from "lodash/util";

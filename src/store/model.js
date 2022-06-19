@@ -109,11 +109,25 @@
  */
 
 /**
+ * @typedef {Object} TeamDetails
+ * @property {string} teamId
+ * @property {string} teamName
+ * @property {string} token
+ * @property {string} plan
+ * @property {number} availableSeats
+ * @property {number} seats
+ * @property {string[]} pendingInvites
+ * @property {string[]} roles
+ * @property {TeamMember[]} teamMembers
+ */
+
+/**
  * @typedef {Object} TeamMember
  * @property {string} userId
  * @property {string} name
  * @property {string} email
  * @property {boolean} isAdmin
+ * @property{string[]} roles
  */
 
 /**
@@ -121,8 +135,10 @@
  * @property {string} name
  * @property {string} email
  * @property {string} userId
+ * @property {string} position
  * @property {string} currentTeamId
  * @property {number} timezoneOffset
+ * @property {string} timezone
  * @property {Team[]} teams
  */
 

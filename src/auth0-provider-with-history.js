@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Auth0Provider } from "./react-auth0-spa";
 import config from "./auth_config.json";
-import { log } from "./components/utils/log";
+import { log } from "./utils/log";
 
 const Auth0ProviderWithHistory = ({ children }) => {
     const history = useHistory();

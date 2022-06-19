@@ -10,11 +10,11 @@ import { createCloseBackButton } from "../../components/header/header-utils";
 import CandidateInfo from "./candidate-info";
 import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
 import { cloneDeep, isEmpty } from "lodash/lang";
-import { getFormattedDateShort } from "../../components/utils/date-fns";
+import { getFormattedDateShort } from "../../utils/date-fns";
 import Layout from "../../components/layout/layout";
 import { loadTeamMembers } from "../../store/user/actions";
-import { MoreIcon } from "../../components/utils/icons";
-import { routeCandidates } from "../../components/utils/route";
+import { MoreIcon } from "../../utils/icons";
+import { routeCandidates } from "../../utils/route";
 import CreateCandidate from "./create-candidate";
 import { selectCandidateInterviews } from "../../store/interviews/selector";
 
