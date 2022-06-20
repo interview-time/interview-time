@@ -5,34 +5,37 @@ import { Status } from "../../utils/constants";
 
 /**
  *
- * @param {Interview} interview
+ * @param {Date} interviewStartDateTime
+ * @param {string} status
+ * @param {[string]} statuses
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewStatusTag = ({ interviewStartDateTime, status }) => {
+const InterviewStatusTag = ({ interviewStartDateTime, status, statuses }) => {
     const interviewStarted = () => new Date() > interviewStartDateTime;
 
-    const getClass = () => {
-        if (status === Status.SUBMITTED) {
-            return styles.tagGreen;
-        } else if (status === Status.COMPLETED) {
-            return styles.tagOrange;
+    const createTag = () => {
+        let statusesArr = status ? Array.from(status) : statuses;
+        let tagClass;
+        let tagText;
+        if (statusesArr.every(status => status === Status.SUBMITTED)) {
+            tagClass = styles.tagGreen;
+            tagText = "Complete";
+        } else if (statusesArr.find(status => status === Status.COMPLETED)) {
+            tagClass = styles.tagOrange;
+            tagText = "Finalizing…";
+        } else if (interviewStarted()) {
+            tagClass = styles.tagOrange;
+            tagText = "In Progress";
         } else {
-            return interviewStarted() ? styles.tagOrange : styles.tagRed;
+            tagClass = styles.tagRed;
+            tagText = "Upcoming";
         }
+
+        return <Tag className={tagClass}>{tagText}</Tag>;
     };
 
-    const getText = () => {
-        if (status === Status.SUBMITTED) {
-            return "Complete";
-        } else if (status === Status.COMPLETED) {
-            return "Finalizing...";
-        } else {
-            return interviewStarted() ? "In Progress" : "Upcoming";
-        }
-    };
-
-    return <Tag className={getClass()}>{getText()}</Tag>;
+    return createTag();
 };
 
 export default InterviewStatusTag;

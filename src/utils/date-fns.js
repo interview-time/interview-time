@@ -57,6 +57,14 @@ export const formatDate = (date, dateFormat, defaultValue = "") => {
 };
 
 /**
+ * Returns formatted time taking into account locale, format: 10:00 AM or 18:00
+ * @param date {Date|string|undefined}
+ * @param defaultValue {string}
+ * @returns {string}
+ */
+export const getFormattedTime = (date, defaultValue = "") => formatDate(date, "p", defaultValue);
+
+/**
  * Returns formatted date taking into account locale, format: Sat, 19 February 2022 at 10:00 AM
  * @param date {Date|string|undefined}
  * @param defaultValue {string}

@@ -7,14 +7,17 @@ import { filterGroupsWithAssessment } from "../../utils/filters";
 /**
  *
  * @param {Interview} interview
+ * @param {int} max
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewCompetenceTag = ({ interview }) => {
-    let data = filterGroupsWithAssessment(interview.structure.groups).map(group => ({
-        group: group,
-        assessment: getGroupAssessment(group.questions),
-    }));
+const InterviewCompetenceTag = ({ interview, max = 99 }) => {
+    let data = filterGroupsWithAssessment(interview.structure.groups)
+        .slice(0, max)
+        .map(group => ({
+            group: group,
+            assessment: getGroupAssessment(group.questions),
+        }));
 
     return (
         <Popover

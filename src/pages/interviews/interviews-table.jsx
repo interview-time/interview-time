@@ -1,16 +1,10 @@
-import { Button, ConfigProvider, Dropdown, Menu, Modal, Space, Table, Select } from "antd";
+import { Button, ConfigProvider, Dropdown, Menu, Modal, Select, Space, Table } from "antd";
 import Title from "antd/lib/typography/Title";
 import Card from "../../components/card/card";
 import React, { useState } from "react";
-import TableHeader from "../../components/table/table-header";
-import { localeCompare } from "../../utils/comparators";
-import TableText from "../../components/table/table-text";
-import DemoTag from "../../components/demo/demo-tag";
-import { defaultTo } from "lodash/util";
-import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import { MoreIcon } from "../../utils/icons";
 import { Status } from "../../utils/constants";
-import { routeInterviewDetails, routeInterviewReport, routeInterviewScorecard } from "../../utils/route";
+import { routeCandidateDetails, routeInterviewDetails, routeInterviewScorecard } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
@@ -19,7 +13,13 @@ import { truncate } from "lodash/string";
 import { uniqBy } from "lodash/array";
 import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import styles from "../interviews/interviews.module.css";
-import { getFormattedDateTime } from "../../utils/date-fns";
+import {
+    CandidateColumn,
+    DateColumn,
+    InterviewColumn,
+    InterviewerColumn,
+    StatusColumn,
+} from "../../components/table/table-interviews";
 
 /**
  *
@@ -115,11 +115,16 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
         }));
     };
 
+    const onCandidateClicked = (e, candidateId) => {
+        e.stopPropagation(); // prevent opening report
+        history.push(routeCandidateDetails(candidateId));
+    };
+
     const onRowClicked = interview => {
-        if (interview.status === Status.SUBMITTED || interview.interviewerId !== profile.userId) {
-            history.push(routeInterviewReport(interview.interviewId));
-        } else {
+        if (interview.interviewerId === profile.userId) {
             history.push(routeInterviewScorecard(interview.interviewId));
+        } else {
+            history.push(routeCandidateDetails(interview.candidateId));
         }
     };
 
@@ -160,64 +165,11 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
     );
 
     const columns = [
-        {
-            title: <TableHeader>CANDIDATE</TableHeader>,
-            key: "candidateName",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.candidateName, b.candidateName),
-            render: interview => {
-                return (
-                    <>
-                        <TableText className={`fs-mask`}>{interview.candidateName}</TableText>
-                        <DemoTag isDemo={interview.isDemo} />
-                    </>
-                );
-            },
-        },
-        {
-            title: <TableHeader>INTERVIEW</TableHeader>,
-            key: "position",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.position, b.position),
-            render: interview => <TableText>{defaultTo(interview.position, "")}</TableText>,
-        },
-        {
-            title: <TableHeader>DATE</TableHeader>,
-            key: "interviewStartDateTimeDisplay",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => a.interviewStartDateTimeDisplay - b.interviewStartDateTimeDisplay,
-            render: interview => <TableText>{getFormattedDateTime(interview.interviewStartDateTimeDisplay)}</TableText>,
-        },
-        {
-            title: <TableHeader>INTERVIEWER</TableHeader>,
-            key: "interviewerName",
-            sortDirections: ["descend", "ascend"],
-            width: 200,
-            sorter: (a, b) => localeCompare(a.interviewerName, b.interviewerName),
-            render: interview => {
-                return (
-                    <TableText>
-                        {interview.interviewerName
-                            ? truncate(interview.interviewerName, {
-                                  length: 20,
-                              })
-                            : "-"}
-                    </TableText>
-                );
-            },
-        },
-        {
-            title: <TableHeader>STATUS</TableHeader>,
-            key: "status",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.status, b.status),
-            render: interview => (
-                <InterviewStatusTag
-                    interviewStartDateTime={interview.interviewStartDateTime}
-                    status={interview.status}
-                />
-            ),
-        },
+        CandidateColumn(onCandidateClicked),
+        InterviewColumn(),
+        DateColumn(),
+        InterviewerColumn(),
+        StatusColumn(),
         {
             key: "actions",
             render: interview => (
@@ -263,7 +215,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
                     </div>
                 </div>
             )}
-            
+
             <Card withPadding={false}>
                 <ConfigProvider
                     renderEmpty={() => (
