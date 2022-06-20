@@ -4,7 +4,8 @@ export const selectInterview = (state, interviewId) => {
     return state.interviews.interviews.find(i => i.interviewId === interviewId);
 };
 
-export const selectInterviews = state => {
+const selectInterviews = state => {
+    // TODO depends on 3 REST calls, maybe we can optimize this to show data faster
     const plainInterviews = state.interviews.interviews;
     const candidates = state.candidates.candidates;
     const teamMembers = state.user.teamMembers;
@@ -87,9 +88,9 @@ export const selectInterviewsTable = (interviews, profile) => {
         return {
             interviewId: scorecard.interviewId,
             key: scorecard.interviewId,
+            candidateId: interview.candidateId,
             candidateName: interview.candidate,
             position: interview.position,
-            interviewStartDateTimeDisplay: interview.interviewStartDateTime,
             interviewStartDateTime: interview.interviewStartDateTime,
             interviewerName: scorecard.interviewer?.name,
             interviewerId: scorecard.interviewer?.userId,
@@ -97,7 +98,7 @@ export const selectInterviewsTable = (interviews, profile) => {
             isDemo: interview.isDemo,
             structure: scorecard.structure,
             decision: scorecard.decision,
-            children: coInterviewers.length > 0 ? coInterviewers : null,
+            coInterviewers: coInterviewers,
         };
     });
 };

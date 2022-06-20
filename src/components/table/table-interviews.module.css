@@ -1,0 +1,13 @@
+.tableTime {
+    color: #6B7280;
+    margin-top: -2px;
+}
+
+.tableDateDiv {
+    display: flex;
+    flex-direction: column;
+}
+
+.candidateName {
+    color: #8C2BE3;
+}
