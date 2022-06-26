@@ -6,28 +6,24 @@ import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
-import { cloneDeep } from "lodash/lang";
-import { Status } from "../../utils/constants";
 import TemplateCard from "../../components/template-card/template-card";
 import {
+    routeCandidateDetails,
     routeInterviewAdd,
     routeInterviewScorecard,
     routeTeamMembers,
-    routeTemplates
+    routeTemplates,
 } from "../../utils/route";
 import styles from "./dashboard.module.css";
-import DemoTag from "../../components/demo/demo-tag";
 import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../utils/icons";
 import Card from "../../components/card/card";
 import CardHero from "../../components/card/card-hero";
-import TableHeader from "../../components/table/table-header";
-import { localeCompare } from "../../utils/comparators";
-import TableText from "../../components/table/table-text";
-import { defaultTo } from "lodash/util";
-import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
-import { getFormattedDateTime } from "../../utils/date-fns";
+import { CandidateColumn, DateColumn, InterviewColumn, StatusColumn } from "../../components/table/table-interviews";
+import { selectUncompletedInterviews } from "../../store/interviews/selector";
+import { loadCandidates } from "../../store/candidates/actions";
+import { loadTeamMembers } from "../../store/user/actions";
 
 const { Title } = Typography;
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
@@ -39,15 +35,28 @@ const iconStyle = { fontSize: 24, color: "#8C2BE3" };
  * @param {Template[]} templates
  * @param {UserProfile} profile
  * @param loadInterviews
+ * @param loadCandidates
+ * @param loadTeamMembers
  * @param loadTemplates
  * @returns {JSX.Element}
  * @constructor
  */
-const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInterviews, loadTemplates }) => {
+const Dashboard = ({
+    interviews,
+    interviewsLoading,
+    templates,
+    profile,
+    loadInterviews,
+    loadCandidates,
+    loadTeamMembers,
+    loadTemplates,
+}) => {
     const history = useHistory();
 
     React.useEffect(() => {
         loadInterviews();
+        loadCandidates();
+        loadTeamMembers(profile.currentTeamId);
         loadTemplates();
         // eslint-disable-next-line
     }, []);
@@ -60,48 +69,12 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
 
     const onRowClicked = interview => history.push(routeInterviewScorecard(interview.interviewId));
 
-    const columns = [
-        {
-            title: <TableHeader>CANDIDATE</TableHeader>,
-            key: "candidate",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.candidate, b.candidate),
-            render: interview => {
-                return (
-                    <>
-                        <TableText className={`fs-mask`}>{interview.candidate}</TableText>
-                        <DemoTag isDemo={interview.isDemo} />
-                    </>
-                );
-            },
-        },
-        {
-            title: <TableHeader>INTERVIEW</TableHeader>,
-            key: "position",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.position, b.position),
-            render: interview => <TableText>{defaultTo(interview.position, "-")}</TableText>,
-        },
-        {
-            title: <TableHeader>DATE</TableHeader>,
-            key: "interviewDateTime",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.interviewDateTime, b.interviewDateTime),
-            render: interview => <TableText>{getFormattedDateTime(interview.interviewDateTime, "-")}</TableText>,
-        },
-        {
-            title: <TableHeader>STATUS</TableHeader>,
-            key: "status",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.status, b.status),
-            render: interview => (
-                <InterviewStatusTag
-                    interviewStartDateTime={new Date(interview.interviewDateTime)}
-                    status={interview.status}
-                />
-            ),
-        },
-    ];
+    const onCandidateClicked = (e, candidateId) => {
+        e.stopPropagation(); // prevent opening report
+        history.push(routeCandidateDetails(candidateId));
+    };
+
+    const columns = [CandidateColumn(onCandidateClicked), InterviewColumn(), DateColumn(), StatusColumn()];
 
     return (
         <Layout contentStyle={styles.rootContainer}>
@@ -181,20 +154,18 @@ const Dashboard = ({ interviews, interviewsLoading, templates, profile, loadInte
     );
 };
 
-const mapDispatch = { loadInterviews, loadTemplates };
+const mapDispatch = { loadInterviews, loadCandidates, loadTeamMembers, loadTemplates };
 const mapState = state => {
     const userState = state.user || {};
     const interviewsState = state.interviews || {};
     const templateState = state.templates || {};
 
-    const interviews = sortBy(cloneDeep(interviewsState.interviews), ["interviewDateTime"]).filter(
-        interview => interview.userId === userState.profile.userId && interview.status !== Status.SUBMITTED
-    );
-
     const templates = sortBy(templateState.templates, ["title"]).slice(0, 3);
 
     return {
-        interviews: interviews,
+        interviews: selectUncompletedInterviews(state).filter(
+            interview => interview.interviewerId === userState.profile.userId
+        ),
         interviewsLoading: interviewsState.loading,
         templates: templates,
         profile: userState.profile,
