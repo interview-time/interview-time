@@ -16,6 +16,11 @@ const QuestionAnswersChart = ({ groups }) => {
     const [chartData, setChartData] = useState([]);
 
     useEffect(() => {
+        const unanswered = {
+            label: "No Answer",
+            color: "#ff4d4f",
+            value: 0,
+        };
         const poor = {
             label: "Poor",
             color: "#D6BBFD",
@@ -40,10 +45,12 @@ const QuestionAnswersChart = ({ groups }) => {
                         good.value++;
                     } else if (question.assessment === QuestionAssessment.EXCELLENT) {
                         excellent.value++;
+                    } else if (question.assessment === QuestionAssessment.UNANSWERED) {
+                        unanswered.value++;
                     }
                 });
             });
-            setChartData([poor, good, excellent]);
+            setChartData([unanswered, poor, good, excellent]);
         }
 
         // eslint-disable-next-line
