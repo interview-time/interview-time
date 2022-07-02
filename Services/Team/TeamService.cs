@@ -6,6 +6,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Models;
+using CafApi.Services.User;
 using CafApi.Utils;
 
 namespace CafApi.Services
@@ -14,18 +15,28 @@ namespace CafApi.Services
     {
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
+        private readonly IPermissionsService _permissionsService;
         private readonly DynamoDBContext _context;
 
-        public TeamService(IAmazonDynamoDB dynamoDbClient, IUserService userService, IEmailService emailService)
+        public TeamService(IAmazonDynamoDB dynamoDbClient, 
+            IUserService userService, 
+            IEmailService emailService,
+            IPermissionsService permissionsService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _userService = userService;
             _emailService = emailService;
+            _permissionsService = permissionsService;
         }
 
         public async Task<Team> GetTeam(string teamId)
         {
             return await _context.LoadAsync<Team>(teamId);
+        }
+
+        public async Task<TeamMember> GetTeamMember(string userId, string teamId)
+        {
+            return await _context.LoadAsync<TeamMember>(teamId, userId);
         }
 
         public async Task<Team> CreateTeam(string userId, string name)
@@ -147,7 +158,7 @@ namespace CafApi.Services
         {
             var result = new List<(Profile, TeamMember)>();
             // check if user belongs to the team
-            var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
+            var belongsToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
             if (belongsToTeam)
             {
                 var teamMembers = await _context.QueryAsync<TeamMember>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
@@ -193,7 +204,7 @@ namespace CafApi.Services
         {
             var teamInvites = new List<Invite>();
 
-            var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
+            var belongsToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
             if (belongsToTeam)
             {
                 var search = _context.FromQueryAsync<Invite>(new QueryOperationConfig()
@@ -214,7 +225,7 @@ namespace CafApi.Services
             var availableSeats = await GetAvailableSeats(teamId);
             if (availableSeats > 0)
             {
-                var belongsToTeam = await _userService.IsBelongInTeam(userId, teamId);
+                var belongsToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
                 if (belongsToTeam)
                 {
                     var invites = await GetPendingInvites(userId, teamId);

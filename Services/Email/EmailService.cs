@@ -22,7 +22,7 @@ namespace CafApi.Services
         public EmailService(ISendGridClient client, IConfiguration configuration, ILogger<EmailService> logger)
         {
             _client = client;
-            _fromAddress = new EmailAddress("noreply@interviewer.space", "Interviewer.Space");
+            _fromAddress = new EmailAddress("noreply@interviewtime.io", "InterviewTime");
             _configuration = configuration;
             _logger = logger;
             _appHostUri = _configuration["AppHostUri"];
@@ -142,7 +142,7 @@ namespace CafApi.Services
             sb.AppendLine("END:VTIMEZONE");
 
             sb.AppendLine("BEGIN:VEVENT");
-            sb.AppendLine($"ORGANIZER;CN=Interviewer.Space;EMAIL={_fromAddress.Email}:mailto:{_fromAddress.Email}");
+            sb.AppendLine($"ORGANIZER;CN=InterviewTime;EMAIL={_fromAddress.Email}:mailto:{_fromAddress.Email}");
             sb.AppendLine($"DTSTART;TZID={timezone}:" + startDate.ToString("yyyyMMddTHHmm00"));
             sb.AppendLine($"DTEND;TZID={timezone}:" + endDate.ToString("yyyyMMddTHHmm00"));
             sb.AppendLine($"SUMMARY:{summary}");

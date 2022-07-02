@@ -8,6 +8,7 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.S3;
 using Amazon.S3.Model;
 using CafApi.Models;
+using CafApi.Services.User;
 
 namespace CafApi.Services
 {
@@ -15,13 +16,13 @@ namespace CafApi.Services
     {
         private readonly DynamoDBContext _context;
         private readonly IAmazonS3 _s3Client;
-        private readonly IUserService _userService;
+        private readonly IPermissionsService _permissionsService;
 
-        public CandidateService(IAmazonDynamoDB dynamoDbClient, IAmazonS3 s3Client, IUserService userService)
+        public CandidateService(IAmazonDynamoDB dynamoDbClient, IAmazonS3 s3Client, IPermissionsService permissionsService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
-            _userService = userService;
             _s3Client = s3Client;
+            _permissionsService = permissionsService;
         }
 
         public async Task<Candidate> GetCandidate(string teamId, string candidateId)
@@ -152,7 +153,7 @@ namespace CafApi.Services
         {
             if (!string.IsNullOrWhiteSpace(teamId))
             {
-                var isBelongToTeam = await _userService.IsBelongInTeam(userId, teamId);
+                var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
                 if (isBelongToTeam)
                 {
                     return true;

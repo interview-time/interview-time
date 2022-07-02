@@ -5,16 +5,19 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using CafApi.Models;
+using CafApi.Services.User;
 
 namespace CafApi.Services
 {
     public class UserService : IUserService
     {
         private readonly DynamoDBContext _context;
+        private readonly IPermissionsService _permissionsService;
 
-        public UserService(IAmazonDynamoDB dynamoDbClient)
+        public UserService(IAmazonDynamoDB dynamoDbClient, IPermissionsService permissionsService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
+            _permissionsService = permissionsService;
         }
 
         public async Task<Profile> GetProfile(string userId)
@@ -75,16 +78,9 @@ namespace CafApi.Services
             }
         }
 
-        public async Task<bool> IsBelongInTeam(string userId, string teamId)
-        {
-            var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
-
-            return teamMember != null;
-        }
-
         public async Task UpdateCurrentTeam(string userId, string currentTeamId)
         {
-            var isBelongToTeam = await IsBelongInTeam(userId, currentTeamId);
+            var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, currentTeamId);
             if (isBelongToTeam)
             {
                 var profile = await GetProfile(userId);

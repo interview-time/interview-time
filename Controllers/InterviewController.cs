@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
+using CafApi.Services.User;
 using CafApi.Utils;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,7 @@ namespace CafApi.Controllers
     {
         private readonly IInterviewService _interviewService;
         private readonly IUserService _userService;
+        private readonly IPermissionsService _permissionsService;
         private readonly ILogger<InterviewController> _logger;
         private readonly IEmailService _emailService;
         private readonly string _demoUserId;
@@ -37,12 +39,14 @@ namespace CafApi.Controllers
             IInterviewService interviewService,
             IUserService userService,
             IConfiguration configuration,
-            IEmailService emailService)
+            IEmailService emailService,
+            IPermissionsService permissionsService)
         {
             _logger = logger;
             _interviewService = interviewService;
             _userService = userService;
             _emailService = emailService;
+            _permissionsService = permissionsService;
 
             _demoUserId = configuration["DemoUserId"];
         }
@@ -66,7 +70,7 @@ namespace CafApi.Controllers
 
                 foreach (var interviewerId in interview.Interviewers)
                 {
-                    var isBelongInTeam = await _userService.IsBelongInTeam(interviewerId, interview.TeamId);
+                    var isBelongInTeam = await _permissionsService.IsBelongInTeam(interviewerId, interview.TeamId);
                     if (isBelongInTeam)
                     {
                         var newInterview = interview.Clone();

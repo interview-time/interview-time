@@ -8,6 +8,8 @@ namespace CafApi.Services
     {
         Task<Team> GetTeam(string teamId);
 
+        Task<TeamMember> GetTeamMember(string userId, string teamId);
+
         Task<Team> CreateTeam(string userId, string name);
 
         Task Update(string userId, string teamId, string name);

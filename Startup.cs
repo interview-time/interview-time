@@ -14,6 +14,7 @@ using Amazon.S3;
 using SendGrid.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using CafApi.ViewModel;
+using CafApi.Services.User;
 
 namespace CafApi
 {
@@ -52,7 +53,9 @@ namespace CafApi
                                              builder.WithOrigins(
                                                  "http://localhost:3000",
                                                  "https://*.netlify.app",
-                                                 "https://app.interviewer.space")
+                                                 "https://app.interviewer.space",
+                                                 "https://app-staging.interviewtime.io",
+                                                 "https://app.interviewtime.io")
                                                 .SetIsOriginAllowedToAllowWildcardSubdomains()
                                                 .AllowAnyHeader()
                                                 .AllowAnyMethod()
@@ -66,7 +69,7 @@ namespace CafApi
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CAF API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "InterviewTime API", Version = "v1" });
             });
             services.AddAWSService<IAmazonDynamoDB>();
             services.AddDefaultAWSOptions(
@@ -95,14 +98,15 @@ namespace CafApi
             });
 
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Config));
-
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<ITemplateService, TemplateService>();
-            services.AddSingleton<IInterviewService, InterviewService>();
-            services.AddSingleton<ITeamService, TeamService>();
-            services.AddSingleton<ICandidateService, CandidateService>();
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
-            services.AddSingleton<IEmailService, EmailService>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITemplateService, TemplateService>();
+            services.AddScoped<IInterviewService, InterviewService>();
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<ICandidateService, CandidateService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPermissionsService, PermissionsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,7 +118,7 @@ namespace CafApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CAF API v1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "InterviewTime API v1");
                     c.RoutePrefix = string.Empty;
                 });
             }

@@ -1,18 +1,18 @@
 # REST API
 
-Interviewer.space REST API
+interviewtime.io REST API
 
 ## Get My Interview Templates
 
 ### Request
 
-`GET https://api.interviewer.space/template`
+`GET https://api.interviewtime.io/template`
 
 ## Create Interview Template
 
 ### Request
 
-`POST https://api.interviewer.space/template`
+`POST https://api.interviewtime.io/template`
 
     {
     "title": "Senior Android Engineer",
@@ -58,7 +58,7 @@ Interviewer.space REST API
 
 ### Request
 
-`PUT https://api.interviewer.space/template`
+`PUT https://api.interviewtime.io/template`
 
     {
         "templateId": "1bb6724f-3e03-4a45-a38a-bde564fda95e",
@@ -103,10 +103,10 @@ Interviewer.space REST API
 
 ### Request
 
-`DELETE https://api.interviewer.space/template/{templateId}`
+`DELETE https://api.interviewtime.io/template/{templateId}`
 
 ## Get Library of Templates
 
 ### Request
 
-`GET https://api.interviewer.space/template/library`
+`GET https://api.interviewtime.io/template/library`
