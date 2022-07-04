@@ -6,6 +6,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Models;
+using CafApi.Services.User;
 using CafApi.Utils;
 using CafApi.ViewModel;
 
@@ -15,13 +16,15 @@ namespace CafApi.Services
     {
         private readonly DynamoDBContext _context;
         private readonly IInterviewService _interviewService;
-        private readonly IUserService _userService;
+        private readonly IPermissionsService _permissionsService;
 
-        public TemplateService(IAmazonDynamoDB dynamoDbClient, IInterviewService interviewService, IUserService userService)
+        public TemplateService(IAmazonDynamoDB dynamoDbClient,
+            IInterviewService interviewService,
+            IPermissionsService permissionsService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _interviewService = interviewService;
-            _userService = userService;
+            _permissionsService = permissionsService;
         }
 
         public async Task<List<Template>> GetMyTemplates(string userId)
@@ -48,7 +51,7 @@ namespace CafApi.Services
 
         public async Task<List<Template>> GetTeamTemplates(string userId, string teamId)
         {
-            var isBelongInTeam = await _userService.IsBelongInTeam(userId, teamId);
+            var isBelongInTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
             if (isBelongInTeam)
             {
                 var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
@@ -122,7 +125,7 @@ namespace CafApi.Services
 
         public async Task UpdateTemplate(string userId, TemplateRequest updatedTemplate)
         {
-            var isBelongInTeam = await _userService.IsBelongInTeam(userId, updatedTemplate.TeamId);
+            var isBelongInTeam = await _permissionsService.IsBelongInTeam(userId, updatedTemplate.TeamId);
             if (isBelongInTeam)
             {
                 var template = await GetTemplate(updatedTemplate.TemplateId);

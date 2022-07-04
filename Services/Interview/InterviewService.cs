@@ -6,6 +6,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Models;
+using CafApi.Services.User;
 using CafApi.Utils;
 using CafApi.ViewModel;
 
@@ -13,18 +14,30 @@ namespace CafApi.Services
 {
     public class InterviewService : IInterviewService
     {
-        private readonly IUserService _userService;
+        private readonly IPermissionsService _permissionsService;
         private readonly DynamoDBContext _context;
 
-        public InterviewService(IAmazonDynamoDB dynamoDbClient, IUserService userService)
+        public InterviewService(IAmazonDynamoDB dynamoDbClient, IPermissionsService permissionsService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
-            _userService = userService;
+            _permissionsService = permissionsService;
         }
 
         public async Task<Interview> GetInterview(string userId, string interviewId)
         {
             return await _context.LoadAsync<Interview>(userId, interviewId);
+        }
+
+        public async Task<Interview> GetInterview(string interviewId)
+        {
+            var search = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
+            {
+                IndexName = "InterviewId-index",
+                Filter = new QueryFilter(nameof(Interview.InterviewId), QueryOperator.Equal, interviewId)
+            });
+            var interviews = await search.GetRemainingAsync();
+
+            return interviews.FirstOrDefault();
         }
 
         public async Task<List<Interview>> GetInterviews(string userId, string teamId = null)
@@ -126,7 +139,20 @@ namespace CafApi.Services
 
         public async Task DeleteInterview(string userId, string interviewId)
         {
-            await _context.DeleteAsync<Interview>(userId, interviewId);
+            var interview = await GetInterview(interviewId);
+            if (interview != null)
+            {
+                var isBelongInTeam = await _permissionsService.IsBelongInTeam(userId, interview.TeamId);
+                if (isBelongInTeam)
+                {
+                    var userRoles = await _permissionsService.GetUserRoles(userId, interview.TeamId);
+
+                    if (PermissionsService.CanDeleteInterview(userRoles, interview.UserId == userId))
+                    {
+                        await _context.DeleteAsync<Interview>(interview.UserId, interview.InterviewId);
+                    }
+                }
+            }
         }
 
         public async Task SubmitScorecard(string userId, ScoreCardRequest scoreCard)
