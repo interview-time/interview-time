@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using CafApi.Models;
 
 namespace CafApi.ViewModel
 {
@@ -10,7 +11,7 @@ namespace CafApi.ViewModel
 
         public string Notes { get; set; }
 
-        public List<string> RedFlags { get; set; }
+        public List<RedFlag> RedFlags { get; set; }
 
         [Required]
         public int Decision { get; set; }

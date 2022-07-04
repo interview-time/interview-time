@@ -41,7 +41,7 @@ namespace CafApi.Models
 
         public string Notes { get; set; }
 
-        public List<string> RedFlags { get; set; }
+        public List<RedFlag> RedFlags { get; set; }
 
         public InterviewStructure Structure { get; set; }
 
@@ -104,5 +104,12 @@ namespace CafApi.Models
         public string Notes { get; set; }
 
         public int Assessment { get; set; }
+    }
+
+    public class RedFlag
+    {
+        public string Label { get; set; }
+
+        public int Order { get; set; }
     }
 }
