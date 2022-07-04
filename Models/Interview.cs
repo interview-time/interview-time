@@ -41,6 +41,8 @@ namespace CafApi.Models
 
         public string Notes { get; set; }
 
+        public List<string> RedFlags { get; set; }
+
         public InterviewStructure Structure { get; set; }
 
         public bool IsDemo { get; set; }

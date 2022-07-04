@@ -10,6 +10,8 @@ namespace CafApi.ViewModel
 
         public string Notes { get; set; }
 
+        public List<string> RedFlags { get; set; }
+
         [Required]
         public int Decision { get; set; }
 

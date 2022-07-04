@@ -162,6 +162,7 @@ namespace CafApi.Services
             interview.Notes = scoreCard.Notes;
             interview.Decision = scoreCard.Decision;
             interview.Status = scoreCard.Status;
+            interview.RedFlags = scoreCard.RedFlags;
 
             if (scoreCard.QuestionGroups != null)
             {
