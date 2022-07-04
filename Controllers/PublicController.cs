@@ -95,7 +95,8 @@ namespace CafApi.Controllers
                 Status = interview.Status,
                 Decision = interview.Decision,
                 Notes = interview.Notes,
-                Structure = interview.Structure
+                Structure = interview.Structure,
+                RedFlags = interview.RedFlags
             };
         }
     }

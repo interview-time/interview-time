@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CafApi.Models;
 
 namespace CafApi.ViewModel
@@ -22,6 +23,8 @@ namespace CafApi.ViewModel
         public int Decision { get; set; }
 
         public string Notes { get; set; }
+
+        public List<RedFlag> RedFlags { get; set; }
 
         public InterviewStructure Structure { get; set; }
     }
