@@ -2,6 +2,7 @@
     background: #fff;
     border-style: dashed;
     margin-top: 8px;
+    cursor: pointer;
 }
 
 .editTag {
