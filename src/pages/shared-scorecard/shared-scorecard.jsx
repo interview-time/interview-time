@@ -73,8 +73,8 @@ const SharedScorecard = ({ scorecard, loading, getSharedScorecard }) => {
     return (
         <div className={styles.rootContainer}>
             <div className={styles.header}>
-                <a href='https://interviewer.space'>
-                    <img alt='Interviewer' src={logo} className={styles.logo} />
+                <a href='https://interviewtime.io'>
+                    <img alt='InterviewTime' src={logo} className={styles.logo} />
                 </a>
             </div>
 
