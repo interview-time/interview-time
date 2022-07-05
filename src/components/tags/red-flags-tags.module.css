@@ -1,0 +1,14 @@
+.siteTagPlus {
+    background: #fff;
+    border-style: dashed;
+    margin-top: 8px;
+}
+
+.editTag {
+    user-select: none;
+}
+
+.tagInput {
+    font-size: 12px;
+    margin-top: 8px;
+}

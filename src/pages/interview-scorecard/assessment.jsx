@@ -18,6 +18,7 @@ import Card from "../../components/card/card";
 import Text from "antd/lib/typography/Text";
 import { PlusOutlined } from "@ant-design/icons";
 import { routeHome } from "../../utils/route";
+import { defaultTo } from "lodash/util";
 
 /**
  *
@@ -28,7 +29,8 @@ import { routeHome } from "../../utils/route";
  * @param onCompletedClicked
  * @param onQuestionNotesChanged
  * @param onQuestionAssessmentChanged
- * @param onNoteChanges
+ * @param onNotesChange
+ * @param onRedFlagsChange
  * @param onQuestionsAdded
  * @param onQuestionsRemoved
  * @param {boolean} interviewsUploading
@@ -43,7 +45,8 @@ const Assessment = ({
     onCompletedClicked,
     onQuestionNotesChanged,
     onQuestionAssessmentChanged,
-    onNoteChanges,
+    onNotesChange,
+    onRedFlagsChange,
     onQuestionsAdded,
     onQuestionsRemoved,
     interviewsUploading,
@@ -154,7 +157,13 @@ const Assessment = ({
                 </Card>
             </Col>
 
-            <NotesSection notes={interview.notes} status={interview.status} onChange={onNoteChanges} />
+            <NotesSection
+                redFlags={defaultTo(interview.redFlags, [])}
+                notes={interview.notes}
+                status={interview.status}
+                onNotesChange={onNotesChange}
+                onRedFlagsChange={onRedFlagsChange}
+            />
         </div>
     );
 };

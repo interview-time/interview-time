@@ -22,7 +22,8 @@ const { Text } = Typography;
  * @param {boolean} interviewsUploading
  * @param onEditClicked
  * @param onSubmitClicked
- * @param onNoteChanges
+ * @param onNotesChange
+ * @param onRedFlagsChange
  * @param onAssessmentChanged
  * @returns {JSX.Element}
  * @constructor
@@ -34,7 +35,8 @@ const Evaluation = ({
     interviewsUploading,
     onSubmitClicked,
     onEditClicked,
-    onNoteChanges,
+    onNotesChange,
+    onRedFlagsChange,
     onAssessmentChanged,
 }) => {
     const history = useHistory();
@@ -74,7 +76,7 @@ const Evaluation = ({
                 <ScoreSection interview={interview} teamMembers={teamMembers} candidate={candidate} />
                 <CompetenceAreaSection interview={interview} />
                 <ChartsSection interview={interview} />
-                <SummaryNotes interview={interview} editable={true} onNoteChanges={onNoteChanges} />
+                <SummaryNotes interview={interview} onNotesChange={onNotesChange} onRedFlagsChange={onRedFlagsChange} />
 
                 <Card withPadding={false} className={`${styles.decisionCard}`}>
                     <div style={{ margin: 24 }}>

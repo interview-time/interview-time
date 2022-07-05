@@ -19,6 +19,8 @@ import QuestionAnswersChart from "../../components/charts/question-answers-chart
 import Paragraph from "antd/lib/typography/Paragraph";
 import { Status } from "../../utils/constants";
 import TextArea from "antd/lib/input/TextArea";
+import { RedFlagsTags } from "../../components/tags/red-flags-tags";
+import { defaultTo } from "lodash/util";
 
 /**
  *
@@ -168,34 +170,51 @@ export const ChartsSection = ({ interview }) => {
 /**
  *
  * @param {Interview} interview
- * @param {boolean} editable
- * @param  onNoteChanges
+ * @param  onNotesChange
+ * @param  onRedFlagsChange
  * @returns {JSX.Element}
  * @constructor
  */
-export const SummaryNotes = ({ interview, editable, onNoteChanges }) => {
+export const SummaryNotes = ({ interview, onNotesChange, onRedFlagsChange }) => {
+    const notesEditable = onNotesChange != null;
+
     return (
-        <Card withPadding={false} className={styles.notesCard}>
-            <Title level={4} className={styles.notesTitle}>
-                Summary notes
-            </Title>
-            <div className={styles.divider} />
-            {!editable && (
-                <Paragraph className={styles.notesTextArea}>
-                    {interview.notes ? interview.notes : "No summary was left"}
-                </Paragraph>
-            )}
-            {editable && (
-                <TextArea
-                    {...(interview.status === Status.SUBMITTED ? { readonly: "true" } : {})}
-                    className={styles.notesTextArea}
-                    placeholder='No summary was left, you can still add notes now'
-                    bordered={false}
-                    autoSize={{ minRows: 1 }}
-                    onChange={onNoteChanges}
-                    defaultValue={interview.notes}
-                />
-            )}
-        </Card>
+        <Row className={styles.notesRoot} gutter={24}>
+            <Col span={16}>
+                <Card withPadding={false} className={styles.notesCard}>
+                    <Title level={4} className={styles.notesTitle}>
+                        Summary notes
+                    </Title>
+                    <div className={styles.divider} />
+                    {!notesEditable && (
+                        <Paragraph className={styles.notesTextArea}>
+                            {interview.notes ? interview.notes : "No summary was left"}
+                        </Paragraph>
+                    )}
+                    {notesEditable && (
+                        <TextArea
+                            {...(interview.status === Status.SUBMITTED ? { readonly: "true" } : {})}
+                            className={styles.notesTextArea}
+                            placeholder='No summary was left, you can still add notes now'
+                            bordered={false}
+                            autoSize={{ minRows: 1 }}
+                            onChange={onNotesChange}
+                            defaultValue={interview.notes}
+                        />
+                    )}
+                </Card>
+            </Col>
+            <Col span={8}>
+                <Card withPadding={false} className={styles.notesCard}>
+                    <Title level={4} className={styles.notesTitle}>
+                        Red flags
+                    </Title>
+                    <div className={styles.divider} />
+                    <div className={styles.redFlagsHolder}>
+                        <RedFlagsTags flags={defaultTo(interview.redFlags, [])} onChange={onRedFlagsChange} />
+                    </div>
+                </Card>
+            </Col>
+        </Row>
     );
 };

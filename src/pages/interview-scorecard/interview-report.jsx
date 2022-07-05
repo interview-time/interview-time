@@ -109,7 +109,7 @@ const InterviewReport = ({
                 <ScoreSection interview={interview} teamMembers={teamMembers} candidate={candidate} />
                 <CompetenceAreaSection interview={interview} />
                 <ChartsSection interview={interview} />
-                <SummaryNotes interview={interview} editable={false} />
+                <SummaryNotes interview={interview} />
             </Col>
             <Modal
                 visible={showExportNotes}
