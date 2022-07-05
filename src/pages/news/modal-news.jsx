@@ -1,41 +1,25 @@
 import { Button, Divider, Modal } from "antd";
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import styles from "./modal-news.module.css";
 import Title from "antd/lib/typography/Title";
-import shareScorecardImage from "../../assets/news-share-scorecard.gif";
-import noAnswerImage from "../../assets/no-answer.gif";
-import Text from "antd/lib/typography/Text";
+import redFlagsImage from "../../assets/red-flags.gif";
 import { updateNewsVisitTime } from "../../utils/storage";
 
 export const newsData = [
     {
-        version: "v1.150522",
-        versionInt: 220515, // version reversed
+        version: "v1.050722",
+        versionInt: 220705, // version reversed
+        date: new Date(2022, 7, 5),
         content: (
             <div className={styles.carouselItem}>
                 <Title level={5} className={styles.carouselTitle}>
-                    Share scorecard reports
+                    Red flags
                 </Title>
-                <Text type='secondary' className={styles.carouselDescription}>
-                    Create a public link of interview reports to share with anyone.
-                </Text>
-                <img alt='Share scorecard gif' src={shareScorecardImage} className={styles.carouselImage} />
-            </div>
-        ),
-    },
-    {
-        version: "v1.150522",
-        versionInt: 220515, // version reversed
-        date: new Date(2022, 5, 15),
-        content: (
-            <div className={styles.carouselItem}>
-                <Title level={5} className={styles.carouselTitle}>
-                    Mark questions as unanswered
-                </Title>
-                <Text type='secondary' className={styles.carouselDescription}>
-                    You can now mark unanswered questions for better score calculation.
-                </Text>
-                <img alt='No answer gif' src={noAnswerImage} className={styles.carouselImage} />
+                <div className={styles.carouselDescription}>
+                    We added special 'red flags' card next to 'quick notes' to make it easier for you to capture and
+                    present this critical information.
+                </div>
+                <img alt='No answer gif' src={redFlagsImage} className={styles.carouselImage} />
             </div>
         ),
     },
