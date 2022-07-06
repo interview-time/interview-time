@@ -502,7 +502,7 @@ const InterviewQuestionsCard = ({
 
 /**
  *
- * @param {string} assessment
+ * @param {number} assessment
  * @param {boolean} disabled
  * @param onAssessmentChanged
  * @returns {JSX.Element}

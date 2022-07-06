@@ -186,8 +186,8 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
             >
                 <div className={styles.globalSiderContainer}>
                     <div className={styles.logoHolder}>
-                        <img alt='Interviewer' src={process.env.PUBLIC_URL + "/logo192.png"} className={styles.logo} />
-                        <span className={styles.logoText}>Interviewer</span>
+                        <img alt='InterviewTime' src={process.env.PUBLIC_URL + "/logo192.png"} className={styles.logo} />
+                        <span className={styles.logoText}>InterviewTime</span>
                     </div>
                     <Menu
                         theme='light'

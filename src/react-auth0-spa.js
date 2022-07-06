@@ -66,7 +66,7 @@ export const Auth0Provider = ({ children, onRedirectCallback = DEFAULT_REDIRECT_
 
                 cookies.set("USER_LOGGED_IN", "true", {
                     path: "/",
-                    domain: "interviewer.space",
+                    domain: "interviewtime.io",
                     expires: addDays(new Date(), 30),
                 });
             }

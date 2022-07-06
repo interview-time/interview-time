@@ -129,31 +129,13 @@
     justify-content: flex-end;
 }
 
-.notes {
+.notesRoot {
     position: sticky;
     position: -webkit-sticky;
     bottom: 0;
     z-index: 99;
-    background-color: #ffffff;
-    border-top: 5px solid #4B5563;
-    box-shadow: 0 -4px 8px -2px rgba(16, 24, 40, 0.1), 0 -2px 4px -2px rgba(16, 24, 40, 0.06);
-    padding-top: 20px;
-}
-
-.notesCollapsedDivider {
-    width: 100%;
-    border-top: 6px solid #9CA3AF;
-    box-shadow: 0 -4px 8px -2px rgba(16, 24, 40, 0.1), 0 -2px 4px -2px rgba(16, 24, 40, 0.06);
-}
-
-.notesCollapsed {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    position: sticky;
-    position: -webkit-sticky;
-    bottom: 0;
-    z-index: 99;
 }
 
 .notesHeader {
@@ -161,29 +143,25 @@
     justify-content: space-between;
 }
 
-.iconNotesBig {
-    color: #6B7280;
-}
-
-.iconNotesSmall {
+.notesIconSmall {
     color: var(--color-background);
-    font-size: 12px;
+    font-size: 16px;
+    margin-right: 4px;
 }
 
-.notesSwitch {
-    margin-left: 5px;
+.notesIconBig {
+    color: #fadb14;
+    font-size: 20px;
 }
 
-.quickNotesLabel {
+.redFlagIconBig {
+    color: #EF4444;
+    font-size: 20px;
+}
+
+.notesLabel {
     font-size: 18px;
     font-weight: 600;
-}
-
-.quickNotesLabelSmall {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-background);
-    margin-left: 4px;
 }
 
 .reportLabel {
@@ -217,17 +195,46 @@
     cursor: pointer;
 }
 
+.notesButton {
+    border-radius: 8px 8px 0 0;
+    background-color: #4B5563;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-background);
+}
+
+.notesButtonHolder {
+    text-align: center;
+    margin-bottom: -2px;
+}
+
+.notesHolder {
+    background-color: #ffffff;
+    border-top: 5px solid #4B5563;
+    box-shadow: 0 -4px 8px -2px rgba(16, 24, 40, 0.1), 0 -2px 4px -2px rgba(16, 24, 40, 0.06);
+}
+
+.notesCol {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.redFlagsHolder {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 20px;
+    padding-right: 16px;
+    margin-right: 16px;
+}
+
 .notesTextArea {
     resize: none;
     padding: 0;
     margin-top: 16px;
-}
-
-.stickyNotes {
-    background-color: #fbfbfb;
-    position: -webkit-sticky; /* Required for Safari */
-    position: sticky;
-    bottom: 0;
 }
 
 .questionNotesArea {
