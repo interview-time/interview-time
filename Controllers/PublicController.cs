@@ -11,6 +11,7 @@ namespace CafApi.Controllers
     {
         private readonly ILogger<PublicController> _logger;
         private readonly ITemplateService _templateService;
+        private readonly ILibraryService _libraryService;
         private readonly IUserService _userService;
         private readonly IInterviewService _interviewService;
         private readonly ICandidateService _candidateService;
@@ -18,12 +19,14 @@ namespace CafApi.Controllers
         public PublicController(
             ILogger<PublicController> logger,
             ITemplateService templateService,
+            ILibraryService libraryService,
             IUserService userService,
             IInterviewService interviewService,
             ICandidateService candidateService)
         {
             _logger = logger;
             _templateService = templateService;
+            _libraryService = libraryService;
             _userService = userService;
             _interviewService = interviewService;
             _candidateService = candidateService;
@@ -53,7 +56,7 @@ namespace CafApi.Controllers
         [HttpGet("library/{id}")]
         public async Task<ActionResult<SharedTemplateResponse>> GetLibraryTemplate(string id)
         {
-            var template = await _templateService.GetLibraryTemplate(id);
+            var template = await _libraryService.GetLibraryTemplate(id);
             if (template == null)
             {
                 return NotFound();

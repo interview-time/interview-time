@@ -107,6 +107,8 @@ namespace CafApi
             services.AddScoped<ICandidateService, CandidateService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IPermissionsService, PermissionsService>();
+            services.AddScoped<ILibraryService, LibraryService>();
+            services.AddScoped<IChallengeService, ChallengeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

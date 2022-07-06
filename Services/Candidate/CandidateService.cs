@@ -39,7 +39,7 @@ namespace CafApi.Services
         {
             var candidates = new List<Candidate>();
 
-            var isBelongToTeam = await BelongsToTeam(userId, teamId);
+            var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
             if (isBelongToTeam)
             {
                 candidates = await _context.QueryAsync<Candidate>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
@@ -50,7 +50,7 @@ namespace CafApi.Services
 
         public async Task<Candidate> CreateCandidate(string userId, Candidate candidate)
         {
-            var isBelongToTeam = await BelongsToTeam(userId, candidate.TeamId);
+            var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, candidate.TeamId);
             if (isBelongToTeam)
             {
                 candidate.CreatedByUserId = userId;
@@ -70,7 +70,7 @@ namespace CafApi.Services
         public async Task<Candidate> UpdateCandidate(string userId, Candidate updatedCandidate)
         {
             var candidate = await GetCandidate(updatedCandidate.TeamId, updatedCandidate.CandidateId);
-            var isBelongToTeam = await BelongsToTeam(userId, updatedCandidate.TeamId);
+            var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, updatedCandidate.TeamId);
 
             if (candidate != null && isBelongToTeam)
             {
@@ -94,7 +94,7 @@ namespace CafApi.Services
 
         public async Task DeleteCandidate(string userId, string teamId, string candidateId)
         {
-            var isBelongToTeam = await BelongsToTeam(userId, teamId);
+            var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
             if (isBelongToTeam)
             {
                 // Get candidate interviews
@@ -119,7 +119,7 @@ namespace CafApi.Services
 
         public async Task<string> GetUploadSignedUrl(string userId, string teamId, string candidateId, string filename)
         {
-            var belongsToTeam = await BelongsToTeam(userId, teamId);
+            var belongsToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
             if (belongsToTeam)
             {
                 var request = new GetPreSignedUrlRequest
@@ -147,24 +147,6 @@ namespace CafApi.Services
             };
 
             return _s3Client.GetPreSignedURL(request);
-        }
-
-        private async Task<bool> BelongsToTeam(string userId, string teamId)
-        {
-            if (!string.IsNullOrWhiteSpace(teamId))
-            {
-                var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
-                if (isBelongToTeam)
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                return true;
-            }
-
-            return false;
-        }
+        }     
     }
 }
