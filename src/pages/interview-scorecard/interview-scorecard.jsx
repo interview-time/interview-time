@@ -26,7 +26,7 @@ const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
  * @param {Interview[]} interviews
  * @param {TeamMember[]} teamMembers
  * @param {Candidate[]} candidates
- * @param {Templates[]} templates
+ * @param {Template[]} templates
  * @param {Team[]} teams
  * @param {UserProfile} profile
  * @param {boolean} interviewsUploading
@@ -166,8 +166,18 @@ const InterviewScorecard = ({
         });
     };
 
-    const onNoteChanges = e => {
+    const onNotesChange = e => {
         setInterview({ ...interview, notes: e.target.value });
+    };
+
+    const onRedFlagsChange = flags => {
+        setInterview({
+            ...interview,
+            redFlags: flags.map((label, index) => ({
+                order: index,
+                label: label,
+            })),
+        });
     };
 
     const onAssessmentChanged = assessment => {
@@ -232,7 +242,8 @@ const InterviewScorecard = ({
                     onCompletedClicked={onCompletedClicked}
                     onQuestionNotesChanged={onQuestionNotesChanged}
                     onQuestionAssessmentChanged={onQuestionAssessmentChanged}
-                    onNoteChanges={onNoteChanges}
+                    onNotesChange={onNotesChange}
+                    onRedFlagsChange={onRedFlagsChange}
                     onQuestionsAdded={onQuestionsAdded}
                     onQuestionsRemoved={onQuestionsRemoved}
                     interviewsUploading={interviewsUploading}
@@ -245,7 +256,8 @@ const InterviewScorecard = ({
                     candidate={getCandidate()}
                     onSubmitClicked={onSubmitClicked}
                     onEditClicked={onEditClicked}
-                    onNoteChanges={onNoteChanges}
+                    onNotesChange={onNotesChange}
+                    onRedFlagsChange={onRedFlagsChange}
                     onAssessmentChanged={onAssessmentChanged}
                     interviewsUploading={interviewsUploading}
                 />

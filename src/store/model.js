@@ -45,6 +45,7 @@
  * @property {string} modifiedDate
  * @property {string} templateId
  * @property {string[]} templateIds
+ * @property {RedFlags[]} redFlags
  * @property {string} status
  * @property {string} decision
  * @property {string} notes
@@ -66,6 +67,12 @@
  * @property {string} notes
  * @property {number} assessment
  * @property {Question[]} questions
+ */
+
+/**
+ * @typedef {Object} RedFlags
+ * @property {number} order
+ * @property {string} label
  */
 
 /**
