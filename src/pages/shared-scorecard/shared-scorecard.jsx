@@ -26,6 +26,8 @@ import QuestionAnswersChart from "../../components/charts/question-answers-chart
 import CompetenceAreaChart from "../../components/charts/competence-area-chart";
 import { getFormattedDate, getFormattedTimeRange } from "../../utils/date-fns";
 import logo from "../../assets/logo-horiz.png";
+import { RedFlagsTags } from "../../components/tags/red-flags-tags";
+import { defaultTo } from "lodash/util";
 import styles from "./shared-scorecard.module.css";
 
 const { Text, Paragraph, Title } = Typography;
@@ -217,17 +219,30 @@ const SharedScorecard = ({ scorecard, loading, getSharedScorecard }) => {
 
                         {ChartsSection()}
 
-                        <div className={styles.divVerticalCenter} style={{ paddingTop: 30, paddingBottom: 30 }}>
-                            <Card withPadding={false} style={{ width: "100%" }}>
-                                <Title level={4} style={{ margin: 24 }}>
-                                    Summary notes
-                                </Title>
-                                <div className={styles.divider} />
-                                <Paragraph className={styles.notesTextArea}>
-                                    {scorecard.notes ? scorecard.notes : "No summary was left"}
-                                </Paragraph>
-                            </Card>
-                        </div>
+                        <Row className={styles.notesRoot}  gutter={24}>
+                            <Col span={16}>
+                                <Card withPadding={false} className={styles.notesCard}>
+                                    <Title level={4} className={styles.notesTitle}>
+                                        Summary notes
+                                    </Title>
+                                    <div className={styles.divider} />
+                                    <Paragraph className={styles.notesTextArea}>
+                                        {scorecard.notes ? scorecard.notes : "No summary was left"}
+                                    </Paragraph>
+                                </Card>
+                            </Col>
+                            <Col span={8}>
+                                <Card withPadding={false} className={styles.notesCard}>
+                                    <Title level={4} className={styles.notesTitle}>
+                                        Red flags
+                                    </Title>
+                                    <div className={styles.divider} />
+                                    <div className={styles.redFlagsHolder}>
+                                        <RedFlagsTags flags={defaultTo(scorecard.redFlags, [])} />
+                                    </div>
+                                </Card>
+                            </Col>
+                        </Row>
                     </Col>
                 </>
             ) : loading ? (
