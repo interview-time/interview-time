@@ -56,8 +56,8 @@ const JoinTeam = () => {
         const userNameComponent = <Text strong>{userName}</Text>;
         const teamNameComponent = <Text strong>{teamName}</Text>;
         const linkComponent = (
-            <Link href='https://interviewer.space' target='_blank'>
-                Interviewer.space
+            <Link href='https://interviewtime.io' target='_blank'>
+                InterviewTime
             </Link>
         );
 
@@ -80,7 +80,7 @@ const JoinTeam = () => {
                 </Paragraph>
             );
         } else {
-            return <Paragraph>Invitation to join team on Interviewer.space</Paragraph>;
+            return <Paragraph>Invitation to join team on InterviewTime</Paragraph>;
         }
     };
 
