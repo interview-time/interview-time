@@ -51,20 +51,13 @@ namespace CafApi.Services
 
         public async Task<List<Template>> GetTeamTemplates(string userId, string teamId)
         {
-            var isBelongInTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
-            if (isBelongInTeam)
+            var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
             {
-                var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
-                {
-                    IndexName = "TeamId-index",
-                    Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
-                });
-                var templates = await search.GetRemainingAsync();
+                IndexName = "TeamId-index",
+                Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
+            });
 
-                return templates;
-            }
-
-            return new List<Template>();
+            return await search.GetRemainingAsync();
         }
 
         public async Task<Template> GetTemplate(string userId, string templateId)
@@ -135,7 +128,7 @@ namespace CafApi.Services
                 template.Type = updatedTemplate.Type;
                 template.Description = updatedTemplate.Description;
                 template.Structure = updatedTemplate.Structure;
-                template.Challenges = updatedTemplate.Challenges;
+                template.ChallengeIds = updatedTemplate.ChallengeIds;
                 template.ModifiedDate = DateTime.UtcNow;
 
                 if (string.IsNullOrWhiteSpace(template.Token))

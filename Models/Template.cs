@@ -40,6 +40,9 @@ namespace CafApi.Models
 
         public string TeamId { get; set; }
 
+        public List<string> ChallengeIds { get; set; }
+
+        [DynamoDBIgnore]
         public List<Challenge> Challenges { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
@@ -47,18 +50,5 @@ namespace CafApi.Models
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime ModifiedDate { get; set; }
-    }
-
-    public class Challenge
-    {
-        public string ChallengeId { get; set; }
-
-        public string Name { get; set; }
-
-        public int Order { get; set; }
-
-        public string FileName { get; set; }
-
-        public string GitHubUrl { get; set; }
     }
 }

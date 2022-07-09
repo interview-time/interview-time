@@ -124,8 +124,8 @@ namespace CafApi.Services
             {
                 var request = new GetPreSignedUrlRequest
                 {
-                    BucketName = "interviewer-space",
-                    Key = $"candidates/{candidateId}/{filename}",
+                    BucketName = "interviewtime",
+                    Key = $"teams/{teamId}/candidates/{candidateId}/{filename}",
                     Verb = HttpVerb.PUT,
                     Expires = DateTime.Now.AddHours(1)
                 };
@@ -136,12 +136,12 @@ namespace CafApi.Services
             return null;
         }
 
-        public string GetDownloadSignedUrl(string candidateId, string filename)
+        public string GetDownloadSignedUrl(string teamId, string candidateId, string filename)
         {
             var request = new GetPreSignedUrlRequest
             {
-                BucketName = "interviewer-space",
-                Key = $"candidates/{candidateId}/{filename}",
+                BucketName = "interviewtime",
+                Key = $"teams/{teamId}/candidates/{candidateId}/{filename}",
                 Verb = HttpVerb.GET,
                 Expires = DateTime.Now.AddDays(30)
             };

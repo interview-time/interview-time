@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
+using CafApi.Services.User;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +15,12 @@ using Microsoft.Extensions.Logging;
 namespace CafApi.Controllers
 {
     [Authorize]
-    [ApiController]    
+    [ApiController]
     public class TemplateController : ControllerBase
     {
         private readonly ITemplateService _templateService;
         private readonly ILibraryService _libraryService;
+        private readonly IPermissionsService _permissionsService;
         private readonly IChallengeService _challengeService;
         private readonly ILogger<TemplateController> _logger;
         private readonly string _demoUserId;
@@ -33,26 +36,58 @@ namespace CafApi.Controllers
         public TemplateController(ILogger<TemplateController> logger,
             ITemplateService templateService,
             ILibraryService libraryService,
+            IPermissionsService permissionsService,
             IChallengeService challengeService,
             IConfiguration configuration)
         {
             _logger = logger;
             _templateService = templateService;
             _libraryService = libraryService;
+            _permissionsService = permissionsService;
             _challengeService = challengeService;
 
             _demoUserId = configuration["DemoUserId"];
         }
 
+        [Obsolete]
         [HttpGet("template/{teamId?}")]
-        public async Task<List<Template>> GetTemplates(string teamId = null)
+        public async Task<ActionResult<List<Template>>> GetTemplatesLegacy(string teamId = null)
         {
             if (teamId != null)
             {
+                if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
+                {
+                    return Unauthorized();
+                }
+
                 return await _templateService.GetTeamTemplates(UserId, teamId);
             }
 
             return await _templateService.GetMyTemplates(UserId);
+        }
+
+        [HttpGet("team/{teamId}/templates")]
+        public async Task<ActionResult<List<Template>>> GetTemplates(string teamId)
+        {
+            if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
+            {
+                return Unauthorized();
+            }
+
+            var templates = await _templateService.GetTeamTemplates(UserId, teamId);
+            var challenegIds = templates.Where(t => t.ChallengeIds != null && t.ChallengeIds.Any()).SelectMany(t => t.ChallengeIds).Distinct().ToList();
+
+            var challenges = await _challengeService.GetChallenges(teamId, challenegIds);
+
+            foreach (var template in templates)
+            {
+                if (template.ChallengeIds != null && template.ChallengeIds.Any())
+                {
+                    template.Challenges = challenges.Where(c => template.ChallengeIds.Contains(c.ChallengeId)).ToList();
+                }
+            }
+
+            return templates;
         }
 
         [HttpPost("template")]
@@ -93,40 +128,6 @@ namespace CafApi.Controllers
             var templates = await _templateService.GetSharedWithMe(UserId);
 
             return templates;
-        }
-
-        [HttpGet("team/{teamId}/challenge/{challengeId}/filename/{filename}/upload")]
-        public async Task<ActionResult<SignedUrlResponse>> GetChallengeUploadSignedUrl(string teamId, string challengeId, string filename)
-        {
-            var signedUrl = await _challengeService.GetChallengeUploadSignedUrl(UserId, teamId, challengeId, filename);
-
-            if (signedUrl == null)
-            {
-                return NotFound();
-            }
-
-            return new SignedUrlResponse
-            {
-                Url = signedUrl.Value.Item1,
-                Expires = signedUrl.Value.Item2
-            };
-        }
-
-        [HttpGet("team/{teamId}/challenge/{challengeId}/filename/{filename}/download")]
-        public async Task<ActionResult<SignedUrlResponse>> GetChallengeDownloadSignedUrl(string teamId, string challengeId, string filename)
-        {
-            var signedUrl = await _challengeService.GetChallengeDownloadSignedUrl(UserId, teamId, challengeId, filename);
-
-            if (signedUrl == null)
-            {
-                return NotFound();
-            }
-
-            return new SignedUrlResponse
-            {
-                Url = signedUrl.Value.Item1,
-                Expires = signedUrl.Value.Item2
-            };
         }
     }
 }

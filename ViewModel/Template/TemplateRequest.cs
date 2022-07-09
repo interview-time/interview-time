@@ -23,6 +23,6 @@ namespace CafApi.ViewModel
 
         public TemplateStructure Structure { get; set; }
 
-        public List<Challenge> Challenges { get; set; }
+        public List<string> ChallengeIds { get; set; }
     }
 }

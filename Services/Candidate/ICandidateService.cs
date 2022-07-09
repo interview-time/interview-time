@@ -18,6 +18,6 @@ namespace CafApi.Services
 
         Task<string> GetUploadSignedUrl(string userId, string teamId, string candidateId, string filename);        
 
-        string GetDownloadSignedUrl(string candidateId, string filename);
+        string GetDownloadSignedUrl(string teamId, string candidateId, string filename);
     }
 }

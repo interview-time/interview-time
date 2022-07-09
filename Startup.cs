@@ -88,7 +88,7 @@ namespace CafApi
 
             var s3Config = new AmazonS3Config
             {
-                RegionEndpoint = RegionEndpoint.GetBySystemName("ap-southeast-2"),
+                RegionEndpoint = RegionEndpoint.GetBySystemName("us-west-2"),
                 UseAccelerateEndpoint = true
             };
 
