@@ -15,12 +15,14 @@ namespace CafApi.Services
     public class InterviewService : IInterviewService
     {
         private readonly IPermissionsService _permissionsService;
+        private readonly IChallengeService _challengeService;
         private readonly DynamoDBContext _context;
 
-        public InterviewService(IAmazonDynamoDB dynamoDbClient, IPermissionsService permissionsService)
+        public InterviewService(IAmazonDynamoDB dynamoDbClient, IPermissionsService permissionsService, IChallengeService challengeService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _permissionsService = permissionsService;
+            _challengeService = challengeService;
         }
 
         public async Task<Interview> GetInterview(string userId, string interviewId)
@@ -62,7 +64,23 @@ namespace CafApi.Services
                             && !r.Equals(TeamRole.HIRING_MANAGER.ToString())
                             && !r.Equals(TeamRole.HR.ToString())))
                         {
-                            return interviews.Where(i => i.UserId == userId).ToList();
+                            interviews = interviews.Where(i => i.UserId == userId).ToList();
+                        }
+
+                        var challenegIds = interviews
+                            .Where(t => t.ChallengeIds != null && t.ChallengeIds.Any())
+                            .SelectMany(t => t.ChallengeIds)
+                            .Distinct()
+                            .ToList();
+
+                        var challenges = await _challengeService.GetChallenges(teamId, challenegIds);
+
+                        foreach (var interview in interviews)
+                        {
+                            if (interview.ChallengeIds != null && interview.ChallengeIds.Any())
+                            {
+                                interview.Challenges = challenges.Where(c => interview.ChallengeIds.Contains(c.ChallengeId)).ToList();
+                            }
                         }
 
                         return interviews;

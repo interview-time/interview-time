@@ -17,14 +17,17 @@ namespace CafApi.Services
         private readonly DynamoDBContext _context;
         private readonly IInterviewService _interviewService;
         private readonly IPermissionsService _permissionsService;
+        private readonly IChallengeService _challengeService;
 
         public TemplateService(IAmazonDynamoDB dynamoDbClient,
             IInterviewService interviewService,
-            IPermissionsService permissionsService)
+            IPermissionsService permissionsService,
+            IChallengeService challengeService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _interviewService = interviewService;
             _permissionsService = permissionsService;
+            _challengeService = challengeService;
         }
 
         public async Task<List<Template>> GetMyTemplates(string userId)
@@ -57,7 +60,25 @@ namespace CafApi.Services
                 Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
             });
 
-            return await search.GetRemainingAsync();
+            var templates = await search.GetRemainingAsync();
+
+            var challenegIds = templates
+                .Where(t => t.ChallengeIds != null && t.ChallengeIds.Any())
+                .SelectMany(t => t.ChallengeIds)
+                .Distinct()
+                .ToList();
+                
+            var challenges = await _challengeService.GetChallenges(teamId, challenegIds);
+
+            foreach (var template in templates)
+            {
+                if (template.ChallengeIds != null && template.ChallengeIds.Any())
+                {
+                    template.Challenges = challenges.Where(c => template.ChallengeIds.Contains(c.ChallengeId)).ToList();
+                }
+            }
+
+            return templates;
         }
 
         public async Task<Template> GetTemplate(string userId, string templateId)

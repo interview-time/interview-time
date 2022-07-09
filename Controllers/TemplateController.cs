@@ -20,8 +20,7 @@ namespace CafApi.Controllers
     {
         private readonly ITemplateService _templateService;
         private readonly ILibraryService _libraryService;
-        private readonly IPermissionsService _permissionsService;
-        private readonly IChallengeService _challengeService;
+        private readonly IPermissionsService _permissionsService;        
         private readonly ILogger<TemplateController> _logger;
         private readonly string _demoUserId;
 
@@ -36,15 +35,13 @@ namespace CafApi.Controllers
         public TemplateController(ILogger<TemplateController> logger,
             ITemplateService templateService,
             ILibraryService libraryService,
-            IPermissionsService permissionsService,
-            IChallengeService challengeService,
+            IPermissionsService permissionsService,          
             IConfiguration configuration)
         {
             _logger = logger;
             _templateService = templateService;
             _libraryService = libraryService;
             _permissionsService = permissionsService;
-            _challengeService = challengeService;
 
             _demoUserId = configuration["DemoUserId"];
         }
@@ -74,20 +71,7 @@ namespace CafApi.Controllers
                 return Unauthorized();
             }
 
-            var templates = await _templateService.GetTeamTemplates(UserId, teamId);
-            var challenegIds = templates.Where(t => t.ChallengeIds != null && t.ChallengeIds.Any()).SelectMany(t => t.ChallengeIds).Distinct().ToList();
-
-            var challenges = await _challengeService.GetChallenges(teamId, challenegIds);
-
-            foreach (var template in templates)
-            {
-                if (template.ChallengeIds != null && template.ChallengeIds.Any())
-                {
-                    template.Challenges = challenges.Where(c => template.ChallengeIds.Contains(c.ChallengeId)).ToList();
-                }
-            }
-
-            return templates;
+            return await _templateService.GetTeamTemplates(UserId, teamId);
         }
 
         [HttpPost("template")]
