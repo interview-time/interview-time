@@ -15,7 +15,7 @@ namespace CafApi.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IInterviewService _interviewService;
-        private readonly ITemplateService _templateService;
+        private readonly ILibraryService _libraryService;
         private readonly ILogger<InterviewController> _logger;
 
         private string UserId
@@ -26,29 +26,31 @@ namespace CafApi.Controllers
             }
         }
 
-        public AdminController(ILogger<InterviewController> logger, IInterviewService interviewService, ITemplateService templateService)
+        public AdminController(ILogger<InterviewController> logger,
+            IInterviewService interviewService,
+            ILibraryService libraryService)
         {
             _logger = logger;
             _interviewService = interviewService;
-            _templateService = templateService;
+            _libraryService = libraryService;
         }
 
         [HttpPost("template/library")]
         public async Task<Library> CreateLibraryTemplate([FromBody] TemplateRequest request)
         {
-            return await _templateService.CreateLibraryTemplate(UserId, request);
+            return await _libraryService.CreateLibraryTemplate(UserId, request);
         }
 
         [HttpPut("template/library")]
         public async Task UpdateLibraryTemplate([FromBody] TemplateRequest request)
         {
-            await _templateService.UpdateLibraryTemplate(UserId, request);
+            await _libraryService.UpdateLibraryTemplate(UserId, request);
         }
 
         [HttpDelete("template/library/{libraryId}")]
         public async Task DeleteLibraryTemplate(string libraryId)
         {
-            await _templateService.DeleteLibraryTemplate(UserId, libraryId);
+            await _libraryService.DeleteLibraryTemplate(UserId, libraryId);
         }
 
         [HttpPost("interview/demo")]

@@ -60,6 +60,13 @@ namespace CafApi.Models
 
         public bool IsShared { get; set; }
 
+        public string InterviewType { get; set; }
+
+        public List<string> ChallengeIds { get; set; }
+
+        [DynamoDBIgnore]
+        public List<Challenge> Challenges { get; set; }
+
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 

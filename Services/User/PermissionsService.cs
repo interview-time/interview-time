@@ -19,6 +19,11 @@ namespace CafApi.Services.User
 
         public async Task<bool> IsBelongInTeam(string userId, string teamId)
         {
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(teamId))
+            {
+                return false;
+            }
+            
             var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
 
             return teamMember != null;

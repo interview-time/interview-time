@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 using CafApi.Utils;
 
@@ -21,6 +22,8 @@ namespace CafApi.Models
 
         public string Description { get; set; }
 
+        public string InterviewType { get; set; }
+
         [DynamoDBIgnore]
         public int TotalInterviews { get; set; }
 
@@ -36,6 +39,11 @@ namespace CafApi.Models
         public string Token { get; set; }
 
         public string TeamId { get; set; }
+
+        public List<string> ChallengeIds { get; set; }
+
+        [DynamoDBIgnore]
+        public List<Challenge> Challenges { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }

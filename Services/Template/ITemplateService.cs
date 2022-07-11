@@ -23,24 +23,12 @@ namespace CafApi.Services
 
         Task DeleteTemplate(string userId, string templateId);
 
-        Task<Library> GetLibraryTemplate(string libraryId);
-
-        Task<List<Library>> GetTemplatesLibrary();
-
-        Task<Library> GetLibraryTemplate(string userId, string templateId);
-
-        Task<Library> CreateLibraryTemplate(string userId, TemplateRequest newTemplate);
-
-        Task<Library> UpdateLibraryTemplate(string userId, TemplateRequest updatedTemplate);
-
-        Task DeleteLibraryTemplate(string userId, string libraryId);
-
         Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId, string toTeamId);
 
         Task<Template> GetSharedTemplate(string token);
 
         Task<Template> AddToSharedWithMe(string userId, string token);
 
-        Task<List<Template>> GetSharedWithMe(string userId);
+        Task<List<Template>> GetSharedWithMe(string userId);       
     }
 }

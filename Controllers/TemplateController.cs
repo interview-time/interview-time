@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
+using CafApi.Services.User;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +16,11 @@ namespace CafApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("template")]
     public class TemplateController : ControllerBase
     {
         private readonly ITemplateService _templateService;
+        private readonly ILibraryService _libraryService;
+        private readonly IPermissionsService _permissionsService;        
         private readonly ILogger<TemplateController> _logger;
         private readonly string _demoUserId;
 
@@ -29,58 +32,81 @@ namespace CafApi.Controllers
             }
         }
 
-        public TemplateController(ILogger<TemplateController> logger, ITemplateService templateService, IConfiguration configuration)
+        public TemplateController(ILogger<TemplateController> logger,
+            ITemplateService templateService,
+            ILibraryService libraryService,
+            IPermissionsService permissionsService,          
+            IConfiguration configuration)
         {
             _logger = logger;
             _templateService = templateService;
+            _libraryService = libraryService;
+            _permissionsService = permissionsService;
 
             _demoUserId = configuration["DemoUserId"];
         }
 
-        [HttpGet("{teamId?}")]
-        public async Task<List<Template>> GetTemplates(string teamId = null)
+        [Obsolete]
+        [HttpGet("template/{teamId?}")]
+        public async Task<ActionResult<List<Template>>> GetTemplatesLegacy(string teamId = null)
         {
             if (teamId != null)
             {
+                if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
+                {
+                    return Unauthorized();
+                }
+
                 return await _templateService.GetTeamTemplates(UserId, teamId);
             }
 
             return await _templateService.GetMyTemplates(UserId);
         }
 
-        [HttpPost()]
+        [HttpGet("team/{teamId}/templates")]
+        public async Task<ActionResult<List<Template>>> GetTemplates(string teamId)
+        {
+            if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
+            {
+                return Unauthorized();
+            }
+
+            return await _templateService.GetTeamTemplates(UserId, teamId);
+        }
+
+        [HttpPost("template")]
         public async Task<Template> CreateTemplate([FromBody] TemplateRequest request)
         {
             return await _templateService.CreateTemplate(UserId, request, UserId == _demoUserId);
         }
 
-        [HttpDelete("{templateId}")]
+        [HttpDelete("template/{templateId}")]
         public async Task DeleteTemplate(string templateId)
         {
             await _templateService.DeleteTemplate(UserId, templateId);
         }
 
-        [HttpPut()]
+        [HttpPut("template")]
         public async Task UpdateTemplate([FromBody] TemplateRequest request)
         {
             await _templateService.UpdateTemplate(UserId, request);
         }
 
-        [HttpGet("library")]
+        [HttpGet("template/library")]
         public async Task<List<Library>> GetTemplatesLibrary()
         {
-            var templates = await _templateService.GetTemplatesLibrary();
+            var templates = await _libraryService.GetTemplatesLibrary();
 
             return templates;
         }
 
-        [HttpPatch("share")]
+        [HttpPatch("template/share")]
         public async Task ShareTemplate([FromBody] ShareTemplateRequest request)
         {
             await _templateService.ShareTemplate(UserId, request.TemplateId, request.Share);
         }
 
-        [HttpGet("shared")]
+        [HttpGet("template/shared")]
         public async Task<List<Template>> GetSharedWithMeTemplates()
         {
             var templates = await _templateService.GetSharedWithMe(UserId);
