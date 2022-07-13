@@ -57,6 +57,41 @@ const selectInterviews = state => {
     }, []);
 };
 
+const selectAllInterviews = state => {
+    // TODO this is hotfix, refactor
+    const plainInterviews = state.interviews.interviews;
+    const candidates = state.candidates.candidates;
+    const teamMembers = state.user.teamMembers;
+
+    return plainInterviews.map(scorecard => {
+        return {
+            candidate:
+                candidates.find(c => c.candidateId === scorecard.candidateId)?.candidateName ?? scorecard.candidate,
+            candidateId: scorecard.candidateId,
+            interviewStartDateTime: new Date(scorecard.interviewDateTime),
+            interviewEndDateTime: new Date(scorecard.interviewEndDateTime),
+            interviewers: scorecard.interviewers
+                ? teamMembers.filter(user => scorecard.interviewers.includes(user.userId))
+                : [teamMembers.find(user => user.userId === scorecard.userId)],
+            isDemo: scorecard.isDemo,
+            linkId: scorecard.linkId,
+            position: scorecard.position,
+            scorecards: [
+                {
+                    interviewId: scorecard.interviewId,
+                    status: scorecard.status,
+                    interviewer: teamMembers.find(user => user.userId === scorecard.userId),
+                    decision: scorecard.decision,
+                    structure: scorecard.structure,
+                    notes: scorecard.notes,
+                    modifiedDate: new Date(scorecard.modifiedDate),
+                },
+            ],
+            createdDate: new Date(scorecard.createdDate),
+        };
+    });
+};
+
 export const selectSortedByDateInterviews = (interviews, desc = false) => {
     return interviews.sort((a, b) => {
         const first = a.interviewStartDateTime.getFullYear() > 1 ? a.interviewStartDateTime : a.createdDate;
@@ -112,7 +147,7 @@ export const selectUncompletedInterviews = state => {
 };
 
 export const selectCompletedInterviews = state => {
-    const interviews = selectInterviews(state);
+    const interviews = selectAllInterviews(state);
     const completedInterviews = interviews.filter(i => i.scorecards.every(s => s.status === Status.SUBMITTED));
     const completedInterviewsView = selectInterviewsTable(completedInterviews, state.user.profile);
 

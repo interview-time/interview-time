@@ -67,10 +67,7 @@ export const StatusColumn = () => ({
     render: interview => (
         <InterviewStatusTag
             interviewStartDateTime={interview.interviewStartDateTime}
-            statuses={Array.of(
-                interview.status,
-                interview.coInterviewers.map(interview => interview.status)
-            )}
+            statuses={Array.from(interview.coInterviewers.map(interview => interview.status)).concat(interview.status)}
         />
     ),
 });

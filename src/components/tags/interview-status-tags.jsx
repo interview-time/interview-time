@@ -15,7 +15,7 @@ const InterviewStatusTag = ({ interviewStartDateTime, status, statuses }) => {
     const interviewStarted = () => new Date() > interviewStartDateTime;
 
     const createTag = () => {
-        let statusesArr = status ? Array.from(status) : statuses;
+        let statusesArr = status ? [status] : statuses;
         let tagClass;
         let tagText;
         if (statusesArr.every(status => status === Status.SUBMITTED)) {
