@@ -12,15 +12,13 @@ import { Button, Col, Form, Input, message, Row, Select, Space } from "antd";
 import { updateProfile } from "../../store/user/actions";
 import { getAllTimezones, getCurrentTimezone } from "../../utils/date-fns";
 import { log } from "../../utils/log";
+import { RootState } from "../../store/state-models";
 
-/**
- *
- * @param {UserProfile} profile
- * @param updateProfile
- * @returns {JSX.Element}
- * @constructor
- */
-const Profile = ({ profile, updateProfile }) => {
+type Props = {
+    profile?: UserProfile;
+    updateProfile: any;
+};
+const Profile = ({ profile, updateProfile }: Props) => {
     const { user } = useAuth0();
     const { logout } = useAuth0();
 
@@ -33,7 +31,7 @@ const Profile = ({ profile, updateProfile }) => {
         logout({ returnTo: window.location.origin });
     };
 
-    const onSaveClicked = values => {
+    const onSaveClicked = (values: any) => {
         const timezoneLabel = values.timezone ?? getCurrentTimezone().timezone;
         const timezone = getAllTimezones().find(item => item.timezone === timezoneLabel);
 
@@ -62,10 +60,10 @@ const Profile = ({ profile, updateProfile }) => {
                             layout='vertical'
                             onFinish={onSaveClicked}
                             initialValues={{
-                                name: profile.name,
-                                position: profile.position,
-                                email: profile.email,
-                                timezone: profile.timezone,
+                                name: profile?.name,
+                                position: profile?.position,
+                                email: profile?.email,
+                                timezone: profile?.timezone,
                             }}
                         >
                             <Form.Item name='name' label={<Text strong>Full name</Text>}>
@@ -86,7 +84,7 @@ const Profile = ({ profile, updateProfile }) => {
                                     placeholder='Australia/Sydney'
                                     options={timezoneSelector}
                                     filterOption={(inputValue, option) =>
-                                        option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                                        option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                                     }
                                 />
                             </Form.Item>
@@ -112,11 +110,11 @@ const Profile = ({ profile, updateProfile }) => {
 
 const mapDispatch = { updateProfile };
 
-const mapState = state => {
-    const userState = state.user || {};
+const mapState = (state: RootState) => {
+    const userState = state.user;
 
     return {
-        profile: userState.profile,
+        profile: userState?.profile,
     };
 };
 

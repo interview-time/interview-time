@@ -1,29 +1,28 @@
 import styles from "./illustration-section.module.css";
 import Text from "antd/lib/typography/Text";
 import { Button } from "antd";
-import React from "react";
+import React, { CSSProperties } from "react";
+import { ButtonType } from "antd/lib/button";
 
-/**
- *
- * @param {string|JSX.Element} title
- * @param {string|JSX.Element} description
- * @param {string|JSX.Element} buttonText
- * @param {string} buttonType
- * @param {function} onButtonClicked
- * @param {JSX.Element} illustration
- * @param style
- * @returns {JSX.Element}
- * @constructor
- */
+type Props = {
+    title: string;
+    description: string | JSX.Element;
+    buttonText: string;
+    buttonType: ButtonType;
+    onButtonClicked: React.MouseEventHandler;
+    illustration: JSX.Element;
+    style?: CSSProperties;
+};
+
 const IllustrationSection = ({
     title,
     description,
     buttonText,
-    buttonType = "primary",
+    buttonType,
     onButtonClicked,
     illustration,
     style,
-}) => {
+}: Props) => {
     return (
         <div className={styles.moreSeatsRoot}>
             <div className={styles.moreSeatsIllustrationDiv} style={style}>
