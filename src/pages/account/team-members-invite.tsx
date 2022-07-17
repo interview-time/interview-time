@@ -13,7 +13,12 @@ import styles from "./team-members.module.css";
  * @returns {JSX.Element}
  * @constructor
  */
-const TeamMembersInvite = ({ inviteUser }) => {
+
+type Props = {
+    inviteUser: any;
+};
+
+const TeamMembersInvite = ({ inviteUser }: Props) => {
     const ROLE_INTERVIEWER = "INTERVIEWER";
     const ROLE_HIRING_MANAGER = "HIRING_MANAGER";
     const ROLE_HR = "HR";
@@ -25,7 +30,7 @@ const TeamMembersInvite = ({ inviteUser }) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        let timeoutId;
+        let timeoutId: NodeJS.Timeout | undefined;
 
         if (sent) {
             if (timeoutId) {

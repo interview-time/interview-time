@@ -8,15 +8,15 @@ import { routeProfile, routeTeamBilling, routeTeamMembers, routeTeamProfile } fr
 import { useHistory, useLocation } from "react-router-dom";
 import TeamMenu from "./team-menu";
 import { selectActiveTeam } from "../../store/user/selector";
+import { RootState } from "../../store/state-models";
+import { UserProfile } from "../../store/models";
 
-/**
- *
- * @param {UserProfile} profile
- * @param {JSX.Element} children
- * @returns {JSX.Element}
- * @constructor
- */
-const AccountLayout = ({ profile, children }) => {
+type Props = {
+    profile?: UserProfile;
+    children: JSX.Element[] | JSX.Element;
+};
+
+const AccountLayout = ({ profile, children }: Props) => {
     const history = useHistory();
     const location = useLocation();
 
@@ -37,16 +37,13 @@ const AccountLayout = ({ profile, children }) => {
     };
 
     return (
+        // @ts-ignore
         <Layout contentStyle={styles.rootContainer}>
             <Row gutter={[24, 24]}>
                 <Col span={6}>
-                    <AccountMenu
-                        profile={profile}
-                        location={location}
-                        onProfileClicked={onProfileClicked}
-                    />
+                    <AccountMenu profile={profile} location={location} onProfileClicked={onProfileClicked} />
                     <TeamMenu
-                        team={selectActiveTeam(profile)}
+                        team={profile ? selectActiveTeam(profile) : undefined}
                         location={location}
                         onTeamProfileClicked={onTeamProfileClicked}
                         onTeamClicked={onTeamClicked}
@@ -60,11 +57,11 @@ const AccountLayout = ({ profile, children }) => {
     );
 };
 
-const mapState = state => {
-    const userState = state.user || {};
+const mapState = (state: RootState) => {
+    const userState = state.user;
 
     return {
-        profile: userState.profile,
+        profile: userState?.profile,
     };
 };
 

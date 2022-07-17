@@ -3,14 +3,11 @@ import { Tag } from "antd";
 import React from "react";
 import { Roles } from "../../utils/constants";
 
-/**
- *
- * @param {string} role
- * @returns {JSX.Element}
- * @constructor
- */
-const TeamRoleTag = ({ role }) => {
-    const getText = () => {        
+type Props = {
+    role: string;
+};
+const TeamRoleTag = ({ role }: Props) => {
+    const getText = () => {
         if (role === Roles.HR) {
             return "Recruiter";
         } else if (role === Roles.HIRING_MANAGER) {

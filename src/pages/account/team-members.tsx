@@ -20,22 +20,27 @@ import Spinner from "../../components/spinner/spinner";
 import { routeSubscription } from "../../utils/route";
 import IllustrationSection from "./illustration-section";
 import ErrorImage from "../../assets/error.svg";
+import { changeRole, removeMember } from "../../store/user/actions";
+import { Team, TeamDetails } from "../../store/models";
+import { RootState } from "../../store/state-models";
 
-/**
- *
- * @param {UserProfile} profile
- * @param {TeamDetails|undefined} teamDetails
- * @param {boolean} loading
- * @param loadTeam
- * @returns {JSX.Element}
- * @constructor
- */
-const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
-    const isAdmin = isTeamAdmin(team);
+type Props = {
+    team?: Team;
+    teamDetails?: TeamDetails;
+    loading: boolean;
+    loadTeam: any;
+    removeMember: any;
+    changeRole: any;
+};
+
+const TeamMembers = ({ team, teamDetails, loading, loadTeam, removeMember, changeRole }: Props) => {
+    const isAdmin = team ? isTeamAdmin(team) : false;
     const history = useHistory();
 
     useEffect(() => {
-        loadTeam(team.teamId);
+        if (team) {
+            loadTeam(team.teamId);
+        }
 
         // eslint-disable-next-line
     }, [team]);
@@ -81,6 +86,22 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
         history.push(routeSubscription());
     };
 
+    const showDeleteDialog = (memberId: string, memberName: string) => {
+        Modal.confirm({
+            title: "Remove member",
+            content: `Are you sure you want to remove ${memberName} from your team ${team?.teamName}?`,
+            okText: "Yes",
+            cancelText: "No",
+            onOk() {
+                removeMember(memberId, team?.teamId);
+            },
+        });
+    };
+
+    const onChangeRoleClicked = (userId: string, key: string) => {
+        changeRole(userId, team?.teamId, key);
+    };
+
     return (
         <AccountLayout>
             {teamDetails ? (
@@ -91,17 +112,20 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
                                 Team
                             </Title>
 
-                            {teamDetails.availableSeats > 0 && <TeamInvite />}
+                            <>{teamDetails.availableSeats > 0 && <TeamInvite />}</>
 
-                            {teamDetails.availableSeats <= 0 && (
-                                <IllustrationSection
-                                    title="Oh no, you can't invite more team members"
-                                    description={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats.`}
-                                    buttonText='Buy More Seats'
-                                    onButtonClicked={onBuyMoreSeatsClicked}
-                                    illustration={<img src={ErrorImage} alt='Error' />}
-                                />
-                            )}
+                            <>
+                                {teamDetails.availableSeats <= 0 && (
+                                    <IllustrationSection
+                                        title="Oh no, you can't invite more team members"
+                                        description={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats.`}
+                                        buttonText='Buy More Seats'
+                                        buttonType='primary'
+                                        onButtonClicked={onBuyMoreSeatsClicked}
+                                        illustration={<img src={ErrorImage} alt='Error' />}
+                                    />
+                                )}
+                            </>
                         </Card>
                     )}
                     <div className={styles.divSpaceBetween}>
@@ -117,7 +141,13 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
                             Roles permissions
                         </Button>
                     </div>
-                    <TeamMembersTable teamDetails={teamDetails} loading={loading} isAdmin={isAdmin} />
+                    <TeamMembersTable
+                        teamMembers={teamDetails?.teamMembers ?? []}
+                        loading={loading}
+                        isAdmin={isAdmin}
+                        onRemoveClicked={showDeleteDialog}
+                        onChangeRoleClicked={onChangeRoleClicked}
+                    />
 
                     {teamDetails && teamDetails.pendingInvites && teamDetails.pendingInvites.length > 0 && (
                         <TeamMembersPendingInvites pendingInvites={teamDetails.pendingInvites} loading={loading} />
@@ -130,15 +160,16 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam }) => {
     );
 };
 
-const mapDispatch = { loadTeam };
+const mapDispatch = { loadTeam, removeMember, changeRole };
 
-const mapState = state => {
-    const userState = state.user || {};
+const mapState = (state: RootState) => {
+    const profile = state.user?.profile;
+    const team = state.team;
 
     return {
-        team: selectActiveTeam(userState.profile),
-        teamDetails: state.team.details,
-        loading: state.team.loading,
+        team: profile ? selectActiveTeam(profile) : undefined,
+        teamDetails: team?.details,
+        loading: team?.loading ?? false,
     };
 };
 

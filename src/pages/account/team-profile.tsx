@@ -9,27 +9,27 @@ import { deleteTeam, leaveTeam, updateTeam } from "../../store/user/actions";
 import { selectActiveTeam } from "../../store/user/selector";
 import { isTeamAdmin } from "../../store/user/permissions";
 import { useHistory } from "react-router-dom";
+import { Team } from "../../store/models";
+import { RootState } from "../../store/state-models";
 
-/**
- *
- * @param {Team} team
- * @param updateTeam
- * @param leaveTeam
- * @param deleteTeam
- * @returns {JSX.Element}
- * @constructor
- */
-const TeamProfile = ({ team, updateTeam, leaveTeam, deleteTeam }) => {
+type Props = {
+    team?: Team;
+    updateTeam: any;
+    leaveTeam: any;
+    deleteTeam: any;
+};
+
+const TeamProfile = ({ team, updateTeam, leaveTeam, deleteTeam }: Props) => {
     const history = useHistory();
-    const isAdmin = isTeamAdmin(team);
+    const isAdmin = team ? isTeamAdmin(team) : false;
 
     const onDeleteClicked = () => {
-        deleteTeam(team.teamId);
-        message.success(`Team '${team.teamName}' has been removed.`);
+        deleteTeam(team?.teamId);
+        message.success(`Team '${team?.teamName}' has been removed.`);
         history.push("/");
     };
 
-    const onSaveClicked = values => {
+    const onSaveClicked = (values: any) => {
         const newTeam = {
             ...team,
             teamName: values.teamName,
@@ -39,8 +39,8 @@ const TeamProfile = ({ team, updateTeam, leaveTeam, deleteTeam }) => {
     };
 
     const onLeaveClicked = () => {
-        leaveTeam(team.teamId);
-        message.success(`You left '${team.teamName}' team.`);
+        leaveTeam(team?.teamId);
+        message.success(`You left '${team?.teamName}' team.`);
         history.push("/");
     };
 
@@ -56,7 +56,7 @@ const TeamProfile = ({ team, updateTeam, leaveTeam, deleteTeam }) => {
                     layout='vertical'
                     onFinish={onSaveClicked}
                     initialValues={{
-                        teamName: team.teamName,
+                        teamName: team?.teamName,
                     }}
                 >
                     <Form.Item
@@ -105,11 +105,11 @@ const TeamProfile = ({ team, updateTeam, leaveTeam, deleteTeam }) => {
 
 const mapDispatch = { updateTeam, leaveTeam, deleteTeam };
 
-const mapState = state => {
-    const userState = state.user || {};
+const mapState = (state: RootState) => {
+    const userState = state.user;
 
     return {
-        team: selectActiveTeam(userState.profile),
+        team: userState ? selectActiveTeam(userState.profile) : undefined,
     };
 };
 

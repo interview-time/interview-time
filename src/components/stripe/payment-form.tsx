@@ -2,16 +2,14 @@ import { getHost, routeTeamBilling } from "../../utils/route";
 import { Button } from "antd";
 import React from "react";
 
-/**
- *
- * @param {string} teamId
- * @param {string} priceId
- * @param {string} userEmail
- * @param {string} buttonText
- * @returns {JSX.Element}
- * @constructor
- */
-const PaymentForm = ({ teamId, priceId, userEmail, buttonText }) => {
+type Props = {
+    teamId: string;
+    priceId: string;
+    userEmail: string;
+    buttonText: string;
+};
+
+const PaymentForm = ({ teamId, priceId, userEmail, buttonText }: Props) => {
     return (
         <form action={`${process.env.REACT_APP_API_URL}/payments/stripe-session`} method='POST'>
             <input type='hidden' name='PriceId' value={priceId} />

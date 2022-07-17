@@ -5,39 +5,43 @@ import Card from "../../components/card/card";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import TableHeader from "../../components/table/table-header";
 import TableText from "../../components/table/table-text";
-import { localeCompare } from "../../utils/comparators";
 import { getFormattedDateTime } from "../../utils/date-fns";
 import styles from "./team-members.module.css";
+import { ColumnsType } from "antd/lib/table";
+import { TeamInvite } from "../../store/models";
 
-const TeamMembersPendingInvites = ({ pendingInvites, loading }) => {
-    const columns = [
+type Props = {
+    pendingInvites: TeamInvite[];
+    loading: boolean;
+};
+
+const TeamMembersPendingInvites = ({ pendingInvites, loading }: Props) => {
+    const columns: ColumnsType<TeamInvite> = [
         {
             title: <TableHeader>EMAIL</TableHeader>,
             dataIndex: "inviteeEmail",
             key: "inviteeEmail",
-            render: inviteeEmail => <TableText>{inviteeEmail}</TableText>,
+            render: (inviteeEmail: string) => <TableText>{inviteeEmail}</TableText>,
         },
         {
             title: <TableHeader>ROLE</TableHeader>,
             key: "role",
             dataIndex: "role",
             sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.role, b.role),
-            render: role => <TeamRoleTag role={role} />,
+            render: (role: string) => <TeamRoleTag role={role} />,
         },
         {
             title: <TableHeader>INVITED BY</TableHeader>,
             dataIndex: "invitedBy",
             key: "invitedBy",
-            render: invitedBy => <TableText>{invitedBy}</TableText>,
+            render: (invitedBy: string) => <TableText>{invitedBy}</TableText>,
         },
         {
             title: <TableHeader>INVITED ON</TableHeader>,
             dataIndex: "invitedDate",
             key: "invitedDate",
             sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.invitedDate, b.invitedDate),
-            render: invitedDate => <TableText>{getFormattedDateTime(invitedDate)}</TableText>,
+            render: (invitedDate: Date) => <TableText>{getFormattedDateTime(invitedDate)}</TableText>,
         },
     ];
 

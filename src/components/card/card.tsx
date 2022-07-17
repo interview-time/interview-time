@@ -1,4 +1,5 @@
 import styles from "./card.module.css";
+import { CSSProperties, MouseEventHandler } from "react";
 
 /**
  *
@@ -10,7 +11,16 @@ import styles from "./card.module.css";
  * @returns {JSX.Element}
  * @constructor
  */
-const Card = ({ withPadding = true, onClick, style, className, children }) => {
+
+type Props = {
+    withPadding?: boolean;
+    onClick?: MouseEventHandler;
+    style?: CSSProperties;
+    className?: string;
+    children: JSX.Element[] | JSX.Element;
+};
+
+const Card = ({ withPadding = true, onClick, style, className, children }: Props) => {
     const paddingStyle = () => (withPadding ? styles.padding : styles.noPadding);
 
     const clickStyle = () => {

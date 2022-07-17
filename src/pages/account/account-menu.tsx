@@ -2,19 +2,21 @@ import Card from "../../components/card/card";
 import { Menu } from "antd";
 import styles from "./account-menu.module.css";
 import React from "react";
+// @ts-ignore
 import { truncate } from "lodash/string";
 import { selectProfileName } from "../../store/user/selector";
 import { routeProfile } from "../../utils/route";
+import { Location } from "history";
+import { MenuClickEventHandler } from "rc-menu/lib/interface";
+import { UserProfile } from "../../store/models";
 
-/**
- *
- * @param {UserProfile} profile
- * @param {LocationState} location
- * @param {function} onProfileClicked
- * @returns {JSX.Element}
- * @constructor
- */
-const AccountMenu = ({ profile, location, onProfileClicked }) => {
+type Props = {
+    profile?: UserProfile;
+    location: Location;
+    onProfileClicked: MenuClickEventHandler;
+};
+
+const AccountMenu = ({ profile, location, onProfileClicked }: Props) => {
     const MENU_KEY_PROFILE = "PROFILE";
 
     const getProfileName = () =>
@@ -22,11 +24,7 @@ const AccountMenu = ({ profile, location, onProfileClicked }) => {
             length: 20,
         });
 
-    const getSelectedMenuKey = () => {
-        if (location.pathname.includes(routeProfile())) {
-            return MENU_KEY_PROFILE;
-        }
-    };
+    const getSelectedMenuKey = (): string => (location.pathname.includes(routeProfile()) ? MENU_KEY_PROFILE : "");
 
     return (
         <div>

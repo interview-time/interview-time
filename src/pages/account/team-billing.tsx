@@ -17,30 +17,30 @@ import IllustrationSection from "./illustration-section";
 import { isTeamAdmin } from "../../store/user/permissions";
 import CancelImage from "../../assets/cancel.svg";
 import FeedbackModal from "../feedback/modal-feedback";
+import { Team, TeamDetails } from "../../store/models";
+import { RootState } from "../../store/state-models";
 
-/**
- *
- * @param {string} userEmail
- * @param {Team} team
- * @param {TeamDetails|undefined} teamDetails
- * @param loadTeam
- * @returns {JSX.Element}
- * @constructor
- */
-const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }) => {
+type Props = {
+    userEmail?: string;
+    team?: Team;
+    teamDetails?: TeamDetails;
+    loadTeam: any;
+};
+
+const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }: Props) => {
     const [feedbackVisible, setFeedbackVisible] = React.useState(false);
 
     useEffect(() => {
-        loadTeam(team.teamId);
+        loadTeam(team?.teamId);
 
         // eslint-disable-next-line
     }, [team]);
 
-    const isAdmin = isTeamAdmin(team);
+    const isAdmin = team ? isTeamAdmin(team) : false;
 
-    const isStarterPlan = () => teamDetails.plan === SubscriptionPlans.Starter;
+    const isStarterPlan = () => teamDetails?.plan === SubscriptionPlans.Starter;
 
-    const isPremiumPlan = () => teamDetails.plan === SubscriptionPlans.Premium;
+    const isPremiumPlan = () => teamDetails?.plan === SubscriptionPlans.Premium;
 
     const PaidFeatureIcon = () => (isPremiumPlan() ? <CheckFilledIcon /> : <UncheckFilledIcon />);
 
@@ -99,10 +99,10 @@ const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }) => {
                             </Col>
                             <Col span={6}>
                                 <div className={styles.buttonHolder}>
-                                    {isAdmin && (
+                                    {isAdmin && userEmail && (
                                         <PaymentForm
                                             buttonText={isStarterPlan() ? "Go Premium" : "Buy More Seats"}
-                                            priceId={process.env.REACT_APP_PREMIUM_PRICE_ID}
+                                            priceId={process.env.REACT_APP_PREMIUM_PRICE_ID!}
                                             userEmail={userEmail}
                                             teamId={teamDetails.teamId}
                                         />
@@ -159,29 +159,34 @@ const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }) => {
                                 </div>
                             </Col>
                         </Row>
-                        {isPremiumPlan() && isAdmin && (
-                            <IllustrationSection
-                                title='Want to cancel plan or decrease number of seats?'
-                                description={
-                                    <span>
-                                        If you cancel the premium plan or decrease the number of seats, all extra
-                                        members of your team will be transferred into <b>view-only</b> mode.
-                                    </span>
-                                }
-                                buttonText='Decrease Seats'
-                                buttonType='outlined'
-                                onButtonClicked={onDecreaseSeatsClicked}
-                                illustration={<img src={CancelImage} alt='Cancel' />}
-                                style={{ marginTop: 32 }}
-                            />
-                        )}
+                        <>
+                            {isPremiumPlan() && isAdmin && (
+                                <IllustrationSection
+                                    title='Want to cancel plan or decrease number of seats?'
+                                    description={
+                                        <span>
+                                            If you cancel the premium plan or decrease the number of seats, all extra
+                                            members of your team will be transferred into <b>view-only</b> mode.
+                                        </span>
+                                    }
+                                    buttonText='Decrease Seats'
+                                    buttonType='default'
+                                    onButtonClicked={onDecreaseSeatsClicked}
+                                    illustration={<img src={CancelImage} alt='Cancel' />}
+                                    style={{ marginTop: 32 }}
+                                />
+                            )}
+                        </>
                     </Card>
-                    <FeedbackModal
-                        title='Cancel plan or decrease number of seats'
-                        description='Please specify if you want to cancel plan or decrease number of seats. This request may take up to 24 hours to complete.'
-                        visible={feedbackVisible}
-                        onClose={onFeedbackClose}
-                    />
+                    {
+                        // @ts-ignore
+                        <FeedbackModal
+                            title='Cancel plan or decrease number of seats'
+                            description='Please specify if you want to cancel plan or decrease number of seats. This request may take up to 24 hours to complete.'
+                            visible={feedbackVisible}
+                            onClose={onFeedbackClose}
+                        />
+                    }
                 </>
             ) : (
                 <Spinner />
@@ -192,13 +197,13 @@ const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }) => {
 
 const mapDispatch = { loadTeam };
 
-const mapState = state => {
-    const userState = state.user || {};
+const mapState = (state: RootState) => {
+    const profile = state.user?.profile;
 
     return {
-        email: userState.profile.email,
-        team: selectActiveTeam(userState.profile),
-        teamDetails: state.team.details,
+        userEmail: profile?.email,
+        team: profile ? selectActiveTeam(profile) : undefined,
+        teamDetails: state.team?.details,
     };
 };
 
