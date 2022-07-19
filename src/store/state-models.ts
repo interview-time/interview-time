@@ -1,18 +1,28 @@
-import { TeamDetails, TeamInvite, UserProfile } from "./models";
+import { Candidate, Interview, TeamDetails, TeamInvite, TeamMember, UserProfile } from "./models";
 
 export interface RootState {
-    user?: UserState;
-    team?: TeamState;
+    user: UserState;
+    team: TeamState;
+    interviews: InterviewState;
+    candidates: CandidateState;
 }
 
 export interface UserState {
     profile: UserProfile;
+    teamMembers: TeamMember[];
 }
 
 export interface TeamState {
     loading: false;
-    error: false;
     details: TeamDetails;
-    pendingInvitesLoading: false;
     pendingInvites: TeamInvite[];
+}
+
+export interface InterviewState {
+    interviews: Interview[];
+    sharedScorecards: any[];
+}
+
+export interface CandidateState {
+    candidates: Candidate[];
 }

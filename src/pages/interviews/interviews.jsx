@@ -11,8 +11,8 @@ import { loadTeamMembers } from "../../store/user/actions";
 import CardHero from "../../components/card/card-hero";
 import InterviewsTable from "./interviews-table";
 import ReportsTable from "./reports-table";
-import { selectCompletedInterviews, selectUncompletedInterviews } from "../../store/interviews/selector";
 import styles from "../interviews/interviews.module.css";
+import { selectCompletedInterviewData, selectUncompletedInterviewData } from "../../store/interviews/selector";
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
@@ -107,8 +107,8 @@ const mapState = state => {
     const userState = state.user || {};
 
     return {
-        uncompletedInterviews: selectUncompletedInterviews(state),
-        completedInterviews: selectCompletedInterviews(state),
+        uncompletedInterviews: selectUncompletedInterviewData(state),
+        completedInterviews: selectCompletedInterviewData(state),
         interviewsLoading: interviewsState.loading,
         profile: userState.profile,
     };

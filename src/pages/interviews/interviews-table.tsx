@@ -1,16 +1,13 @@
 import { Button, ConfigProvider, Dropdown, Menu, Modal, Select, Space, Table } from "antd";
 import Title from "antd/lib/typography/Title";
 import Card from "../../components/card/card";
-import React, { useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import { MoreIcon } from "../../utils/icons";
 import { Status } from "../../utils/constants";
 import { routeCandidateDetails, routeInterviewDetails, routeInterviewScorecard } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
-import { sortBy } from "lodash/collection";
-import { truncate } from "lodash/string";
-import { uniqBy } from "lodash/array";
 import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import styles from "../interviews/interviews.module.css";
 import {
@@ -20,33 +17,57 @@ import {
     InterviewerColumn,
     StatusColumn,
 } from "../../components/table/table-interviews";
+import { InterviewData } from "../../store/interviews/selector";
+import { ColumnsType } from "antd/lib/table/interface";
+import { sortBy, truncate, uniqBy } from "lodash";
 
-/**
- *
- * @param {Interview[]} interviews
- * @param {UserProfile} profile
- * @param {boolean} loading
- * @param deleteInterview
- * @returns {JSX.Element}
- * @constructor
- */
-const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFilter = true }) => {
+type Props = {
+    interviews: InterviewData[];
+    profile: UserProfile;
+    loading: boolean;
+    showFilter: boolean;
+    deleteInterview: any;
+};
+
+type SelectOption = {
+    label: string;
+    value: string;
+};
+
+type Filter = {
+    interviewerId: string | null;
+    position: string | null;
+};
+
+const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFilter = true }: Props) => {
     const history = useHistory();
-    const [interviewers, setInterviewers] = useState([]);
-    const [interviewsData, setInterviews] = useState([]);
+    const [interviewsData, setInterviews] = useState<InterviewData[]>([]);
+    const [interviewers, setInterviewers] = useState<SelectOption[]>([]);
 
-    const [filter, setFilter] = useState({
-        interviewer: null,
+    const [filter, setFilter] = useState<Filter>({
+        interviewerId: null,
         position: null,
     });
 
     React.useEffect(() => {
-        setInterviews(interviews);
+        updateInterviews();
 
         let profileName =
             truncate(profile.name, {
                 length: 18,
             }) + " (You)";
+        let interviewers = uniqBy(interviews, (interview: InterviewData) => interview.userId)
+            .filter(
+                (interview: InterviewData) =>
+                    interview.interviewerMember && interview.interviewerMember.userId !== profile.userId
+            )
+            .map((interview: InterviewData) => {
+                const member = interview.interviewerMember!!;
+                return {
+                    label: member.name,
+                    value: member.userId,
+                };
+            });
 
         setInterviewers(
             [
@@ -54,38 +75,29 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
                     label: profileName,
                     value: profile.userId,
                 },
-            ].concat(
-                sortBy(
-                    uniqBy(interviews, interview => interview.interviewerId)
-                        .filter(interview => interview.interviewerId && interview.interviewerId !== profile.userId)
-                        .map(interview => ({
-                            label: interview.interviewerName,
-                            value: interview.interviewerId,
-                        })),
-                    [item => item.label]
-                )
-            )
+            ].concat(sortBy(interviewers, [(item: SelectOption) => item.value]))
         );
         // eslint-disable-next-line
     }, [interviews]);
 
     React.useEffect(() => {
+        updateInterviews();
+        // eslint-disable-next-line
+    }, [filter]);
+
+    const updateInterviews = () => {
         let filteredInterviews = interviews;
 
-        if (filter.interviewer) {
-            filteredInterviews = filteredInterviews.filter(interview => interview.interviewerId === filter.interviewer);
+        if (filter.interviewerId) {
+            filteredInterviews = filteredInterviews.filter(interview => interview.userId === filter.interviewerId);
         }
 
         if (filter.position) {
-            filteredInterviews = filteredInterviews.filter(
-                interview => interview.position && interview.position.includes(filter.position)
-            );
+            filteredInterviews = filteredInterviews.filter(interview => interview.position === filter.position);
         }
 
         setInterviews(filteredInterviews);
-
-        // eslint-disable-next-line
-    }, [filter]);
+    };
 
     const onPositionFilterClear = () => {
         setFilter(prevFilter => ({
@@ -94,7 +106,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
         }));
     };
 
-    const onPositionFilterChange = value => {
+    const onPositionFilterChange = (value: string) => {
         setFilter(prevFilter => ({
             ...prevFilter,
             position: value,
@@ -104,34 +116,36 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
     const onInterviewerFilterClear = () => {
         setFilter(prevFilter => ({
             ...prevFilter,
-            interviewer: null,
+            interviewerId: null,
         }));
     };
 
-    const onInterviewerFilterChange = value => {
+    const onInterviewerFilterChange = (value: string) => {
         setFilter(prevFilter => ({
             ...prevFilter,
-            interviewer: value,
+            interviewerId: value,
         }));
     };
 
-    const onCandidateClicked = (e, candidateId) => {
+    const onCandidateClicked = (e: MouseEvent, candidateId: string) => {
         e.stopPropagation(); // prevent opening report
         history.push(routeCandidateDetails(candidateId));
     };
 
-    const onRowClicked = interview => {
-        if (interview.interviewerId === profile.userId) {
+    const onRowClicked = (interview: InterviewData) => {
+        if (interview.userId === profile.userId) {
             history.push(routeInterviewScorecard(interview.interviewId));
         } else {
             history.push(routeCandidateDetails(interview.candidateId));
         }
     };
 
-    const showDeleteDialog = (id, candidateName) => {
+    const showDeleteDialog = (id: string, candidateName?: string) => {
+        let message =
+            "Are you sure you want to delete interview " + (candidateName ? `with '${candidateName}' ?` : "?");
         Modal.confirm({
             title: "Delete Interview",
-            content: `Are you sure you want to delete interview with '${candidateName}' ?`,
+            content: message,
             okText: "Yes",
             cancelText: "No",
             onOk() {
@@ -140,7 +154,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
         });
     };
 
-    const createMenu = (id, status, candidateName) => (
+    const createMenu = (id: string, status: string, candidateName?: string) => (
         <Menu>
             {status !== Status.SUBMITTED && status !== Status.COMPLETED && (
                 <Menu.Item
@@ -164,7 +178,7 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
         </Menu>
     );
 
-    const columns = [
+    const columns: ColumnsType<InterviewData> = [
         CandidateColumn(onCandidateClicked),
         InterviewColumn(),
         DateColumn(),
@@ -172,9 +186,10 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
         StatusColumn(),
         {
             key: "actions",
-            render: interview => (
+            render: (interview: InterviewData) => (
+                // @ts-ignore
                 <Dropdown
-                    overlay={createMenu(interview.interviewId, interview.status, interview.candidate)}
+                    overlay={createMenu(interview.interviewId, interview.status, interview.candidate?.candidateName)}
                     placement='bottomLeft'
                 >
                     <Button icon={<MoreIcon />} style={{ width: 36, height: 36 }} onClick={e => e.stopPropagation()} />

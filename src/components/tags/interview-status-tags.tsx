@@ -11,11 +11,15 @@ import { Status } from "../../utils/constants";
  * @returns {JSX.Element}
  * @constructor
  */
-const InterviewStatusTag = ({ interviewStartDateTime, status, statuses }) => {
+type Props = {
+    interviewStartDateTime: Date;
+    status: string | string[];
+};
+const InterviewStatusTag = ({ interviewStartDateTime, status }: Props) => {
     const interviewStarted = () => new Date() > interviewStartDateTime;
 
     const createTag = () => {
-        let statusesArr = status ? [status] : statuses;
+        let statusesArr = Array.isArray(status) ? status : [status];
         let tagClass;
         let tagText;
         if (statusesArr.every(status => status === Status.SUBMITTED)) {

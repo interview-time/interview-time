@@ -21,9 +21,9 @@ import CardHero from "../../components/card/card-hero";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
 import { CandidateColumn, DateColumn, InterviewColumn, StatusColumn } from "../../components/table/table-interviews";
-import { selectUncompletedInterviews } from "../../store/interviews/selector";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
+import { selectUncompletedInterviewData } from "../../store/interviews/selector";
 
 const { Title } = Typography;
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
@@ -163,8 +163,8 @@ const mapState = state => {
     const templates = sortBy(templateState.templates, ["title"]).slice(0, 3);
 
     return {
-        interviews: selectUncompletedInterviews(state).filter(
-            interview => interview.interviewerId === userState.profile.userId
+        interviews: selectUncompletedInterviewData(state).filter(
+            interview => interview.userId === userState.profile.userId
         ),
         interviewsLoading: interviewsState.loading,
         templates: templates,

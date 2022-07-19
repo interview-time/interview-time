@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Button, Col, Progress, Row, Space, Typography, Result } from "antd";
-import { selectSharedScorecard } from "../../store/interviews/selector";
 import { getSharedScorecard } from "../../store/interviews/actions";
 import {
     getDecisionColor,
@@ -29,6 +28,7 @@ import logo from "../../assets/logo-horiz.png";
 import { RedFlagsTags } from "../../components/tags/red-flags-tags";
 import { defaultTo } from "lodash/util";
 import styles from "./shared-scorecard.module.css";
+import { selectSharedScorecard } from "../../store/interviews/selector";
 
 const { Text, Paragraph, Title } = Typography;
 

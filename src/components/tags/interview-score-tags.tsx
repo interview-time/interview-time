@@ -2,14 +2,12 @@ import styles from "./interview-score-tags.module.css";
 import { Tag } from "antd";
 import React from "react";
 import { getOverallPerformanceColor, getOverallPerformancePercent } from "../../utils/assessment";
+import { InterviewData } from "../../store/interviews/selector";
 
-/**
- *
- * @param {Interview} interview
- * @returns {JSX.Element}
- * @constructor
- */
-const InterviewScoreTag = ({ interview }) => (
+type Props = {
+    interview: InterviewData;
+};
+const InterviewScoreTag = ({ interview }: Props) => (
     <Tag color={getOverallPerformanceColor(interview.structure.groups)} className={styles.tag}>
         {getOverallPerformancePercent(interview.structure.groups)}
     </Tag>

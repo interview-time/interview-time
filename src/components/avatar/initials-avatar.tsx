@@ -3,13 +3,10 @@ import { getInitials } from "../../utils/string";
 import { ProfileIcon } from "../../utils/icons";
 import React from "react";
 
-/**
- *
- * @param {string|undefined} interviewerName
- * @returns {JSX.Element}
- * @constructor
- */
-const InitialsAvatar = ({ interviewerName }) => {
+type Props = {
+    interviewerName: string;
+};
+const InitialsAvatar = ({ interviewerName }: Props) => {
     return (
         <Tooltip title={interviewerName}>
             <Avatar

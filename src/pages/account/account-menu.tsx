@@ -2,8 +2,7 @@ import Card from "../../components/card/card";
 import { Menu } from "antd";
 import styles from "./account-menu.module.css";
 import React from "react";
-// @ts-ignore
-import { truncate } from "lodash/string";
+import { truncate } from "lodash";
 import { selectProfileName } from "../../store/user/selector";
 import { routeProfile } from "../../utils/route";
 import { Location } from "history";

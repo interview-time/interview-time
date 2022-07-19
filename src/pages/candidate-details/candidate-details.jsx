@@ -16,7 +16,7 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { MoreIcon } from "../../utils/icons";
 import { routeCandidates } from "../../utils/route";
 import CreateCandidate from "./create-candidate";
-import { selectCandidateInterviews } from "../../store/interviews/selector";
+import { selectCandidateInterviewData } from "../../store/interviews/selector";
 
 /**
  *
@@ -197,7 +197,7 @@ const mapState = (state, ownProps) => {
     return {
         profile: userState.profile,
         candidates: candidatesState.candidates,
-        interviews: selectCandidateInterviews(state, ownProps.match.params.id),
+        interviews: selectCandidateInterviewData(state, ownProps.match.params.id),
     };
 };
 

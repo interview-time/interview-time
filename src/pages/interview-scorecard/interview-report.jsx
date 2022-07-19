@@ -16,9 +16,9 @@ import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 import { selectCandidate } from "../../store/candidates/selector";
-import { selectInterview } from "../../store/interviews/selector";
 import ShareScorecard from "./share-scorecard";
 import { ChartsSection, CompetenceAreaSection, ScoreSection, SummaryNotes } from "./interview-report-sections";
+import { selectInterview } from "../../store/interviews/selector";
 
 /**
  *
