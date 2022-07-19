@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ConfigProvider, Input, Select, Space, Table } from "antd";
 import Text from "antd/lib/typography/Text";
@@ -16,13 +16,20 @@ import styles from "./reports-table.module.css";
 import { getFormattedDateTime } from "../../utils/date-fns";
 import InitialsAvatar from "../../components/avatar/initials-avatar";
 import { CandidateColumn, DateColumn, InterviewColumn } from "../../components/table/table-interviews";
+import { InterviewData } from "../../store/interviews/selector";
+import { ColumnsType } from "antd/lib/table/interface";
 
 const { Search } = Input;
 
-const ReportsTable = ({ interviews, loading }) => {
+type Props = {
+    interviews: InterviewData[];
+    loading: boolean;
+};
+
+const ReportsTable = ({ interviews, loading }: Props) => {
     const history = useHistory();
-    const [interviewsData, setInterviews] = useState([]);
-    const [position, setPosition] = useState();
+    const [interviewsData, setInterviews] = useState<InterviewData[]>([]);
+    const [position, setPosition] = useState<string | undefined>();
 
     React.useEffect(() => {
         setInterviews(interviews);
@@ -31,65 +38,60 @@ const ReportsTable = ({ interviews, loading }) => {
 
     React.useEffect(() => {
         if (position) {
-            let lowerCaseText = position.toLocaleLowerCase();
-            setInterviews(
-                interviews.filter(
-                    interview => interview.position && interview.position.toLocaleLowerCase().includes(lowerCaseText)
-                )
-            );
-        } else if (position === null) {
+            setInterviews(interviews.filter(interview => interview.position === position));
+        } else {
             setInterviews(interviews);
         }
         // eslint-disable-next-line
     }, [position]);
 
-    const onCandidateClicked = (e, candidateId) => {
+    const onCandidateClicked = (e: MouseEvent, candidateId: string) => {
         e.stopPropagation(); // prevent opening report
         history.push(routeCandidateDetails(candidateId));
     };
 
-    const onRowClicked = interview => {
+    const onRowClicked = (interview: InterviewData) => {
         history.push(routeInterviewReport(interview.interviewId));
     };
 
-    const onSearchClicked = text => {
+    const onSearchClicked = (text: string) => {
         let lowerCaseText = text.toLocaleLowerCase();
         setInterviews(
             interviews.filter(
                 item =>
-                    item.candidateName?.toLocaleLowerCase()?.includes(lowerCaseText) ||
+                    item.candidate?.candidateName?.toLocaleLowerCase()?.includes(lowerCaseText) ||
                     item.position?.toLocaleLowerCase()?.includes(lowerCaseText) ||
-                    getFormattedDateTime(item.interviewStartDateTime).toLocaleLowerCase().includes(lowerCaseText) ||
+                    getFormattedDateTime(item.startDateTime).toLocaleLowerCase().includes(lowerCaseText) ||
                     getDecisionText(item.decision).toLocaleLowerCase().includes(lowerCaseText)
             )
         );
     };
 
-    const columns = [
+    const columns: ColumnsType<InterviewData> = [
         CandidateColumn(onCandidateClicked),
         InterviewColumn(),
         DateColumn(),
         {
             title: <TableHeader>INTERVIEWER</TableHeader>,
             key: "interviewerName",
-            dataIndex: "interviewerName",
-            render: interviewerName => <InitialsAvatar interviewerName={interviewerName} />,
+            render: (interview: InterviewData) => (
+                <InitialsAvatar interviewerName={interview?.interviewerMember?.name ?? "-"} />
+            ),
         },
         {
             title: <TableHeader>SCORE</TableHeader>,
             key: "score",
-            render: interview => <InterviewScoreTag interview={interview} />,
+            render: (interview: InterviewData) => <InterviewScoreTag interview={interview} />,
         },
         {
             title: <TableHeader>COMPETENCE</TableHeader>,
             key: "status",
-            render: interview => <InterviewCompetenceTag interview={interview} max={4} />,
+            render: (interview: InterviewData) => <InterviewCompetenceTag interview={interview} max={4} />,
         },
         {
             title: <TableHeader>DECISION</TableHeader>,
             key: "decision",
-            dataIndex: "decision",
-            render: decision => <InterviewDecisionTag decision={decision} />,
+            render: (interview: InterviewData) => <InterviewDecisionTag decision={interview.decision} />,
         },
     ];
 
@@ -113,8 +115,9 @@ const ReportsTable = ({ interviews, loading }) => {
                         <Select
                             className={styles.select}
                             placeholder='Position'
+                            // @ts-ignore
                             onSelect={value => setPosition(value)}
-                            onClear={() => setPosition(null)}
+                            onClear={() => setPosition(undefined)}
                             options={interviewsPositionOptions(interviews)}
                             showSearch
                             allowClear

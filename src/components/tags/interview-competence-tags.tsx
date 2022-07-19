@@ -3,18 +3,28 @@ import { Col, Popover, Row, Space } from "antd";
 import React from "react";
 import { getGroupAssessment } from "../../utils/assessment";
 import { filterGroupsWithAssessment } from "../../utils/filters";
+import { InterviewData } from "../../store/interviews/selector";
+import { InterviewStructureGroup } from "../../store/models";
 
-/**
- *
- * @param {Interview} interview
- * @param {int} max
- * @returns {JSX.Element}
- * @constructor
- */
-const InterviewCompetenceTag = ({ interview, max = 99 }) => {
-    let data = filterGroupsWithAssessment(interview.structure.groups)
+type Props = {
+    interview: InterviewData;
+    max: number;
+};
+const InterviewCompetenceTag = ({ interview, max = 99 }: Props) => {
+    type AssessmentGroup = {
+        group: InterviewStructureGroup;
+        assessment: Assessment;
+    };
+
+    type Assessment = {
+        score: number;
+        text: string;
+        color: string;
+    };
+
+    let data: AssessmentGroup[] = filterGroupsWithAssessment(interview.structure.groups ?? [])
         .slice(0, max)
-        .map(group => ({
+        .map((group: InterviewStructureGroup) => ({
             group: group,
             assessment: getGroupAssessment(group.questions),
         }));

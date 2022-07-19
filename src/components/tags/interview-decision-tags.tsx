@@ -3,13 +3,10 @@ import { Tag } from "antd";
 import React from "react";
 import { getDecisionColor, getDecisionText } from "../../utils/assessment";
 
-/**
- *
- * @param {string} decision
- * @returns {JSX.Element}
- * @constructor
- */
-const InterviewDecisionTag = ({ decision }) => (
+type Props = {
+    decision: number;
+};
+const InterviewDecisionTag = ({ decision }: Props) => (
     <div>
         <Tag color={getDecisionColor(decision)} className={styles.tag}>
             {getDecisionText(decision)}
