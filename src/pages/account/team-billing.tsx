@@ -203,7 +203,7 @@ const mapState = (state: RootState) => {
     return {
         userEmail: profile?.email,
         team: profile ? selectActiveTeam(profile) : undefined,
-        teamDetails: state.team?.details,
+        teamDetails: state.team.details,
     };
 };
 

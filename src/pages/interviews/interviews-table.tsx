@@ -1,10 +1,10 @@
 import { Button, ConfigProvider, Dropdown, Menu, Modal, Select, Space, Table } from "antd";
 import Title from "antd/lib/typography/Title";
 import Card from "../../components/card/card";
-import React, { MouseEvent, useState } from "react";
+import React, { useState } from "react";
 import { MoreIcon } from "../../utils/icons";
 import { Status } from "../../utils/constants";
-import { routeCandidateDetails, routeInterviewDetails, routeInterviewScorecard } from "../../utils/route";
+import { routeInterviewDetails, routeInterviewScorecard } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
@@ -20,12 +20,14 @@ import {
 import { InterviewData } from "../../store/interviews/selector";
 import { ColumnsType } from "antd/lib/table/interface";
 import { sortBy, truncate, uniqBy } from "lodash";
+import { TeamRole, UserProfile } from "../../store/models";
 
 type Props = {
     interviews: InterviewData[];
+    userRole: TeamRole;
     profile: UserProfile;
     loading: boolean;
-    showFilter: boolean;
+    showFilter?: boolean;
     deleteInterview: any;
 };
 
@@ -39,7 +41,7 @@ type Filter = {
     position: string | null;
 };
 
-const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFilter = true }: Props) => {
+const InterviewsTable = ({ profile, userRole, interviews, loading, deleteInterview, showFilter = true }: Props) => {
     const history = useHistory();
     const [interviewsData, setInterviews] = useState<InterviewData[]>([]);
     const [interviewers, setInterviewers] = useState<SelectOption[]>([]);
@@ -85,6 +87,8 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
         // eslint-disable-next-line
     }, [filter]);
 
+    const isInterviewer = () => userRole === TeamRole.INTERVIEWER;
+
     const updateInterviews = () => {
         let filteredInterviews = interviews;
 
@@ -127,17 +131,8 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
         }));
     };
 
-    const onCandidateClicked = (e: MouseEvent, candidateId: string) => {
-        e.stopPropagation(); // prevent opening report
-        history.push(routeCandidateDetails(candidateId));
-    };
-
     const onRowClicked = (interview: InterviewData) => {
-        if (interview.userId === profile.userId) {
-            history.push(routeInterviewScorecard(interview.interviewId));
-        } else {
-            history.push(routeCandidateDetails(interview.candidateId));
-        }
+        history.push(routeInterviewScorecard(interview.interviewId));
     };
 
     const showDeleteDialog = (id: string, candidateName?: string) => {
@@ -179,8 +174,8 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
     );
 
     const columns: ColumnsType<InterviewData> = [
-        CandidateColumn(onCandidateClicked),
-        InterviewColumn(),
+        CandidateColumn(!isInterviewer()),
+        InterviewColumn(profile.userId, !isInterviewer()),
         DateColumn(),
         InterviewerColumn(),
         StatusColumn(),
@@ -252,9 +247,13 @@ const InterviewsTable = ({ profile, interviews, loading, deleteInterview, showFi
                         columns={columns}
                         dataSource={interviewsData}
                         loading={loading}
-                        rowClassName={styles.row}
+                        rowClassName={isInterviewer() ? styles.row : undefined}
                         onRow={record => ({
-                            onClick: () => onRowClicked(record),
+                            onClick: () => {
+                                if (isInterviewer()) {
+                                    onRowClicked(record);
+                                }
+                            },
                         })}
                     />
                 </ConfigProvider>

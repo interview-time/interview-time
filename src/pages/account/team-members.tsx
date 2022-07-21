@@ -168,8 +168,8 @@ const mapState = (state: RootState) => {
 
     return {
         team: profile ? selectActiveTeam(profile) : undefined,
-        teamDetails: team?.details,
-        loading: team?.loading ?? false,
+        teamDetails: team.details,
+        loading: team.loading,
     };
 };
 

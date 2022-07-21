@@ -5,38 +5,66 @@ import styles from "./table-interviews.module.css";
 import DemoTag from "../demo/demo-tag";
 import { getFormattedDate, getFormattedTime } from "../../utils/date-fns";
 import InitialsAvatar from "../avatar/initials-avatar";
-import React, { MouseEvent } from "react";
+import React from "react";
 import { Avatar } from "antd";
 import InterviewStatusTag from "../tags/interview-status-tags";
 import { InterviewData } from "../../store/interviews/selector";
 import { ColumnType } from "rc-table/lib/interface";
+import { Link } from "react-router-dom";
+import { routeCandidateDetails, routeInterviewReport, routeInterviewScorecard } from "../../utils/route";
+import { InterviewStatus } from "../../store/models";
 
-export const CandidateColumn = (
-    onCandidateClicked: (e: MouseEvent, candidateId: string) => void
-): ColumnType<InterviewData> => ({
+export const CandidateColumn = (clickable: boolean): ColumnType<InterviewData> => ({
     title: <TableHeader>CANDIDATE</TableHeader>,
     key: "candidateName",
     // @ts-ignore
     sortDirections: ["descend", "ascend"],
     sorter: (a: InterviewData, b: InterviewData) =>
         localeCompare(a.candidate?.candidateName ?? "", b.candidate?.candidateName ?? ""),
-    render: (interview: InterviewData) => (
-        <div onClick={e => onCandidateClicked(e, interview.candidateId)}>
-            <DemoTag isDemo={interview.isDemo} />
-            <TableText className={`${styles.candidateName} fs-mask`}>
-                {interview.candidate?.candidateName ?? "-"}
-            </TableText>
-        </div>
-    ),
+    render: (interview: InterviewData) => {
+        const getLink = () => {
+            const text = interview.candidate?.candidateName ?? "Unknown";
+            if (clickable && interview.candidateId) {
+                // candidate details available
+                return <Link to={routeCandidateDetails(interview.candidateId)}>{text}</Link>;
+            }
+
+            // show black text
+            return text;
+        };
+
+        return (
+            <div>
+                <DemoTag isDemo={interview.isDemo} />
+                <TableText className='fs-mask'>{getLink()}</TableText>
+            </div>
+        );
+    },
 });
 
-export const InterviewColumn = (): ColumnType<InterviewData> => ({
+export const InterviewColumn = (userId: string, clickable: boolean): ColumnType<InterviewData> => ({
     title: <TableHeader>INTERVIEW</TableHeader>,
     key: "position",
     // @ts-ignore
     sortDirections: ["descend", "ascend"],
     sorter: (a: InterviewData, b: InterviewData) => localeCompare(a.position ?? "", b.position ?? ""),
-    render: (interview: InterviewData) => <TableText>{interview.position ?? "-"}</TableText>,
+    render: (interview: InterviewData) => {
+        const getLink = () => {
+            const text = interview.position ?? "Interview";
+            if (clickable && interview.status === InterviewStatus.SUBMITTED) {
+                // submitted interview, open report
+                return <Link to={routeInterviewReport(interview.interviewId)}>{text}</Link>;
+            } else if (clickable && userId === interview.userId) {
+                // current user is an interviewer, open scorecard
+                return <Link to={routeInterviewScorecard(interview.interviewId)}>{text}</Link>;
+            }
+
+            // show black text
+            return text;
+        };
+
+        return <TableText>{getLink()}</TableText>;
+    },
 });
 
 export const DateColumn = (): ColumnType<InterviewData> => ({

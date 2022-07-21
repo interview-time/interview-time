@@ -14,13 +14,14 @@ export interface UserState {
 
 export interface TeamState {
     loading: false;
-    details: TeamDetails;
+    details?: TeamDetails;
     pendingInvites: TeamInvite[];
 }
 
 export interface InterviewState {
     interviews: Interview[];
     sharedScorecards: any[];
+    loading: boolean;
 }
 
 export interface CandidateState {

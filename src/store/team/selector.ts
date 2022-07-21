@@ -1,5 +1,5 @@
 import { SubscriptionPlans } from "../../utils/constants";
-import { TeamDetails } from "../models";
+import { TeamDetails, TeamRole } from "../models";
 
 export const FREE_SEATS = 2;
 export const PRICE_PER_SEAT = 15; // $
@@ -22,3 +22,5 @@ export const selectTeamPrice = (teamDetails: TeamDetails) => {
 
     return "";
 };
+
+export const selectUserRole = (teamDetails: TeamDetails) => teamDetails.roles[0] as TeamRole

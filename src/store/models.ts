@@ -1,5 +1,3 @@
-// import { Status } from "../utils/constants";
-
 export interface TeamDetails {
     teamId: string;
     teamName: string;
@@ -102,4 +100,18 @@ export interface Candidate {
     gitHub?: string;
     linkedIn?: string;
     archived: boolean;
+}
+
+export enum TeamRole {
+    HR = "HR",
+    HIRING_MANAGER = "HIRING_MANAGER",
+    INTERVIEWER = "INTERVIEWER",
+    ADMIN = "ADMIN",
+}
+
+export enum InterviewStatus {
+    NEW = "NEW",
+    STARTED = "STARTED",
+    COMPLETED = "COMPLETED",
+    SUBMITTED = "SUBMITTED",
 }

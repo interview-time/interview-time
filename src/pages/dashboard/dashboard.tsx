@@ -5,15 +5,9 @@ import { useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
-import { sortBy } from "lodash/collection";
+import { sortBy } from "lodash";
 import TemplateCard from "../../components/template-card/template-card";
-import {
-    routeCandidateDetails,
-    routeInterviewAdd,
-    routeInterviewScorecard,
-    routeTeamMembers,
-    routeTemplates,
-} from "../../utils/route";
+import { routeInterviewAdd, routeInterviewScorecard, routeTeamMembers, routeTemplates } from "../../utils/route";
 import styles from "./dashboard.module.css";
 import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../utils/icons";
 import Card from "../../components/card/card";
@@ -23,34 +17,37 @@ import Text from "antd/lib/typography/Text";
 import { CandidateColumn, DateColumn, InterviewColumn, StatusColumn } from "../../components/table/table-interviews";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
-import { selectUncompletedInterviewData } from "../../store/interviews/selector";
+import { InterviewData, selectUncompletedInterviewData } from "../../store/interviews/selector";
+import { TeamRole, UserProfile } from "../../store/models";
+import { RootState } from "../../store/state-models";
+import { selectUserRole } from "../../store/team/selector";
 
 const { Title } = Typography;
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
-/**
- *
- * @param {Interview[]} interviews
- * @param {boolean} interviewsLoading
- * @param {Template[]} templates
- * @param {UserProfile} profile
- * @param loadInterviews
- * @param loadCandidates
- * @param loadTeamMembers
- * @param loadTemplates
- * @returns {JSX.Element}
- * @constructor
- */
+type Props = {
+    profile: UserProfile;
+    userRole: TeamRole;
+    interviews: InterviewData[];
+    templates: Template[];
+    interviewsLoading: boolean;
+    loadInterviews: any;
+    loadCandidates: any;
+    loadTeamMembers: any;
+    loadTemplates: any;
+};
+
 const Dashboard = ({
-    interviews,
-    interviewsLoading,
-    templates,
     profile,
+    userRole,
+    interviews,
+    templates,
+    interviewsLoading,
     loadInterviews,
     loadCandidates,
     loadTeamMembers,
     loadTemplates,
-}) => {
+}: Props) => {
     const history = useHistory();
 
     React.useEffect(() => {
@@ -61,22 +58,25 @@ const Dashboard = ({
         // eslint-disable-next-line
     }, []);
 
+    const isInterviewer = () => userRole === TeamRole.INTERVIEWER;
+
     const onNewTemplateClicked = () => history.push(routeTemplates());
 
     const onScheduleInterviewClicked = () => history.push(routeInterviewAdd());
 
     const onInviteTeamMembers = () => history.push(routeTeamMembers());
 
-    const onRowClicked = interview => history.push(routeInterviewScorecard(interview.interviewId));
+    const onRowClicked = (interview: InterviewData) => history.push(routeInterviewScorecard(interview.interviewId));
 
-    const onCandidateClicked = (e, candidateId) => {
-        e.stopPropagation(); // prevent opening report
-        history.push(routeCandidateDetails(candidateId));
-    };
-
-    const columns = [CandidateColumn(onCandidateClicked), InterviewColumn(), DateColumn(), StatusColumn()];
+    const columns = [
+        CandidateColumn(!isInterviewer()),
+        InterviewColumn(profile.userId, !isInterviewer()),
+        DateColumn(),
+        StatusColumn(),
+    ];
 
     return (
+        // @ts-ignore
         <Layout contentStyle={styles.rootContainer}>
             <div>
                 <Title level={4} style={{ marginBottom: 20 }}>
@@ -132,9 +132,13 @@ const Dashboard = ({
                         columns={columns}
                         dataSource={interviews}
                         loading={interviewsLoading}
-                        rowClassName={styles.row}
+                        rowClassName={isInterviewer() ? styles.row : undefined}
                         onRow={record => ({
-                            onClick: () => onRowClicked(record),
+                            onClick: () => {
+                                if (isInterviewer()) {
+                                    onRowClicked(record);
+                                }
+                            },
                         })}
                     />
                 </ConfigProvider>
@@ -146,7 +150,10 @@ const Dashboard = ({
             <Row gutter={[32, 32]}>
                 {templates.map(template => (
                     <Col span={24} lg={{ span: 8 }} key={template.templateId}>
-                        <TemplateCard key={template.templateId} template={template} />
+                        {
+                            // @ts-ignore
+                            <TemplateCard key={template.templateId} template={template} />
+                        }
                     </Col>
                 ))}
             </Row>
@@ -155,10 +162,11 @@ const Dashboard = ({
 };
 
 const mapDispatch = { loadInterviews, loadCandidates, loadTeamMembers, loadTemplates };
-const mapState = state => {
-    const userState = state.user || {};
-    const interviewsState = state.interviews || {};
-    const templateState = state.templates || {};
+const mapState = (state: RootState) => {
+    const userState = state.user;
+    const interviewsState = state.interviews;
+    // @ts-ignore
+    const templateState = state.templates;
 
     const templates = sortBy(templateState.templates, ["title"]).slice(0, 3);
 
@@ -169,6 +177,7 @@ const mapState = state => {
         interviewsLoading: interviewsState.loading,
         templates: templates,
         profile: userState.profile,
+        userRole: state.team.details ? selectUserRole(state.team.details) : TeamRole.INTERVIEWER,
     };
 };
 
