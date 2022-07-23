@@ -56,6 +56,8 @@ export const selectCompletedInterviewData = (state: RootState): InterviewData[] 
 };
 
 /**
+ * This function returns all interviews that are not submitted. Interviews are grouped by `linkId`, where root
+ * interview always belongs to current user and co-interviews are present in `linkedInterviews` array.
  *
  * @return interview list with `linkedInterviews`.
  */
@@ -64,6 +66,10 @@ export const selectUncompletedInterviewData = (state: RootState): InterviewData[
 
     selectInterviewData(state)
         .filter((interview: InterviewData) => interview.status !== Status.SUBMITTED)
+        .sort((a: InterviewData, b: InterviewData) =>
+            // sort interviews by `userId`, so that co interviewers will appear in `linkedInterviews`
+            a.userId === state.user.profile.userId ? -1 : b.userId === state.user.profile.userId ? 1 : 0
+        )
         .forEach(interview => {
             if (interview.linkId) {
                 let existingGroup = groupedInterviews.find(group => group.linkId === interview.linkId);
