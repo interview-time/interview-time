@@ -1,9 +1,9 @@
-import React, { MouseEvent, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ConfigProvider, Input, Select, Space, Table } from "antd";
 import Text from "antd/lib/typography/Text";
 import { getDecisionText } from "../../utils/assessment";
-import { routeCandidateDetails, routeInterviewReport } from "../../utils/route";
+import { routeInterviewReport } from "../../utils/route";
 import Title from "antd/lib/typography/Title";
 import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import Card from "../../components/card/card";
@@ -18,15 +18,18 @@ import InitialsAvatar from "../../components/avatar/initials-avatar";
 import { CandidateColumn, DateColumn, InterviewColumn } from "../../components/table/table-interviews";
 import { InterviewData } from "../../store/interviews/selector";
 import { ColumnsType } from "antd/lib/table/interface";
+import { TeamRole, UserProfile } from "../../store/models";
 
 const { Search } = Input;
 
 type Props = {
+    profile: UserProfile,
+    userRole: TeamRole;
     interviews: InterviewData[];
     loading: boolean;
 };
 
-const ReportsTable = ({ interviews, loading }: Props) => {
+const ReportsTable = ({ profile, userRole, interviews, loading }: Props) => {
     const history = useHistory();
     const [interviewsData, setInterviews] = useState<InterviewData[]>([]);
     const [position, setPosition] = useState<string | undefined>();
@@ -45,10 +48,7 @@ const ReportsTable = ({ interviews, loading }: Props) => {
         // eslint-disable-next-line
     }, [position]);
 
-    const onCandidateClicked = (e: MouseEvent, candidateId: string) => {
-        e.stopPropagation(); // prevent opening report
-        history.push(routeCandidateDetails(candidateId));
-    };
+    const isInterviewer = () => userRole === TeamRole.INTERVIEWER;
 
     const onRowClicked = (interview: InterviewData) => {
         history.push(routeInterviewReport(interview.interviewId));
@@ -68,8 +68,8 @@ const ReportsTable = ({ interviews, loading }: Props) => {
     };
 
     const columns: ColumnsType<InterviewData> = [
-        CandidateColumn(onCandidateClicked),
-        InterviewColumn(),
+        CandidateColumn(!isInterviewer()),
+        InterviewColumn(profile.userId, !isInterviewer()),
         DateColumn(),
         {
             title: <TableHeader>INTERVIEWER</TableHeader>,
@@ -148,9 +148,13 @@ const ReportsTable = ({ interviews, loading }: Props) => {
                         columns={columns}
                         dataSource={interviewsData}
                         loading={loading}
-                        rowClassName={styles.row}
+                        rowClassName={isInterviewer() ? styles.row : undefined}
                         onRow={record => ({
-                            onClick: () => onRowClicked(record),
+                            onClick: () => {
+                                if (isInterviewer()) {
+                                    onRowClicked(record);
+                                }
+                            },
                         })}
                     />
                 </ConfigProvider>

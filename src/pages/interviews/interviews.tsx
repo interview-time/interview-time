@@ -12,24 +12,32 @@ import CardHero from "../../components/card/card-hero";
 import InterviewsTable from "./interviews-table";
 import ReportsTable from "./reports-table";
 import styles from "../interviews/interviews.module.css";
-import { selectCompletedInterviewData, selectUncompletedInterviewData } from "../../store/interviews/selector";
+import {
+    InterviewData,
+    selectCompletedInterviewData,
+    selectUncompletedInterviewData,
+} from "../../store/interviews/selector";
+import { TeamRole, UserProfile } from "../../store/models";
+import { RootState } from "../../store/state-models";
+import { selectUserRole } from "../../store/team/selector";
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
-/**
- *
- * @param {UserProfile} profile
- * @param uncompletedInterviews
- * @param completedInterviews
- * @param {boolean} interviewsLoading
- * @param loadInterviews
- * @param loadTeamMembers
- * @param deleteInterview
- * @returns {JSX.Element}
- * @constructor
- */
+type Props = {
+    profile: UserProfile;
+    userRole: TeamRole;
+    uncompletedInterviews: InterviewData[];
+    completedInterviews: InterviewData[];
+    interviewsLoading: boolean;
+    loadInterviews: any;
+    loadCandidates: any;
+    loadTeamMembers: any;
+    deleteInterview: any;
+};
+
 const Interviews = ({
     profile,
+    userRole,
     uncompletedInterviews,
     completedInterviews,
     interviewsLoading,
@@ -37,7 +45,7 @@ const Interviews = ({
     loadCandidates,
     loadTeamMembers,
     deleteInterview,
-}) => {
+}: Props) => {
     React.useEffect(() => {
         loadInterviews();
         loadCandidates();
@@ -47,17 +55,18 @@ const Interviews = ({
 
     const getNewInterviews = () =>
         uncompletedInterviews.filter(
-            interview => interview.status === Status.NEW && interview.interviewStartDateTime > new Date()
+            interview => interview.status === Status.NEW && interview.startDateTime > new Date()
         ).length;
 
     const getInProgressInterviews = () =>
         uncompletedInterviews.filter(
             interview =>
                 (interview.status === Status.NEW || interview.status === Status.COMPLETED) &&
-                interview.interviewStartDateTime < new Date()
+                interview.startDateTime < new Date()
         ).length;
 
     return (
+        // @ts-ignore
         <Layout contentStyle={styles.rootContainer}>
             <div>
                 <Title level={4} style={{ marginBottom: 20 }}>
@@ -89,28 +98,32 @@ const Interviews = ({
                 </Row>
 
                 <InterviewsTable
-                    interviews={uncompletedInterviews}
                     profile={profile}
+                    userRole={userRole}
+                    interviews={uncompletedInterviews}
                     loading={interviewsLoading}
                     deleteInterview={deleteInterview}
                 />
 
-                <ReportsTable interviews={completedInterviews} loading={interviewsLoading} />
+                <ReportsTable
+                    profile={profile}
+                    userRole={userRole}
+                    interviews={completedInterviews}
+                    loading={interviewsLoading}
+                />
             </div>
         </Layout>
     );
 };
 
 const mapDispatch = { loadInterviews, deleteInterview, loadTeamMembers, loadCandidates };
-const mapState = state => {
-    const interviewsState = state.interviews || {};
-    const userState = state.user || {};
-
+const mapState = (state: RootState) => {
     return {
         uncompletedInterviews: selectUncompletedInterviewData(state),
         completedInterviews: selectCompletedInterviewData(state),
-        interviewsLoading: interviewsState.loading,
-        profile: userState.profile,
+        interviewsLoading: state.interviews.loading,
+        profile: state.user.profile,
+        userRole: state.team.details ? selectUserRole(state.team.details) : TeamRole.INTERVIEWER,
     };
 };
 

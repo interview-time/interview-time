@@ -13,7 +13,14 @@ import React from "react";
  * @returns {JSX.Element}
  * @constructor
  */
-const CardHero = ({ icon, title, text, onClick }) => (
+type Props = {
+    icon: JSX.Element;
+    title: string | number;
+    text: string | number;
+    onClick?: () => void;
+};
+
+const CardHero = ({ icon, title, text, onClick }: Props) => (
     <Card onClick={onClick} className={styles.card}>
         <div className={styles.iconHolder}>{icon}</div>
         <div className={styles.textHolder}>

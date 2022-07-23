@@ -13,9 +13,9 @@ export interface InterviewData extends Interview {
 }
 
 export const selectInterviewData = (state: RootState): InterviewData[] => {
-    const interviews = state.interviews?.interviews ?? [];
-    const candidates = state.candidates?.candidates ?? [];
-    const teamMembers = state.user?.teamMembers ?? [];
+    const interviews = state.interviews.interviews ?? [];
+    const candidates = state.candidates.candidates ?? [];
+    const teamMembers = state.user.teamMembers ?? [];
 
     return interviews.map((interview: Interview) => {
         const interviewers = interview.interviewers ?? [interview.userId]; // backward compat
