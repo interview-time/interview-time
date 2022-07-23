@@ -54,11 +54,7 @@ export const getDecisionColor = decision => {
     return COLOR_MAIN;
 };
 
-/**
- *
- * @param {InterviewGroup[]} groups
- * @returns {string}
- */
+
 export const getOverallPerformanceColor = groups => {
     let performance = getOverallPerformancePercent(groups);
     if (performance >= Score.HIGHLY_SKILLED) {
@@ -70,11 +66,6 @@ export const getOverallPerformanceColor = groups => {
     }
 };
 
-/**
- *
- * @param {InterviewGroup[]} groups
- * @returns {number} - [0, 100]
- */
 export const getOverallPerformancePercent = groups => {
     let totalScore = 0;
     let totalGroupsWithAssessment = 0;
@@ -129,11 +120,6 @@ export const getGroupAssessmentEmoji = score => {
  * @property {string} color
  */
 
-/**
- *
- * @param {Question[]} questions
- * @returns {GroupAssessment}
- */
 export const getGroupAssessment = questions => {
     let score = getQuestionsAssessment(defaultTo(questions, []));
     return {

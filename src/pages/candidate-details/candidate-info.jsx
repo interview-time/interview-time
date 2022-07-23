@@ -15,6 +15,7 @@ import { CandidateInfoSection } from "../interview-scorecard/interview-sections"
 /**
  *
  * @param {UserProfile} profile
+ * @param {string} userRole
  * @param {Candidate} candidate
  * @param {Interview[]} interviews
  * @param onUpdateStatus
@@ -23,7 +24,7 @@ import { CandidateInfoSection } from "../interview-scorecard/interview-sections"
  * @returns {JSX.Element}
  * @constructor
  */
-const CandidateInfo = ({ profile, candidate, interviews, onUpdateStatus, onDeleteInterview, onUndoArchive }) => {
+const CandidateInfo = ({ profile, userRole, candidate, interviews, onUpdateStatus, onDeleteInterview, onUndoArchive }) => {
     const candidateInfo = () => candidate.linkedIn || candidate.gitHub || candidate.resumeUrl;
 
     const statusTag = ({ value }) => <CandidateStatusTag status={value} />;
@@ -96,6 +97,7 @@ const CandidateInfo = ({ profile, candidate, interviews, onUpdateStatus, onDelet
             <InterviewsTable
                 interviews={interviews}
                 profile={profile}
+                userRole={userRole}
                 deleteInterview={onDeleteInterview}
                 showFilter={false}
             />

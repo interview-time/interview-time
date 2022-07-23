@@ -16,11 +16,14 @@ import { loadTeamMembers } from "../../store/user/actions";
 import { MoreIcon } from "../../utils/icons";
 import { routeCandidates } from "../../utils/route";
 import CreateCandidate from "./create-candidate";
-import { selectCandidateInterviews } from "../../store/interviews/selector";
+import { selectCandidateInterviewData } from "../../store/interviews/selector";
+import { selectUserRole } from "../../store/team/selector";
+import { TeamRole } from "../../store/models";
 
 /**
  *
  * @param {UserProfile} profile
+ * @param {string} userRole
  * @param {Candidate[]} candidates
  * @param {Interview[]} interviews
  * @param  loadCandidates
@@ -33,6 +36,7 @@ import { selectCandidateInterviews } from "../../store/interviews/selector";
  */
 const CandidateDetails = ({
     profile,
+    userRole,
     candidates,
     interviews,
     loadCandidates,
@@ -157,6 +161,7 @@ const CandidateDetails = ({
                         <CandidateInfo
                             interviews={candidateInterviews}
                             profile={profile}
+                            userRole={userRole}
                             candidate={candidate}
                             onUpdateStatus={updateStatus}
                             onDeleteInterview={deleteInterview}
@@ -196,8 +201,9 @@ const mapState = (state, ownProps) => {
 
     return {
         profile: userState.profile,
+        userRole: state.team.details ? selectUserRole(state.team.details) : TeamRole.INTERVIEWER,
         candidates: candidatesState.candidates,
-        interviews: selectCandidateInterviews(state, ownProps.match.params.id),
+        interviews: selectCandidateInterviewData(state, ownProps.match.params.id),
     };
 };
 

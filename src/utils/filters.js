@@ -51,11 +51,6 @@ export const filterOptionLabel = (inputValue, option) => option.label.toLowerCas
  */
 export const filterOptionValue = (inputValue, option) => option.value.toLowerCase().includes(inputValue.toLowerCase());
 
-/**
- *
- * @param {InterviewGroup} inputValue
- * @returns {Question[]}
- */
 export const filterQuestionsWithAssessment = inputValue =>
     inputValue.questions.filter(question => question.assessment && question.assessment !== 0);
 
@@ -69,11 +64,6 @@ export const filterQuestionsWithAssessmentNotes = inputValue =>
         question => (question.assessment && question.assessment !== 0) || !isEmpty(question.notes)
     );
 
-/**
- *
- * @param {InterviewGroup[]} inputValue
- * @returns {InterviewGroup[]}
- */
 export const filterGroupsWithAssessment = inputValue =>
     inputValue.filter(group => filterQuestionsWithAssessment(group).length > 0);
 
@@ -94,11 +84,6 @@ export const interviewsPositions = interviews => uniq(interviews.map(interview =
     .filter(position => !isEmpty(position) && position !== "Hello world") // bug introduced somewhere in the past
     .sort();
 
-/**
- *
- * @param {Interview[]} interviews
- * @returns {{label: string, value: string}[]}
- */
 export const interviewsPositionOptions = interviews =>
     interviewsPositions(interviews)
         .map(position => ({
