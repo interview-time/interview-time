@@ -23,7 +23,7 @@ namespace CafApi.Services.User
             {
                 return false;
             }
-            
+
             var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
 
             return teamMember != null;
@@ -55,6 +55,45 @@ namespace CafApi.Services.User
             }
 
             return false;
+        }
+
+        public async Task<bool> CanCancelInvite(string userId, string teamId, bool isOwner)
+        {
+            var teamMember = await GetTeamMember(userId, teamId);
+
+            if (teamMember != null)
+            {
+                var userRoles = GetUserRoles(teamMember);
+
+                if (isOwner)
+                {
+                    return true;
+                }
+
+                if (userRoles != null && userRoles.Any(role => role == TeamRole.ADMIN))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private async Task<TeamMember> GetTeamMember(string userId, string teamId)
+        {
+            return await _context.LoadAsync<TeamMember>(teamId, userId);
+        }
+
+        private List<TeamRole> GetUserRoles(TeamMember teamMember)
+        {
+            if (teamMember != null && teamMember.Roles != null)
+            {
+                var userRoles = teamMember.Roles.Select(role => { Enum.TryParse(role, out TeamRole teamRole); return teamRole; }).ToList();
+
+                return userRoles;
+            }
+
+            return new List<TeamRole>();
         }
     }
 }

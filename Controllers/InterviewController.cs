@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Services;
 using CafApi.Services.User;
-using CafApi.Utils;
+using CafApi.Common;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

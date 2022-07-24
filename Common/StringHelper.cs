@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace CafApi.Utils
+namespace CafApi.Common
 {
     public static class StringHelper
     {
