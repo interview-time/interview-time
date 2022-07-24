@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
+using CafApi.Common;
 using CafApi.Models;
 using CafApi.Services.User;
-using CafApi.Utils;
 
 namespace CafApi.Services
 {
@@ -18,8 +18,8 @@ namespace CafApi.Services
         private readonly IPermissionsService _permissionsService;
         private readonly DynamoDBContext _context;
 
-        public TeamService(IAmazonDynamoDB dynamoDbClient, 
-            IUserService userService, 
+        public TeamService(IAmazonDynamoDB dynamoDbClient,
+            IUserService userService,
             IEmailService emailService,
             IPermissionsService permissionsService)
         {
@@ -182,24 +182,6 @@ namespace CafApi.Services
             return result;
         }
 
-        public async Task<Team> JoinTeam(string userId, string token, string role = null)
-        {
-            var search = _context.FromQueryAsync<Team>(new QueryOperationConfig()
-            {
-                IndexName = "Token-index",
-                Filter = new QueryFilter(nameof(Template.Token), QueryOperator.Equal, token)
-            });
-            var teams = await search.GetRemainingAsync();
-            var team = teams.FirstOrDefault();
-
-            if (teams != null)
-            {
-                await AddToTeam(userId, teams.First().TeamId, role);
-            }
-
-            return team;
-        }
-
         public async Task<List<Invite>> GetPendingInvites(string userId, string teamId)
         {
             var teamInvites = new List<Invite>();
@@ -252,6 +234,23 @@ namespace CafApi.Services
                     var team = await GetTeam(teamId);
 
                     await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);
+                }
+            }
+        }
+
+        public async Task CancelInvite(string userId, string teamId, string inviteId)
+        {
+            var pendingInvites = await GetPendingInvites(teamId);
+            var invite = pendingInvites.FirstOrDefault(i => i.InviteId == inviteId);
+            if (invite != null)
+            {
+                if (await _permissionsService.CanCancelInvite(userId, teamId, invite.InvitedBy == userId))
+                {
+                    await _context.DeleteAsync(invite);
+                }
+                else
+                {
+                    throw new AuthorizationException($"User {userId} cannot cancel invite {inviteId}");
                 }
             }
         }

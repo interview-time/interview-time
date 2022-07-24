@@ -1,6 +1,6 @@
 using System;
 using Amazon.DynamoDBv2.DataModel;
-using CafApi.Utils;
+using CafApi.Common;
 
 namespace CafApi.Models
 {

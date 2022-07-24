@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CafApi.Common;
 using CafApi.Models;
 using CafApi.Services;
+using CafApi.Services.User;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +20,7 @@ namespace CafApi.Controllers
     {
         private readonly ITeamService _teamService;
         private readonly IUserService _userService;
+        private readonly IPermissionsService _permissionsService;
         private readonly ILogger<UserController> _logger;
 
         private string UserId
@@ -28,11 +31,15 @@ namespace CafApi.Controllers
             }
         }
 
-        public TeamController(ILogger<UserController> logger, ITeamService teamService, IUserService userService)
+        public TeamController(ILogger<UserController> logger,
+            ITeamService teamService,
+            IUserService userService,
+            IPermissionsService permissionsService)
         {
             _logger = logger;
             _teamService = teamService;
             _userService = userService;
+            _permissionsService = permissionsService;
         }
 
         [HttpGet("{teamId}")]
@@ -122,6 +129,23 @@ namespace CafApi.Controllers
         public async Task Invite(InviteRequest request)
         {
             await _teamService.Invite(UserId, request.Email, request.TeamId, request.Role);
+        }
+
+        [HttpDelete("{teamId}/invite/{inviteId}")]
+        public async Task<ActionResult> Invite(string teamId, string inviteId)
+        {
+            try
+            {
+                await _teamService.CancelInvite(UserId, teamId, inviteId);
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogWarning(ex, ex.Message);
+
+                return Unauthorized();
+            }
+
+            return Ok();
         }
 
         [HttpPut("accept-invite")]

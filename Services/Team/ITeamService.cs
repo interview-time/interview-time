@@ -18,13 +18,13 @@ namespace CafApi.Services
 
         Task<List<(Team, TeamMember)>> GetUserTeams(string userId);
 
-        Task<List<(Profile, TeamMember)>> GetTeamMembers(string userId, string teamId);
-
-        Task<Team> JoinTeam(string userId, string token, string role = null);
+        Task<List<(Profile, TeamMember)>> GetTeamMembers(string userId, string teamId);        
 
         Task<List<Invite>> GetPendingInvites(string userId, string teamId);
 
         Task Invite(string userId, string inviteeEmail, string teamId, string role);
+
+        Task CancelInvite(string userId, string teamId, string inviteId);
 
         Task<string> AcceptInvite(string userId, string inviteToken);
 

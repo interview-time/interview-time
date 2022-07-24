@@ -2,7 +2,7 @@ using System;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 
-namespace CafApi.Utils
+namespace CafApi.Common
 {
     public class DateTimeUtcConverter : IPropertyConverter
     {

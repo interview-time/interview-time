@@ -6,9 +6,9 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.S3;
 using Amazon.S3.Model;
+using CafApi.Common;
 using CafApi.Models;
 using CafApi.Services.User;
-using CafApi.Utils;
 using CafApi.ViewModel;
 
 namespace CafApi.Services

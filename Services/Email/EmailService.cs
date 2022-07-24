@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
-using CafApi.Utils;
+using CafApi.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SendGrid;
