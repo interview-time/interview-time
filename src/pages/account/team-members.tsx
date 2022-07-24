@@ -14,7 +14,7 @@ import { Roles } from "../../utils/constants";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import Text from "antd/lib/typography/Text";
 import { TeamMembersTable } from "./team-members-table";
-import { loadTeam } from "../../store/team/actions";
+import { loadTeam, cancelInvite } from "../../store/team/actions";
 import TeamMembersPendingInvites from "./team-members-pending-invites";
 import Spinner from "../../components/spinner/spinner";
 import { routeSubscription } from "../../utils/route";
@@ -25,15 +25,26 @@ import { Team, TeamDetails } from "../../store/models";
 import { RootState } from "../../store/state-models";
 
 type Props = {
+    userId: string;
     team?: Team;
     teamDetails?: TeamDetails;
     loading: boolean;
     loadTeam: any;
     removeMember: any;
     changeRole: any;
+    cancelInvite: any;
 };
 
-const TeamMembers = ({ team, teamDetails, loading, loadTeam, removeMember, changeRole }: Props) => {
+const TeamMembers = ({
+    userId,
+    team,
+    teamDetails,
+    loading,
+    loadTeam,
+    removeMember,
+    changeRole,
+    cancelInvite,
+}: Props) => {
     const isAdmin = team ? isTeamAdmin(team) : false;
     const history = useHistory();
 
@@ -149,8 +160,14 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam, removeMember, chang
                         onChangeRoleClicked={onChangeRoleClicked}
                     />
 
-                    {teamDetails && teamDetails.pendingInvites && teamDetails.pendingInvites.length > 0 && (
-                        <TeamMembersPendingInvites pendingInvites={teamDetails.pendingInvites} loading={loading} />
+                    {teamDetails && team && teamDetails.pendingInvites && teamDetails.pendingInvites.length > 0 && (
+                        <TeamMembersPendingInvites
+                            userId={userId}
+                            team={team}
+                            pendingInvites={teamDetails.pendingInvites}
+                            loading={loading}
+                            onCancelInviteClicked={cancelInvite}
+                        />
                     )}
                 </>
             ) : (
@@ -160,14 +177,15 @@ const TeamMembers = ({ team, teamDetails, loading, loadTeam, removeMember, chang
     );
 };
 
-const mapDispatch = { loadTeam, removeMember, changeRole };
+const mapDispatch = { loadTeam, removeMember, changeRole, cancelInvite };
 
 const mapState = (state: RootState) => {
-    const profile = state.user?.profile;
+    const profile = state.user.profile;
     const team = state.team;
 
     return {
-        team: profile ? selectActiveTeam(profile) : undefined,
+        userId: profile.userId,
+        team: selectActiveTeam(profile),
         teamDetails: team.details,
         loading: team.loading,
     };

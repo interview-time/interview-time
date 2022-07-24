@@ -5,6 +5,7 @@ import {
     SET_LOADING,
     SET_ERROR,
     RESET_TEAM,
+    REMOVE_INVITE,
 } from "./actions";
 import { log } from "../../utils/log";
 
@@ -47,6 +48,13 @@ const teamsReducer = (state = initialState, action) => {
 
         case RESET_TEAM: {
             return { ...state, details: null, loading: false, error: false };
+        }
+
+        case REMOVE_INVITE: {
+            const { inviteId } = action.payload;
+            const newInvites = state.details.pendingInvites.filter(i => i.inviteId !== inviteId);
+
+            return { ...state, details: { ...state.details, pendingInvites: newInvites } };
         }
 
         default:
