@@ -84,7 +84,7 @@ export const TeamMembersTable = ({ teamMembers, loading, isAdmin, onRemoveClicke
                 render: (teamMember: TeamMember) =>
                     !teamMember.roles.includes(Roles.ADMIN) && (
                         // @ts-ignore
-                        <Dropdown overlay={createMenu(teamMember)} placement='bottomLeft'>
+                        <Dropdown overlay={createMenu(teamMember)} placement='bottomLeft' trigger='click'>
                             <Button
                                 icon={<MoreIcon />}
                                 style={{ width: 36, height: 36 }}
