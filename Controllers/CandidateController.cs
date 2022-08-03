@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services;
 using CafApi.ViewModel;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,7 @@ namespace CafApi.Controllers
     {
         private readonly ILogger<CandidateController> _logger;
         private readonly ICandidateService _candidateService;
-        private readonly IInterviewService _interviewService;
+        private readonly IInterviewRepository _interviewRepository;
 
         private string UserId
         {
@@ -28,11 +29,13 @@ namespace CafApi.Controllers
             }
         }
 
-        public CandidateController(ILogger<CandidateController> logger, ICandidateService candidateService, IInterviewService interviewService)
+        public CandidateController(ILogger<CandidateController> logger, 
+            ICandidateService candidateService, 
+            IInterviewRepository interviewRepository)
         {
             _logger = logger;
             _candidateService = candidateService;
-            _interviewService = interviewService;
+            _interviewRepository = interviewRepository;
         }
 
         [HttpGet("{teamId}")]
@@ -43,7 +46,7 @@ namespace CafApi.Controllers
             var candidateInterviews = new Dictionary<string, int>();
             foreach (var candidate in candidates)
             {
-                var interviews = await _interviewService.GetInterviewsByCandidate(candidate.CandidateId);
+                var interviews = await _interviewRepository.GetInterviewsByCandidate(candidate.CandidateId);
                 candidateInterviews.Add(candidate.CandidateId, interviews.Count());
             }
 

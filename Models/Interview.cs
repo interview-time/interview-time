@@ -64,6 +64,8 @@ namespace CafApi.Models
 
         public List<string> ChallengeIds { get; set; }
 
+        public ChallengeDetails ChallengeDetails { get; set; }
+
         [DynamoDBIgnore]
         public List<Challenge> Challenges { get; set; }
 
@@ -73,6 +75,19 @@ namespace CafApi.Models
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime ModifiedDate { get; set; }
     }
+
+    public class ChallengeDetails
+    {
+        public string ChallengeId { get; set; }
+
+        public ChallengeStatus Status { get; set; }
+
+        public List<string> SolutionGitHubUrls { get; set; }
+
+        public DateTime? SentOn { get; set; }
+
+        public DateTime? ReceivedOn { get; set; }
+    }  
 
     public class InterviewStructure
     {

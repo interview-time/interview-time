@@ -79,6 +79,29 @@ namespace CafApi.Services.User
             return false;
         }
 
+        public async Task<bool> CanSendChallenge(string userId, string teamId, bool isInterviewer)
+        {
+            var teamMember = await GetTeamMember(userId, teamId);
+
+            // belongs to the team
+            if (teamMember != null)
+            {
+                var userRoles = GetUserRoles(teamMember);
+
+                if (isInterviewer)
+                {
+                    return true;
+                }
+
+                if (userRoles != null && userRoles.Any(role => role == TeamRole.ADMIN))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private async Task<TeamMember> GetTeamMember(string userId, string teamId)
         {
             return await _context.LoadAsync<TeamMember>(teamId, userId);

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using CafApi.Repository;
 
 namespace CafApi.Controllers
 {
@@ -21,7 +22,7 @@ namespace CafApi.Controllers
     public class InterviewController : ControllerBase
     {
         private readonly IInterviewService _interviewService;
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly ILogger<InterviewController> _logger;
         private readonly IEmailService _emailService;
@@ -37,14 +38,14 @@ namespace CafApi.Controllers
 
         public InterviewController(ILogger<InterviewController> logger,
             IInterviewService interviewService,
-            IUserService userService,
+            IUserRepository userRepository,
             IConfiguration configuration,
             IEmailService emailService,
             IPermissionsService permissionsService)
         {
             _logger = logger;
             _interviewService = interviewService;
-            _userService = userService;
+            _userRepository = userRepository;
             _emailService = emailService;
             _permissionsService = permissionsService;
 
@@ -94,7 +95,7 @@ namespace CafApi.Controllers
                 }
 
                 // Send email notification
-                var profiles = await _userService.GetUserProfiles(interview.Interviewers);
+                var profiles = await _userRepository.GetUserProfiles(interview.Interviewers);
                 foreach (var profile in profiles)
                 {
                     var interviewId = interviews.GetValueOrDefault(profile.UserId)?.InterviewId;

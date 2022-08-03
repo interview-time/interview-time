@@ -7,6 +7,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using CafApi.ViewModel;
 
@@ -15,17 +16,17 @@ namespace CafApi.Services
     public class TemplateService : ITemplateService
     {
         private readonly DynamoDBContext _context;
-        private readonly IInterviewService _interviewService;
+        private readonly IInterviewRepository _interviewRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly IChallengeService _challengeService;
 
         public TemplateService(IAmazonDynamoDB dynamoDbClient,
-            IInterviewService interviewService,
+            IInterviewRepository interviewRepository,
             IPermissionsService permissionsService,
             IChallengeService challengeService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
-            _interviewService = interviewService;
+            _interviewRepository = interviewRepository;
             _permissionsService = permissionsService;
             _challengeService = challengeService;
         }
@@ -39,7 +40,7 @@ namespace CafApi.Services
 
             foreach (var template in templates)
             {
-                var interviews = await _interviewService.GetInterviewsByTemplate(template.TemplateId);
+                var interviews = await _interviewRepository.GetInterviewsByTemplate(template.TemplateId);
                 template.TotalInterviews = interviews.Count();
 
                 if (string.IsNullOrWhiteSpace(template.Token))

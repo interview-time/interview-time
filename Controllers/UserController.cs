@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services;
 using CafApi.ViewModel;
 using MailChimp.Net;
@@ -22,6 +23,7 @@ namespace CafApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IInterviewService _interviewService;
+        private readonly IInterviewRepository _interviewRepository;
         private readonly ITemplateService _templateService;
         private readonly IUserService _userService;
         private readonly ITeamService _teamService;
@@ -42,7 +44,8 @@ namespace CafApi.Controllers
             ITemplateService templateService,
             IUserService userService,
             ITeamService teamService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IInterviewRepository interviewRepository)
         {
             _logger = logger;
             _interviewService = interviewService;
@@ -52,6 +55,7 @@ namespace CafApi.Controllers
             _mailChimpManager = new MailChimpManager(configuration["MailChimpApiKey"]);
 
             _demoUserId = configuration["DemoUserId"];
+            _interviewRepository = interviewRepository;
         }
 
         [HttpGet]
@@ -112,7 +116,7 @@ namespace CafApi.Controllers
                         toTemplate = await _templateService.CloneTemplate(_demoUserId, interview.TemplateId, UserId, team.TeamId);
                     }
 
-                    var toInterview = await _interviewService.GetInterview(UserId, interview.InterviewId);
+                    var toInterview = await _interviewRepository.GetInterview(UserId, interview.InterviewId);
                     if (toInterview == null)
                     {
                         await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId, team.TeamId, toTemplate.TemplateId);

@@ -6,10 +6,11 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.S3;
 using Amazon.S3.Model;
-using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using CafApi.ViewModel;
+using Microsoft.Extensions.Configuration;
 
 namespace CafApi.Services
 {
@@ -18,17 +19,29 @@ namespace CafApi.Services
         private readonly IAmazonS3 _s3Client;
         private readonly DynamoDBContext _context;
         private readonly IPermissionsService _permissionsService;
+        private readonly IInterviewRepository _interviewRepository;
+        private readonly IEmailService _emailService;
+        private readonly ICandidateRepository _candidateRepository;
+        private readonly IConfiguration _configuration;
+        private readonly IChallengeRepository _challengeRepository;
 
-        public ChallengeService(IAmazonS3 s3Client, IAmazonDynamoDB dynamoDbClient, IPermissionsService permissionsService)
+        public ChallengeService(IAmazonS3 s3Client,
+            IAmazonDynamoDB dynamoDbClient,
+            IPermissionsService permissionsService,
+            IInterviewRepository interviewRepository,
+            IEmailService emailService,
+            ICandidateRepository candidateRepository,
+            IConfiguration configuration,
+            IChallengeRepository challengeRepository)
         {
             _s3Client = s3Client;
-             _context = new DynamoDBContext(dynamoDbClient);
+            _context = new DynamoDBContext(dynamoDbClient);
             _permissionsService = permissionsService;
-        }
-
-        public async Task<Challenge> GetChallenge(string teamId, string challengeId)
-        {
-            return await _context.LoadAsync<Challenge>(teamId, challengeId);
+            _interviewRepository = interviewRepository;
+            _emailService = emailService;
+            _candidateRepository = candidateRepository;
+            _configuration = configuration;
+            _challengeRepository = challengeRepository;
         }
 
         public async Task<List<Challenge>> GetChallenges(string teamId, List<string> challengeIds)
@@ -55,6 +68,7 @@ namespace CafApi.Services
                 TeamId = teamId,
                 ChallengeId = request.ChallengeId,
                 Name = request.Name,
+                Description = request.Description,
                 Order = request.Order,
                 FileName = request.FileName,
                 GitHubUrl = request.GitHubUrl,
@@ -69,10 +83,11 @@ namespace CafApi.Services
 
         public async Task<bool> UpdateChallenge(string userId, string teamId, string challengeId, UpdateChallengeRequest request)
         {
-            var challenge = await GetChallenge(teamId, challengeId);
+            var challenge = await _challengeRepository.GetChallenge(teamId, challengeId);
             if (challenge != null)
             {
                 challenge.Name = request.Name;
+                challenge.Description = request.Description;
                 challenge.FileName = request.FileName;
                 challenge.GitHubUrl = request.GitHubUrl;
                 challenge.Order = request.Order;
@@ -121,42 +136,18 @@ namespace CafApi.Services
             return (url, expiryDate);
         }
 
-        public async Task<string> GenerateOneTimeToken(string userId, string teamId, string challengeId, string interviewId)
-        {
-            var challenge = await GetChallenge(teamId, challengeId);
-            if (challenge != null)
-            {
-                var oneTimeLink = new OneTimeLink
-                {
-                    Token = StringHelper.GenerateToken(),
-                    TeamId = teamId,
-                    ChallengeId = challengeId,
-                    InterviewId = interviewId,
-                    IsUsed = false,
-                    CreatedBy = userId,
-                    CreatedDate = DateTime.UtcNow
-                };
-
-                await _context.SaveAsync(oneTimeLink);
-
-                return oneTimeLink.Token;
-            }
-
-            return null;
-        }
-
-        public async Task<string> UseOneTimeToken(string token)
+        public async Task<string> GetChallengeDirectUrl(string token)
         {
             var oneTimeToken = await _context.LoadAsync<OneTimeLink>(token);
             if (oneTimeToken != null)
             {
-                oneTimeToken.IsUsed = true;
+                oneTimeToken.IsEpired = oneTimeToken.IsOneTime; // invalidate token if it's one-time use
                 oneTimeToken.UsedDate = DateTime.UtcNow;
 
                 await _context.SaveAsync(oneTimeToken);
 
-                var challenge = await GetChallenge(oneTimeToken.TeamId, oneTimeToken.ChallengeId);
-                if (challenge != null)
+                var challenge = await _challengeRepository.GetChallenge(oneTimeToken.TeamId, oneTimeToken.ChallengeId);
+                if (challenge != null && challenge.FileName != null)
                 {
                     var request = new GetPreSignedUrlRequest
                     {
