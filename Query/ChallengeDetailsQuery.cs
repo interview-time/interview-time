@@ -61,7 +61,7 @@ namespace CafApi.Query
             return new ChallengeDetailsQueryResult
             {
                 Description = challenge.Description,
-                ChallengeDownloadUrl = UrlHelper.GetDownloadChallengekPath(query.Token),
+                ChallengeDownloadUrl = !string.IsNullOrWhiteSpace(challenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
                 CandidateName = candidate?.CandidateName ?? interview.Candidate,
                 Position = interview.Position,
                 CreatedDate = oneTimeToken.CreatedDate
