@@ -18,7 +18,7 @@ namespace CafApi.Models
 
         public bool IsOneTime { get; set; }
 
-        public bool IsEpired { get; set; }
+        public bool IsExpired { get; set; }
 
         public string CreatedBy { get; set; }
 

@@ -37,7 +37,7 @@ namespace CafApi.Repository
                     TeamId = teamId,
                     ChallengeId = challengeId,
                     InterviewId = interviewId,
-                    IsEpired = false,
+                    IsExpired = false,
                     IsOneTime = isOneTime,
                     CreatedBy = userId,
                     CreatedDate = DateTime.UtcNow

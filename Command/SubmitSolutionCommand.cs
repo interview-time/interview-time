@@ -47,7 +47,7 @@ namespace CafApi.Command
         public async Task<Unit> Handle(SubmitSolutionCommand command, CancellationToken cancellationToken)
         {
             var oneTimeToken = await _challengeRepository.GetOneTimeLink(command.Token);
-            if (oneTimeToken == null || oneTimeToken.IsEpired)
+            if (oneTimeToken == null || oneTimeToken.IsExpired)
             {
                 throw new ItemNotFoundException($"There is no one-time link for token ({command.Token})");
             }
@@ -66,7 +66,7 @@ namespace CafApi.Command
             await _context.SaveAsync(interview);
 
             // invalidate token
-            oneTimeToken.IsEpired = true;
+            oneTimeToken.IsExpired = true;
             oneTimeToken.UsedDate = DateTime.UtcNow;
             await _context.SaveAsync(oneTimeToken);
 

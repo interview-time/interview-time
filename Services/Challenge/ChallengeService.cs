@@ -68,8 +68,7 @@ namespace CafApi.Services
                 TeamId = teamId,
                 ChallengeId = request.ChallengeId,
                 Name = request.Name,
-                Description = request.Description,
-                Order = request.Order,
+                Description = request.Description,                
                 FileName = request.FileName,
                 GitHubUrl = request.GitHubUrl,
                 CreatedBy = userId,
@@ -89,8 +88,7 @@ namespace CafApi.Services
                 challenge.Name = request.Name;
                 challenge.Description = request.Description;
                 challenge.FileName = request.FileName;
-                challenge.GitHubUrl = request.GitHubUrl;
-                challenge.Order = request.Order;
+                challenge.GitHubUrl = request.GitHubUrl;                
                 challenge.ModifiedDate = DateTime.UtcNow;
                 challenge.ModifiedBy = userId;
 
@@ -141,7 +139,7 @@ namespace CafApi.Services
             var oneTimeToken = await _context.LoadAsync<OneTimeLink>(token);
             if (oneTimeToken != null)
             {
-                oneTimeToken.IsEpired = oneTimeToken.IsOneTime; // invalidate token if it's one-time use
+                oneTimeToken.IsExpired = oneTimeToken.IsOneTime; // invalidate token if it's one-time use
                 oneTimeToken.UsedDate = DateTime.UtcNow;
 
                 await _context.SaveAsync(oneTimeToken);

@@ -44,7 +44,7 @@ namespace CafApi.Query
         public async Task<ChallengeDetailsQueryResult> Handle(ChallengeDetailsQuery query, CancellationToken cancellationToken)
         {
             var oneTimeToken = await _challengeRepository.GetOneTimeLink(query.Token);
-            if (oneTimeToken == null || oneTimeToken.IsEpired)
+            if (oneTimeToken == null || oneTimeToken.IsExpired)
             {
                 throw new ItemNotFoundException($"Token ({query.Token}) not found or epired.");
             }
