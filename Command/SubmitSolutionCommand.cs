@@ -59,16 +59,11 @@ namespace CafApi.Command
             }
 
             interview.ChallengeDetails.SolutionGitHubUrls = command.GitHubUrls;
-            interview.ChallengeDetails.Status = ChallengeStatus.Received;
-            interview.ChallengeDetails.ReceivedOn = DateTime.UtcNow;
+            interview.ChallengeDetails.Status = ChallengeStatus.SolutionSubmitted;
+            interview.ChallengeDetails.SolutionSubmittedOn = DateTime.UtcNow;
             interview.ModifiedDate = DateTime.UtcNow;
 
-            await _context.SaveAsync(interview);
-
-            // invalidate token
-            oneTimeToken.IsExpired = true;
-            oneTimeToken.UsedDate = DateTime.UtcNow;
-            await _context.SaveAsync(oneTimeToken);
+            await _context.SaveAsync(interview);    
 
             // send challenge completed notification to all interviewers
             var interviewers = await _userRepository.GetUserProfiles(interview.Interviewers);

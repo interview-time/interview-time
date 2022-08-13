@@ -15,6 +15,8 @@ namespace CafApi.Query
 
     public class ChallengeDetailsQueryResult
     {
+        public string Status { get; set; }
+
         public string Description { get; set; }
 
         public string ChallengeDownloadUrl { get; set; }
@@ -24,6 +26,8 @@ namespace CafApi.Query
         public string Position { get; set; }
 
         public DateTime CreatedDate { get; set; }
+
+        public DateTime? SolutionSubmittedOn { get; set; }
     }
 
     public class ChallengeDetailsQueryHandler : IRequestHandler<ChallengeDetailsQuery, ChallengeDetailsQueryResult>
@@ -46,7 +50,7 @@ namespace CafApi.Query
             var oneTimeToken = await _challengeRepository.GetOneTimeLink(query.Token);
             if (oneTimeToken == null || oneTimeToken.IsExpired)
             {
-                throw new ItemNotFoundException($"Token ({query.Token}) not found or epired.");
+                throw new ItemNotFoundException($"Token ({query.Token}) not found or expired.");
             }
 
             var challenge = await _challengeRepository.GetChallenge(oneTimeToken.TeamId, oneTimeToken.ChallengeId);
@@ -60,6 +64,8 @@ namespace CafApi.Query
 
             return new ChallengeDetailsQueryResult
             {
+                Status = interview.ChallengeDetails.Status.ToString(),
+                SolutionSubmittedOn = interview.ChallengeDetails.SolutionSubmittedOn,
                 Description = challenge.Description,
                 ChallengeDownloadUrl = !string.IsNullOrWhiteSpace(challenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
                 CandidateName = candidate?.CandidateName ?? interview.Candidate,

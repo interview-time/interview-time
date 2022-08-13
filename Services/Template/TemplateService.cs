@@ -97,47 +97,7 @@ namespace CafApi.Services
             var templates = await search.GetRemainingAsync();
 
             return templates.FirstOrDefault();
-        }
-
-        public async Task<Template> CreateTemplate(string userId, TemplateRequest newTemplate, bool isDemo = false)
-        {
-            var template = new Template
-            {
-                UserId = userId,
-                TemplateId = Guid.NewGuid().ToString(),
-                Title = newTemplate.Title,
-                Type = newTemplate.Type,
-                InterviewType = newTemplate.InterviewType ?? InterviewType.INTERVIEW.ToString(),
-                Description = newTemplate.Description,
-                Structure = newTemplate.Structure,
-                IsDemo = isDemo,
-                TeamId = newTemplate.TeamId,
-                CreatedDate = DateTime.UtcNow,
-                ModifiedDate = DateTime.UtcNow,
-                Token = StringHelper.GenerateToken()
-            };
-
-            // assign ids to groups if missing
-            if (template.Structure != null && template.Structure.Groups != null)
-            {
-                foreach (var group in template.Structure.Groups)
-                {
-                    group.GroupId = Guid.NewGuid().ToString();
-
-                    if (group.Questions != null)
-                    {
-                        foreach (var question in group.Questions)
-                        {
-                            question.QuestionId = Guid.NewGuid().ToString();
-                        }
-                    }
-                }
-            }
-
-            await _context.SaveAsync(template);
-
-            return template;
-        }
+        }        
 
         public async Task UpdateTemplate(string userId, TemplateRequest updatedTemplate)
         {

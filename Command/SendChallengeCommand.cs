@@ -79,8 +79,8 @@ namespace CafApi.Command
             interview.ChallengeDetails = new ChallengeDetails
             {
                 ChallengeId = command.ChallengeId,
-                Status = ChallengeStatus.Sent,
-                SentOn = DateTime.UtcNow
+                Status = ChallengeStatus.SentToCandidate,
+                SentToCandidateOn = DateTime.UtcNow
             };
             interview.ModifiedDate = DateTime.UtcNow;
             

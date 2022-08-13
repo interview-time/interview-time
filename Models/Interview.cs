@@ -84,9 +84,9 @@ namespace CafApi.Models
 
         public List<string> SolutionGitHubUrls { get; set; }
 
-        public DateTime? SentOn { get; set; }
+        public DateTime? SentToCandidateOn { get; set; }
 
-        public DateTime? ReceivedOn { get; set; }
+        public DateTime? SolutionSubmittedOn { get; set; }
     }  
 
     public class InterviewStructure

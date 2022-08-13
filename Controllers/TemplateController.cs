@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CafApi.Command;
+using CafApi.Common;
 using CafApi.Models;
 using CafApi.Services;
 using CafApi.Services.User;
 using CafApi.ViewModel;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,9 +21,10 @@ namespace CafApi.Controllers
     [ApiController]
     public class TemplateController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly ITemplateService _templateService;
         private readonly ILibraryService _libraryService;
-        private readonly IPermissionsService _permissionsService;        
+        private readonly IPermissionsService _permissionsService;
         private readonly ILogger<TemplateController> _logger;
         private readonly string _demoUserId;
 
@@ -32,12 +36,14 @@ namespace CafApi.Controllers
             }
         }
 
-        public TemplateController(ILogger<TemplateController> logger,
+        public TemplateController(IMediator mediator,
+            ILogger<TemplateController> logger,
             ITemplateService templateService,
             ILibraryService libraryService,
-            IPermissionsService permissionsService,          
+            IPermissionsService permissionsService,
             IConfiguration configuration)
         {
+            _mediator = mediator;
             _logger = logger;
             _templateService = templateService;
             _libraryService = libraryService;
@@ -74,10 +80,40 @@ namespace CafApi.Controllers
             return await _templateService.GetTeamTemplates(UserId, teamId);
         }
 
+        [Obsolete]
         [HttpPost("template")]
-        public async Task<Template> CreateTemplate([FromBody] TemplateRequest request)
+        public async Task<ActionResult<Template>> CreateTemplateOld([FromBody] CreateTemplateCommand command)
         {
-            return await _templateService.CreateTemplate(UserId, request, UserId == _demoUserId);
+            try
+            {
+                command.UserId = UserId;
+
+                return await _mediator.Send(command);
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost("team/{teamId}/template")]
+        public async Task<ActionResult<Template>> CreateTemplate(string teamId, [FromBody] CreateTemplateCommand command)
+        {
+            try
+            {
+                command.UserId = UserId;
+                command.TeamId = teamId;
+
+                return await _mediator.Send(command);
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized();
+            }
         }
 
         [HttpDelete("template/{templateId}")]
