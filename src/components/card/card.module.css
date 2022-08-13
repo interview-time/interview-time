@@ -19,3 +19,11 @@
 .noPadding {
     padding: 0;
 }
+
+.title {
+    padding: 24px;
+}
+
+.titleOnly {
+    margin-bottom: 0;
+}

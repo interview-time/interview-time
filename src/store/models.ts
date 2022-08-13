@@ -115,3 +115,13 @@ export enum InterviewStatus {
     COMPLETED = "COMPLETED",
     SUBMITTED = "SUBMITTED",
 }
+
+export interface Challenge {
+    status: string;
+    description: string;
+    challengeDownloadUrl?: string;
+    candidateName: string;
+    position: string;
+    createdDate: Date;
+    solutionSubmittedOn?: Date;
+}

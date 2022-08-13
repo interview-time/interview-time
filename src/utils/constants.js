@@ -172,3 +172,9 @@ export const SubscriptionPlans = {
     Starter: "STARTER",
     Premium: "PREMIUM",
 };
+
+export const ChallengeStatus = {
+    NotSent: "NotSent",
+    SentToCandidate: "SentToCandidate",
+    SolutionSubmitted: "SolutionSubmitted"
+};

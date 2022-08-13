@@ -1,10 +1,11 @@
-import { Candidate, Interview, TeamDetails, TeamInvite, TeamMember, UserProfile } from "./models";
+import { Candidate, Challenge, Interview, TeamDetails, TeamInvite, TeamMember, UserProfile } from "./models";
 
 export interface RootState {
     user: UserState;
     team: TeamState;
     interviews: InterviewState;
     candidates: CandidateState;
+    challenge: ChallengeState;
 }
 
 export interface UserState {
@@ -26,4 +27,10 @@ export interface InterviewState {
 
 export interface CandidateState {
     candidates: Candidate[];
+}
+
+export interface ChallengeState {
+    details: Challenge;
+    loading: boolean;
+    error: boolean;
 }

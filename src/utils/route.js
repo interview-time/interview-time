@@ -73,6 +73,8 @@ export const routeTeamJoin = () => "/team/join/:id";
 
 export const routeSharedScorecard = () => "/public/scorecard/:token";
 
+export const routeChallenge = () => "/challenge/:token";
+
 export const routeSubscription = () => "/subscription";
 
 export const getParameterByName = (name, url = window.location.href) => {

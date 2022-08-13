@@ -1,26 +1,19 @@
 import styles from "./card.module.css";
 import { CSSProperties, MouseEventHandler } from "react";
+import { Typography } from "antd";
 
-/**
- *
- * @param {boolean} padding
- * @param {function} onClick
- * @param {CSSProperties} style
- * @param {string} className
- * @param {JSX.Element} children
- * @returns {JSX.Element}
- * @constructor
- */
+const { Title } = Typography;
 
 type Props = {
     withPadding?: boolean;
     onClick?: MouseEventHandler;
     style?: CSSProperties;
     className?: string;
-    children: JSX.Element[] | JSX.Element;
+    title?: string;
+    children?: JSX.Element[] | JSX.Element;
 };
 
-const Card = ({ withPadding = true, onClick, style, className, children }: Props) => {
+const Card = ({ withPadding = true, onClick, style, className, title, children }: Props) => {
     const paddingStyle = () => (withPadding ? styles.padding : styles.noPadding);
 
     const clickStyle = () => {
@@ -37,6 +30,12 @@ const Card = ({ withPadding = true, onClick, style, className, children }: Props
             style={style}
             onClick={onClick}
         >
+            {title && (
+                <Title level={4} className={!withPadding ? styles.title : children ? "" : styles.titleOnly}>
+                    {title}
+                </Title>
+            )}
+
             {children}
         </div>
     );
