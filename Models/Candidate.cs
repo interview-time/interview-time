@@ -15,6 +15,8 @@ namespace CafApi.Models
 
         public string CandidateName { get; set; }
 
+        public string Email { get; set; }
+
         public string Position { get; set; }
 
         public string ResumeFile { get; set; }

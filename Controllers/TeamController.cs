@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services;
 using CafApi.Services.User;
 using CafApi.ViewModel;
@@ -20,6 +21,7 @@ namespace CafApi.Controllers
     {
         private readonly ITeamService _teamService;
         private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly ILogger<UserController> _logger;
 
@@ -34,12 +36,14 @@ namespace CafApi.Controllers
         public TeamController(ILogger<UserController> logger,
             ITeamService teamService,
             IUserService userService,
-            IPermissionsService permissionsService)
+            IPermissionsService permissionsService,
+            IUserRepository userRepository)
         {
             _logger = logger;
             _teamService = teamService;
             _userService = userService;
             _permissionsService = permissionsService;
+            _userRepository = userRepository;
         }
 
         [HttpGet("{teamId}")]
@@ -53,7 +57,7 @@ namespace CafApi.Controllers
 
             List<(Profile Profile, TeamMember TeamMember)> members = await _teamService.GetTeamMembers(UserId, teamId);
             var invites = await _teamService.GetPendingInvites(UserId, teamId);
-            var invitedByList = await _userService.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
+            var invitedByList = await _userRepository.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
             var availableSeats = await _teamService.GetAvailableSeats(teamId);
 
             return new TeamResponse
@@ -167,7 +171,7 @@ namespace CafApi.Controllers
         public async Task<List<PendingInviteResponse>> GetPendingInvites(string teamId)
         {
             var invites = await _teamService.GetPendingInvites(UserId, teamId);
-            var invitedByList = await _userService.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
+            var invitedByList = await _userRepository.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
 
             return invites.Select(i => new PendingInviteResponse
             {

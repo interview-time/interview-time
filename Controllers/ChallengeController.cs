@@ -1,9 +1,14 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CafApi.Command;
+using CafApi.Common;
+using CafApi.Query;
+using CafApi.Repository;
 using CafApi.Services;
 using CafApi.Services.User;
 using CafApi.ViewModel;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +21,10 @@ namespace CafApi.Controllers
     public class ChallengeController : ControllerBase
     {
         private readonly IChallengeService _challengeService;
+        private readonly IChallengeRepository _challengeRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly ILogger<ChallengeController> _logger;
+        private readonly IMediator _mediator;
 
         private string UserId
         {
@@ -27,11 +34,17 @@ namespace CafApi.Controllers
             }
         }
 
-        public ChallengeController(IChallengeService challengeService, IPermissionsService permissionsService, ILogger<ChallengeController> logger)
+        public ChallengeController(IChallengeService challengeService,
+            IChallengeRepository challengeRepository,
+            IPermissionsService permissionsService,
+            ILogger<ChallengeController> logger,
+            IMediator mediator)
         {
             _challengeService = challengeService;
+            _challengeRepository = challengeRepository;
             _permissionsService = permissionsService;
             _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpPost("team/{teamId}/challenge")]
@@ -117,7 +130,7 @@ namespace CafApi.Controllers
                 return Unauthorized();
             }
 
-            var oneTimeToken = await _challengeService.GenerateOneTimeToken(UserId, teamId, challengeId, interviewId);
+            var oneTimeToken = await _challengeRepository.GenerateChallengeToken(UserId, teamId, challengeId, interviewId, true);
             if (oneTimeToken == null)
             {
                 return NotFound();
@@ -126,19 +139,104 @@ namespace CafApi.Controllers
             return Ok(oneTimeToken);
         }
 
+        [HttpPost("team/{teamId}/challenge/{challengeId}/send")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> SendChallenge(string teamId, string challengeId, [FromBody] SendChallengeRequest request)
+        {
+            try
+            {
+                var command = new SendChallengeCommand
+                {
+                    UserId = UserId,
+                    TeamId = teamId,
+                    ChallengeId = challengeId,
+                    InterviewId = request.InterviewId
+                };
+
+                var isSent = await _mediator.Send(command);
+                if (!isSent)
+                {
+                    return StatusCode(500);
+                }
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogWarning(ex, ex.Message);
+
+                return NotFound(ex.Message);
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogWarning(ex, ex.Message);
+
+                return Unauthorized();
+            }
+            catch (CandidateException ex)
+            {
+                _logger.LogWarning(ex, ex.Message);
+
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
+
         [AllowAnonymous]
-        [HttpGet("challenge/{token}")]
+        [HttpGet("challenge/{token}/download")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<string>> GetDownloadChallenge(string token)
+        public async Task<ActionResult<string>> DownloadChallenge(string token)
         {
-            var ulr = await _challengeService.UseOneTimeToken(token);
+            var ulr = await _challengeService.GetChallengeDirectUrl(token);
             if (ulr == null)
             {
                 return NotFound();
             }
 
             return Redirect(ulr);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("challenge/{token}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ChallengeDetailsQueryResult>> GetChallengeDetails(string token)
+        {
+            try
+            {
+                var result = await _mediator.Send(new ChallengeDetailsQuery { Token = token });
+
+                return Ok(result);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogWarning(ex, ex.Message);
+
+                return NotFound();
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("challenge/{token}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> SubmitSolution(string token, [FromBody] SubmitSolutionRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new SubmitSolutionCommand { Token = token, GitHubUrls = request.GitHubUrls });
+
+                return Ok();
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogWarning(ex, ex.Message);
+
+                return NotFound();
+            }
         }
     }
 }

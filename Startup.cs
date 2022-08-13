@@ -15,6 +15,11 @@ using SendGrid.Extensions.DependencyInjection;
 using FluentValidation.AspNetCore;
 using CafApi.ViewModel;
 using CafApi.Services.User;
+using CafApi.Repository;
+using CafApi.Common;
+using System.Threading.Tasks;
+using CafApi.Query;
+using MediatR;
 
 namespace CafApi
 {
@@ -67,6 +72,8 @@ namespace CafApi
                 .AddFluentValidation(fv =>
                     fv.RegisterValidatorsFromAssemblyContaining<ChangeMemberRoleRequestValidator>());
 
+            services.AddMediatR(typeof(Startup));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "InterviewTime API", Version = "v1" });
@@ -99,7 +106,7 @@ namespace CafApi
 
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Config));
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
-
+            
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITemplateService, TemplateService>();
             services.AddScoped<IInterviewService, InterviewService>();
@@ -109,6 +116,11 @@ namespace CafApi
             services.AddScoped<IPermissionsService, PermissionsService>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<IChallengeService, ChallengeService>();
+
+            services.AddScoped<IInterviewRepository, InterviewRepository>();
+            services.AddScoped<IChallengeRepository, ChallengeRepository>();
+            services.AddScoped<ICandidateRepository, CandidateRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

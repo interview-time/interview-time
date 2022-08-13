@@ -16,10 +16,8 @@ namespace CafApi.Services
 
         (string, DateTime) GetChallengeUploadSignedUrl(string teamId, string challengeId, string filename);
 
-        (string, DateTime) GetChallengeDownloadSignedUrl(string teamId, string challengeId, string filename);
+        (string, DateTime) GetChallengeDownloadSignedUrl(string teamId, string challengeId, string filename);       
 
-        Task<string> GenerateOneTimeToken(string userId, string teamId, string challengeId, string interviewId);
-
-        Task<string> UseOneTimeToken(string token);
+        Task<string> GetChallengeDirectUrl(string token);        
     }
 }

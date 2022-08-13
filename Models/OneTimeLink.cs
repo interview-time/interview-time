@@ -14,9 +14,11 @@ namespace CafApi.Models
 
         public string ChallengeId { get; set; }
 
-        public string InterviewId { get; set; }
+        public string InterviewId { get; set; }        
 
-        public bool IsUsed { get; set; }
+        public bool IsOneTime { get; set; }
+
+        public bool IsExpired { get; set; }
 
         public string CreatedBy { get; set; }
 

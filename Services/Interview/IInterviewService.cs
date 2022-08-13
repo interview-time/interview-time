@@ -7,15 +7,7 @@ namespace CafApi.Services
 {
     public interface IInterviewService
     {
-        Task<Interview> GetInterview(string userId, string interviewId);
-
-        Task<Interview> GetInterview(string interviewId);
-
         Task<List<Interview>> GetInterviews(string userId, string teamId = null);
-
-        Task<List<Interview>> GetInterviewsByTemplate(string templateId);
-
-        Task<List<Interview>> GetInterviewsByCandidate(string candidateId);
 
         Task<Interview> AddInterview(Interview interview);
 

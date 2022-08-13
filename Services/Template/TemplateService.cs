@@ -7,6 +7,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using CafApi.ViewModel;
 
@@ -15,17 +16,17 @@ namespace CafApi.Services
     public class TemplateService : ITemplateService
     {
         private readonly DynamoDBContext _context;
-        private readonly IInterviewService _interviewService;
+        private readonly IInterviewRepository _interviewRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly IChallengeService _challengeService;
 
         public TemplateService(IAmazonDynamoDB dynamoDbClient,
-            IInterviewService interviewService,
+            IInterviewRepository interviewRepository,
             IPermissionsService permissionsService,
             IChallengeService challengeService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
-            _interviewService = interviewService;
+            _interviewRepository = interviewRepository;
             _permissionsService = permissionsService;
             _challengeService = challengeService;
         }
@@ -39,7 +40,7 @@ namespace CafApi.Services
 
             foreach (var template in templates)
             {
-                var interviews = await _interviewService.GetInterviewsByTemplate(template.TemplateId);
+                var interviews = await _interviewRepository.GetInterviewsByTemplate(template.TemplateId);
                 template.TotalInterviews = interviews.Count();
 
                 if (string.IsNullOrWhiteSpace(template.Token))
@@ -96,47 +97,7 @@ namespace CafApi.Services
             var templates = await search.GetRemainingAsync();
 
             return templates.FirstOrDefault();
-        }
-
-        public async Task<Template> CreateTemplate(string userId, TemplateRequest newTemplate, bool isDemo = false)
-        {
-            var template = new Template
-            {
-                UserId = userId,
-                TemplateId = Guid.NewGuid().ToString(),
-                Title = newTemplate.Title,
-                Type = newTemplate.Type,
-                InterviewType = newTemplate.InterviewType ?? InterviewType.INTERVIEW.ToString(),
-                Description = newTemplate.Description,
-                Structure = newTemplate.Structure,
-                IsDemo = isDemo,
-                TeamId = newTemplate.TeamId,
-                CreatedDate = DateTime.UtcNow,
-                ModifiedDate = DateTime.UtcNow,
-                Token = StringHelper.GenerateToken()
-            };
-
-            // assign ids to groups if missing
-            if (template.Structure != null && template.Structure.Groups != null)
-            {
-                foreach (var group in template.Structure.Groups)
-                {
-                    group.GroupId = Guid.NewGuid().ToString();
-
-                    if (group.Questions != null)
-                    {
-                        foreach (var question in group.Questions)
-                        {
-                            question.QuestionId = Guid.NewGuid().ToString();
-                        }
-                    }
-                }
-            }
-
-            await _context.SaveAsync(template);
-
-            return template;
-        }
+        }        
 
         public async Task UpdateTemplate(string userId, TemplateRequest updatedTemplate)
         {

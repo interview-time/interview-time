@@ -7,6 +7,7 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using CafApi.ViewModel;
 
@@ -16,30 +17,18 @@ namespace CafApi.Services
     {
         private readonly IPermissionsService _permissionsService;
         private readonly IChallengeService _challengeService;
+        private readonly IInterviewRepository _interviewRepository;
         private readonly DynamoDBContext _context;
 
-        public InterviewService(IAmazonDynamoDB dynamoDbClient, IPermissionsService permissionsService, IChallengeService challengeService)
+        public InterviewService(IAmazonDynamoDB dynamoDbClient, 
+            IPermissionsService permissionsService, 
+            IChallengeService challengeService,
+            IInterviewRepository interviewRepository)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _permissionsService = permissionsService;
             _challengeService = challengeService;
-        }
-
-        public async Task<Interview> GetInterview(string userId, string interviewId)
-        {
-            return await _context.LoadAsync<Interview>(userId, interviewId);
-        }
-
-        public async Task<Interview> GetInterview(string interviewId)
-        {
-            var search = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
-            {
-                IndexName = "InterviewId-index",
-                Filter = new QueryFilter(nameof(Interview.InterviewId), QueryOperator.Equal, interviewId)
-            });
-            var interviews = await search.GetRemainingAsync();
-
-            return interviews.FirstOrDefault();
+            _interviewRepository = interviewRepository;
         }
 
         public async Task<List<Interview>> GetInterviews(string userId, string teamId = null)
@@ -96,28 +85,6 @@ namespace CafApi.Services
             return myInterviews;
         }
 
-        public async Task<List<Interview>> GetInterviewsByTemplate(string templateId)
-        {
-            var config = new DynamoDBOperationConfig
-            {
-                IndexName = "TemplateId-Index"
-            };
-
-            return await _context.QueryAsync<Interview>(templateId, config).GetRemainingAsync();
-        }
-
-        public async Task<List<Interview>> GetInterviewsByCandidate(string candidateId)
-        {
-            var searchByCandidate = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
-            {
-                IndexName = "CandidateId-index",
-                Filter = new QueryFilter(nameof(Interview.CandidateId), QueryOperator.Equal, candidateId)
-            });
-            var interviews = await searchByCandidate.GetRemainingAsync();
-
-            return interviews;
-        }
-
         public async Task<Interview> AddInterview(Interview interview)
         {
             interview.InterviewId = Guid.NewGuid().ToString();
@@ -157,7 +124,7 @@ namespace CafApi.Services
 
         public async Task DeleteInterview(string userId, string interviewId)
         {
-            var interview = await GetInterview(interviewId);
+            var interview = await _interviewRepository.GetInterview(interviewId);
             if (interview != null)
             {
                 var isBelongInTeam = await _permissionsService.IsBelongInTeam(userId, interview.TeamId);
@@ -175,7 +142,7 @@ namespace CafApi.Services
 
         public async Task SubmitScorecard(string userId, ScoreCardRequest scoreCard)
         {
-            var interview = await GetInterview(userId, scoreCard.InterviewId);
+            var interview = await _interviewRepository.GetInterview(userId, scoreCard.InterviewId);
 
             interview.Notes = scoreCard.Notes;
             interview.Decision = scoreCard.Decision;
@@ -206,7 +173,7 @@ namespace CafApi.Services
 
         public async Task<Interview> CloneInterviewAsDemo(string fromUserId, string fromInterviewId, string toUserId, string toTeamId, string toTemplateId)
         {
-            var fromInterview = await GetInterview(fromUserId, fromInterviewId);
+            var fromInterview = await _interviewRepository.GetInterview(fromUserId, fromInterviewId);
 
             var interviewDate = DateTime.UtcNow.AddDays(14);
 
@@ -221,7 +188,7 @@ namespace CafApi.Services
 
         public async Task<string> ShareScorecard(string userId, string interviewId)
         {
-            var interview = await GetInterview(userId, interviewId);
+            var interview = await _interviewRepository.GetInterview(userId, interviewId);
             if (interview != null && interview.Status == InterviewStatus.SUBMITTED.ToString())
             {
                 if (string.IsNullOrWhiteSpace(interview.Token))
@@ -242,7 +209,7 @@ namespace CafApi.Services
 
         public async Task UnshareScorecard(string userId, string interviewId)
         {
-            var interview = await GetInterview(userId, interviewId);
+            var interview = await _interviewRepository.GetInterview(userId, interviewId);
             if (interview != null)
             {
                 interview.IsShared = false;

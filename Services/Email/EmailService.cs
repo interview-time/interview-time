@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using CafApi.Common;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-
 
 namespace CafApi.Services
 {
@@ -26,6 +24,70 @@ namespace CafApi.Services
             _configuration = configuration;
             _logger = logger;
             _appHostUri = _configuration["AppHostUri"];
+        }
+
+        public async Task SendChallengeCompletedNotification(string interviewerEmail, string interviewerName, string interviewUrl)
+        {
+            try
+            {
+                var to = new EmailAddress(interviewerEmail);
+
+                dynamic templateData = new
+                {
+                    interviewerName = interviewerName,
+                    interviewUrl = interviewUrl                    
+                };
+
+                var templateId = _configuration["EmailTemplates:ChallengeCompletedNotification"];
+                SendGridMessage message = MailHelper.CreateSingleTemplateEmail(_fromAddress, to, templateId, templateData);
+
+
+                var response = await _client.SendEmailAsync(message).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorReason = await response.Body.ReadAsStringAsync();
+                    _logger.LogError($"Error sending email ChallengeCompletedNotification: {errorReason}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error sending email ChallengeCompletedNotification", ex);
+            }
+        }
+
+        public async Task<bool> SendTakeHomeChallenge(string candidateEmail, string candidateName, string challengePageUrl)
+        {
+            var isSent = true;
+
+            try
+            {
+                var to = new EmailAddress(candidateEmail);
+
+                dynamic templateData = new
+                {
+                    candidateName = candidateName,
+                    challengeUrl = challengePageUrl
+                };
+
+                var templateId = _configuration["EmailTemplates:TakeHomeChallenge"];
+                SendGridMessage message = MailHelper.CreateSingleTemplateEmail(_fromAddress, to, templateId, templateData);
+
+
+                var response = await _client.SendEmailAsync(message).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorReason = await response.Body.ReadAsStringAsync();
+                    _logger.LogError($"Error sending email SendTakeHomeChallenge: {errorReason}");
+                    isSent = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error sending email SendTakeHomeChallenge", ex);
+                isSent = false;
+            }
+
+            return isSent;
         }
 
         public async Task SendInviteEmail(string inviteeEmail, string inviterName, string teamName, string token)
