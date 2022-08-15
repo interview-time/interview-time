@@ -61,6 +61,7 @@ namespace CafApi.Services.User
         {
             var teamMember = await GetTeamMember(userId, teamId);
 
+            // belongs to the team
             if (teamMember != null)
             {
                 var userRoles = GetUserRoles(teamMember);
@@ -97,6 +98,21 @@ namespace CafApi.Services.User
                 {
                     return true;
                 }
+            }
+
+            return false;
+        }
+
+        public async Task<bool> CanViewCandidates(string userId, string teamId)
+        {
+            var teamMember = await GetTeamMember(userId, teamId);
+
+            // belongs to the team
+            if (teamMember != null)
+            {
+                var userRoles = GetUserRoles(teamMember);
+
+                return userRoles != null && userRoles.Any(role => role != TeamRole.INTERVIEWER);                
             }
 
             return false;

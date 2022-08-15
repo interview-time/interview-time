@@ -13,5 +13,7 @@ namespace CafApi.Services.User
         Task<bool> CanCancelInvite(string userId, string teamId, bool isOwner);
 
         Task<bool> CanSendChallenge(string userId, string teamId, bool isInterviewer);
+
+        Task<bool> CanViewCandidates(string userId, string teamId);
     }
 }
