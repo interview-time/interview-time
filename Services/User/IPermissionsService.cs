@@ -6,6 +6,8 @@ namespace CafApi.Services.User
 {
     public interface IPermissionsService
     {
+        Task<(bool IsTeamMember, List<TeamRole> Roles)> IsTeamMember(string userId, string teamId);
+
         Task<bool> IsBelongInTeam(string userId, string teamId);
 
         Task<List<TeamRole>> GetUserRoles(string userId, string teamId);

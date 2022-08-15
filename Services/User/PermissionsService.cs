@@ -29,6 +29,24 @@ namespace CafApi.Services.User
             return teamMember != null;
         }
 
+        public async Task<(bool IsTeamMember, List<TeamRole> Roles)> IsTeamMember(string userId, string teamId)
+        {
+            var roles = new List<TeamRole>();
+
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(teamId))
+            {
+                return (false, roles);
+            }
+
+            var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
+            if (teamMember != null)
+            {
+                roles = GetUserRoles(teamMember);
+            }
+
+            return (teamMember != null, roles);
+        }
+
         public async Task<List<TeamRole>> GetUserRoles(string userId, string teamId)
         {
             var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
@@ -112,7 +130,7 @@ namespace CafApi.Services.User
             {
                 var userRoles = GetUserRoles(teamMember);
 
-                return userRoles != null && userRoles.Any(role => role != TeamRole.INTERVIEWER);                
+                return userRoles != null && userRoles.Any(role => role != TeamRole.INTERVIEWER);
             }
 
             return false;

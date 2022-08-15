@@ -7,6 +7,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using MediatR;
 
@@ -41,12 +42,16 @@ namespace CafApi.Query
 
     public class CandidatesQueryHandler : IRequestHandler<CandidatesQuery, CandidatesQueryResult>
     {
+        private readonly ICandidateRepository _candidateRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly DynamoDBContext _context;
         private readonly IAmazonDynamoDB _client;
 
-        public CandidatesQueryHandler(IPermissionsService permissionsService, IAmazonDynamoDB dynamoDbClient)
+        public CandidatesQueryHandler(ICandidateRepository candidateRepository,
+            IPermissionsService permissionsService,
+            IAmazonDynamoDB dynamoDbClient)
         {
+            _candidateRepository = candidateRepository;
             _permissionsService = permissionsService;
             _context = new DynamoDBContext(dynamoDbClient);
             _client = dynamoDbClient;
@@ -54,12 +59,33 @@ namespace CafApi.Query
 
         public async Task<CandidatesQueryResult> Handle(CandidatesQuery query, CancellationToken cancellationToken)
         {
-            if (!await _permissionsService.CanViewCandidates(query.UserId, query.TeamId))
+            var teamMember = await _permissionsService.IsTeamMember(query.UserId, query.TeamId);
+            if (!teamMember.IsTeamMember)
             {
                 throw new AuthorizationException($"User ({query.UserId}) cannot view candidates of team ({query.TeamId})");
             }
 
-            var candidates = await _context.QueryAsync<Candidate>(query.TeamId, new DynamoDBOperationConfig()).GetRemainingAsync();
+            List<Candidate> candidates = null;
+            if (teamMember.Roles.Contains(TeamRole.INTERVIEWER))
+            {
+                // Interviewer can only see candidates they interviewed and will interview
+                var config = new DynamoDBOperationConfig();
+                var interviews = await _context.QueryAsync<Interview>(query.UserId, config).GetRemainingAsync();
+
+                var candidateIds = interviews
+                    .Where(i => i.TeamId == query.TeamId && !string.IsNullOrWhiteSpace(i.CandidateId))
+                    .Select(i => i.CandidateId)
+                    .Distinct()
+                    .ToList();
+
+                candidates = await _candidateRepository.GetCandidates(query.TeamId, candidateIds);
+            }
+            else
+            {
+                // Recruiter or Hiring Manager can see all candidates
+                candidates = await _context.QueryAsync<Candidate>(query.TeamId, new DynamoDBOperationConfig()).GetRemainingAsync();
+            }
+
 
             return new CandidatesQueryResult
             {
