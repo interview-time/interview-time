@@ -54,7 +54,7 @@ namespace CafApi.Services
             var challengesBatch = _context.CreateBatchGet<Challenge>();
             foreach (var challengeId in challengeIds)
             {
-                challengesBatch.AddKey(challengeId);
+                challengesBatch.AddKey(teamId, challengeId);
             }
             await challengesBatch.ExecuteAsync();
 

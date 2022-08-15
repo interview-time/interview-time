@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CafApi.Common;
 using CafApi.Models;
+using CafApi.Query;
 using CafApi.Repository;
 using CafApi.Services;
 using CafApi.ViewModel;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,12 +18,12 @@ namespace CafApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("candidate")]
     public class CandidateController : ControllerBase
     {
         private readonly ILogger<CandidateController> _logger;
         private readonly ICandidateService _candidateService;
         private readonly IInterviewRepository _interviewRepository;
+        private readonly IMediator _mediator;
 
         private string UserId
         {
@@ -29,17 +33,20 @@ namespace CafApi.Controllers
             }
         }
 
-        public CandidateController(ILogger<CandidateController> logger, 
-            ICandidateService candidateService, 
-            IInterviewRepository interviewRepository)
+        public CandidateController(ILogger<CandidateController> logger,
+            ICandidateService candidateService,
+            IInterviewRepository interviewRepository,
+            IMediator mediator)
         {
             _logger = logger;
             _candidateService = candidateService;
             _interviewRepository = interviewRepository;
+            _mediator = mediator;
         }
 
-        [HttpGet("{teamId}")]
-        public async Task<List<CandidateResponse>> GetCandidates(string teamId)
+        [Obsolete]
+        [HttpGet("candidate/{teamId}")]
+        public async Task<List<CandidateResponse>> GetCandidatesOld(string teamId)
         {
             var candidates = await _candidateService.GetCandidates(UserId, teamId);
 
@@ -67,7 +74,8 @@ namespace CafApi.Controllers
             }).ToList();
         }
 
-        [HttpPost()]
+        [Obsolete]
+        [HttpPost("candidate")]
         public async Task<Candidate> CreateCandidate([FromBody] CreateCandidateRequest request)
         {
             var candidate = new Candidate
@@ -84,22 +92,40 @@ namespace CafApi.Controllers
             return await _candidateService.CreateCandidate(UserId, candidate);
         }
 
-        [HttpPut()]
+        [Obsolete]
+        [HttpPut("candidate")]
         public async Task<Candidate> UpdateCandidate([FromBody] Candidate candidate)
         {
             return await _candidateService.UpdateCandidate(UserId, candidate);
         }
 
-        [HttpDelete("{candidateId}/team/{teamId}")]
+        [Obsolete]
+        [HttpDelete("candidate/{candidateId}/team/{teamId}")]
         public async Task DeleteCandidate(string candidateId, string teamId)
         {
             await _candidateService.DeleteCandidate(UserId, teamId, candidateId);
         }
 
-        [HttpGet("upload-signed-url/{teamId}/{candidateId}/{filename}")]
+        [Obsolete]
+        [HttpGet("candidate/upload-signed-url/{teamId}/{candidateId}/{filename}")]
         public async Task<string> GetUploadSignedUrl(string teamId, string candidateId, string filename)
         {
             return await _candidateService.GetUploadSignedUrl(UserId, teamId, candidateId, filename);
+        }
+
+        [HttpGet("team/{teamId}/candidates")]
+        public async Task<ActionResult<CandidatesQueryResult>> GetCandidates(string teamId)
+        {
+            try
+            {
+                return await _mediator.Send(new CandidatesQuery { UserId = UserId, TeamId = teamId });
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized();
+            }
         }
     }
 }
