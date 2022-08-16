@@ -172,3 +172,9 @@ export const SubscriptionPlans = {
     Starter: "STARTER",
     Premium: "PREMIUM",
 };
+
+export const CandidatesFilter = {
+    All: "All",
+    Current: "Current",
+    Archived: "Archived"
+}

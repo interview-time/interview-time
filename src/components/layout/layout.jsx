@@ -9,7 +9,7 @@ import {
     InterviewIcon,
     ProfileIcon,
     TextNoteIcon,
-    UserAddIcon
+    UserAddIcon,
 } from "../../utils/icons";
 import {
     routeProfile,
@@ -20,7 +20,8 @@ import {
     routeReports,
     routeTeamNew,
     routeTemplateLibrary,
-    routeTemplates, routeTeamMembers
+    routeTemplates,
+    routeTeamMembers,
 } from "../../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
@@ -186,7 +187,11 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
             >
                 <div className={styles.globalSiderContainer}>
                     <div className={styles.logoHolder}>
-                        <img alt='InterviewTime' src={process.env.PUBLIC_URL + "/logo192.png"} className={styles.logo} />
+                        <img
+                            alt='InterviewTime'
+                            src={process.env.PUBLIC_URL + "/logo192.png"}
+                            className={styles.logo}
+                        />
                         <span className={styles.logoText}>InterviewTime</span>
                     </div>
                     <Menu
@@ -250,13 +255,11 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                                 <span className='nav-text'>Templates</span>
                             </Link>
                         </Menu.Item>
-                        {permissionViewCandidates(profile) && (
-                            <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<CandidatesIcon />}>
-                                <Link to={routeCandidates()}>
-                                    <span className='nav-text'>Candidates</span>
-                                </Link>
-                            </Menu.Item>
-                        )}
+                        <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<CandidatesIcon />}>
+                            <Link to={routeCandidates()}>
+                                <span className='nav-text'>Candidates</span>
+                            </Link>
+                        </Menu.Item>
                         <Divider className={styles.divider} />
                         <Menu.Item key='settings' className={styles.menuItem} icon={<UserAddIcon />}>
                             <Link to={routeTeamMembers()}>
