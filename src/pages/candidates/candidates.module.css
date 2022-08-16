@@ -6,19 +6,20 @@
     cursor: pointer;
 }
 
-.divRight {
+.controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 24px;
 }
 
-.select {
-    min-width: 230px;
-    margin-left: 16px;
+.search {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    width: 355px;
 }
 
-.checkbox {
-    font-size: 14px;
-    color: #6b7280;
+.searchIcon {
+    padding-right: 8px;
 }

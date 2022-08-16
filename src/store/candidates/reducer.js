@@ -2,12 +2,12 @@ import {
     CREATE_CANDIDATE,
     DELETE_CANDIDATE,
     GET_UPLOAD_URL,
-    LOAD_CANDIDATES,
-    loadCandidates,
+    SET_LOADING,
+    SET_ERROR,
     SET_CANDIDATES,
     SET_UPLOAD_URL,
-    setCandidates,
     setUploadUrl,
+    loadCandidates,
     UPDATE_CANDIDATE,
 } from "./actions";
 import axios from "axios";
@@ -24,27 +24,13 @@ const initialState = {
     candidates: [],
     uploadUrl: null,
     loading: false,
+    error: false,
 };
 
 const URL = `${process.env.REACT_APP_API_URL}/candidate`;
 
 const candidatesReducer = (state = initialState, action) => {
     switch (action.type) {
-        case LOAD_CANDIDATES: {
-            const { forceFetch, teamId } = action.payload;
-
-            if (forceFetch || (state.candidates.length === 0 && !state.loading)) {
-                getAccessTokenSilently()
-                    .then(token => axios.get(`${URL}/${teamId}`, config(token)))
-                    .then(res => store.dispatch(setCandidates(res.data || [])))
-                    .catch(reason => console.error(reason));
-
-                return { ...state, loading: true };
-            }
-
-            return { ...state };
-        }
-
         case SET_CANDIDATES: {
             const { candidates } = action.payload;
 
@@ -52,6 +38,24 @@ const candidatesReducer = (state = initialState, action) => {
                 ...state,
                 candidates: candidates,
                 loading: false,
+            };
+        }
+
+        case SET_LOADING: {
+            const { loading } = action.payload;
+
+            return {
+                ...state,
+                loading: loading,
+            };
+        }
+
+        case SET_ERROR: {
+            const { isError } = action.payload;
+
+            return {
+                ...state,
+                error: isError,
             };
         }
 

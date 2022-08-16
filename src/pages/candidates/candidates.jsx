@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
-import { Button, Checkbox, Dropdown, Menu, Modal, Select, Table } from "antd";
+import { Button, Dropdown, Menu, Modal, Input, Table } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
-import { orderBy } from "lodash/collection";
 import Title from "antd/lib/typography/Title";
 import TableHeader from "../../components/table/table-header";
-import { deleteCandidate, loadCandidates, updateCandidate } from "../../store/candidates/actions";
-import CandidateStatusTag, { getCandidateStatusText } from "../../components/tags/candidate-status-tag";
+import { deleteCandidate, updateCandidate } from "../../store/candidates/actions";
+import { loadCandidates } from "../../store/candidates/actions";
+import { selectCandidates, filterCandidates, searchCandidates } from "../../store/candidates/selector";
+import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import styles from "./candidates.module.css";
 import { routeCandidateDetails, routeCandidates } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import ArchivedTag from "../../components/tags/candidate-archived-tag";
-import { CandidateStatus } from "../../utils/constants";
-import { filterOptionLabel } from "../../utils/filters";
+import { CandidatesFilter } from "../../utils/constants";
 import { MoreIcon } from "../../utils/icons";
 import { cloneDeep } from "lodash/lang";
 import { getFormattedDateShort } from "../../utils/date-fns";
+import Filter from "../../components/filter/filter";
 
 /**
  *
@@ -34,10 +36,8 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
     const history = useHistory();
 
     const [candidates, setCandidates] = useState([]);
-    const [filter, setFilter] = useState({
-        status: null,
-        displayArchived: true,
-    });
+    const [filter, setFilter] = useState(CandidatesFilter.Current);
+    const [searchQuery, setSearchQuery] = useState();
 
     React.useEffect(() => {
         loadCandidates();
@@ -45,23 +45,18 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
     }, []);
 
     React.useEffect(() => {
-        updateCandidatesState();
-        // eslint-disable-next-line
-    }, [candidatesData, filter]);
-
-    const updateCandidatesState = () => {
         let filteredCandidates = candidatesData;
 
-        if (!filter.displayArchived) {
-            filteredCandidates = filteredCandidates.filter(c => !c.archived);
+        if (filter !== CandidatesFilter.All) {
+            filteredCandidates = filterCandidates(candidatesData, filter);
         }
 
-        if (filter.status) {
-            filteredCandidates = filteredCandidates.filter(c => c.status === filter.status);
+        if (searchQuery) {
+            filteredCandidates = searchCandidates(filteredCandidates, searchQuery);
         }
 
         setCandidates(filteredCandidates);
-    };
+    }, [candidatesData, filter, searchQuery]);
 
     const archive = candidate => {
         const updatedCandidate = cloneDeep(candidate);
@@ -127,16 +122,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
             key: "createdDate",
             sortDirections: ["descend", "ascend"],
             sorter: (a, b) => localeCompare(a.createdDate, b.createdDate),
-            render: candidate => (
-                <TableText>{getFormattedDateShort(candidate.createdDate, "-")}</TableText>
-            ),
-        },
-        {
-            title: <TableHeader>INTERVIEWS</TableHeader>,
-            key: "interviews",
-            sortDirections: ["descend", "ascend"],
-            sorter: (a, b) => localeCompare(a.interviews, b.interviews),
-            render: candidate => <TableText>{candidate.totalInterviews}</TableText>,
+            render: candidate => <TableText>{getFormattedDateShort(candidate.createdDate, "-")}</TableText>,
         },
         {
             title: <TableHeader>STATUS</TableHeader>,
@@ -160,41 +146,8 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
         },
     ];
 
-    const createStatusOption = status => ({
-        value: status,
-        label: getCandidateStatusText(status),
-    });
-
-    const statusOptions = [
-        createStatusOption(CandidateStatus.NEW),
-        createStatusOption(CandidateStatus.INTERVIEWING),
-        createStatusOption(CandidateStatus.HIRE),
-        createStatusOption(CandidateStatus.NO_HIRE),
-    ];
-
     const onRowClicked = record => {
         history.push(routeCandidateDetails(record.candidateId));
-    };
-
-    const onStatusFilterClear = () => {
-        setFilter({
-            ...filter,
-            status: null,
-        });
-    };
-
-    const onStatusFilterChange = value => {
-        setFilter({
-            ...filter,
-            status: value,
-        });
-    };
-
-    const onDisplayArchivedChange = e => {
-        setFilter({
-            ...filter,
-            displayArchived: e.target.checked,
-        });
     };
 
     return (
@@ -203,19 +156,19 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
                 Candidates
             </Title>
 
-            <div className={styles.divRight}>
-                <Checkbox className={styles.checkbox} onChange={onDisplayArchivedChange} defaultChecked>
-                    Display archived
-                </Checkbox>
-                <Select
-                    className={styles.select}
-                    placeholder='Status filter'
-                    options={statusOptions}
-                    onSelect={onStatusFilterChange}
-                    onClear={onStatusFilterClear}
-                    showSearch
+            <div className={styles.controls}>
+                <Filter
+                    filters={[CandidatesFilter.All, CandidatesFilter.Current, CandidatesFilter.Archived]}
+                    initActive={CandidatesFilter.Current}
+                    onClick={filter => setFilter(filter)}
+                />
+
+                <Input
+                    className={styles.search}
                     allowClear
-                    filterOption={filterOptionLabel}
+                    placeholder='Search name or position'
+                    prefix={<SearchOutlined className={styles.searchIcon}  />}
+                    onChange={e => setSearchQuery(e.target.value)}
                 />
             </div>
 
@@ -244,11 +197,10 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
 const mapDispatch = { loadCandidates, updateCandidate, deleteCandidate };
 
 const mapState = state => {
-    const candidatesState = state.candidates || {};
-
     return {
-        candidatesData: orderBy(candidatesState.candidates, "createdDate", ["desc"]),
-        loading: candidatesState.loading,
+        candidatesData: selectCandidates(state),
+        loading: state.candidates.loading,
+        error: state.candidates.error,
     };
 };
 
