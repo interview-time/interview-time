@@ -61,25 +61,6 @@ namespace CafApi.Services
             return challengesBatch.Results;
         }
 
-        public async Task CreateChallenge(string userId, string teamId, CreateChallengeRequest request)
-        {
-            var challenge = new Challenge
-            {
-                TeamId = teamId,
-                ChallengeId = request.ChallengeId,
-                Name = request.Name,
-                Description = request.Description,                
-                FileName = request.FileName,
-                GitHubUrl = request.GitHubUrl,
-                CreatedBy = userId,
-                ModifiedBy = userId,
-                CreatedDate = DateTime.UtcNow,
-                ModifiedDate = DateTime.UtcNow
-            };
-
-            await _context.SaveAsync(challenge);
-        }
-
         public async Task<bool> UpdateChallenge(string userId, string teamId, string challengeId, UpdateChallengeRequest request)
         {
             var challenge = await _challengeRepository.GetChallenge(teamId, challengeId);

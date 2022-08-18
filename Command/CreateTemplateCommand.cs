@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -34,8 +35,6 @@ namespace CafApi.Command
 
         public TemplateStructure Structure { get; set; }
 
-        public List<string> ChallengeIds { get; set; }
-
         public List<Challenge> Challenges { get; set; }
     }
 
@@ -59,6 +58,22 @@ namespace CafApi.Command
                 throw new AuthorizationException($"User ({request.UserId}) doesn't belong to the team ({request.TeamId})");
             }
 
+            if (request.Challenges != null && request.Challenges.Any())
+            {
+                foreach (var challenge in request.Challenges)
+                {
+                    challenge.TeamId = request.TeamId;
+                    challenge.CreatedBy = request.UserId;
+                    challenge.ModifiedBy = request.UserId;
+                    challenge.CreatedDate = DateTime.UtcNow;
+                    challenge.ModifiedDate = DateTime.UtcNow;
+                }
+
+                var challengeBatch = _context.CreateBatchWrite<Challenge>();
+                challengeBatch.AddPutItems(request.Challenges);
+                await challengeBatch.ExecuteAsync();
+            }
+
             var template = new Template
             {
                 UserId = request.UserId,
@@ -70,7 +85,7 @@ namespace CafApi.Command
                 Structure = request.Structure,
                 IsDemo = request.UserId == _demoUserId,
                 TeamId = request.TeamId,
-                ChallengeIds = request.ChallengeIds,
+                ChallengeIds = request.Challenges?.Select(c => c.ChallengeId).ToList(),
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
                 Token = StringHelper.GenerateToken(),
