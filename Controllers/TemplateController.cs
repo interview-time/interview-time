@@ -116,16 +116,23 @@ namespace CafApi.Controllers
             }
         }
 
+        [Obsolete]
+        [HttpPut("template")]
+        public async Task UpdateTemplateOld([FromBody] TemplateRequest request)
+        {
+            await _templateService.UpdateTemplate(UserId, request);
+        }
+
+        [HttpPut("team/{teamId}/template")]
+        public async Task UpdateTemplate([FromBody] TemplateRequest request)
+        {
+            await _templateService.UpdateTemplate(UserId, request);
+        }
+
         [HttpDelete("template/{templateId}")]
         public async Task DeleteTemplate(string templateId)
         {
             await _templateService.DeleteTemplate(UserId, templateId);
-        }
-
-        [HttpPut("template")]
-        public async Task UpdateTemplate([FromBody] TemplateRequest request)
-        {
-            await _templateService.UpdateTemplate(UserId, request);
         }
 
         [HttpGet("template/library")]

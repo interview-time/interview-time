@@ -45,22 +45,7 @@ namespace CafApi.Controllers
             _permissionsService = permissionsService;
             _logger = logger;
             _mediator = mediator;
-        }
-
-        [HttpPost("team/{teamId}/challenge")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> CreateChallenge(string teamId, [FromBody] CreateChallengeRequest request)
-        {
-            if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
-            {
-                return Unauthorized();
-            }
-
-            await _challengeService.CreateChallenge(UserId, teamId, request);
-
-            return Ok();
-        }
+        }    
 
         [HttpPut("team/{teamId}/challenge/{challengeId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
