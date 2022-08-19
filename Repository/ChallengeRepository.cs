@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -49,6 +51,35 @@ namespace CafApi.Repository
             }
 
             return null;
+        }
+
+        public async Task<List<Challenge>> GetChallenges(string teamId, List<string> challengeIds)
+        {
+            if (challengeIds == null || !challengeIds.Any())
+            {
+                return null;
+            }
+
+            var challengesBatch = _context.CreateBatchGet<Challenge>();
+            foreach (var challengeId in challengeIds)
+            {
+                challengesBatch.AddKey(teamId, challengeId);
+            }
+            await challengesBatch.ExecuteAsync();
+
+            return challengesBatch.Results;
+        }
+
+        public async Task BatchAddChallenges(List<Challenge> challenges)
+        {
+            if (challenges == null || !challenges.Any())
+            {
+                return;
+            }
+
+            var challengeBatch = _context.CreateBatchWrite<Challenge>();
+            challengeBatch.AddPutItems(challenges);
+            await challengeBatch.ExecuteAsync();
         }
     }
 }

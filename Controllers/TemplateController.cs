@@ -118,15 +118,42 @@ namespace CafApi.Controllers
 
         [Obsolete]
         [HttpPut("template")]
-        public async Task UpdateTemplateOld([FromBody] TemplateRequest request)
+        public async Task<ActionResult> UpdateTemplateOld([FromBody] UpdateTemplateCommand request)
         {
-            await _templateService.UpdateTemplate(UserId, request);
+            try
+            {
+                request.UserId = UserId;
+
+                await _mediator.Send(request);
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized();
+            }
         }
 
         [HttpPut("team/{teamId}/template")]
-        public async Task UpdateTemplate([FromBody] TemplateRequest request)
+        public async Task<ActionResult> UpdateTemplate(string teamId, [FromBody] UpdateTemplateCommand request)
         {
-            await _templateService.UpdateTemplate(UserId, request);
+            try
+            {
+                request.UserId = UserId;
+                request.TeamId = teamId;
+
+                await _mediator.Send(request);
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized();
+            }
         }
 
         [HttpDelete("template/{templateId}")]

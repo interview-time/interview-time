@@ -45,25 +45,6 @@ namespace CafApi.Controllers
             _permissionsService = permissionsService;
             _logger = logger;
             _mediator = mediator;
-        }    
-
-        [HttpPut("team/{teamId}/challenge/{challengeId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult> UpdateChallenge(string teamId, string challengeId, [FromBody] UpdateChallengeRequest request)
-        {
-            if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
-            {
-                return Unauthorized();
-            }
-
-            if (!await _challengeService.UpdateChallenge(UserId, teamId, challengeId, request))
-            {
-                return NotFound();
-            }
-
-            return Ok();
         }
 
         [HttpGet("team/{teamId}/challenge/{challengeId}/filename/{filename}/upload")]
