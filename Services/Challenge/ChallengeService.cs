@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
@@ -8,9 +6,6 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using CafApi.Models;
 using CafApi.Repository;
-using CafApi.Services.User;
-using CafApi.ViewModel;
-using Microsoft.Extensions.Configuration;
 
 namespace CafApi.Services
 {
@@ -18,67 +13,15 @@ namespace CafApi.Services
     {
         private readonly IAmazonS3 _s3Client;
         private readonly DynamoDBContext _context;
-        private readonly IPermissionsService _permissionsService;
-        private readonly IInterviewRepository _interviewRepository;
-        private readonly IEmailService _emailService;
-        private readonly ICandidateRepository _candidateRepository;
-        private readonly IConfiguration _configuration;
         private readonly IChallengeRepository _challengeRepository;
 
         public ChallengeService(IAmazonS3 s3Client,
             IAmazonDynamoDB dynamoDbClient,
-            IPermissionsService permissionsService,
-            IInterviewRepository interviewRepository,
-            IEmailService emailService,
-            ICandidateRepository candidateRepository,
-            IConfiguration configuration,
             IChallengeRepository challengeRepository)
         {
             _s3Client = s3Client;
             _context = new DynamoDBContext(dynamoDbClient);
-            _permissionsService = permissionsService;
-            _interviewRepository = interviewRepository;
-            _emailService = emailService;
-            _candidateRepository = candidateRepository;
-            _configuration = configuration;
             _challengeRepository = challengeRepository;
-        }
-
-        public async Task<List<Challenge>> GetChallenges(string teamId, List<string> challengeIds)
-        {
-            if (challengeIds == null || !challengeIds.Any())
-            {
-                return null;
-            }
-
-            var challengesBatch = _context.CreateBatchGet<Challenge>();
-            foreach (var challengeId in challengeIds)
-            {
-                challengesBatch.AddKey(teamId, challengeId);
-            }
-            await challengesBatch.ExecuteAsync();
-
-            return challengesBatch.Results;
-        }
-
-        public async Task<bool> UpdateChallenge(string userId, string teamId, string challengeId, UpdateChallengeRequest request)
-        {
-            var challenge = await _challengeRepository.GetChallenge(teamId, challengeId);
-            if (challenge != null)
-            {
-                challenge.Name = request.Name;
-                challenge.Description = request.Description;
-                challenge.FileName = request.FileName;
-                challenge.GitHubUrl = request.GitHubUrl;                
-                challenge.ModifiedDate = DateTime.UtcNow;
-                challenge.ModifiedBy = userId;
-
-                await _context.SaveAsync(challenge);
-
-                return true;
-            }
-
-            return false;
         }
 
         public (string, DateTime) GetChallengeUploadSignedUrl(string teamId, string challengeId, string filename)

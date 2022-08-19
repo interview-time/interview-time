@@ -7,6 +7,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -15,8 +16,6 @@ namespace CafApi.Command
 {
     public class CreateTemplateCommand : IRequest<Template>
     {
-        public bool IsDemo { get; set; }
-
         public string UserId { get; set; }
 
         public string TemplateId { get; set; }
@@ -41,12 +40,17 @@ namespace CafApi.Command
     public class CreateTemplateCommandHandler : IRequestHandler<CreateTemplateCommand, Template>
     {
         private readonly IPermissionsService _permissionsService;
+        private readonly IChallengeRepository _challengeRepository;
         private readonly DynamoDBContext _context;
         private readonly string _demoUserId;
 
-        public CreateTemplateCommandHandler(IPermissionsService permissionsService, IAmazonDynamoDB dynamoDbClient, IConfiguration configuration)
+        public CreateTemplateCommandHandler(IPermissionsService permissionsService,
+            IChallengeRepository challengeRepository,
+            IAmazonDynamoDB dynamoDbClient,
+            IConfiguration configuration)
         {
             _permissionsService = permissionsService;
+            _challengeRepository = challengeRepository;
             _context = new DynamoDBContext(dynamoDbClient);
             _demoUserId = configuration["DemoUserId"];
         }
@@ -60,6 +64,7 @@ namespace CafApi.Command
 
             if (request.Challenges != null && request.Challenges.Any())
             {
+                // update challenges with extra data
                 foreach (var challenge in request.Challenges)
                 {
                     challenge.TeamId = request.TeamId;
@@ -69,9 +74,7 @@ namespace CafApi.Command
                     challenge.ModifiedDate = DateTime.UtcNow;
                 }
 
-                var challengeBatch = _context.CreateBatchWrite<Challenge>();
-                challengeBatch.AddPutItems(request.Challenges);
-                await challengeBatch.ExecuteAsync();
+                await _challengeRepository.BatchAddChallenges(request.Challenges);
             }
 
             var template = new Template

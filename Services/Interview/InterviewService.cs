@@ -16,18 +16,18 @@ namespace CafApi.Services
     public class InterviewService : IInterviewService
     {
         private readonly IPermissionsService _permissionsService;
-        private readonly IChallengeService _challengeService;
+        private readonly IChallengeRepository _challengeRepository;
         private readonly IInterviewRepository _interviewRepository;
         private readonly DynamoDBContext _context;
 
-        public InterviewService(IAmazonDynamoDB dynamoDbClient, 
-            IPermissionsService permissionsService, 
-            IChallengeService challengeService,
+        public InterviewService(IAmazonDynamoDB dynamoDbClient,
+            IPermissionsService permissionsService,
+            IChallengeRepository challengeRepository,
             IInterviewRepository interviewRepository)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _permissionsService = permissionsService;
-            _challengeService = challengeService;
+            _challengeRepository = challengeRepository;
             _interviewRepository = interviewRepository;
         }
 
@@ -62,7 +62,7 @@ namespace CafApi.Services
                             .Distinct()
                             .ToList();
 
-                        var challenges = await _challengeService.GetChallenges(teamId, challenegIds);
+                        var challenges = await _challengeRepository.GetChallenges(teamId, challenegIds);
 
                         foreach (var interview in interviews)
                         {

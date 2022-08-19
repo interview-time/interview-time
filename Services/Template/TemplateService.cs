@@ -9,7 +9,6 @@ using CafApi.Common;
 using CafApi.Models;
 using CafApi.Repository;
 using CafApi.Services.User;
-using CafApi.ViewModel;
 
 namespace CafApi.Services
 {
@@ -18,17 +17,17 @@ namespace CafApi.Services
         private readonly DynamoDBContext _context;
         private readonly IInterviewRepository _interviewRepository;
         private readonly IPermissionsService _permissionsService;
-        private readonly IChallengeService _challengeService;
+        private readonly IChallengeRepository _challengeRepository;
 
         public TemplateService(IAmazonDynamoDB dynamoDbClient,
             IInterviewRepository interviewRepository,
             IPermissionsService permissionsService,
-            IChallengeService challengeService)
+            IChallengeRepository challengeRepository)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _interviewRepository = interviewRepository;
             _permissionsService = permissionsService;
-            _challengeService = challengeService;
+            _challengeRepository = challengeRepository;
         }
 
         public async Task<List<Template>> GetMyTemplates(string userId)
@@ -69,7 +68,7 @@ namespace CafApi.Services
                 .Distinct()
                 .ToList();
                 
-            var challenges = await _challengeService.GetChallenges(teamId, challenegIds);
+            var challenges = await _challengeRepository.GetChallenges(teamId, challenegIds);
 
             foreach (var template in templates)
             {
@@ -85,65 +84,7 @@ namespace CafApi.Services
         public async Task<Template> GetTemplate(string userId, string templateId)
         {
             return await _context.LoadAsync<Template>(userId, templateId);
-        }
-
-        public async Task<Template> GetTemplate(string templateId)
-        {
-            var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
-            {
-                IndexName = "TemplateId-index",
-                Filter = new QueryFilter(nameof(Template.TemplateId), QueryOperator.Equal, templateId)
-            });
-            var templates = await search.GetRemainingAsync();
-
-            return templates.FirstOrDefault();
         }        
-
-        public async Task UpdateTemplate(string userId, TemplateRequest updatedTemplate)
-        {
-            var isBelongInTeam = await _permissionsService.IsBelongInTeam(userId, updatedTemplate.TeamId);
-            if (isBelongInTeam)
-            {
-                var template = await GetTemplate(updatedTemplate.TemplateId);
-
-                template.Title = updatedTemplate.Title;
-                template.Type = updatedTemplate.Type;
-                template.Description = updatedTemplate.Description;
-                template.Structure = updatedTemplate.Structure;
-                template.ChallengeIds = updatedTemplate.ChallengeIds;
-                template.ModifiedDate = DateTime.UtcNow;
-
-                if (string.IsNullOrWhiteSpace(template.Token))
-                {
-                    template.Token = StringHelper.GenerateToken();
-                }
-
-                // assign ids to groups if missing
-                if (template.Structure != null && template.Structure.Groups != null)
-                {
-                    foreach (var group in template.Structure.Groups)
-                    {
-                        if (string.IsNullOrWhiteSpace(group.GroupId))
-                        {
-                            group.GroupId = Guid.NewGuid().ToString();
-                        }
-
-                        if (group.Questions != null)
-                        {
-                            foreach (var question in group.Questions)
-                            {
-                                if (string.IsNullOrWhiteSpace(question.QuestionId))
-                                {
-                                    question.QuestionId = Guid.NewGuid().ToString();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                await _context.SaveAsync(template);
-            }
-        }
 
         public async Task DeleteTemplate(string userId, string templateId)
         {

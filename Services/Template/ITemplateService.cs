@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CafApi.Models;
-using CafApi.ViewModel;
 
 namespace CafApi.Services
 {
@@ -13,11 +12,7 @@ namespace CafApi.Services
 
         Task<Template> GetTemplate(string userId, string templateId);
 
-        Task<Template> GetTemplate(string templateId);       
-
         Task ShareTemplate(string userId, string templateId, bool share);
-
-        Task UpdateTemplate(string userId, TemplateRequest template);
 
         Task DeleteTemplate(string userId, string templateId);
 
