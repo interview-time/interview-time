@@ -11,6 +11,8 @@ export const SET_LOADING = "SET_LOADING";
 export const SET_ERROR = "SET_ERROR";
 export const RESET_TEAM = "RESET_TEAM";
 
+export const REMOVE_INVITE = "REMOVE_INVITE";
+
 const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 
 export const setPendingInvitesLoading = loading => ({
@@ -82,6 +84,24 @@ export const loadTeam =
             }
         }
     };
+
+export const cancelInvite = (teamId, inviteId) => async dispatch => {
+    const token = await getAccessTokenSilently();
+    try {
+        dispatch(setError(false));
+        dispatch(removeInvite(inviteId));
+
+        await axios.delete(`${BASE_URI}/team/${teamId}/invite/${inviteId}`, config(token));
+    } catch (error) {
+        logError(error);
+        dispatch(setError(true));
+    }
+};
+
+export const removeInvite = inviteId => ({
+    type: REMOVE_INVITE,
+    payload: { inviteId },
+});
 
 export const resetTeam = () => ({
     type: RESET_TEAM,
