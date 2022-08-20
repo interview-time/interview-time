@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
 import { Button, Dropdown, Menu, Modal, Input, Table } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import { localeCompare } from "../../utils/comparators";
@@ -13,7 +13,7 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { selectCandidates, filterCandidates, searchCandidates } from "../../store/candidates/selector";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import styles from "./candidates.module.css";
-import { routeCandidateDetails, routeCandidates } from "../../utils/route";
+import { routeCandidateDetails, routeCandidates, routeCandidateAdd } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import ArchivedTag from "../../components/tags/candidate-archived-tag";
 import { CandidatesFilter } from "../../utils/constants";
@@ -152,9 +152,14 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
 
     return (
         <Layout contentStyle={styles.rootContainer}>
-            <Title level={4} style={{ marginBottom: 20 }}>
-                Candidates
-            </Title>
+            <div className={styles.header}>
+                <Title level={4} style={{ marginBottom: 20 }}>
+                    Candidates
+                </Title>
+                <Button type='primary' icon={<UserAddOutlined />} onClick={() => history.push(routeCandidateAdd())}>
+                    Add Candidate
+                </Button>
+            </div>
 
             <div className={styles.controls}>
                 <Filter
@@ -167,7 +172,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
                     className={styles.search}
                     allowClear
                     placeholder='Search name or position'
-                    prefix={<SearchOutlined className={styles.searchIcon}  />}
+                    prefix={<SearchOutlined className={styles.searchIcon} />}
                     onChange={e => setSearchQuery(e.target.value)}
                 />
             </div>
