@@ -86,7 +86,6 @@ namespace CafApi.Query
                 candidates = await _context.QueryAsync<Candidate>(query.TeamId, new DynamoDBOperationConfig()).GetRemainingAsync();
             }
 
-
             return new CandidatesQueryResult
             {
                 Candidates = candidates.Select(candidate => new CandidateItem

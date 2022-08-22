@@ -16,6 +16,8 @@ namespace CafApi.Command
 
         public string TeamId { get; set; }
 
+        public string CandidateId { get; set; }
+
         public string CandidateName { get; set; }
 
         public string Email { get; set; }
@@ -52,7 +54,7 @@ namespace CafApi.Command
             var candidate = new Candidate
             {
                 TeamId = command.TeamId,
-                CandidateId = Guid.NewGuid().ToString(),
+                CandidateId = command.CandidateId ?? Guid.NewGuid().ToString(),
                 CandidateName = command.CandidateName,
                 Status = CandidateStatus.NEW.ToString(),
                 Position = command.Position,

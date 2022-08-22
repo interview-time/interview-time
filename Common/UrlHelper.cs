@@ -16,5 +16,10 @@ namespace CafApi.Common
         {
             return $"{host}/interviews/scorecard/{interviewId}?teamId={teamId}";
         }
+
+        public static string GetDownloadResumeUrl(string host, string teamId, string candidateId, string filename)
+        {
+            return $"{host}/team/{teamId}/candidate/{candidateId}/file/{filename}";
+        }
     }
 }

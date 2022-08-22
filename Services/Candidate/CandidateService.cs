@@ -124,7 +124,7 @@ namespace CafApi.Services
                 BucketName = "interviewtime",
                 Key = $"teams/{teamId}/candidates/{candidateId}/{filename}",
                 Verb = HttpVerb.GET,
-                Expires = DateTime.Now.AddDays(30)
+                Expires = DateTime.Now.AddMinutes(30)
             };
 
             return _s3Client.GetPreSignedURL(request);
