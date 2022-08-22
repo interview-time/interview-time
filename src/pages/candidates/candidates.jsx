@@ -9,6 +9,7 @@ import TableText from "../../components/table/table-text";
 import Title from "antd/lib/typography/Title";
 import TableHeader from "../../components/table/table-header";
 import { deleteCandidate, updateCandidate } from "../../store/candidates/actions";
+import { canAddCandidate } from "../../store/user/permissions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { selectCandidates, filterCandidates, searchCandidates } from "../../store/candidates/selector";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
@@ -32,7 +33,7 @@ import Filter from "../../components/filter/filter";
  * @returns {JSX.Element}
  * @constructor
  */
-const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, deleteCandidate }) => {
+const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, deleteCandidate, canAddCandidate }) => {
     const history = useHistory();
 
     const [candidates, setCandidates] = useState([]);
@@ -156,9 +157,11 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Candidates
                 </Title>
-                <Button type='primary' icon={<UserAddOutlined />} onClick={() => history.push(routeCandidateAdd())}>
-                    Add Candidate
-                </Button>
+                {canAddCandidate && (
+                    <Button type='primary' icon={<UserAddOutlined />} onClick={() => history.push(routeCandidateAdd())}>
+                        Add Candidate
+                    </Button>
+                )}
             </div>
 
             <div className={styles.controls}>
@@ -206,6 +209,7 @@ const mapState = state => {
         candidatesData: selectCandidates(state),
         loading: state.candidates.loading,
         error: state.candidates.error,
+        canAddCandidate: canAddCandidate(state),
     };
 };
 
