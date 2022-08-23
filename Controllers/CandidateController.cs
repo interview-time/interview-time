@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CafApi.Command;
 using CafApi.Common;
 using CafApi.Models;
 using CafApi.Query;
@@ -76,20 +77,20 @@ namespace CafApi.Controllers
 
         [Obsolete]
         [HttpPost("candidate")]
-        public async Task<Candidate> CreateCandidate([FromBody] CreateCandidateRequest request)
+        public async Task<ActionResult<Candidate>> CreateCandidateOld([FromBody] CreateCandidateCommand command)
         {
-            var candidate = new Candidate
+            try
             {
-                TeamId = request.TeamId,
-                CandidateName = request.CandidateName,
-                Position = request.Position,
-                ResumeFile = request.ResumeFile,
-                LinkedIn = request.LinkedIn,
-                GitHub = request.GitHub,
-                CodingRepo = request.CodingRepo
-            };
+                command.UserId = UserId;
 
-            return await _candidateService.CreateCandidate(UserId, candidate);
+                return await _mediator.Send(command);
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized();
+            }
         }
 
         [Obsolete]
@@ -119,6 +120,24 @@ namespace CafApi.Controllers
             try
             {
                 return await _mediator.Send(new CandidatesQuery { UserId = UserId, TeamId = teamId });
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost("team/{teamId}/candidate")]
+        public async Task<ActionResult<Candidate>> CreateCandidate(string teamId, [FromBody] CreateCandidateCommand command)
+        {
+            try
+            {
+                command.UserId = UserId;
+                command.TeamId = teamId;
+
+                return await _mediator.Send(command);
             }
             catch (AuthorizationException ex)
             {

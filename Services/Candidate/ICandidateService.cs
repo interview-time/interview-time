@@ -8,9 +8,7 @@ namespace CafApi.Services
     {
         Task<Candidate> GetCandidate(string teamId, string candidateId);
 
-        Task<List<Candidate>> GetCandidates(string userId, string teamId);
-
-        Task<Candidate> CreateCandidate(string userId, Candidate candidate);
+        Task<List<Candidate>> GetCandidates(string userId, string teamId);        
 
         Task<Candidate> UpdateCandidate(string userId, Candidate updatedCandidate);
 

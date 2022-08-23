@@ -48,25 +48,6 @@ namespace CafApi.Services
             return candidates;
         }
 
-        public async Task<Candidate> CreateCandidate(string userId, Candidate candidate)
-        {
-            var isBelongToTeam = await _permissionsService.IsBelongInTeam(userId, candidate.TeamId);
-            if (isBelongToTeam)
-            {
-                candidate.CreatedByUserId = userId;
-                candidate.CandidateId = candidate.CandidateId ?? Guid.NewGuid().ToString();
-                candidate.Status = CandidateStatus.NEW.ToString();
-                candidate.ModifiedDate = DateTime.UtcNow;
-                candidate.CreatedDate = DateTime.UtcNow;
-
-                await _context.SaveAsync(candidate);
-
-                return candidate;
-            }
-
-            return null;
-        }
-
         public async Task<Candidate> UpdateCandidate(string userId, Candidate updatedCandidate)
         {
             var candidate = await GetCandidate(updatedCandidate.TeamId, updatedCandidate.CandidateId);
@@ -143,7 +124,7 @@ namespace CafApi.Services
                 BucketName = "interviewtime",
                 Key = $"teams/{teamId}/candidates/{candidateId}/{filename}",
                 Verb = HttpVerb.GET,
-                Expires = DateTime.Now.AddDays(30)
+                Expires = DateTime.Now.AddMinutes(30)
             };
 
             return _s3Client.GetPreSignedURL(request);

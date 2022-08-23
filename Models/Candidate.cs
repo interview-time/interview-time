@@ -17,6 +17,8 @@ namespace CafApi.Models
 
         public string Email { get; set; }
 
+        public string Phone { get; set; }
+
         public string Position { get; set; }
 
         public string ResumeFile { get; set; }
@@ -31,12 +33,14 @@ namespace CafApi.Models
 
         public bool Archived { get; set; }
 
-        public string CreatedByUserId { get; set; }
+        public string Owner { get; set; }
+
+        public string ModifiedBy { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
     }
 }
