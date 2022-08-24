@@ -1,5 +1,7 @@
 import { Roles } from "../../utils/constants";
 import { Team, UserProfile } from "../../store/models";
+import { RootState } from "../state-models";
+import { selectActiveTeam } from "./selector";
 
 const selectCurrentTeam = (profile: UserProfile): Team | undefined =>
     profile.teams?.find(team => team.teamId === profile.currentTeamId);
@@ -19,4 +21,13 @@ export const canCancelInvite = (roles: string[], isOwner: boolean) => {
     }
 
     return roles.some(role => role === Roles.ADMIN);
+};
+
+export const canAddCandidate = (state: RootState) => {
+    const team = selectActiveTeam(state.user.profile);
+    if (team) {
+        return team.roles.some(role => role !== Roles.INTERVIEWER);
+    }
+
+    return false;
 };

@@ -25,6 +25,7 @@ import {
     routeTemplateLibrary,
     routeTemplatePreview,
     routeTemplates,
+    routeCandidateAdd,
     routeChallenge,
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
@@ -53,6 +54,7 @@ import TeamProfile from "./pages/account/team-profile";
 import TeamMembers from "./pages/account/team-members";
 import TeamBilling from "./pages/account/team-billing";
 import Challenge from "./pages/challenge/challenge-details";
+import CandidateAdd from "./pages/candidate-add/candidate-add";
 
 function App({ history }) {
     useEffect(() => {
@@ -99,6 +101,8 @@ function App({ history }) {
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
             <PrivateRoute path={routeSubscription()} exact component={Subscription} />
+            <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
+
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
             <Route path={routeSharedScorecard()} exact component={SharedScorecard} />
             <Route path={routeChallenge()} exact component={Challenge} />

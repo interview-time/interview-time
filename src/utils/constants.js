@@ -178,3 +178,8 @@ export const ChallengeStatus = {
     SentToCandidate: "SentToCandidate",
     SolutionSubmitted: "SolutionSubmitted"
 };
+export const CandidatesFilter = {
+    All: "All",
+    Current: "Current",
+    Archived: "Archived"
+}

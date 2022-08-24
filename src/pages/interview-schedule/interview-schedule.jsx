@@ -23,7 +23,7 @@ import {
     formatDateISO,
     generateTimeSlots,
     parseDateISO,
-    timePickerFormat
+    timePickerFormat,
 } from "../../utils/date-fns";
 import { filterOptionLabel, interviewsPositions } from "../../utils/filters";
 import Spinner from "../../components/spinner/spinner";
@@ -543,7 +543,6 @@ const InterviewSchedule = ({
 
                         {createCandidate && (
                             <CreateCandidate
-                                teamId={profile.currentTeamId}
                                 onSave={candidateName => {
                                     var selectedCandidates = candidates.filter(c => c.candidateName === candidateName);
 

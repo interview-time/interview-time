@@ -1,4 +1,10 @@
-export const LOAD_CANDIDATES = "LOAD_CANDIDATES";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
+import axios from "axios";
+import { config } from "../common";
+import { logError } from "../../utils/log";
+
+export const SET_LOADING = "SET_LOADING";
+export const SET_ERROR = "SET_ERROR";
 export const SET_CANDIDATES = "SET_CANDIDATES";
 export const CREATE_CANDIDATE = "CREATE_CANDIDATE";
 export const UPDATE_CANDIDATE = "UPDATE_CANDIDATE";
@@ -6,19 +12,42 @@ export const DELETE_CANDIDATE = "DELETE_CANDIDATE";
 export const GET_UPLOAD_URL = "GET_UPLOAD_URL";
 export const SET_UPLOAD_URL = "SET_UPLOAD_URL";
 
-export function loadCandidates(forceFetch = false) {
-    return (dispatch, getState) => {
-        const { user } = getState();
+const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 
-        dispatch({
-            type: LOAD_CANDIDATES,
-            payload: {
-                forceFetch: forceFetch,
-                teamId: user.profile.currentTeamId,
-            },
-        });
+export const setLoading = loading => ({
+    type: SET_LOADING,
+    payload: { loading },
+});
+
+export const setError = isError => ({
+    type: SET_ERROR,
+    payload: { isError },
+});
+
+export const loadCandidates =
+    (forceFetch = false) =>
+    async (dispatch, getState) => {
+        const { user, candidates } = getState();
+
+        if (forceFetch || (candidates.candidates.length === 0 && !candidates.loading)) {
+            const token = await getAccessTokenSilently();
+            const teamId = user.profile.currentTeamId;
+
+            dispatch(setLoading(true));
+            dispatch(setError(false));
+
+            try {
+                const result = await axios.get(`${BASE_URI}/team/${teamId}/candidates`, config(token));
+
+                dispatch(setCandidates(result.data?.candidates ?? []));
+            } catch (error) {
+                logError(error);
+                dispatch(setError(true));
+            } finally {
+                dispatch(setLoading(false));
+            }
+        }
     };
-}
 
 export const setCandidates = candidates => ({
     type: SET_CANDIDATES,
