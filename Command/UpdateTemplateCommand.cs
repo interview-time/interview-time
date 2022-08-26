@@ -82,7 +82,7 @@ namespace CafApi.Command
 
                 var existingChallenges = await _challengeRepository.GetChallenges(command.TeamId, challengeIds);
                 var newChallenges = new List<Challenge>();
-                
+
                 foreach (var challenge in command.Challenges)
                 {
                     var existingChallenge = existingChallenges.FirstOrDefault(ec => ec.ChallengeId == challenge.ChallengeId);
@@ -99,6 +99,12 @@ namespace CafApi.Command
                     }
                     else
                     {
+                        challenge.TeamId = command.TeamId;
+                        challenge.CreatedBy = command.UserId;
+                        challenge.ModifiedBy = command.UserId;
+                        challenge.CreatedDate = DateTime.UtcNow;
+                        challenge.ModifiedDate = DateTime.UtcNow;
+
                         newChallenges.Add(challenge);
                     }
                 }
