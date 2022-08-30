@@ -69,6 +69,12 @@ namespace CafApi.Controllers
                 var interviews = new Dictionary<string, Interview>();
                 string linkId = interview.Interviewers.Count > 1 ? Guid.NewGuid().ToString() : null;
 
+                List<string> challengeIds = null;
+                if (interview.Challenges != null && interview.Challenges.Any())
+                {
+                    challengeIds = interview.Challenges.Select(c => c.ChallengeId).ToList();
+                }
+
                 foreach (var interviewerId in interview.Interviewers)
                 {
                     var isBelongInTeam = await _permissionsService.IsBelongInTeam(interviewerId, interview.TeamId);
@@ -77,6 +83,7 @@ namespace CafApi.Controllers
                         var newInterview = interview.Clone();
                         newInterview.UserId = interviewerId;
                         newInterview.LinkId = linkId;
+                        newInterview.ChallengeIds = challengeIds;
 
                         // Demo account
                         if (UserId == _demoUserId)
