@@ -24,5 +24,7 @@ namespace CafApi.Services
         Task UnshareScorecard(string userId, string interviewId);
 
         Task<Interview> GetSharedScorecard(string token);
+
+        Task GetEngagementStats();
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -230,6 +231,35 @@ namespace CafApi.Services
             var interview = queryResult.FirstOrDefault(i => i.IsShared);
 
             return interview;
+        }
+
+        public async Task GetEngagementStats()
+        {
+            var search = _context.ScanAsync<Interview>(
+                new List<ScanCondition>
+                {
+                    new ScanCondition(nameof(Interview.Status), ScanOperator.Equal, InterviewStatus.SUBMITTED.ToString()),
+                    new ScanCondition(nameof(Interview.UserId), ScanOperator.NotEqual, "google-oauth2|100613539099514601346")                    
+                });
+
+            var interviews = await search.GetRemainingAsync();
+
+            var grouped = from interview in interviews
+                          group interview by new { interview.CreatedDate.Month, interview.CreatedDate.Year } into Period
+                          orderby Period.Key.Month descending
+                          select new
+                          {
+                              Period = Period.Key,
+                              TotalInterviews = Period.Count(),
+                              AveragePerUser = Period.GroupBy(p => p.UserId).Average(p => p.Count())
+                          };
+
+            var periods = grouped.ToList();
+
+            foreach (var period in periods)
+            {
+                Console.WriteLine($"\t{period.Period.Year} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(period.Period.Month)}: {period.TotalInterviews} {period.AveragePerUser}");
+            }
         }
     }
 }
