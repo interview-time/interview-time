@@ -27,3 +27,11 @@
 .titleOnly {
     margin-bottom: 0;
 }
+
+.subtitle {
+    color: #63737a;
+}
+
+.featured {
+    border-top: 6px solid var(--color-primary);
+}

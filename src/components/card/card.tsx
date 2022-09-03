@@ -1,6 +1,7 @@
 import styles from "./card.module.css";
 import { CSSProperties, MouseEventHandler } from "react";
 import { Typography } from "antd";
+import classNames from "classnames";
 
 const { Title } = Typography;
 
@@ -10,30 +11,32 @@ type Props = {
     style?: CSSProperties;
     className?: string;
     title?: string;
+    subtitle?: string;
     children?: JSX.Element[] | JSX.Element;
+    featured?: boolean;
 };
 
-const Card = ({ withPadding = true, onClick, style, className, title, children }: Props) => {
-    const paddingStyle = () => (withPadding ? styles.padding : styles.noPadding);
-
-    const clickStyle = () => {
-        if (onClick) {
-            return styles.clickable;
-        }
-
-        return null;
-    };
-
+const Card = ({ withPadding = true, onClick, style, className, title, subtitle, children, featured }: Props) => {
     return (
         <div
-            className={`${styles.card} ${paddingStyle()} ${clickStyle()} ${className}`}
+            className={classNames({
+                [styles.card]: true,
+                [styles.padding]: withPadding,
+                [styles.noPadding]: !withPadding,
+                [styles.clickable]: onClick,
+                [styles.featured]: featured,
+                className,
+            })}
             style={style}
             onClick={onClick}
         >
             {title && (
-                <Title level={4} className={!withPadding ? styles.title : children ? "" : styles.titleOnly}>
-                    {title}
-                </Title>
+                <>
+                    <Title level={4} className={!withPadding ? styles.title : children ? "" : styles.titleOnly}>
+                        {title}
+                    </Title>
+                    {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+                </>
             )}
 
             {children}

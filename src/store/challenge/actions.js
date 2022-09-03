@@ -1,12 +1,11 @@
 import axios from "axios";
-import { config } from "../common";
 import { logError } from "../../utils/log";
 import { ChallengeStatus } from "../../utils/constants";
 
 export const SET_CHALLENGE = "SET_CHALLENGE";
 export const SET_LOADING = "SET_LOADING";
 export const SET_ERROR = "SET_ERROR";
-export const SET_STATE = "SET_STATE";
+export const SET_STATUS = "SET_STATUS";
 
 const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 
@@ -50,7 +49,7 @@ export const submitSolution = (token, gitHubUrl) => async dispatch => {
 
         await axios.post(`${BASE_URI}/challenge/${token}`, request);
 
-        dispatch(setState(ChallengeStatus.SolutionSubmitted));
+        dispatch(setStatus(ChallengeStatus.SolutionSubmitted));
     } catch (error) {
         dispatch(setError(true));
         logError(error);
@@ -59,7 +58,7 @@ export const submitSolution = (token, gitHubUrl) => async dispatch => {
     }
 };
 
-export const setState = state => ({
-    type: SET_STATE,
-    payload: { state },
+export const setStatus = status => ({
+    type: SET_STATUS,
+    payload: { status },
 });

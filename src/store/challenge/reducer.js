@@ -1,4 +1,4 @@
-import { SET_CHALLENGE, SET_LOADING, SET_ERROR, SET_STATE } from "./actions";
+import { SET_CHALLENGE, SET_LOADING, SET_ERROR, SET_STATUS } from "./actions";
 import { log } from "../../utils/log";
 
 const initialState = {
@@ -25,9 +25,9 @@ const challengeReducer = (state = initialState, action) => {
             return { ...state, error: error };
         }
 
-        case SET_STATE: {
-            const { challengeState } = action.payload;
-            return { ...state, details: { ...state.details, state: challengeState } };
+        case SET_STATUS: {
+            const { status } = action.payload;
+            return { ...state, details: { ...state.details, status: status } };
         }
 
         default:
