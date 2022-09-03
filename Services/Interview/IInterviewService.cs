@@ -25,6 +25,6 @@ namespace CafApi.Services
 
         Task<Interview> GetSharedScorecard(string token);
 
-        Task<decimal> GetEngagementStats();
+        Task GetEngagementStats();
     }
 }

@@ -233,7 +233,7 @@ namespace CafApi.Services
             return interview;
         }
 
-        public async Task<decimal> GetEngagementStats()
+        public async Task GetEngagementStats()
         {
             var search = _context.ScanAsync<Interview>(
                 new List<ScanCondition>
@@ -260,8 +260,6 @@ namespace CafApi.Services
             {
                 Console.WriteLine($"\t{period.Period.Year} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(period.Period.Month)}: {period.TotalInterviews} {period.AveragePerUser}");
             }
-
-            return 0;
         }
     }
 }
