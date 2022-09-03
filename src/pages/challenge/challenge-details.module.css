@@ -50,8 +50,12 @@
     margin-bottom: 24px;
 }
 
-.congrats {
+.title {
     font-size: 16px;
     line-height: 24px;
     font-weight: 600;    
+}
+
+.submitSolution {
+    margin-bottom: 24px;
 }

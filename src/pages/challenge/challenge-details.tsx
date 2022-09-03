@@ -58,8 +58,13 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                             <Row gutter={24} className={styles.section}>
                                 <Col span={24}>
                                     <Card featured={true}>
-                                        <p className={styles.congrats}>🎉 Thanks for submitting your solution, {challenge.candidateName}!</p>
-                                        <p>One of the interviewers will review your solution and will let you know how did you go.</p>
+                                        <p className={styles.title}>
+                                            🎉 Thanks for submitting your solution, {challenge.candidateName}!
+                                        </p>
+                                        <p>
+                                            One of the interviewers will review your solution and will let you know how
+                                            did you go.
+                                        </p>
                                     </Card>
                                 </Col>
                             </Row>
@@ -69,7 +74,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                             <Row gutter={24} className={styles.section}>
                                 <Col span={24}>
                                     <Card>
-                                        <p>👋 Hi {challenge.candidateName},</p>
+                                        <p className={styles.title}>👋 Hi {challenge.candidateName},</p>
                                         <p>
                                             As a part of your interview process, you've been asked to complete the
                                             take-home challenge.
@@ -112,6 +117,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                             <Row gutter={24} className={styles.section}>
                                 <Col span={24}>
                                     <Card
+                                        className={styles.submitSolution}
                                         title='Submit Solution'
                                         subtitle='Please submit your solution here when you finish with the challenge'
                                         featured={true}

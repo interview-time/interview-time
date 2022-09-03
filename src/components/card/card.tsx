@@ -25,7 +25,7 @@ const Card = ({ withPadding = true, onClick, style, className, title, subtitle, 
                 [styles.noPadding]: !withPadding,
                 [styles.clickable]: onClick,
                 [styles.featured]: featured,
-                className,
+                [className ?? ""]: className,
             })}
             style={style}
             onClick={onClick}
