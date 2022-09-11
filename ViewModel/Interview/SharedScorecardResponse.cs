@@ -14,9 +14,11 @@ namespace CafApi.ViewModel
 
         public string InterviewerName { get; set; }
 
-        public DateTime InterviewStartDateTime { get; set; }
+        public DateTime InterviewDateTime { get; set; }
 
         public DateTime InterviewEndDateTime { get; set; }
+
+        public string InterviewType { get; set; }
 
         public string Status { get; set; }
 

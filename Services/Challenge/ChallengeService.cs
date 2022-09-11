@@ -61,7 +61,7 @@ namespace CafApi.Services
         public async Task<string> GetChallengeDirectUrl(string token)
         {
             var oneTimeToken = await _context.LoadAsync<OneTimeLink>(token);
-            if (oneTimeToken != null)
+            if (oneTimeToken != null && !oneTimeToken.IsExpired)
             {
                 oneTimeToken.IsExpired = oneTimeToken.IsOneTime; // invalidate token if it's one-time use
                 oneTimeToken.UsedDate = DateTime.UtcNow;

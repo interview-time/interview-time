@@ -56,5 +56,18 @@ namespace CafApi.Repository
 
             return interviews;
         }
+
+        public async Task<Interview> GetSharedScorecard(string token)
+        {
+            var config = new DynamoDBOperationConfig
+            {
+                IndexName = "Token-index"
+            };
+
+            var queryResult = await _context.QueryAsync<Interview>(token, config).GetRemainingAsync();
+            var interview = queryResult.FirstOrDefault(i => i.IsShared);
+
+            return interview;
+        }
     }
 }
