@@ -1,6 +1,9 @@
 using System.Threading.Tasks;
+using CafApi.Common;
+using CafApi.Query;
 using CafApi.Services;
 using CafApi.ViewModel;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,23 +16,20 @@ namespace CafApi.Controllers
         private readonly ITemplateService _templateService;
         private readonly ILibraryService _libraryService;
         private readonly IUserService _userService;
-        private readonly IInterviewService _interviewService;
-        private readonly ICandidateService _candidateService;
+        private readonly IMediator _mediator;
 
         public PublicController(
             ILogger<PublicController> logger,
             ITemplateService templateService,
             ILibraryService libraryService,
             IUserService userService,
-            IInterviewService interviewService,
-            ICandidateService candidateService)
+            IMediator mediator)
         {
             _logger = logger;
             _templateService = templateService;
             _libraryService = libraryService;
             _userService = userService;
-            _interviewService = interviewService;
-            _candidateService = candidateService;
+            _mediator = mediator;
         }
 
         [HttpGet("template/shared/{token}")]
@@ -76,31 +76,20 @@ namespace CafApi.Controllers
         }
 
         [HttpGet("public/scorecard/{token}")]
-        public async Task<ActionResult<SharedScorecardResponse>> GetShareScorecard(string token)
+        public async Task<ActionResult<SharedScorecardResponse>> GetShareScorecardReport(string token)
         {
-            var interview = await _interviewService.GetSharedScorecard(token);
-            if (interview == null)
+            try
             {
+                var result = await _mediator.Send(new ScorecardReportQuery { Token = token });
+
+                return Ok(result);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
                 return NotFound();
             }
-
-            var candidate = await _candidateService.GetCandidate(interview.TeamId, interview.CandidateId);
-            var interviewer = await _userService.GetProfile(interview.UserId);
-
-            return new SharedScorecardResponse
-            {
-                CandidateName = candidate?.CandidateName ?? interview.Candidate,
-                CandidateNotes = interview.CandidateNotes,
-                Position = interview.Position,
-                InterviewerName = interviewer.Name,
-                InterviewStartDateTime = interview.InterviewDateTime,
-                InterviewEndDateTime = interview.InterviewEndDateTime,
-                Status = interview.Status,
-                Decision = interview.Decision,
-                Notes = interview.Notes,
-                Structure = interview.Structure,
-                RedFlags = interview.RedFlags
-            };
         }
     }
 }

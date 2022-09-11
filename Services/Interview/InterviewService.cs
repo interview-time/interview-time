@@ -219,20 +219,7 @@ namespace CafApi.Services
                 await _context.SaveAsync(interview);
             }
         }
-
-        public async Task<Interview> GetSharedScorecard(string token)
-        {
-            var config = new DynamoDBOperationConfig
-            {
-                IndexName = "Token-index"
-            };
-
-            var queryResult = await _context.QueryAsync<Interview>(token, config).GetRemainingAsync();
-            var interview = queryResult.FirstOrDefault(i => i.IsShared);
-
-            return interview;
-        }
-
+    
         public async Task GetEngagementStats()
         {
             var search = _context.ScanAsync<Interview>(
