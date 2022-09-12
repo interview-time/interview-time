@@ -71,6 +71,10 @@ namespace CafApi.Services
                             {
                                 interview.Challenges = challenges.Where(c => interview.ChallengeIds.Contains(c.ChallengeId)).ToList();
                             }
+                            if (string.IsNullOrWhiteSpace(interview.InterviewType))
+                            {
+                                interview.InterviewType = InterviewType.INTERVIEW.ToString();
+                            }
                         }
 
                         return interviews;
