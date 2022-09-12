@@ -67,7 +67,7 @@ namespace CafApi.Services
                 .SelectMany(t => t.ChallengeIds)
                 .Distinct()
                 .ToList();
-                
+
             var challenges = await _challengeRepository.GetChallenges(teamId, challenegIds);
 
             foreach (var template in templates)
@@ -75,6 +75,10 @@ namespace CafApi.Services
                 if (template.ChallengeIds != null && template.ChallengeIds.Any())
                 {
                     template.Challenges = challenges.Where(c => template.ChallengeIds.Contains(c.ChallengeId)).ToList();
+                }
+                if (string.IsNullOrWhiteSpace(template.InterviewType))
+                {
+                    template.InterviewType = InterviewType.INTERVIEW.ToString();
                 }
             }
 
@@ -84,7 +88,7 @@ namespace CafApi.Services
         public async Task<Template> GetTemplate(string userId, string templateId)
         {
             return await _context.LoadAsync<Template>(userId, templateId);
-        }        
+        }
 
         public async Task DeleteTemplate(string userId, string templateId)
         {
