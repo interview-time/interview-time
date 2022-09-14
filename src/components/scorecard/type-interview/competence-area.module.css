@@ -1,0 +1,36 @@
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.divider {
+    width: 100%;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.competenceAreaRow {
+    padding: 16px 24px;
+}
+
+.questionAreaRow {
+    padding: 8px 24px 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.questionHolder {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+}
+
+.questionNotes {
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.divHorizontalCenter {
+    display: flex;
+    align-items: center;
+}

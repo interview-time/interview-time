@@ -32,7 +32,7 @@ const initialState = {
     interviews: [],
     loading: false,
     uploading: false,
-    sharedScorecards: [],
+    interviewsShared: [],
     generatingLink: false,
 };
 
@@ -121,6 +121,8 @@ const interviewsReducer = (state = initialState, action) => {
             const { interview } = action.payload;
 
             interview.modifiedDate = formatDateISO(new Date());
+
+            console.log(interview)
 
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))
@@ -234,8 +236,8 @@ const interviewsReducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                sharedScorecards: [
-                    ...state.sharedScorecards.filter(scorecard => scorecard.token !== token),
+                interviewsShared: [
+                    ...state.interviewsShared.filter(scorecard => scorecard.token !== token),
                     { ...scorecard, token: token },
                 ],
             };

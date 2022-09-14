@@ -7,7 +7,6 @@ import {
     RESET_TEAM,
     REMOVE_INVITE,
 } from "./actions";
-import { log } from "../../utils/log";
 
 const initialState = {
     pendingInvites: [],
@@ -18,8 +17,6 @@ const initialState = {
 };
 
 const teamsReducer = (state = initialState, action) => {
-    log(action.type);
-
     switch (action.type) {
         case SET_PENDING_INVITES_LOADING: {
             const { loading } = action.payload;

@@ -4,16 +4,20 @@ import { Rate, Space, Tooltip } from "antd";
 import { defaultTo } from "lodash/util";
 import { CrossCircleIcon } from "../../utils/icons";
 import { QuestionAssessment } from "../../utils/constants";
+import { log } from "../../utils/log";
+
+export const MAX_ASSESSMENT = 3;
 
 /**
  *
  * @param {number} defaultValue
  * @param {boolean} disabled
+ * @param {boolean} hideNoAssessment
  * @param onChange
  * @returns {JSX.Element}
  * @constructor
  */
-const AssessmentCheckbox = ({ defaultValue, disabled, onChange }) => {
+const AssessmentCheckbox = ({ defaultValue, disabled, hideNoAssessment, onChange }) => {
     const [value, setValue] = useState(defaultValue);
 
     const onNoAnswerClicked = () => {
@@ -31,32 +35,34 @@ const AssessmentCheckbox = ({ defaultValue, disabled, onChange }) => {
         if (!disabled) {
             setValue(value);
             onChange?.(value);
-            console.log("onStarsChanged", value);
+            log("onStarsChanged", value);
         }
     };
 
     return (
         <Space>
             <Rate
-                count={3}
+                count={MAX_ASSESSMENT}
                 defaultValue={defaultTo(defaultValue, 0)}
                 disabled={disabled}
                 onChange={onStarsChanged}
                 value={value}
                 tooltips={["Poor answer", "Good answer", "Excellent answer"]}
             />
-            <div
-                className={`${styles.crossHolder} ${
-                    value === QuestionAssessment.UNANSWERED ? "assessed" : "not-assessed"
-                }`}
-                onClick={onNoAnswerClicked}
-            >
-                <Tooltip title='No answer'>
-                    <CrossCircleIcon
-                        style={{ color: value === QuestionAssessment.UNANSWERED ? "#EF4444" : "#D2D5DA" }}
-                    />
-                </Tooltip>
-            </div>
+            {!hideNoAssessment && (
+                <div
+                    className={`${styles.crossHolder} ${
+                        value === QuestionAssessment.UNANSWERED ? "assessed" : "not-assessed"
+                    }`}
+                    onClick={onNoAnswerClicked}
+                >
+                    <Tooltip title='No answer'>
+                        <CrossCircleIcon
+                            style={{ color: value === QuestionAssessment.UNANSWERED ? "#EF4444" : "#D2D5DA" }}
+                        />
+                    </Tooltip>
+                </div>
+            )}
         </Space>
     );
 };

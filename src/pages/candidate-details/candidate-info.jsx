@@ -10,7 +10,7 @@ import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import { Option } from "antd/lib/mentions";
 import { AlertIcon, ProfileIcon } from "../../utils/icons";
 import Avatar from "antd/es/avatar/avatar";
-import { CandidateInfoSection } from "../interview-scorecard/interview-sections";
+import { CandidateInfo as CandidateInfoSection } from "../../components/scorecard/candidate-info";
 
 /**
  *

@@ -100,11 +100,6 @@ export function findInterviewGroupQuestions(group, categories) {
     return group.questions.map(q => q.questionId).map(id => findQuestionInCategories(id, categories));
 }
 
-/**
- *
- * @param {(Interview|Template)} interview
- * @returns {[String]}
- */
 export function interviewToTags(interview) {
     let tags = new Set();
     interview.structure.groups.forEach(group => {

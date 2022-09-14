@@ -18,7 +18,7 @@ import { CandidateColumn, DateColumn, InterviewColumn, StatusColumn } from "../.
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { InterviewData, selectUncompletedInterviewData } from "../../store/interviews/selector";
-import { TeamRole, UserProfile } from "../../store/models";
+import { TeamRole, Template, UserProfile } from "../../store/models";
 import { RootState } from "../../store/state-models";
 import { selectUserRole } from "../../store/team/selector";
 

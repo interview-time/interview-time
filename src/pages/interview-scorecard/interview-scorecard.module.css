@@ -160,7 +160,6 @@
 .decisionCard {
     border-top: 6px solid #8c2be3;
     width: 100%;
-    margin-top: 30px;
 }
 
 .questionNotes {
@@ -203,21 +202,4 @@
 
 .reportInterviewRight {
     justify-self: right;
-}
-
-.shareLinkRow {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 20px;
-}
-
-.shareTokenInput {
-    background-color: #f5f5f5;
-    pointer-events: none;
-}
-
-.shareLinkFineprint {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
 }

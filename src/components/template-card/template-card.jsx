@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
 import { routeInterviewAddFromTemplate, routeTemplatePreview } from "../../utils/route";
-import { TemplateCategories } from "../../utils/constants";
+import { getInterviewTypeDescription} from "../../utils/constants";
 import styles from "./template-card.module.css";
 import Card from "../card/card";
 import { defaultTo } from "lodash/util";
@@ -32,12 +32,17 @@ const TemplateCard = ({ template }) => {
 
     const getCategoriesLabel = () => pluralize("CATEGORY", defaultTo(template.structure.groups?.length, 0), true);
 
-    const getDescriptionLabel = () =>
-        defaultTo(template.description, TemplateCategories.find(category => category.key === template.type)?.title);
+    const getDescriptionLabel = () => {
+        if (template.description && template.description.length > 0) {
+            return template.description
+        }
+        return getInterviewTypeDescription(template.interviewType);
+    }
+
     return (
         <>
             <Card className={styles.card}>
-                <TemplateImage templateType={template.type} />
+                <TemplateImage interviewType={template.interviewType} />
                 <div className={styles.tagHolder}>
                     <DemoTag isDemo={template.isDemo} />
                 </div>

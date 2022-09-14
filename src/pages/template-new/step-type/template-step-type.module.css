@@ -1,0 +1,27 @@
+.rootCol {
+    margin-top: 96px;
+}
+
+.list {
+    margin-top: 32px;
+}
+
+.card {
+    padding: 16px;
+    cursor: pointer;
+}
+
+.cardSelected {
+    padding: 16px;
+    cursor: pointer;
+    border: 1px solid #8C2BE3;
+}
+
+.cardImage {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.cardTitle {
+    margin-top: 16px;
+}

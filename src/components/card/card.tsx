@@ -12,7 +12,7 @@ type Props = {
     className?: string;
     title?: string;
     subtitle?: string;
-    children?: JSX.Element[] | JSX.Element;
+    children?: ReactElement | ReactElement[] | any;
     featured?: boolean;
 };
 
