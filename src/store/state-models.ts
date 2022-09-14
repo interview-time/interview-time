@@ -1,10 +1,20 @@
-import { Candidate, Interview, TeamDetails, TeamInvite, TeamMember, UserProfile } from "./models";
+import {
+    Candidate,
+    Interview,
+    LibraryTemplate, SharedInterview,
+    TeamDetails,
+    TeamInvite,
+    TeamMember,
+    Template,
+    UserProfile
+} from "./models";
 
 export interface RootState {
     user: UserState;
     team: TeamState;
     interviews: InterviewState;
     candidates: CandidateState;
+    templates: TemplateState;
 }
 
 export interface UserState {
@@ -20,10 +30,18 @@ export interface TeamState {
 
 export interface InterviewState {
     interviews: Interview[];
-    sharedScorecards: any[];
+    interviewsShared: SharedInterview[];
     loading: boolean;
+    uploading: boolean;
+    generatingLink: boolean;
 }
 
 export interface CandidateState {
     candidates: Candidate[];
+}
+
+export interface TemplateState {
+    templates: Template[];
+    library: LibraryTemplate[];
+    sharedTemplate: Template | undefined | null;
 }

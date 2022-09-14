@@ -1,0 +1,27 @@
+.rootContainer {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-background);
+}
+
+.stepLabel {
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #6B7280;
+}
+
+.stepLabelActive {
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #8C2BE3;
+}
+
+.stepDescription {
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: 500;
+}

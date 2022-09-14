@@ -1,0 +1,38 @@
+.column {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+    padding-bottom: 32px;
+    padding-top: 32px;
+}
+
+.reportInterviewInfoHolder {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    width: 100%;
+}
+
+.reportInterviewCenter {
+    justify-self: center;
+}
+
+.scoreHolder {
+    display: flex;
+    flex-direction: column;
+}
+
+.scoreText {
+    font-weight: bold;
+    font-size: 52px;
+    margin-bottom: 0;
+}
+
+.scoreLabel {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.reportInterviewRight {
+    justify-self: right;
+}

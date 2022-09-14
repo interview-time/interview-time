@@ -75,6 +75,11 @@ export const routeTeamJoin = () => "/team/join/:id";
 
 export const routeSharedScorecard = () => "/public/scorecard/:token";
 
+export const routeInterviewChallengeLiveCoding = token => {
+    const url = "/public/interview/challenge/live-coding/:token";
+    return token ? url.replace(":token", token) : url;
+};
+
 export const routeSubscription = () => "/subscription";
 
 export const getParameterByName = (name, url = window.location.href) => {
@@ -87,3 +92,5 @@ export const getParameterByName = (name, url = window.location.href) => {
 };
 
 export const getHost = () => window.location.protocol.concat("//").concat(window.location.host);
+
+export const getApiUrl = () => process.env.REACT_APP_API_URL;

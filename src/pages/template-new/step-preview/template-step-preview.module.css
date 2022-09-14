@@ -1,0 +1,19 @@
+.rootCol {
+    padding: 36px;
+}
+
+.cardSpace {
+    margin-top: 32px;
+}
+
+.infoCard {
+    background: #F4EAFC;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.infoText {
+    color: #541A88;
+    font-weight: 500;
+    margin-left: 12px;
+}

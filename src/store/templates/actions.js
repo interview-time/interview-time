@@ -58,12 +58,19 @@ export function addTemplate(template) {
     };
 }
 
-export const updateTemplate = template => ({
-    type: UPDATE_TEMPLATE,
-    payload: {
-        template,
-    },
-});
+export const updateTemplate = template => {
+    return (dispatch, getState) => {
+        const { user } = getState();
+
+        dispatch({
+            type: UPDATE_TEMPLATE,
+            payload: {
+                template: template,
+                teamId: user.profile.currentTeamId,
+            },
+        });
+    };
+};
 
 export const deleteTemplate = templateId => ({
     type: DELETE_TEMPLATE,

@@ -39,9 +39,11 @@ const templatesReducer = (state = initialState, action) => {
         case LOAD_TEMPLATES: {
             const { forceFetch, teamId } = action.payload;
 
+            const url = `${process.env.REACT_APP_API_URL}/team/${teamId}/templates`
+
             if (forceFetch || (state.templates.length === 0 && !state.loading)) {
                 getAccessTokenSilently()
-                    .then(token => axios.get(`${URL}/${teamId}`, config(token)))
+                    .then(token => axios.get(url, config(token)))
                     .then(res => store.dispatch(setTemplates(res.data || [])))
                     .catch(reason => console.error(reason));
 
@@ -107,8 +109,10 @@ const templatesReducer = (state = initialState, action) => {
             template.templateId = Date.now().toString();
             template.teamId = teamId;
 
+            const url = `${process.env.REACT_APP_API_URL}/team/${teamId}/template`
+
             getAccessTokenSilently()
-                .then(token => axios.post(URL, template, config(token)))
+                .then(token => axios.post(url, template, config(token)))
                 .then(() => log(`Template added: ${JSON.stringify(template)}`))
                 .then(() => {
                     store.dispatch(loadTemplates(true));
@@ -119,10 +123,12 @@ const templatesReducer = (state = initialState, action) => {
         }
 
         case UPDATE_TEMPLATE: {
-            const { template } = action.payload;
+            const { template, teamId } = action.payload;
+
+            const url = `${process.env.REACT_APP_API_URL}/team/${teamId}/template`
 
             getAccessTokenSilently()
-                .then(token => axios.put(URL, template, config(token)))
+                .then(token => axios.put(url, template, config(token)))
                 .then(() => log(`Template updated: ${JSON.stringify(template)}`))
                 .then(() => store.dispatch(loadTemplates(true)))
                 .catch(reason => console.error(reason));

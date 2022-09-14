@@ -6,6 +6,7 @@ import {
     routeCandidates,
     routeHome,
     routeInterviewAdd,
+    routeInterviewChallengeLiveCoding,
     routeInterviewDetails,
     routeInterviewReport,
     routeInterviews,
@@ -32,26 +33,27 @@ import Interviews from "./pages/interviews/interviews";
 import InterviewScorecard from "./pages/interview-scorecard/interview-scorecard";
 import InterviewSchedule from "./pages/interview-schedule/interview-schedule";
 import Templates from "./pages/templates/templates";
-import TemplateEdit from "./pages/template-edit/template-edit";
 import Reports from "./pages/reports/reports";
 import Profile from "./pages/account/profile";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
 import ReactGA from "react-ga";
-import TemplateNew from "./pages/template-library/template-library";
+import TemplateLibrary from "./pages/template-library/template-library";
+import TemplateNew from "./pages/template-new/template-new";
 import LibraryTemplatePreview from "./pages/template-preview-library/library-template-preview";
 import { useAuth0 } from "./react-auth0-spa";
 import TemplatePreview from "./pages/template-preview/template-preview";
 import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
-import InterviewReport from "./pages/interview-scorecard/interview-report";
+import InterviewReport from "./pages/interview-report/interview-report";
 import Candidates from "./pages/candidates/candidates";
 import CandidateDetails from "./pages/candidate-details/candidate-details";
-import SharedScorecard from "./pages/shared-scorecard/shared-scorecard";
 import Subscription from "./pages/subscription/subscription";
 import TeamProfile from "./pages/account/team-profile";
 import TeamMembers from "./pages/account/team-members";
 import TeamBilling from "./pages/account/team-billing";
+import InterviewChallengeLiveCoding from "./pages/interview-challenge/interview-challenge-live-coding";
+import InterviewReportShared from "./pages/interview-report/interview-report-shared";
 import CandidateAdd from "./pages/candidate-add/candidate-add";
 
 function App({ history }) {
@@ -86,9 +88,9 @@ function App({ history }) {
             <PrivateRoute path={routeInterviewScorecard()} exact component={InterviewScorecard} />
             <PrivateRoute path={routeInterviewReport()} exact component={InterviewReport} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
-            <PrivateRoute path={routeTemplateBlank()} exact component={TemplateEdit} />
-            <PrivateRoute path={routeTemplateLibrary()} exact component={TemplateNew} />
-            <PrivateRoute path={routeTemplateEdit()} exact component={TemplateEdit} />
+            <PrivateRoute path={routeTemplateBlank()} exact component={TemplateNew} />
+            <PrivateRoute path={routeTemplateLibrary()} exact component={TemplateLibrary} />
+            <PrivateRoute path={routeTemplateEdit()} exact component={TemplateNew} />
             <PrivateRoute path={routeTemplatePreview()} exact component={TemplatePreview} />
             <PrivateRoute path={routeLibraryTemplatePreview()} exact component={LibraryTemplatePreview} />
             <PrivateRoute path={routeProfile()} exact component={Profile} />
@@ -100,9 +102,9 @@ function App({ history }) {
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
             <PrivateRoute path={routeSubscription()} exact component={Subscription} />
             <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
-
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
-            <Route path={routeSharedScorecard()} exact component={SharedScorecard} />
+            <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
+            <Route path={routeInterviewChallengeLiveCoding()} exact component={InterviewChallengeLiveCoding} />
         </Switch>
     );
 }

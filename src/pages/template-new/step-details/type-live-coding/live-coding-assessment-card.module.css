@@ -1,0 +1,74 @@
+.cardSpace {
+    margin-top: 32px;
+}
+
+.groupTitle {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.assessmentsTable {
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    margin-top: 16px;
+}
+
+.questionDragging {
+    background-color: white;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-left: 16px;
+    z-index: 1000;
+}
+
+.questionDragging td {
+    visibility: visible;
+    z-index: 1000;
+}
+
+.questionDragging .questionVisible {
+    visibility: visible;
+    z-index: 1000;
+    flex-grow: 1;
+    padding-left: 32px;
+}
+
+.questionDragging .dragVisible {
+    visibility: visible;
+    z-index: 1000;
+}
+
+.questionDragging .assessmentVisible {
+    visibility: visible;
+    z-index: 1000;
+    padding-right: 28px;
+}
+
+.questionDragging .taskIconVisible {
+    visibility: visible;
+    z-index: 1000;
+    padding-right: 28px;
+}
+
+.reorderIcon {
+    cursor: grab;
+    font-size: 20px;
+}
+
+.questionsCard {
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    margin-top: 16px;
+}
+
+.row {
+    cursor: pointer;
+}
+
+.assessmentsImage {
+    display: block;
+    margin: 16px auto;
+    height: 128px;
+}

@@ -1,5 +1,5 @@
 import styles from "./card.module.css";
-import { CSSProperties, MouseEventHandler } from "react";
+import { CSSProperties, MouseEventHandler, ReactElement } from "react";
 
 /**
  *
@@ -17,7 +17,7 @@ type Props = {
     onClick?: MouseEventHandler;
     style?: CSSProperties;
     className?: string;
-    children: JSX.Element[] | JSX.Element;
+    children: ReactElement | ReactElement[] | any;
 };
 
 const Card = ({ withPadding = true, onClick, style, className, children }: Props) => {
