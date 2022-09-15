@@ -36,6 +36,7 @@ import Text from "antd/lib/typography/Text";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 import { selectProfileName } from "../../store/user/selector";
+import { Logo } from "../logo/logo";
 
 /**
  * @typedef {Object} ActiveTeam
@@ -185,14 +186,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                 className={styles.globalSider}
             >
                 <div className={styles.globalSiderContainer}>
-                    <div className={styles.logoHolder}>
-                        <img
-                            alt='InterviewTime'
-                            src={process.env.PUBLIC_URL + "/logo192.png"}
-                            className={styles.logo}
-                        />
-                        <span className={styles.logoText}>InterviewTime</span>
-                    </div>
+                    <Logo className={styles.logoHolder}/>
                     <Menu
                         theme='light'
                         mode='vertical'

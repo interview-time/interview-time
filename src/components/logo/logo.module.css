@@ -1,0 +1,15 @@
+.logoDiv {
+    display: flex;
+    align-items: center;
+}
+
+.logoText {
+    font-family: "Inter var", "system-ui", serif;
+    font-weight: 600;
+    font-size: 20px;
+    margin-left: 12px;
+}
+
+.logoImage {
+    height: var(--logo-height);
+}

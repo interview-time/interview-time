@@ -6,6 +6,7 @@ import Title from "antd/lib/typography/Title";
 import { getApiUrl } from "../../utils/route";
 import styles from "./interview-challenge-live-coding.module.css";
 import { useParams } from "react-router-dom";
+import { Logo } from "../../components/logo/logo";
 
 const InterviewChallengeLiveCoding = () => {
     // @ts-ignore
@@ -16,7 +17,8 @@ const InterviewChallengeLiveCoding = () => {
         <Row className={styles.rootContainer}>
             <Col span={24} xxl={{ span: 8, offset: 8 }} xl={{ span: 8, offset: 8 }} lg={{ span: 12, offset: 6 }}>
                 <Card style={{ marginTop: 32 }}>
-                    <img alt='Interviewer' src={process.env.PUBLIC_URL + "/logo+text.png"} className={styles.logo} />
+                    <Logo />
+                    <Divider />
                     <Title level={4} style={{ marginTop: 12 }}>
                         Code Challenge
                     </Title>

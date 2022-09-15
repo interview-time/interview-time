@@ -8,13 +8,13 @@ import { SharedInterview, TeamMember, TeamRole } from "../../store/models";
 import Spinner from "../../components/spinner/spinner";
 import { Result } from "antd";
 import styles from "./interview-report.module.css";
-import logo from "../../assets/logo-horiz.png";
 import Card from "../../components/card/card";
 import { getDecisionColor } from "../../utils/assessment";
 import Title from "antd/lib/typography/Title";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 import ScorecardReportSection from "../../components/scorecard/scorecard-report-section";
 import { v4 as uuidv4 } from "uuid";
+import { Logo } from "../../components/logo/logo";
 
 type Props = {
     interview: SharedInterview | undefined;
@@ -44,9 +44,7 @@ const InterviewReportShared = ({ interview, interviewers, loading, getSharedScor
     return (
         <div className={styles.rootContainer}>
             <div className={styles.header}>
-                <a href='https://interviewtime.io'>
-                    <img alt='InterviewTime' src={logo} className={styles.logo} />
-                </a>
+                <Logo />
             </div>
 
             <ScorecardReportSection

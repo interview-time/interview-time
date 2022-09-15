@@ -6,6 +6,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import Paragraph from "antd/lib/typography/Paragraph";
 import { routeHome } from "../../utils/route";
 import { setJoinTeam } from "../../utils/storage";
+import { Logo } from "../../components/logo/logo";
 
 const { Text, Link } = Typography;
 const JoinTeam = () => {
@@ -88,7 +89,8 @@ const JoinTeam = () => {
         <Row className={styles.rootContainer}>
             <Col span={24} xxl={{ span: 8, offset: 8 }} xl={{ span: 8, offset: 8 }} lg={{ span: 12, offset: 6 }}>
                 <Card style={{ marginTop: 12 }}>
-                    <img alt='Interviewer' src={process.env.PUBLIC_URL + "/logo+text.png"} className={styles.logo} />
+                    <Logo />
+                    <Divider />
                     <Title level={3} style={{ marginTop: 12 }}>
                         Team Invitation
                     </Title>
