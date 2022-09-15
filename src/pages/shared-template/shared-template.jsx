@@ -8,6 +8,7 @@ import { routeTemplateBlankFromSharedTemplate } from "../../utils/route";
 import Spinner from "../../components/spinner/spinner";
 import { loadSharedTemplate } from "../../store/templates/actions";
 import styles from "./shared-template.module.css";
+import { Logo } from "../../components/logo/logo";
 
 const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
     const history = useHistory();
@@ -24,7 +25,7 @@ const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
     if (!loading && !template) {
         return (
             <div className={styles.emptyState}>
-                <img alt='Interviewer' src={process.env.PUBLIC_URL + "/logo+text.png"} className={styles.logo} />
+                <Logo />
                 <Result
                     className={styles.notFound}
                     status='404'
@@ -49,7 +50,7 @@ const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
         <Row className={styles.rootContainer}>
             <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                 <Card className={styles.row}>
-                    <img alt='Interviewer' src={process.env.PUBLIC_URL + "/logo+text.png"} className={styles.logo} />
+                    <Logo />
                     <div className={styles.header}>{template.title}</div>
                     <Text type='secondary'>INTERVIEW TEMPLATE</Text>
 

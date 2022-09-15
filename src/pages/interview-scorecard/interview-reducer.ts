@@ -1,5 +1,5 @@
 import {
-    Challenge, ChallengeDetails,
+    ChallengeDetails,
     Interview,
     InterviewAssessment,
     InterviewQuestion,
