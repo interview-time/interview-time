@@ -75,12 +75,12 @@ export const routeTeamJoin = () => "/team/join/:id";
 
 export const routeSharedScorecard = () => "/public/scorecard/:token";
 
-export const routeInterviewChallengeLiveCoding = token => {
-    const url = "/public/interview/challenge/live-coding/:token";
+export const routeLiveCodingChallenge = token => {
+    const url = "/public/challenge/live-coding/:token";
     return token ? url.replace(":token", token) : url;
 };
 
-export const routeChallenge = () => "/challenge/:token";
+export const routeTakeHomeChallenge = () => "/public/challenge/take-home/:token";
 
 export const routeSubscription = () => "/subscription";
 

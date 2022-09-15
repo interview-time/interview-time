@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Challenge } from "../../store/models";
+import { CandidateChallenge } from "../../../store/models";
 import { Button, Col, Row, Form, Input, Typography, message } from "antd";
-import File from "../../components/file/file";
-import Card from "../../components/card/card";
-import styles from "./challenge-details.module.css";
-import { RootState } from "../../store/state-models";
-import { loadChallenge, submitSolution } from "../../store/challenge/actions";
-import { ChallengeStatus } from "../../utils/constants";
+import File from "../../../components/file/file";
+import Card from "../../../components/card/card";
+import styles from "./take-home-challenge.module.css";
+import { RootState } from "../../../store/state-models";
+import { loadChallenge, submitSolution } from "../../../store/challenge/actions";
+import { ChallengeStatus } from "../../../utils/constants";
 
-const { Paragraph, Text } = Typography;
+const { Text } = Typography;
 
 type Props = {
-    challenge: Challenge;
+    challenge: CandidateChallenge;
     loadChallenge: any;
     submitSolution: any;
     loading: boolean;

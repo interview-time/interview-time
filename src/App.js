@@ -6,7 +6,7 @@ import {
     routeCandidates,
     routeHome,
     routeInterviewAdd,
-    routeInterviewChallengeLiveCoding,
+    routeLiveCodingChallenge,
     routeInterviewDetails,
     routeInterviewReport,
     routeInterviews,
@@ -27,7 +27,7 @@ import {
     routeTemplatePreview,
     routeTemplates,
     routeCandidateAdd,
-    routeChallenge,
+    routeTakeHomeChallenge,
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -53,9 +53,9 @@ import Subscription from "./pages/subscription/subscription";
 import TeamProfile from "./pages/account/team-profile";
 import TeamMembers from "./pages/account/team-members";
 import TeamBilling from "./pages/account/team-billing";
-import InterviewChallengeLiveCoding from "./pages/interview-challenge/interview-challenge-live-coding";
+import LiveCodingChallenge from "./pages/challenge/live-coding/live-coding-challenge";
 import InterviewReportShared from "./pages/interview-report/interview-report-shared";
-import Challenge from "./pages/challenge/challenge-details";
+import TakeHomeChallenge from "./pages/challenge/take-home/take-home-challenge";
 import CandidateAdd from "./pages/candidate-add/candidate-add";
 
 function App({ history }) {
@@ -106,8 +106,8 @@ function App({ history }) {
             <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
             <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
-            <Route path={routeInterviewChallengeLiveCoding()} exact component={InterviewChallengeLiveCoding} />
-            <Route path={routeChallenge()} exact component={Challenge} />
+            <Route path={routeLiveCodingChallenge()} exact component={LiveCodingChallenge} />
+            <Route path={routeTakeHomeChallenge()} exact component={TakeHomeChallenge} />
         </Switch>
     );
 }

@@ -1,5 +1,5 @@
 import styles from "./card.module.css";
-import { CSSProperties, MouseEventHandler } from "react";
+import { CSSProperties, MouseEventHandler, ReactElement } from "react";
 import { Typography } from "antd";
 import classNames from "classnames";
 

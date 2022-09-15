@@ -1,6 +1,6 @@
 import {
     Candidate,
-    Challenge,
+    CandidateChallenge,
     Interview,
     LibraryTemplate, SharedInterview,
     TeamDetails,
@@ -43,7 +43,7 @@ export interface CandidateState {
 }
 
 export interface ChallengeState {
-    details: Challenge;
+    details: CandidateChallenge;
     loading: boolean;
     error: boolean;
 }
