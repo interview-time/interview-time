@@ -6,7 +6,7 @@ import copy from "copy-to-clipboard";
 import { LinkIcon } from "../../../utils/icons";
 import { CheckOutlined } from "@ant-design/icons";
 import { ChallengeCard } from "./challenge-card";
-import { getApiUrl, getHost, routeInterviewChallengeLiveCoding } from "../../../utils/route";
+import { getHost, routeInterviewChallengeLiveCoding } from "../../../utils/route";
 
 type Props = {
     challenges: Readonly<Challenge[]>;

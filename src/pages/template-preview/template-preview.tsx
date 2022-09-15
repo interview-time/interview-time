@@ -57,6 +57,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                 token: "",
             });
         }
+        // eslint-disable-next-line
     }, [originalTemplate]);
 
     useEffect(() => {

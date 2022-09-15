@@ -88,7 +88,7 @@ const LiveCodingAssessmentCard = ({
             <div className={styles.questionsCard}>
                 <ConfigProvider
                     renderEmpty={() => (
-                        <img src={AssessmentImage} alt='Assessment image' className={styles.assessmentsImage} />
+                        <img src={AssessmentImage} alt='Assessment' className={styles.assessmentsImage} />
                     )}
                 >
                     <Table
