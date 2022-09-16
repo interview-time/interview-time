@@ -1,0 +1,56 @@
+.rootContainer {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-background);
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    background-color: white;
+    padding: 0 32px;
+    height: 80px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.logoHolder {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.logoText {
+    font-family: "Inter var", "system-ui", serif;
+    font-weight: 600;
+    font-size: 20px;
+    margin-left: 12px;
+    color: black;
+}
+
+.logo {
+    height: var(--logo-height);
+}
+
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    margin: 32px 16px;
+}
+
+.button {
+    margin: 6px;
+}
+
+.icon {
+    font-size: 20px;
+}

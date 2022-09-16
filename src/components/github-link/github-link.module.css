@@ -1,0 +1,12 @@
+.button {
+    margin: 6px;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+.buttonSecondary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);   
+}

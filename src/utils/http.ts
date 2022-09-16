@@ -13,7 +13,7 @@ export const generateInterviewChallengeToken = (
     onSuccess: (token: string) => void,
     onError: (token: Error) => void
 ) => {
-    const url = `${getApiUrl()}/team/${teamId}/challenge/${challengeId}/interview/${interviewId}/one-time-token`;
+    const url = `${getApiUrl()}/team/${teamId}/challenge/${challengeId}/interview/${interviewId}/token`;
     getAccessTokenSilently()
         .then(token => axios.get(url, config(token)))
         .then(res => onSuccess(res.data))

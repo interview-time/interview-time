@@ -216,6 +216,16 @@ export interface Challenge {
     modifiedDate?: string;
 }
 
+export interface CandidateChallenge {
+    challengeId: string;    
+    description?: string;
+    gitHubUrl?: string;
+    modifiedDate?: string;
+    downloadFileUrl?: string;
+    candidateName: string;
+    status?: string;
+}
+
 export interface ChallengeDetails {
     challengeId: string;
 }

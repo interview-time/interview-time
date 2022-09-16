@@ -1,42 +1,44 @@
 import styles from "./card.module.css";
 import { CSSProperties, MouseEventHandler, ReactElement } from "react";
+import { Typography } from "antd";
+import classNames from "classnames";
 
-/**
- *
- * @param {boolean} padding
- * @param {function} onClick
- * @param {CSSProperties} style
- * @param {string} className
- * @param {JSX.Element} children
- * @returns {JSX.Element}
- * @constructor
- */
+const { Title } = Typography;
 
 type Props = {
     withPadding?: boolean;
     onClick?: MouseEventHandler;
     style?: CSSProperties;
     className?: string;
-    children: ReactElement | ReactElement[] | any;
+    title?: string;
+    subtitle?: string;
+    children?: ReactElement | ReactElement[] | any;
+    featured?: boolean;
 };
 
-const Card = ({ withPadding = true, onClick, style, className, children }: Props) => {
-    const paddingStyle = () => (withPadding ? styles.padding : styles.noPadding);
-
-    const clickStyle = () => {
-        if (onClick) {
-            return styles.clickable;
-        }
-
-        return null;
-    };
-
+const Card = ({ withPadding = true, onClick, style, className, title, subtitle, children, featured }: Props) => {
     return (
         <div
-            className={`${styles.card} ${paddingStyle()} ${clickStyle()} ${className}`}
+            className={classNames({
+                [styles.card]: true,
+                [styles.padding]: withPadding,
+                [styles.noPadding]: !withPadding,
+                [styles.clickable]: onClick,
+                [styles.featured]: featured,
+                [className ?? ""]: className,
+            })}
             style={style}
             onClick={onClick}
         >
+            {title && (
+                <>
+                    <Title level={4} className={!withPadding ? styles.title : children ? "" : styles.titleOnly}>
+                        {title}
+                    </Title>
+                    {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+                </>
+            )}
+
             {children}
         </div>
     );
