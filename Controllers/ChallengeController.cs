@@ -85,24 +85,24 @@ namespace CafApi.Controllers
             };
         }
 
-        [HttpGet("team/{teamId}/challenge/{challengeId}/interview/{interviewId}/one-time-token")]
+        [HttpGet("team/{teamId}/challenge/{challengeId}/interview/{interviewId}/token")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<string>> GetOneTimeToken(string teamId, string challengeId, string interviewId)
+        public async Task<ActionResult<string>> GetChallengeToken(string teamId, string challengeId, string interviewId)
         {
             if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
             {
                 return Unauthorized();
             }
 
-            var oneTimeToken = await _challengeRepository.GenerateChallengeToken(UserId, teamId, challengeId, interviewId, true);
-            if (oneTimeToken == null)
+            var challengeToken = await _challengeRepository.GenerateChallengeToken(UserId, teamId, challengeId, interviewId);
+            if (challengeToken == null)
             {
                 return NotFound();
             }
 
-            return Ok(oneTimeToken);
+            return Ok(challengeToken);
         }
 
         [HttpPost("team/{teamId}/challenge/{challengeId}/send")]

@@ -113,6 +113,22 @@ namespace CafApi.Services
         {
             interview.ModifiedDate = DateTime.UtcNow;
 
+            // expire any shared challenges
+            if (interview.Status == InterviewStatus.SUBMITTED.ToString()
+                && interview.ChallengeDetails != null)
+            {
+                var oneTimeLinks = await _challengeRepository.GetOneTimeLinks(interview.InterviewId);
+                var linksToExpire = oneTimeLinks.Where(l => !l.IsExpired).ToList();
+
+                foreach (var link in linksToExpire)
+                {
+                    link.IsExpired = true;
+                    link.ModifiedDate = DateTime.UtcNow;
+
+                    await _context.SaveAsync(link);
+                }
+            }
+
             if (interview.Structure != null && interview.Structure.Groups != null)
             {
                 foreach (var group in interview.Structure.Groups)
@@ -223,14 +239,14 @@ namespace CafApi.Services
                 await _context.SaveAsync(interview);
             }
         }
-    
+
         public async Task GetEngagementStats()
         {
             var search = _context.ScanAsync<Interview>(
                 new List<ScanCondition>
                 {
                     new ScanCondition(nameof(Interview.Status), ScanOperator.Equal, InterviewStatus.SUBMITTED.ToString()),
-                    new ScanCondition(nameof(Interview.UserId), ScanOperator.NotEqual, "google-oauth2|100613539099514601346")                    
+                    new ScanCondition(nameof(Interview.UserId), ScanOperator.NotEqual, "google-oauth2|100613539099514601346")
                 });
 
             var interviews = await search.GetRemainingAsync();

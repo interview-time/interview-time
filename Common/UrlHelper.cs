@@ -9,7 +9,7 @@ namespace CafApi.Common
 
         public static string GetChallengePageUrl(string host, string token)
         {
-            return $"{host}/challenge/{token}";
+            return $"{host}/public/challenge/take-home/{token}";
         }
 
         public static string GetInterviewPageUrl(string host, string interviewId, string teamId)

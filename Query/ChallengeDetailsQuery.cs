@@ -19,7 +19,9 @@ namespace CafApi.Query
 
         public string Description { get; set; }
 
-        public string ChallengeDownloadUrl { get; set; }
+        public string DownloadFileUrl { get; set; }
+
+        public string GitHubUrl { get; set; }
 
         public string CandidateName { get; set; }
 
@@ -67,7 +69,8 @@ namespace CafApi.Query
                 Status = interview.ChallengeDetails.Status.ToString(),
                 SolutionSubmittedOn = interview.ChallengeDetails.SolutionSubmittedOn,
                 Description = challenge.Description,
-                ChallengeDownloadUrl = !string.IsNullOrWhiteSpace(challenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
+                DownloadFileUrl = !string.IsNullOrWhiteSpace(challenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
+                GitHubUrl = challenge.GitHubUrl,
                 CandidateName = candidate?.CandidateName ?? interview.Candidate,
                 Position = interview.Position,
                 CreatedDate = oneTimeToken.CreatedDate

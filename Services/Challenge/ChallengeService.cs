@@ -64,7 +64,7 @@ namespace CafApi.Services
             if (oneTimeToken != null && !oneTimeToken.IsExpired)
             {
                 oneTimeToken.IsExpired = oneTimeToken.IsOneTime; // invalidate token if it's one-time use
-                oneTimeToken.UsedDate = DateTime.UtcNow;
+                oneTimeToken.ModifiedDate = DateTime.UtcNow;
 
                 await _context.SaveAsync(oneTimeToken);
 
