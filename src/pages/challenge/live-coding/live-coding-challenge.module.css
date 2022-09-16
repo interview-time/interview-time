@@ -42,3 +42,15 @@
     align-items: center;
     justify-content: center;
 }
+
+.card {
+    margin: 32px 16px;
+}
+
+.button {
+    margin: 6px;
+}
+
+.icon {
+    font-size: 20px;
+}

@@ -221,7 +221,7 @@ export interface CandidateChallenge {
     description?: string;
     gitHubUrl?: string;
     modifiedDate?: string;
-    challengeDownloadUrl?: string;
+    downloadFileUrl?: string;
     candidateName: string;
     status?: string;
 }

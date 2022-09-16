@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Row } from "antd";
+import { Button, Col, Divider, Result, Row } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import Card from "../../../components/card/card";
@@ -9,16 +9,19 @@ import { useParams } from "react-router-dom";
 import { RootState } from "../../../store/state-models";
 import { loadChallenge } from "../../../store/challenge/actions";
 import { CandidateChallenge } from "../../../store/models";
+import { Logo } from "../../../components/logo/logo";
+import GitHubLink from "../../../components/github-link/github-link";
+import { CloudDownloadOutlined } from "@ant-design/icons";
 
 type Props = {
     challenge: CandidateChallenge;
     loadChallenge: any;
     loading: boolean;
+    isExpired: boolean;
 };
 
-const LiveCodingChallenge = ({ challenge, loadChallenge, loading }: Props) => {
+const LiveCodingChallenge = ({ challenge, loadChallenge, loading, isExpired }: Props) => {
     const { token } = useParams<Record<string, string | undefined>>();
-    const [isExpired, setIsExpired] = useState(false);
 
     useEffect(() => {
         if (token) {
@@ -29,30 +32,35 @@ const LiveCodingChallenge = ({ challenge, loadChallenge, loading }: Props) => {
     return (
         <div className={styles.rootContainer}>
             <div className={styles.header}>
-                <a href='https://interviewtime.io' className={styles.logoHolder}>
-                    <img alt='InterviewTime' src={process.env.PUBLIC_URL + "/logo192.png"} className={styles.logo} />
-                    <span className={styles.logoText}>InterviewTime</span>
-                </a>
+                <Logo />
             </div>
 
-            {challenge && (
-                <Col span={24} xxl={{ span: 8, offset: 8 }} xl={{ span: 8, offset: 8 }} lg={{ span: 12, offset: 6 }}>
-                    <Card style={{ marginTop: 32 }}>
+            {isExpired && <Result status='404' title='Coding challenge not found or it has expired' />}
+
+            {challenge && !isExpired && (
+                <Col md={{ span: 20, offset: 2 }} xl={{ span: 14, offset: 5 }} xxl={{ span: 10, offset: 7 }}>
+                    <Card className={styles.card}>
                         <Title level={4} style={{ marginTop: 12 }}>
                             Code Challenge
                         </Title>
 
                         <div style={{ marginTop: 12 }}>{challenge.description}</div>
+
                         <Divider />
+
                         <div className={styles.buttonContainer}>
-                            <Button
-                                type='primary'
-                                disabled={isExpired}
-                                onClick={() => setIsExpired(true)}
-                                href={`${getApiUrl()}/challenge/${token}/download`}
-                            >
-                                Download Challenge
-                            </Button>
+                            {challenge.gitHubUrl && <GitHubLink url={challenge.gitHubUrl} primary={true} />}
+
+                            {challenge.downloadFileUrl && (
+                                <Button
+                                    className={styles.button}
+                                    type='primary'
+                                    href={`${process.env.REACT_APP_API_URL}${challenge.downloadFileUrl}`}
+                                >
+                                    <CloudDownloadOutlined className={styles.icon} />
+                                    Download Challenge
+                                </Button>
+                            )}
                         </div>
                     </Card>
                 </Col>
@@ -65,6 +73,7 @@ const mapStateToProps = (state: RootState) => {
     return {
         challenge: state.challenge.details,
         loading: state.challenge.loading,
+        isExpired: state.challenge.isExpired,
     };
 };
 export default connect(mapStateToProps, { loadChallenge })(LiveCodingChallenge);

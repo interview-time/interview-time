@@ -2,12 +2,13 @@ import {
     Candidate,
     CandidateChallenge,
     Interview,
-    LibraryTemplate, SharedInterview,
+    LibraryTemplate,
+    SharedInterview,
     TeamDetails,
     TeamInvite,
     TeamMember,
     Template,
-    UserProfile
+    UserProfile,
 } from "./models";
 
 export interface RootState {
@@ -46,6 +47,7 @@ export interface ChallengeState {
     details: CandidateChallenge;
     loading: boolean;
     error: boolean;
+    isExpired: boolean;
 }
 
 export interface TemplateState {

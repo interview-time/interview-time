@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { CandidateChallenge } from "../../../store/models";
-import { Button, Col, Row, Form, Input, Typography, message } from "antd";
+import { Button, Col, Row, Form, Input, Typography, message, Divider } from "antd";
 import File from "../../../components/file/file";
 import Card from "../../../components/card/card";
 import styles from "./take-home-challenge.module.css";
 import { RootState } from "../../../store/state-models";
 import { loadChallenge, submitSolution } from "../../../store/challenge/actions";
 import { ChallengeStatus } from "../../../utils/constants";
+import { Logo } from "../../../components/logo/logo";
+import GitHubLink from "../../../components/github-link/github-link";
+import { CloudDownloadOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 
@@ -45,15 +48,12 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
     return (
         <div className={styles.rootContainer}>
             <div className={styles.header}>
-                <a href='https://interviewtime.io' className={styles.logoHolder}>
-                    <img alt='InterviewTime' src={process.env.PUBLIC_URL + "/logo192.png"} className={styles.logo} />
-                    <span className={styles.logoText}>InterviewTime</span>
-                </a>
+                <Logo />
             </div>
 
             {challenge && (
                 <>
-                    <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} xxl={{ span: 16, offset: 4 }}>
+                    <Col md={{ span: 20, offset: 2 }} xl={{ span: 14, offset: 5 }} xxl={{ span: 10, offset: 7 }}>
                         {challenge.status === ChallengeStatus.SolutionSubmitted && (
                             <Row gutter={24} className={styles.section}>
                                 <Col span={24}>
@@ -80,7 +80,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                                             take-home challenge.
                                         </p>
                                         <p>
-                                            {challenge.challengeDownloadUrl
+                                            {challenge.downloadFileUrl
                                                 ? "Please complete the challenge described below using the template provided in the Supporting Files section."
                                                 : "Please complete the challenge described below."}
                                         </p>
@@ -98,21 +98,25 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                             <Col span={24}>
                                 <Card title='Challenge'>
                                     <p>{challenge.description}</p>
+
+                                    <Divider />
+
+                                    <div>
+                                        {challenge.gitHubUrl && <GitHubLink url={challenge.gitHubUrl} />}
+
+                                        {challenge.downloadFileUrl && (
+                                            <Button
+                                                className={styles.buttonSecondary}
+                                                href={`${process.env.REACT_APP_API_URL}${challenge.downloadFileUrl}`}
+                                            >
+                                                <CloudDownloadOutlined className={styles.icon} />
+                                                Download Challenge
+                                            </Button>
+                                        )}
+                                    </div>
                                 </Card>
                             </Col>
                         </Row>
-                        {challenge.challengeDownloadUrl && (
-                            <Row gutter={24} className={styles.section}>
-                                <Col span={24}>
-                                    <Card title='Supporting files'>
-                                        <File
-                                            filename='News feed application (Kotlin)'
-                                            url={`${process.env.REACT_APP_API_URL}${challenge.challengeDownloadUrl}`}
-                                        />
-                                    </Card>
-                                </Col>
-                            </Row>
-                        )}
                         {challenge.status === ChallengeStatus.SentToCandidate && (
                             <Row gutter={24} className={styles.section}>
                                 <Col span={24}>

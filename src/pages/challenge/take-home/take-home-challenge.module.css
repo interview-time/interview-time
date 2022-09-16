@@ -59,3 +59,8 @@
 .submitSolution {
     margin-bottom: 24px;
 }
+
+.buttonSecondary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);   
+}
