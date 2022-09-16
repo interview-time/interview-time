@@ -26,6 +26,6 @@ namespace CafApi.Models
         public DateTime CreatedDate { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
-        public DateTime? UsedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
     }
 }

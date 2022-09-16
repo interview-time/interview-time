@@ -133,6 +133,7 @@ namespace CafApi.Controllers
             await _interviewService.DeleteInterview(UserId, interviewId);
         }
 
+        [Obsolete]
         [HttpPatch("scorecard")]
         public async Task SubmitScoreCard([FromBody] ScoreCardRequest scoreCard)
         {

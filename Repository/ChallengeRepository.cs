@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Common;
 using CafApi.Models;
 
@@ -26,6 +27,17 @@ namespace CafApi.Repository
         public async Task<OneTimeLink> GetOneTimeLink(string token)
         {
             return await _context.LoadAsync<OneTimeLink>(token);
+        }
+
+        public async Task<List<OneTimeLink>> GetOneTimeLinks(string interviewId)
+        {
+            var search = _context.FromQueryAsync<OneTimeLink>(new QueryOperationConfig()
+            {
+                IndexName = "InterviewId-ChallengeId-index",
+                Filter = new QueryFilter(nameof(OneTimeLink.InterviewId), QueryOperator.Equal, interviewId)
+            });
+
+            return await search.GetRemainingAsync();
         }
 
         public async Task<string> GenerateChallengeToken(string userId, string teamId, string challengeId, string interviewId, bool isOneTime = false)
