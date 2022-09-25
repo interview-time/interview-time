@@ -74,14 +74,9 @@ namespace CafApi.Command
             {
                 throw new CandidateException($"Candidate doesn't have email");
             }
-
-            // Save selected challenge
-            interview.ChallengeDetails = new ChallengeDetails
-            {
-                ChallengeId = command.ChallengeId,
-                Status = ChallengeStatus.SentToCandidate,
-                SentToCandidateOn = DateTime.UtcNow
-            };
+        
+            interview.TakeHomeChallenge.Status = ChallengeStatus.SentToCandidate.ToString();
+            interview.TakeHomeChallenge.SentToCandidateOn = DateTime.UtcNow;
             interview.ModifiedDate = DateTime.UtcNow;
             
             await _context.SaveAsync(interview);

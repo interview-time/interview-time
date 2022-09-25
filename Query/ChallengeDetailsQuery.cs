@@ -66,8 +66,8 @@ namespace CafApi.Query
 
             return new ChallengeDetailsQueryResult
             {
-                Status = interview.ChallengeDetails.Status.ToString(),
-                SolutionSubmittedOn = interview.ChallengeDetails.SolutionSubmittedOn,
+                Status = interview.TakeHomeChallenge.Status.ToString(),
+                SolutionSubmittedOn = interview.TakeHomeChallenge.SolutionSubmittedOn,
                 Description = challenge.Description,
                 DownloadFileUrl = !string.IsNullOrWhiteSpace(challenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
                 GitHubUrl = challenge.GitHubUrl,

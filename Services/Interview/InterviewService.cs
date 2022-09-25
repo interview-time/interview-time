@@ -57,24 +57,15 @@ namespace CafApi.Services
                             interviews = interviews.Where(i => i.UserId == userId).ToList();
                         }
 
-                        var challenegIds = interviews
-                            .Where(t => t.ChallengeIds != null && t.ChallengeIds.Any())
-                            .SelectMany(t => t.ChallengeIds)
-                            .Distinct()
-                            .ToList();
-
-                        var challenges = await _challengeRepository.GetChallenges(teamId, challenegIds);
-
                         foreach (var interview in interviews)
                         {
-                            if (interview.ChallengeIds != null && interview.ChallengeIds.Any())
-                            {
-                                interview.Challenges = challenges.Where(c => interview.ChallengeIds.Contains(c.ChallengeId)).ToList();
-                            }
                             if (string.IsNullOrWhiteSpace(interview.InterviewType))
                             {
                                 interview.InterviewType = InterviewType.INTERVIEW.ToString();
                             }
+
+                            // support old interviews that don't have a candidate object
+                            interview.CandidateName = interview.Candidate;
                         }
 
                         return interviews;
@@ -114,8 +105,7 @@ namespace CafApi.Services
             interview.ModifiedDate = DateTime.UtcNow;
 
             // expire any shared challenges
-            if (interview.Status == InterviewStatus.SUBMITTED.ToString()
-                && interview.ChallengeDetails != null)
+            if (interview.Status == InterviewStatus.SUBMITTED.ToString())
             {
                 var oneTimeLinks = await _challengeRepository.GetOneTimeLinks(interview.InterviewId);
                 var linksToExpire = oneTimeLinks.Where(l => !l.IsExpired).ToList();

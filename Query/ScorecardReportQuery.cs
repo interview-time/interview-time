@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CafApi.Common;
@@ -42,9 +41,9 @@ namespace CafApi.Query
 
         public InterviewStructure Structure { get; set; }
 
-        public List<ChallengeItem> Challenges { get; set; }
+        public List<LiveCodingChallenge> LiveCodingChallenges { get; set; }
 
-        public ChallengeDetails ChallengeDetails { get; set; }
+        public TakeHomeChallenge TakeHomeChallenge { get; set; }
     }
 
     public class ChallengeItem
@@ -59,18 +58,15 @@ namespace CafApi.Query
     public class ScorecardReportQueryHandler : IRequestHandler<ScorecardReportQuery, ScorecardReportQueryResult>
     {
         private readonly IInterviewRepository _interviewRepository;
-        private readonly IChallengeRepository _challengeRepository;
         private readonly ICandidateService _candidateService;
 
         private readonly IUserService _userService;
 
         public ScorecardReportQueryHandler(IInterviewRepository interviewRepository,
-            IChallengeRepository challengeRepository,
             ICandidateService candidateService,
             IUserService userService)
         {
             _interviewRepository = interviewRepository;
-            _challengeRepository = challengeRepository;
             _candidateService = candidateService;
             _userService = userService;
         }
@@ -86,11 +82,6 @@ namespace CafApi.Query
             var candidate = await _candidateService.GetCandidate(interview.TeamId, interview.CandidateId);
             var interviewer = await _userService.GetProfile(interview.UserId);
 
-            if (interview.ChallengeIds != null && interview.ChallengeIds.Any())
-            {
-                interview.Challenges = await _challengeRepository.GetChallenges(interview.TeamId, interview.ChallengeIds);
-            }
-
             return new ScorecardReportQueryResult
             {
                 CandidateName = candidate?.CandidateName ?? interview.Candidate,
@@ -105,13 +96,8 @@ namespace CafApi.Query
                 Notes = interview.Notes,
                 Structure = interview.Structure,
                 RedFlags = interview.RedFlags,
-                Challenges = interview.Challenges != null ? interview.Challenges.Select(c => new ChallengeItem
-                {
-                    ChallengeId = c.ChallengeId,
-                    Name = c.Name,
-                    Description = c.Description
-                }).ToList() : null,
-                ChallengeDetails = interview.ChallengeDetails
+                LiveCodingChallenges = interview.LiveCodingChallenges,
+                TakeHomeChallenge = interview.TakeHomeChallenge,
             };
         }
     }
