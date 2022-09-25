@@ -18,6 +18,9 @@ namespace CafApi.Models
 
         public string Candidate { get; set; }
 
+        [DynamoDBIgnore]
+        public string CandidateName { get; set; }
+
         public string CandidateNotes { get; set; }
 
         public string Position { get; set; }
@@ -61,13 +64,10 @@ namespace CafApi.Models
         public bool IsShared { get; set; }
 
         public string InterviewType { get; set; }
-
-        public List<string> ChallengeIds { get; set; }
-
-        public ChallengeDetails ChallengeDetails { get; set; }
-
-        [DynamoDBIgnore]
-        public List<Challenge> Challenges { get; set; }
+        
+        public List<LiveCodingChallenge> LiveCodingChallenges { get; set; }
+        
+        public TakeHomeChallenge TakeHomeChallenge { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
@@ -76,18 +76,47 @@ namespace CafApi.Models
         public DateTime ModifiedDate { get; set; }
     }
 
-    public class ChallengeDetails
+    public class LiveCodingChallenge
     {
         public string ChallengeId { get; set; }
 
-        public ChallengeStatus Status { get; set; }
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string FileName { get; set; }
+
+        public string GitHubUrl { get; set; }
+
+        public bool Selected { get; set; }
+
+        public string ShareToken { get; set; }
+    }
+
+    public class TakeHomeChallenge
+    {
+        public string ChallengeId { get; set; }
+
+        public DateTime? Deadline { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string FileName { get; set; }
+
+        public string GitHubUrl { get; set; }
+
+        public string Status { get; set; }
 
         public List<string> SolutionGitHubUrls { get; set; }
 
         public DateTime? SentToCandidateOn { get; set; }
 
         public DateTime? SolutionSubmittedOn { get; set; }
-    }  
+
+        public string ShareToken { get; set; }
+    }
 
     public class InterviewStructure
     {

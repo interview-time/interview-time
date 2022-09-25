@@ -53,14 +53,14 @@ namespace CafApi.Command
             }
 
             var interview = await _interviewRepository.GetInterview(oneTimeToken.InterviewId);
-            if (interview == null || interview.ChallengeDetails == null)
+            if (interview == null || interview.TakeHomeChallenge == null)
             {
                 throw new ItemNotFoundException($"Interview with id ({oneTimeToken.InterviewId}) doesn't exist or challeneg is not selected.");
             }
 
-            interview.ChallengeDetails.SolutionGitHubUrls = command.GitHubUrls;
-            interview.ChallengeDetails.Status = ChallengeStatus.SolutionSubmitted;
-            interview.ChallengeDetails.SolutionSubmittedOn = DateTime.UtcNow;
+            interview.TakeHomeChallenge.SolutionGitHubUrls = command.GitHubUrls;
+            interview.TakeHomeChallenge.Status = ChallengeStatus.SolutionSubmitted.ToString();
+            interview.TakeHomeChallenge.SolutionSubmittedOn = DateTime.UtcNow;
             interview.ModifiedDate = DateTime.UtcNow;
 
             await _context.SaveAsync(interview);    

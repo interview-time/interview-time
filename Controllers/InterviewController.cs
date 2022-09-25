@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using CafApi.Repository;
+using CafApi.Command;
+using MediatR;
 
 namespace CafApi.Controllers
 {
@@ -21,6 +23,7 @@ namespace CafApi.Controllers
     [Route("interview")]
     public class InterviewController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly IInterviewService _interviewService;
         private readonly IUserRepository _userRepository;
         private readonly IPermissionsService _permissionsService;
@@ -36,13 +39,16 @@ namespace CafApi.Controllers
             }
         }
 
-        public InterviewController(ILogger<InterviewController> logger,
+        public InterviewController(
+            IMediator mediator,
+            ILogger<InterviewController> logger,
             IInterviewService interviewService,
             IUserRepository userRepository,
             IConfiguration configuration,
             IEmailService emailService,
             IPermissionsService permissionsService)
         {
+            _mediator = mediator;
             _logger = logger;
             _interviewService = interviewService;
             _userRepository = userRepository;
@@ -61,58 +67,22 @@ namespace CafApi.Controllers
         }
 
         [HttpPost()]
-        public async Task<Interview> ScheduleInterview([FromBody] Interview interview)
+        public async Task<ActionResult<Interview>> ScheduleInterview([FromBody] ScheduleInterviewCommand command)
         {
-            if (interview.Interviewers != null && interview.Interviewers.Any() && !string.IsNullOrWhiteSpace(interview.TeamId))
+            try
             {
-                Interview mainInterview = null;
-                var interviews = new Dictionary<string, Interview>();
-                string linkId = interview.Interviewers.Count > 1 ? Guid.NewGuid().ToString() : null;
+                command.UserId = UserId;
 
-                List<string> challengeIds = null;
-                if (interview.Challenges != null && interview.Challenges.Any())
-                {
-                    challengeIds = interview.Challenges.Select(c => c.ChallengeId).ToList();
-                }
+                var mainInterview = await _mediator.Send(command);
 
-                foreach (var interviewerId in interview.Interviewers)
-                {
-                    var isBelongInTeam = await _permissionsService.IsBelongInTeam(interviewerId, interview.TeamId);
-                    if (isBelongInTeam)
-                    {
-                        var newInterview = interview.Clone();
-                        newInterview.UserId = interviewerId;
-                        newInterview.LinkId = linkId;
-                        newInterview.ChallengeIds = challengeIds;
-
-                        // Demo account
-                        if (UserId == _demoUserId)
-                        {
-                            interview.IsDemo = true;
-                        }
-
-                        newInterview = await _interviewService.AddInterview(newInterview);
-                        interviews.Add(interviewerId, newInterview);
-
-                        if (newInterview.UserId == UserId)
-                        {
-                            mainInterview = newInterview;
-                        }
-                    }
-                }
-
-                // Send email notification
-                var profiles = await _userRepository.GetUserProfiles(interview.Interviewers);
-                foreach (var profile in profiles)
-                {
-                    var interviewId = interviews.GetValueOrDefault(profile.UserId)?.InterviewId;
-                    await _emailService.SendNewInterviewInvitation(profile.Email, profile.Name, interview.Candidate, interview.InterviewDateTime, interview.InterviewEndDateTime, interviewId, profile.Timezone, interview.TeamId);
-                }
-
-                return mainInterview;
+                return Ok(mainInterview);
             }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
 
-            return null;
+                return Unauthorized();
+            }
         }
 
         [HttpPut()]
