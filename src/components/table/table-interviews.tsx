@@ -23,7 +23,7 @@ export const CandidateColumn = (clickable: boolean): ColumnType<InterviewData> =
         localeCompare(a.candidate?.candidateName ?? "", b.candidate?.candidateName ?? ""),
     render: (interview: InterviewData) => {
         const getLink = () => {
-            const text = interview.candidate?.candidateName ?? "Unknown";
+            const text = interview.candidate?.candidateName ?? interview.candidateName;
             if (clickable && interview.candidateId) {
                 // candidate details available
                 return <Link to={routeCandidateDetails(interview.candidateId)}>{text}</Link>;
@@ -36,7 +36,7 @@ export const CandidateColumn = (clickable: boolean): ColumnType<InterviewData> =
         return (
             <div>
                 <DemoTag isDemo={interview.isDemo} />
-                <TableText className='fs-mask'>{getLink()}</TableText>
+                <TableText className='fs-mask'>{getLink() ?? ""}</TableText>
             </div>
         );
     },
@@ -65,6 +65,15 @@ export const InterviewColumn = (userId: string, clickable: boolean): ColumnType<
 
         return <TableText>{getLink()}</TableText>;
     },
+});
+
+export const TemplateColumn = (): ColumnType<InterviewData> => ({
+    title: <TableHeader>INTERVIEW</TableHeader>,
+    key: "templateName",
+    // @ts-ignore
+    sortDirections: ["descend", "ascend"],
+    sorter: (a: InterviewData, b: InterviewData) => localeCompare(a.templateName ?? "", b.templateName ?? ""),
+    render: (interview: InterviewData) => <TableText>{interview.templateName ?? ""}</TableText>,
 });
 
 export const DateColumn = (): ColumnType<InterviewData> => ({

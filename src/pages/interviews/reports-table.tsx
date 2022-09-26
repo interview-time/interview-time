@@ -23,7 +23,7 @@ import { TeamRole, UserProfile } from "../../store/models";
 const { Search } = Input;
 
 type Props = {
-    profile: UserProfile,
+    profile: UserProfile;
     userRole: TeamRole;
     interviews: InterviewData[];
     loading: boolean;

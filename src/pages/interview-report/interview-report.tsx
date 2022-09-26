@@ -63,7 +63,7 @@ const InterviewReport = ({
     return (
         <div className={styles.rootContainer}>
             <Header
-                title={candidate?.candidateName ?? "Loading..."}
+                title={candidate?.candidateName ?? interview.candidateName}
                 subtitle={candidate?.position ?? ""}
                 leftComponent={<Button icon={<CloseIcon />} size='large' onClick={() => history.goBack()} />}
                 rightComponent={
