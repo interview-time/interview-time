@@ -67,7 +67,7 @@ export interface Interview {
     interviewers: string[];
     structure: InterviewStructure;
     interviewType: InterviewType;
-    challenges?: Challenge[];
+    liveCodingChallenges?: LiveCodingChallenge[];
     challengeDetails?: ChallengeDetails;
 }
 
@@ -214,6 +214,16 @@ export interface Challenge {
     gitHubUrl?: string;
     fileName?: string;
     modifiedDate?: string;
+}
+
+export interface LiveCodingChallenge {
+    challengeId: string;
+    name: string;
+    description?: string;
+    gitHubUrl?: string;
+    fileName?: string;
+    selected?: boolean;
+    shareToken?: string;
 }
 
 export interface CandidateChallenge {

@@ -120,7 +120,7 @@ const InterviewSchedule = ({
             setInterview({
                 ...interview,
                 interviewType: template.interviewType,
-                challenges: template.challenges,
+                liveCodingChallenges: template.challenges,
                 templateIds: [template.templateId],
                 structure: template.structure,
                 interviewers: [profile.userId],
@@ -315,7 +315,7 @@ const InterviewSchedule = ({
             ...interview,
             templateIds: [templateId],
             interviewType: template.interviewType,
-            challenges: template.challenges,
+            liveCodingChallenges: template.challenges,
             structure: structure,
         });
     };

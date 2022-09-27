@@ -52,6 +52,13 @@
     padding-right: 28px;
 }
 
+.challengeIconsHolder {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
 .reorderIcon {
     cursor: grab;
     font-size: 20px;

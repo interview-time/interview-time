@@ -77,13 +77,13 @@ const LiveCodingChallengeCard = ({
         },
         {
             key: "assessment",
-            width: 24,
+            width: 96,
             className: styles.taskIconVisible,
             render: (challenge: Challenge) => (
-                <>
+                <div className={styles.challengeIconsHolder}>
                     {challenge.gitHubUrl && <GithubChallengeIcon />}
                     {challenge.fileName && <FileChallengeIcon />}
-                </>
+                </div>
             ),
         },
     ];

@@ -27,7 +27,7 @@ import Card from "../../components/card/card";
 import TitleBack from "../../components/title/title-back";
 import TemplateImage from "../../components/template-card/template-image";
 import { RootState } from "../../store/state-models";
-import { InterviewType, SharedTemplate, Template } from "../../store/models";
+import { InterviewType, LiveCodingChallenge, SharedTemplate, Template } from "../../store/models";
 import { selectAssessmentGroup, selectTemplate } from "../../store/templates/selector";
 import LiveCodingAssessmentCard from "../../components/scorecard/type-live-coding/assessment-card-template";
 import LiveCodingChallengeCard from "../../components/scorecard/type-live-coding/challenge-card-template";
@@ -191,7 +191,11 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                 {template.interviewType === InterviewType.LIVE_CODING && (
                     <>
                         <div className={styles.cardSpace}>
-                            <LiveCodingChallengeCard challenges={template.challenges || []} />
+                            <LiveCodingChallengeCard
+                                teamId={template.teamId}
+                                challenges={template.challenges || []}
+                                onChallengeSelectionChanged={()=> {}}
+                            />
                         </div>
                         <div className={styles.cardSpace}>
                             <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />

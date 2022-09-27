@@ -159,7 +159,7 @@ const InterviewScorecard = ({
                 message.info("Please evaluate candidates' code based on assessment criteria.");
                 return false;
             }
-            if (!interview.challengeDetails) {
+            if (!interview.liveCodingChallenges?.find(challenge => challenge.selected)) {
                 message.info("Please choose tasks to use during the interview.");
                 return false;
             }

@@ -1,4 +1,4 @@
-import { Challenge } from "../../../store/models";
+import { LiveCodingChallenge } from "../../../store/models";
 import { generateInterviewChallengeToken } from "../../../utils/http";
 import { useEffect, useState } from "react";
 import { message } from "antd";
@@ -6,14 +6,13 @@ import copy from "copy-to-clipboard";
 import { LinkIcon } from "../../../utils/icons";
 import { CheckOutlined } from "@ant-design/icons";
 import { ChallengeCard } from "./challenge-card";
-import { getApiUrl, getHost, routeLiveCodingChallenge } from "../../../utils/route";
+import { getHost, routeLiveCodingChallenge } from "../../../utils/route";
 
 type Props = {
-    challenges: Readonly<Challenge[]>;
-    selectedChallengeId?: string;
+    challenges: Readonly<LiveCodingChallenge[]>;
     teamId: string;
     interviewId: string;
-    onChallengeSelected: (challengeId: string | undefined) => void;
+    onChallengeSelectionChanged: (selected: boolean, challenge: LiveCodingChallenge) => void;
 };
 
 enum ButtonState {
@@ -22,15 +21,7 @@ enum ButtonState {
     SUCCESS,
 }
 
-const LiveCodingChallengeCard = ({
-    challenges,
-    selectedChallengeId,
-    teamId,
-    interviewId,
-    onChallengeSelected,
-}: Props) => {
-    const [selectedChallenge, setSelectedChallenge] = useState<string | undefined>(selectedChallengeId);
-
+const LiveCodingChallengeCard = ({ challenges, teamId, interviewId, onChallengeSelectionChanged }: Props) => {
     const [buttonState, setButtonState] = useState<ButtonState>(ButtonState.DEFAULT);
 
     useEffect(() => {
@@ -39,24 +30,12 @@ const LiveCodingChallengeCard = ({
         }
     }, [buttonState]);
 
-    const onChallengeClicked = (challengeId: string) => {
-        if (buttonState !== ButtonState.LOADING) {
-            if (selectedChallenge === challengeId) {
-                setSelectedChallenge(undefined);
-                onChallengeSelected(undefined);
-            } else {
-                setSelectedChallenge(challengeId);
-                onChallengeSelected(challengeId);
-            }
-        }
-    };
-
-    const onGenerateLink = () => {
-        if (selectedChallenge) {
+    const onGenerateLink = (challenge: LiveCodingChallenge) => {
+        if (challenge.selected) {
             setButtonState(ButtonState.LOADING);
             generateInterviewChallengeToken(
                 teamId,
-                selectedChallenge,
+                challenge.challengeId,
                 interviewId,
                 (token: string) => {
                     setButtonState(ButtonState.SUCCESS);
@@ -81,16 +60,15 @@ const LiveCodingChallengeCard = ({
                 return "Copied to clipboard";
         }
     };
-
     return (
         <ChallengeCard
+            teamId={teamId}
             challenges={challenges}
-            selectedChallenge={selectedChallenge}
             buttonText={getGenerateLinkButtonText()}
             buttonLoading={buttonState === ButtonState.LOADING}
             buttonIcon={buttonState === ButtonState.SUCCESS ? <CheckOutlined /> : <LinkIcon />}
             onGenerateLink={onGenerateLink}
-            onChallengeClicked={onChallengeClicked}
+            onChallengeSelectionChanged={onChallengeSelectionChanged}
         />
     );
 };

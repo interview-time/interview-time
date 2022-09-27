@@ -20,7 +20,6 @@ export const generateInterviewChallengeToken = (
         .catch((error: Error) => onError(error));
 };
 
-
 export const uploadChallengeFile = (teamId: string, challengeId: string) => {
     return async (options: RcCustomRequestOptions<string>) => {
         const { file, onSuccess, onError, onProgress } = options;
@@ -50,4 +49,18 @@ export const uploadChallengeFile = (teamId: string, challengeId: string) => {
             .then(() => onSuccess?.(filename))
             .catch((error: Error) => onError?.(error));
     };
+};
+
+export const downloadChallengeFile = (
+    teamId: string,
+    challengeId: string,
+    filename: string,
+    onSuccess: (token: string) => void,
+    onError: (token: Error) => void
+) => {
+    const url = `${getApiUrl()}/team/${teamId}/challenge/${challengeId}/filename/${filename}/download`;
+    getAccessTokenSilently()
+        .then(token => axios.get(url, config(token)))
+        .then(res => onSuccess(res.data.url))
+        .catch((error: Error) => onError(error));
 };

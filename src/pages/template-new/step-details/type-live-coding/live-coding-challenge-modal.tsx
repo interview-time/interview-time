@@ -14,7 +14,6 @@ import { log } from "../../../../utils/log";
 import { uploadChallengeFile } from "../../../../utils/http";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadFile } from "antd/lib/upload/interface";
-import { formatDate, formatDateISO, parseDateISO } from "../../../../utils/date-fns";
 
 type Props = {
     visible: boolean;
@@ -93,17 +92,12 @@ const LiveCodingChallengeModal = ({
         return challenge.name.length !== 0 && (githubUrlValid || fileNameValid);
     };
 
-    const getLastModifiedDate = () =>
-        challenge.modifiedDate
-            ? formatDate(parseDateISO(challenge.modifiedDate!), "dd-MM-yyyy-HH:mm")
-            : formatDate(new Date(), "dd-MM-yyyy-HH:mm");
-
     const defaultFileList = (): Array<UploadFile> =>
         challenge.fileName
             ? [
                   {
                       uid: challenge.challengeId,
-                      name: "uploaded-task-file " + getLastModifiedDate(),
+                      name: `task-file-${challenge.fileName}`,
                       status: "done",
                   },
               ]
@@ -120,8 +114,7 @@ const LiveCodingChallengeModal = ({
             if (status === "done") {
                 setChallenge({
                     ...challenge,
-                    fileName: response,
-                    modifiedDate: formatDateISO(new Date()),
+                    fileName: response
                 });
             } else if (status === "error" || status === "removed") {
                 setChallenge({
