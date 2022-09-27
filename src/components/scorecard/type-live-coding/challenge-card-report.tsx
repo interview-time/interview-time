@@ -15,8 +15,8 @@ type Props = {
 const LiveCodingChallengeCard = ({ teamId, challenges }: Props) => {
     return (
         <Card>
-            <Title level={4}>Task</Title>
-            <Text type='secondary'>Coding task that candidate did for this interview.</Text>
+            <Title level={4}>Challenges</Title>
+            <Text type='secondary'>Coding challenge that candidate did for this interview.</Text>
             {challenges
                 .filter(challenge => challenge.selected)
                 .map(challenge => {

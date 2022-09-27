@@ -90,11 +90,11 @@ const LiveCodingChallengeCard = ({
 
     return (
         <Card className={styles.cardSpace}>
-            <Title level={4}>Task</Title>
-            <Text type='secondary'>Add one or multiple tasks to use during the interview.</Text>
+            <Title level={4}>Challenges</Title>
+            <Text type='secondary'>Add one or multiple challenges to use during the interview.</Text>
             <div className={styles.questionsCard}>
                 <ConfigProvider
-                    renderEmpty={() => <img src={TaskImage} alt='Task' className={styles.assessmentsImage} />}
+                    renderEmpty={() => <img src={TaskImage} alt='Challenge' className={styles.assessmentsImage} />}
                 >
                     <Table
                         pagination={false}
@@ -130,7 +130,7 @@ const LiveCodingChallengeCard = ({
                 ghost
                 onClick={onNewChallengeClicked}
             >
-                New task
+                New challenge
             </Button>
         </Card>
     );

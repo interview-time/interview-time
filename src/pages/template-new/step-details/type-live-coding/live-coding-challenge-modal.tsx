@@ -97,7 +97,7 @@ const LiveCodingChallengeModal = ({
             ? [
                   {
                       uid: challenge.challengeId,
-                      name: `task-file-${challenge.fileName}`,
+                      name: `challenge-file-${challenge.fileName}`,
                       status: "done",
                   },
               ]
@@ -129,13 +129,13 @@ const LiveCodingChallengeModal = ({
         /* @ts-ignore */
         <Modal visible={visible} closable={false} destroyOnClose={true} onClose={onCancelClicked} footer={null}>
             <div className={styles.header}>
-                <Title level={4}>{existingChallenge ? "Update Task" : "New Task"}</Title>
-                <Text type='secondary'>Enter task details and source code.</Text>
+                <Title level={4}>{existingChallenge ? "Update Challenge" : "New Challenge"}</Title>
+                <Text type='secondary'>Enter challenge details and source code.</Text>
             </div>
             <Text strong>Title</Text>
             <Input
                 className={styles.taskInput}
-                placeholder='Enter task title e.g. "News Feed Code Challenge"'
+                placeholder='Enter challenge title e.g. "News Feed Code Challenge"'
                 onChange={onTitleChange}
                 defaultValue={challenge.name}
             />
@@ -143,7 +143,7 @@ const LiveCodingChallengeModal = ({
             <TextArea
                 className={styles.taskInput}
                 autoSize={{ minRows: 2, maxRows: 5 }}
-                placeholder='Enter task description'
+                placeholder='Enter challenge description'
                 onChange={onDescriptionChange}
                 defaultValue={challenge.description}
             />

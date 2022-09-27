@@ -59,7 +59,7 @@ export const ChallengeCard = ({
     return (
         <Card>
             <Title level={4}>{getChallengesTitle()}</Title>
-            <Text type='secondary'>Choose tasks to use during the interview.</Text>
+            <Text type='secondary'>Choose challenges to use during the interview.</Text>
             {challenges.map(challenge => {
                 const isExpanded = challenge.challengeId === expandedChallenge;
                 return (
@@ -83,7 +83,7 @@ export const ChallengeCard = ({
                                 {GithubChallengeLink(challenge)}
                                 <Divider className={styles.divider} />
                                 <Text type='secondary' className={styles.linkDescription}>
-                                    Generate a public link to the task source code and share it with a candidate. Public
+                                    Generate a public link to the challenge source code and share it with a candidate. Public
                                     link access will expire once you complete interview.
                                 </Text>
                                 <div>
@@ -122,7 +122,7 @@ export const FileChallengeLink = (challenge: LiveCodingChallenge, teamId: string
         !isEmpty(challenge.fileName) && (
             <a target='_blank' className={styles.challengeLink} onClick={e => onFileLinkClicked(e, challenge)}>
                 <img src={FileDownloadIconSmall} alt='Download file icon' />
-                <span className={styles.challengeText}>{`task-file-${challenge.fileName}`}</span>
+                <span className={styles.challengeText}>{`challenge-file-${challenge.fileName}`}</span>
             </a>
         )
     );
@@ -144,13 +144,13 @@ export const GithubChallengeLink = (challenge: LiveCodingChallenge) => {
 };
 
 export const GithubChallengeIcon = () => (
-    <Tooltip title='Task source code is available via the GitHub link.'>
+    <Tooltip title='Challenge source code is available via the GitHub link.'>
         <img src={GithubIcon} alt='Github file icon' style={{ cursor: "pointer" }} />
     </Tooltip>
 );
 
 export const FileChallengeIcon = () => (
-    <Tooltip title='Task source code is available via the download link.'>
+    <Tooltip title='Challenge source code is available via the download link.'>
         <img src={FileDownloadIcon} alt='Download file icon' style={{ cursor: "pointer" }} />
     </Tooltip>
 );

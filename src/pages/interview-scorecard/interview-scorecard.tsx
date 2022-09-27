@@ -160,7 +160,7 @@ const InterviewScorecard = ({
                 return false;
             }
             if (!interview.liveCodingChallenges?.find(challenge => challenge.selected)) {
-                message.info("Please choose tasks to use during the interview.");
+                message.info("Please choose challenges to use during the interview.");
                 return false;
             }
         }
