@@ -6,7 +6,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import Title from "antd/lib/typography/Title";
 import { GithubFilled } from "@ant-design/icons";
-import { Challenge } from "../../../../store/models";
+import { TemplateChallenge } from "../../../../store/models";
 import { v4 as uuidv4 } from "uuid";
 import Dragger from "antd/lib/upload/Dragger";
 import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
@@ -17,12 +17,12 @@ import { UploadFile } from "antd/lib/upload/interface";
 
 type Props = {
     visible: boolean;
-    existingChallenge: Readonly<Challenge> | null;
+    existingChallenge: Readonly<TemplateChallenge> | null;
     teamId: string;
-    onAdd: (challenge: Challenge) => void;
-    onUpdate: (challenge: Challenge) => void;
+    onAdd: (challenge: TemplateChallenge) => void;
+    onUpdate: (challenge: TemplateChallenge) => void;
     onCancel: () => void;
-    onDelete: (challenge: Challenge) => void;
+    onDelete: (challenge: TemplateChallenge) => void;
 };
 
 const LiveCodingChallengeModal = ({
@@ -39,7 +39,7 @@ const LiveCodingChallengeModal = ({
         name: "",
         gitHubUrl: "",
     };
-    const [challenge, setChallenge] = useState<Challenge>(newChallenge);
+    const [challenge, setChallenge] = useState<TemplateChallenge>(newChallenge);
     useEffect(() => {
         if (existingChallenge) {
             setChallenge(existingChallenge);

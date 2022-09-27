@@ -177,7 +177,7 @@ export interface Template {
     createdDate: string;
     structure: TemplateStructure;
     interviewType: InterviewType;
-    challenges?: Challenge[];
+    challenges?: TemplateChallenge[];
 }
 
 export interface LibraryTemplate {
@@ -207,7 +207,7 @@ export interface TemplateGroup {
     questions: TemplateQuestion[];
 }
 
-export interface Challenge {
+export interface TemplateChallenge {
     challengeId: string;
     name: string;
     description?: string;

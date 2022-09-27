@@ -1,7 +1,7 @@
 import styles from "./live-coding-assessment-card.module.css";
 import Card from "../../../../components/card/card";
 import React from "react";
-import { Challenge } from "../../../../store/models";
+import { TemplateChallenge } from "../../../../store/models";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { Button, ConfigProvider, Table } from "antd";
@@ -16,9 +16,9 @@ import {
 } from "../../../../components/scorecard/type-live-coding/challenge-card";
 
 type Props = {
-    challenges: Readonly<Challenge[]>;
+    challenges: Readonly<TemplateChallenge[]>;
     onNewChallengeClicked: () => void;
-    onUpdateChallengeClicked: (challenge: Challenge) => void;
+    onUpdateChallengeClicked: (challenge: TemplateChallenge) => void;
     onChallengeSorted: (oldIndex: number, newIndex: number) => void;
 };
 
@@ -63,7 +63,7 @@ const LiveCodingChallengeCard = ({
 
     const DragHandle = SortableHandle(() => <ReorderIcon className={styles.reorderIcon} />);
 
-    let columns: ColumnsType<Challenge> = [
+    let columns: ColumnsType<TemplateChallenge> = [
         {
             width: 30,
             dataIndex: "sort",
@@ -73,13 +73,13 @@ const LiveCodingChallengeCard = ({
         {
             key: "challenge",
             className: styles.questionVisible,
-            render: (challenge: Challenge) => <Text>{challenge.name}</Text>,
+            render: (challenge: TemplateChallenge) => <Text>{challenge.name}</Text>,
         },
         {
             key: "assessment",
             width: 96,
             className: styles.taskIconVisible,
-            render: (challenge: Challenge) => (
+            render: (challenge: TemplateChallenge) => (
                 <div className={styles.challengeIconsHolder}>
                     {challenge.gitHubUrl && <GithubChallengeIcon />}
                     {challenge.fileName && <FileChallengeIcon />}
