@@ -20,8 +20,7 @@ namespace CafApi.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamService _teamService;
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;        
         private readonly IPermissionsService _permissionsService;
         private readonly ILogger<UserController> _logger;
 
@@ -35,13 +34,11 @@ namespace CafApi.Controllers
 
         public TeamController(ILogger<UserController> logger,
             ITeamService teamService,
-            IUserService userService,
             IPermissionsService permissionsService,
             IUserRepository userRepository)
         {
             _logger = logger;
             _teamService = teamService;
-            _userService = userService;
             _permissionsService = permissionsService;
             _userRepository = userRepository;
         }
@@ -162,7 +159,12 @@ namespace CafApi.Controllers
                 return NotFound();
             }
 
-            await _userService.UpdateCurrentTeam(UserId, teamId);
+            if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
+            {
+                return Unauthorized();
+            }
+
+            await _userRepository.UpdateCurrentTeam(UserId, teamId);
 
             return Ok();
         }

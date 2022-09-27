@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CafApi.Models;
 using CafApi.Repository;
 using CafApi.Services;
+using CafApi.Services.User;
 using CafApi.ViewModel;
 using MailChimp.Net;
 using MailChimp.Net.Interfaces;
@@ -22,10 +23,11 @@ namespace CafApi.Controllers
     [Route("user")]
     public class UserController : ControllerBase
     {
+        private readonly IPermissionsService _permissionsService;
         private readonly IInterviewService _interviewService;
         private readonly IInterviewRepository _interviewRepository;
         private readonly ITemplateService _templateService;
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly ITeamService _teamService;
         private readonly ILogger<UserController> _logger;
         private readonly IMailChimpManager _mailChimpManager;
@@ -39,18 +41,21 @@ namespace CafApi.Controllers
             }
         }
 
-        public UserController(ILogger<UserController> logger,
+        public UserController(
+            IPermissionsService permissionsService,
+            ILogger<UserController> logger,
             IInterviewService interviewService,
             ITemplateService templateService,
-            IUserService userService,
+            IUserRepository userRepository,
             ITeamService teamService,
             IConfiguration configuration,
             IInterviewRepository interviewRepository)
         {
+            _permissionsService = permissionsService;
             _logger = logger;
             _interviewService = interviewService;
             _templateService = templateService;
-            _userService = userService;
+            _userRepository = userRepository;
             _teamService = teamService;
             _mailChimpManager = new MailChimpManager(configuration["MailChimpApiKey"]);
 
@@ -61,7 +66,7 @@ namespace CafApi.Controllers
         [HttpGet]
         public async Task<ProfileResponse> GetUserProfile()
         {
-            var profile = await _userService.GetProfile(UserId);
+            var profile = await _userRepository.GetProfile(UserId);
             if (profile == null)
             {
                 return null;
@@ -90,13 +95,13 @@ namespace CafApi.Controllers
         [HttpPost]
         public async Task<ProfileResponse> SetupUser(SetupUserRequest request)
         {
-            var profile = await _userService.GetProfile(UserId);
+            var profile = await _userRepository.GetProfile(UserId);
             var teams = new List<TeamItemResponse>();
 
             if (profile == null)
             {
                 var team = await _teamService.CreateTeam(UserId, "Personal Team");
-                profile = await _userService.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset, request.Timezone, team.TeamId);
+                profile = await _userRepository.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset, request.Timezone, team.TeamId);
 
                 teams.Add(new TeamItemResponse
                 {
@@ -141,13 +146,20 @@ namespace CafApi.Controllers
         [HttpPut]
         public async Task UpdateUser(UpdateUserRequest request)
         {
-            await _userService.UpdateProfile(UserId, request.Name, request.Position, request.TimezoneOffset, request.Timezone);
+            await _userRepository.UpdateProfile(UserId, request.Name, request.Position, request.TimezoneOffset, request.Timezone);
         }
 
         [HttpPut("current-team")]
-        public async Task UpdateCurrentTeam(UpdateCurrentTeamRequest request)
+        public async Task<ActionResult> UpdateCurrentTeam(UpdateCurrentTeamRequest request)
         {
-            await _userService.UpdateCurrentTeam(UserId, request.CurrentTeamId);
+            if (!await _permissionsService.IsBelongInTeam(UserId, request.CurrentTeamId))
+            {
+                return Unauthorized();
+            }
+
+            await _userRepository.UpdateCurrentTeam(UserId, request.CurrentTeamId);
+
+            return Ok();
         }
 
         private async Task AddNewUserInMailchimp(string email, string name)

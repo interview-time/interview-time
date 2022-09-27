@@ -7,24 +7,25 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 
 namespace CafApi.Services
 {
     public class TeamService : ITeamService
     {
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly IPermissionsService _permissionsService;
         private readonly DynamoDBContext _context;
 
         public TeamService(IAmazonDynamoDB dynamoDbClient,
-            IUserService userService,
+            IUserRepository userRepository,
             IEmailService emailService,
             IPermissionsService permissionsService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
-            _userService = userService;
+            _userRepository = userRepository;
             _emailService = emailService;
             _permissionsService = permissionsService;
         }
@@ -230,7 +231,7 @@ namespace CafApi.Services
                         await _context.SaveAsync(invite);
                     }
 
-                    var inviter = await _userService.GetProfile(userId);
+                    var inviter = await _userRepository.GetProfile(userId);
                     var team = await GetTeam(teamId);
 
                     await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);

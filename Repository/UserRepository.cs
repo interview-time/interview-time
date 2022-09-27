@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,6 +33,57 @@ namespace CafApi.Repository
             await profileBatch.ExecuteAsync();
 
             return profileBatch.Results;
+        }
+
+        public async Task<Profile> GetProfile(string userId)
+        {
+            return await _context.LoadAsync<Profile>(userId);
+        }
+
+        public async Task UpdateProfile(string userId, string name, string position, int timezoneOffset, string timezone)
+        {
+            var profile = await GetProfile(userId);
+            if (profile != null)
+            {
+                profile.ModifiedDate = DateTime.UtcNow;
+                profile.Name = name;
+                profile.Position = position;
+                profile.TimezoneOffset = timezoneOffset;
+                profile.Timezone = timezone;
+
+                await _context.SaveAsync(profile);
+            }
+        }
+
+        public async Task UpdateCurrentTeam(string userId, string currentTeamId)
+        {
+            var profile = await GetProfile(userId);
+            if (profile != null)
+            {
+                profile.CurrentTeamId = currentTeamId;
+                profile.ModifiedDate = DateTime.UtcNow;
+
+                await _context.SaveAsync(profile);
+            }
+        }
+
+        public async Task<Profile> CreateProfile(string userId, string name, string email, int timezoneOffset, string timezone, string currentTeamId)
+        {
+            var profile = new Profile
+            {
+                UserId = userId,
+                Name = name,
+                Email = email,
+                TimezoneOffset = timezoneOffset,
+                Timezone = timezone,
+                CurrentTeamId = currentTeamId,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            };
+
+            await _context.SaveAsync(profile);
+
+            return profile;
         }
     }
 }

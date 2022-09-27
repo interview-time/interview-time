@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using CafApi.Common;
 using CafApi.Query;
+using CafApi.Repository;
 using CafApi.Services;
 using CafApi.ViewModel;
 using MediatR;
@@ -15,20 +16,20 @@ namespace CafApi.Controllers
         private readonly ILogger<PublicController> _logger;
         private readonly ITemplateService _templateService;
         private readonly ILibraryService _libraryService;
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly IMediator _mediator;
 
         public PublicController(
             ILogger<PublicController> logger,
             ITemplateService templateService,
             ILibraryService libraryService,
-            IUserService userService,
+            IUserRepository userRepository,
             IMediator mediator)
         {
             _logger = logger;
             _templateService = templateService;
             _libraryService = libraryService;
-            _userService = userService;
+            _userRepository = userRepository;
             _mediator = mediator;
         }
 
@@ -62,7 +63,7 @@ namespace CafApi.Controllers
                 return NotFound();
             }
 
-            var owner = await _userService.GetProfile(template.UserId);
+            var owner = await _userRepository.GetProfile(template.UserId);
             return new SharedTemplateResponse
             {
                 TemplateId = template.LibraryId,
