@@ -303,9 +303,9 @@ const InterviewSchedule = ({
         setPreviewModalVisible(false);
     };
 
-    const onPreviewClicked = () => {
-        setPreviewModalVisible(true);
-    };
+    // const onPreviewClicked = () => {
+    //     setPreviewModalVisible(true);
+    // };
 
     const onTemplateSelect = templateId => {
         let template = templates.find(template => template.templateId === templateId);

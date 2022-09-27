@@ -83,8 +83,8 @@ export const ChallengeCard = ({
                                 {GithubChallengeLink(challenge)}
                                 <Divider className={styles.divider} />
                                 <Text type='secondary' className={styles.linkDescription}>
-                                    Generate a public link to the challenge source code and share it with a candidate. Public
-                                    link access will expire once you complete interview.
+                                    Generate a public link to the challenge source code and share it with a candidate.
+                                    Public link access will expire once you complete interview.
                                 </Text>
                                 <div>
                                     <Button
@@ -120,10 +120,10 @@ export const FileChallengeLink = (challenge: LiveCodingChallenge, teamId: string
 
     return (
         !isEmpty(challenge.fileName) && (
-            <a target='_blank' className={styles.challengeLink} onClick={e => onFileLinkClicked(e, challenge)}>
+            <Button type='link' className={styles.challengeLink} onClick={e => onFileLinkClicked(e, challenge)}>
                 <img src={FileDownloadIconSmall} alt='Download file icon' />
                 <span className={styles.challengeText}>{`challenge-file-${challenge.fileName}`}</span>
-            </a>
+            </Button>
         )
     );
 };
@@ -135,7 +135,13 @@ export const GithubChallengeLink = (challenge: LiveCodingChallenge) => {
 
     return (
         !isEmpty(challenge.gitHubUrl) && (
-            <a href={challenge.gitHubUrl} target='_blank' className={styles.challengeLink} onClick={onLinkClicked}>
+            <a
+                href={challenge.gitHubUrl}
+                target='_blank'
+                rel='noreferrer'
+                className={styles.challengeLink}
+                onClick={onLinkClicked}
+            >
                 <GithubFilled style={{ fontSize: 16 }} />
                 <span className={styles.challengeText}>{challenge.gitHubUrl}</span>
             </a>

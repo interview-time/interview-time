@@ -27,7 +27,7 @@ import Card from "../../components/card/card";
 import TitleBack from "../../components/title/title-back";
 import TemplateImage from "../../components/template-card/template-image";
 import { RootState } from "../../store/state-models";
-import { InterviewType, LiveCodingChallenge, SharedTemplate, Template } from "../../store/models";
+import { InterviewType, SharedTemplate, Template } from "../../store/models";
 import { selectAssessmentGroup, selectTemplate } from "../../store/templates/selector";
 import LiveCodingAssessmentCard from "../../components/scorecard/type-live-coding/assessment-card-template";
 import LiveCodingChallengeCard from "../../components/scorecard/type-live-coding/challenge-card-template";

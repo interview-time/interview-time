@@ -2,7 +2,6 @@ import styles from "./scorecard-report-section.module.css";
 import { Col, Progress } from "antd";
 import { Candidate, Interview, InterviewType, TeamMember } from "../../store/models";
 import LiveCodingChallengeCard from "./type-live-coding/challenge-card-report";
-import { defaultTo } from "lodash";
 import LiveCodingAssessmentCard from "../scorecard/type-live-coding/assessment-card-readonly";
 import { selectAssessmentGroup } from "../../store/interviews/selector";
 import React, { ReactNode } from "react";
