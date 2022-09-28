@@ -8,6 +8,18 @@ export interface TeamDetails {
     pendingInvites: TeamInvite[];
     roles: string[];
     teamMembers: TeamMember[];
+    integration: Integration;
+}
+
+export interface Integration {
+    status: string;
+    ats?: string;
+    lastSync: string;
+}
+
+export enum IntegrationStatus {
+    None = "None",
+    Completed = "Completed",
 }
 
 export interface TeamMember {
@@ -217,7 +229,7 @@ export interface Challenge {
 }
 
 export interface CandidateChallenge {
-    challengeId: string;    
+    challengeId: string;
     description?: string;
     gitHubUrl?: string;
     modifiedDate?: string;

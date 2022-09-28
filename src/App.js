@@ -28,6 +28,7 @@ import {
     routeTemplates,
     routeCandidateAdd,
     routeTakeHomeChallenge,
+    routeTeamIntegration,
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -53,6 +54,7 @@ import Subscription from "./pages/subscription/subscription";
 import TeamProfile from "./pages/account/team-profile";
 import TeamMembers from "./pages/account/team-members";
 import TeamBilling from "./pages/account/team-billing";
+import TeamIntegration from "./pages/account/team-integration";
 import LiveCodingChallenge from "./pages/challenge/live-coding/live-coding-challenge";
 import InterviewReportShared from "./pages/interview-report/interview-report-shared";
 import TakeHomeChallenge from "./pages/challenge/take-home/take-home-challenge";
@@ -100,6 +102,7 @@ function App({ history }) {
             <PrivateRoute path={routeTeamProfile()} exact component={TeamProfile} />
             <PrivateRoute path={routeTeamMembers()} exact component={TeamMembers} />
             <PrivateRoute path={routeTeamBilling()} exact component={TeamBilling} />
+            <PrivateRoute path={routeTeamIntegration()} exact component={TeamIntegration} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
             <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
             <PrivateRoute path={routeSubscription()} exact component={Subscription} />

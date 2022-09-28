@@ -1,3 +1,4 @@
+import { IntegrationStatus } from "../models";
 import {
     SET_PENDING_INVITES_LOADING,
     SET_PENDING_INVITES,
@@ -6,6 +7,7 @@ import {
     SET_ERROR,
     RESET_TEAM,
     REMOVE_INVITE,
+    SET_INTEGRATION_COMPLETE,
 } from "./actions";
 
 const initialState = {
@@ -18,6 +20,16 @@ const initialState = {
 
 const teamsReducer = (state = initialState, action) => {
     switch (action.type) {
+        case SET_INTEGRATION_COMPLETE: {
+            return {
+                ...state,
+                details: {
+                    ...state.details,
+                    integration: { ...state.details.integration, status: IntegrationStatus.Completed },
+                },
+            };
+        }
+
         case SET_PENDING_INVITES_LOADING: {
             const { loading } = action.payload;
             return { ...state, pendingInvitesLoading: loading };

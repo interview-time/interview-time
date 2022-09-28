@@ -6,6 +6,7 @@
         "@ant-design/icons": "^4.3.0",
         "@auth0/auth0-spa-js": "^1.13.5",
         "@craco/craco": "^6.4.0",
+        "@mergeapi/react-merge-link": "^2.0.4",
         "@reduxjs/toolkit": "^1.7.2",
         "@sentry/react": "^6.1.0",
         "@sentry/tracing": "^6.1.0",

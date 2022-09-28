@@ -7,18 +7,6 @@ import { Location } from "history";
 import { MenuClickEventHandler } from "rc-menu/lib/interface";
 import { Team } from "../../store/models";
 
-/**
- *
- * @param {Team} team
- * @param {LocationState} location
- * @param {function} onTeamProfileClicked
- * @param {function} onTeamClicked
- * @param {function} onTeamBillingClicked
- * @param {CSS} style
- * @returns {JSX.Element}
- * @constructor
- */
-
 type Props = {
     team?: Team;
     location: Location;
@@ -26,12 +14,22 @@ type Props = {
     onTeamProfileClicked: MenuClickEventHandler;
     onTeamClicked: MenuClickEventHandler;
     onTeamBillingClicked: MenuClickEventHandler;
+    onTeamIntegrationClicked: MenuClickEventHandler;
 };
 
-const TeamMenu = ({ team, location, onTeamProfileClicked, onTeamClicked, onTeamBillingClicked, style }: Props) => {
+const TeamMenu = ({
+    team,
+    location,
+    style,
+    onTeamProfileClicked,
+    onTeamClicked,
+    onTeamBillingClicked,
+    onTeamIntegrationClicked,
+}: Props) => {
     const MENU_KEY_TEAM_PROFILE = "TEAM_PROFILE";
     const MENU_KEY_TEAM_MEMBERS = "TEAM_MEMBERS";
     const MENU_KEY_TEAM_BILLING = "TEAM_BILLING";
+    const MENU_KEY_TEAM_INTEGRATION = "MENU_KEY_TEAM_INTEGRATION";
 
     const getSelectedMenuKey = (): string => {
         if (location.pathname.includes(routeTeamProfile())) {
@@ -59,6 +57,11 @@ const TeamMenu = ({ team, location, onTeamProfileClicked, onTeamClicked, onTeamB
                     <Menu.Item key={MENU_KEY_TEAM_BILLING} onClick={onTeamBillingClicked}>
                         <span className={styles.menuItem}>Billing</span>
                     </Menu.Item>
+                    {process.env.REACT_APP_INTEGRATION_ENABLED === "true" && (
+                        <Menu.Item key={MENU_KEY_TEAM_INTEGRATION} onClick={onTeamIntegrationClicked}>
+                            <span className={styles.menuItem}>Integration</span>
+                        </Menu.Item>
+                    )}
                 </Menu>
             </Card>
         </div>
