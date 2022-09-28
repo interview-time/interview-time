@@ -58,6 +58,7 @@ export const ChallengeCard = ({
             <Title level={4}>{getChallengesTitle()}</Title>
             <Text type='secondary'>Choose challenges to use during the interview.</Text>
             {challenges.map(challenge => {
+                console.log("challenge", challenge);
                 const isExpanded = challenge.challengeId === expandedChallenge;
                 return (
                     <div
@@ -67,7 +68,7 @@ export const ChallengeCard = ({
                         <div className={styles.taskNameContainer}>
                             <Text className={styles.taskName}>{challenge.name}</Text>
                             <Switch
-                                defaultChecked={challenge.selected}
+                                checked={challenge.selected}
                                 onChange={(checked: boolean, e: MouseEvent) => onSwitchChanged(checked, e, challenge)}
                             />
                         </div>
