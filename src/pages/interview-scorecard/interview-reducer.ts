@@ -5,10 +5,11 @@ import {
     InterviewQuestion,
     InterviewStatus,
     InterviewStructureGroup,
+    LiveCodingChallenge,
     QuestionAssessment,
     RedFlag,
     Template,
-    TemplateGroup
+    TemplateGroup,
 } from "../../store/models";
 import { cloneDeep, remove } from "lodash";
 import { v4 as uuidv4 } from "uuid";
@@ -23,7 +24,7 @@ export enum ReducerActionType {
     REMOVE_QUESTIONS = "REMOVE_QUESTIONS",
     UPDATE_STATUS = "UPDATE_STATUS",
     UPDATE_ASSESSMENT = "UPDATE_ASSESSMENT",
-    UPDATE_CHALLENGE = "UPDATE_CHALLENGE",
+    UPDATE_SELECTED_LIVE_CODING_CHALLENGE = "UPDATE_SELECTED_LIVE_CODING_CHALLENGE",
 }
 
 export type SetInterviewAction = {
@@ -74,8 +75,9 @@ export type UpdateAssessmentAction = {
 };
 
 export type UpdateChallengeAction = {
-    type: ReducerActionType.UPDATE_CHALLENGE;
-    challengeDetails?: ChallengeDetails;
+    type: ReducerActionType.UPDATE_SELECTED_LIVE_CODING_CHALLENGE;
+    challengeId: string;
+    selected: boolean;
 };
 
 export type ReducerAction =
@@ -147,11 +149,17 @@ export const interviewReducer = (state: Interview, action: ReducerAction): Inter
                 decision: action.assessment,
             };
         }
-        case ReducerActionType.UPDATE_CHALLENGE: {
-            return {
-                ...state,
-                challengeDetails: action.challengeDetails,
-            };
+        case ReducerActionType.UPDATE_SELECTED_LIVE_CODING_CHALLENGE: {
+            const newState = cloneDeep(state);
+            const liveCodingChallenges = newState.liveCodingChallenges || [];
+            const challenge = liveCodingChallenges.find(
+                (challenge: ChallengeDetails) => challenge.challengeId === action.challengeId
+            );
+            if (challenge) {
+                challenge.selected = action.selected;
+            }
+
+            return newState;
         }
         default:
             return state;

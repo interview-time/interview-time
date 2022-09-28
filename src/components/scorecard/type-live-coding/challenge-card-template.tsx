@@ -1,37 +1,28 @@
-import { Challenge } from "../../../store/models";
+import { LiveCodingChallenge } from "../../../store/models";
 import React from "react";
 import { message } from "antd";
 import { LinkIcon } from "../../../utils/icons";
 import { ChallengeCard } from "./challenge-card";
 
 type Props = {
-    challenges: Readonly<Challenge[]>;
+    teamId: string;
+    challenges: Readonly<LiveCodingChallenge[]>;
+    onChallengeSelectionChanged: (selected: boolean, challenge: LiveCodingChallenge) => void;
 };
 
-const LiveCodingChallengeCard = ({ challenges }: Props) => {
-    const [selectedChallenge, setSelectedChallenge] = React.useState<string | undefined>();
-
-    const onChallengeClicked = (challengeId: string) => {
-        if (selectedChallenge === challengeId) {
-            setSelectedChallenge(undefined);
-        } else {
-            setSelectedChallenge(challengeId);
-        }
-    };
-
-    const onGenerateLinkClicked = () => {
+const LiveCodingChallengeCard = ({ teamId, challenges, onChallengeSelectionChanged }: Props) => {
+    const onNotAvailable = () => {
         message.error("Not available in this mode.");
     };
 
     return (
         <ChallengeCard
+            teamId={teamId}
             challenges={challenges}
-            selectedChallenge={selectedChallenge}
-            buttonText='Generate and Copy Link'
-            buttonLoading={false}
+            buttonText='Copy Challenge Link'
             buttonIcon={<LinkIcon />}
-            onGenerateLink={onGenerateLinkClicked}
-            onChallengeClicked={onChallengeClicked}
+            onGenerateLink={onNotAvailable}
+            onChallengeSelectionChanged={onChallengeSelectionChanged}
         />
     );
 };

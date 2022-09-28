@@ -212,7 +212,9 @@ const TemplateNew = ({
                 <StepDetailsLiveCoding template={template} teamId={teamId} onTemplateChange={onTemplateChange} />
             )}
 
-            {step === STEP_PREVIEW && <TemplateStepPreview template={template} />}
+            {step === STEP_PREVIEW && (
+                <TemplateStepPreview template={template} onTemplateChange={onTemplateChange} />
+            )}
         </div>
     );
 };

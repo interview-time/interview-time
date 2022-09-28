@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
 import { CandidateChallenge } from "../../../store/models";
 import { Button, Col, Row, Form, Input, Typography, message, Divider } from "antd";
-import File from "../../../components/file/file";
 import Card from "../../../components/card/card";
 import styles from "./take-home-challenge.module.css";
 import { RootState } from "../../../store/state-models";

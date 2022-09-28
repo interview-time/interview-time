@@ -1,9 +1,8 @@
-import { Button, Col, Divider, Result, Row } from "antd";
-import React, { useState, useEffect } from "react";
+import { Button, Col, Divider, Result } from "antd";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Card from "../../../components/card/card";
 import Title from "antd/lib/typography/Title";
-import { getApiUrl } from "../../../utils/route";
 import styles from "./live-coding-challenge.module.css";
 import { useParams } from "react-router-dom";
 import { RootState } from "../../../store/state-models";

@@ -1,96 +1,59 @@
-import { Challenge } from "../../../store/models";
-import { generateInterviewChallengeToken } from "../../../utils/http";
+import { LiveCodingChallenge } from "../../../store/models";
 import { useEffect, useState } from "react";
 import { message } from "antd";
 import copy from "copy-to-clipboard";
 import { LinkIcon } from "../../../utils/icons";
 import { CheckOutlined } from "@ant-design/icons";
 import { ChallengeCard } from "./challenge-card";
-import { getApiUrl, getHost, routeLiveCodingChallenge } from "../../../utils/route";
+import { getHost, routeLiveCodingChallenge } from "../../../utils/route";
 
 type Props = {
-    challenges: Readonly<Challenge[]>;
-    selectedChallengeId?: string;
+    challenges: Readonly<LiveCodingChallenge[]>;
     teamId: string;
     interviewId: string;
-    onChallengeSelected: (challengeId: string | undefined) => void;
+    onChallengeSelectionChanged: (selected: boolean, challenge: LiveCodingChallenge) => void;
 };
 
 enum ButtonState {
     DEFAULT,
-    LOADING,
-    SUCCESS,
+    COPIED,
 }
 
-const LiveCodingChallengeCard = ({
-    challenges,
-    selectedChallengeId,
-    teamId,
-    interviewId,
-    onChallengeSelected,
-}: Props) => {
-    const [selectedChallenge, setSelectedChallenge] = useState<string | undefined>(selectedChallengeId);
-
+const LiveCodingChallengeCard = ({ challenges, teamId, interviewId, onChallengeSelectionChanged }: Props) => {
     const [buttonState, setButtonState] = useState<ButtonState>(ButtonState.DEFAULT);
 
     useEffect(() => {
-        if (buttonState === ButtonState.SUCCESS) {
+        if (buttonState === ButtonState.COPIED) {
             setTimeout(() => setButtonState(ButtonState.DEFAULT), 1000);
         }
     }, [buttonState]);
 
-    const onChallengeClicked = (challengeId: string) => {
-        if (buttonState !== ButtonState.LOADING) {
-            if (selectedChallenge === challengeId) {
-                setSelectedChallenge(undefined);
-                onChallengeSelected(undefined);
-            } else {
-                setSelectedChallenge(challengeId);
-                onChallengeSelected(challengeId);
-            }
+    const onGenerateLink = (challenge: LiveCodingChallenge) => {
+        if (!challenge.selected) {
+            onChallengeSelectionChanged(true, challenge);
         }
-    };
 
-    const onGenerateLink = () => {
-        if (selectedChallenge) {
-            setButtonState(ButtonState.LOADING);
-            generateInterviewChallengeToken(
-                teamId,
-                selectedChallenge,
-                interviewId,
-                (token: string) => {
-                    setButtonState(ButtonState.SUCCESS);
-                    message.info("Link copied to clipboard");
-                    copy(`${getHost()}${routeLiveCodingChallenge(token)}`);
-                },
-                () => {
-                    setButtonState(ButtonState.DEFAULT);
-                    message.error("Error during link generation, please try again");
-                }
-            );
-        }
+        message.info("Link copied to clipboard");
+        copy(`${getHost()}${routeLiveCodingChallenge(challenge.shareToken)}`);
+        setButtonState(ButtonState.COPIED);
     };
 
     const getGenerateLinkButtonText = () => {
         switch (buttonState) {
             case ButtonState.DEFAULT:
-                return "Generate and Copy Link";
-            case ButtonState.LOADING:
-                return "Generating Link...";
-            case ButtonState.SUCCESS:
-                return "Copied to clipboard";
+                return "Copy Challenge Link";
+            case ButtonState.COPIED:
+                return "Copied to Clipboard";
         }
     };
-
     return (
         <ChallengeCard
+            teamId={teamId}
             challenges={challenges}
-            selectedChallenge={selectedChallenge}
             buttonText={getGenerateLinkButtonText()}
-            buttonLoading={buttonState === ButtonState.LOADING}
-            buttonIcon={buttonState === ButtonState.SUCCESS ? <CheckOutlined /> : <LinkIcon />}
+            buttonIcon={buttonState === ButtonState.COPIED ? <CheckOutlined /> : <LinkIcon />}
             onGenerateLink={onGenerateLink}
-            onChallengeClicked={onChallengeClicked}
+            onChallengeSelectionChanged={onChallengeSelectionChanged}
         />
     );
 };

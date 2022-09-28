@@ -1,8 +1,7 @@
 import styles from "./scorecard-report-section.module.css";
 import { Col, Progress } from "antd";
 import { Candidate, Interview, InterviewType, TeamMember } from "../../store/models";
-import LiveCodingChallengeCard from "../scorecard/type-live-coding/challenge-card-readonly";
-import { defaultTo } from "lodash";
+import LiveCodingChallengeCard from "./type-live-coding/challenge-card-report";
 import LiveCodingAssessmentCard from "../scorecard/type-live-coding/assessment-card-readonly";
 import { selectAssessmentGroup } from "../../store/interviews/selector";
 import React, { ReactNode } from "react";
@@ -74,9 +73,8 @@ const ScorecardReportSection = ({
 
             {interview.interviewType === InterviewType.LIVE_CODING && (
                 <LiveCodingChallengeCard
-                    challenge={defaultTo(interview.challenges, []).find(
-                        challenge => challenge.challengeId === interview?.challengeDetails?.challengeId
-                    )}
+                    teamId={interview.teamId}
+                    challenges={interview.liveCodingChallenges || []}
                 />
             )}
 
