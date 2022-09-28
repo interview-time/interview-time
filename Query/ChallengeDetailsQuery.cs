@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CafApi.Common;
@@ -54,8 +55,7 @@ namespace CafApi.Query
             {
                 throw new ItemNotFoundException($"Token ({query.Token}) not found or expired.");
             }
-
-            var challenge = await _challengeRepository.GetChallenge(oneTimeToken.TeamId, oneTimeToken.ChallengeId);
+                        
             var interview = await _interviewRepository.GetInterview(oneTimeToken.InterviewId);
 
             Candidate candidate = null;
@@ -64,17 +64,36 @@ namespace CafApi.Query
                 candidate = await _candidateRepository.GetCandidate(oneTimeToken.TeamId, interview.CandidateId);
             }
 
-            return new ChallengeDetailsQueryResult
+            if (interview.InterviewType == InterviewType.LIVE_CODING.ToString())
             {
-                Status = interview.TakeHomeChallenge.Status.ToString(),
-                SolutionSubmittedOn = interview.TakeHomeChallenge.SolutionSubmittedOn,
-                Description = challenge.Description,
-                DownloadFileUrl = !string.IsNullOrWhiteSpace(challenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
-                GitHubUrl = challenge.GitHubUrl,
-                CandidateName = candidate?.CandidateName ?? interview.Candidate,
-                Position = interview.Position,
-                CreatedDate = oneTimeToken.CreatedDate
-            };
+                var challenge = interview.LiveCodingChallenges.FirstOrDefault(c => c.ChallengeId == oneTimeToken.ChallengeId);
+
+                return new ChallengeDetailsQueryResult
+                {
+                    Description = challenge.Description,
+                    DownloadFileUrl = !string.IsNullOrWhiteSpace(challenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
+                    GitHubUrl = challenge.GitHubUrl,
+                    CandidateName = candidate?.CandidateName ?? interview.Candidate,
+                    Position = interview.Position,
+                    CreatedDate = oneTimeToken.CreatedDate
+                };
+            }
+            else if (interview.InterviewType == InterviewType.TAKE_HOME_TASK.ToString())
+            {
+                return new ChallengeDetailsQueryResult
+                {
+                    Status = interview.TakeHomeChallenge.Status.ToString(),
+                    SolutionSubmittedOn = interview.TakeHomeChallenge.SolutionSubmittedOn,
+                    Description = interview.TakeHomeChallenge.Description,
+                    DownloadFileUrl = !string.IsNullOrWhiteSpace(interview.TakeHomeChallenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
+                    GitHubUrl = interview.TakeHomeChallenge.GitHubUrl,
+                    CandidateName = candidate?.CandidateName ?? interview.Candidate,
+                    Position = interview.Position,
+                    CreatedDate = oneTimeToken.CreatedDate
+                };
+            }
+
+            return null;
         }
     }
 }
