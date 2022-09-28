@@ -4,11 +4,12 @@ import Text from "antd/lib/typography/Text";
 import React from "react";
 import Card from "../../card/card";
 import Title from "antd/lib/typography/Title";
-import { Button, Divider, message, Switch, Tooltip } from "antd";
+import { Divider, message, Switch, Tooltip } from "antd";
 import { isEmpty } from "lodash";
 import { GithubFilled } from "@ant-design/icons";
 import { downloadChallengeFile } from "../../../utils/http";
 import { DownloadFileIcon, DownloadFileOutlinedIcon } from "../../../utils/icons";
+import { ButtonSecondary } from "../../buttons/button-secondary";
 
 type Props = {
     challenges: Readonly<LiveCodingChallenge[]>;
@@ -79,19 +80,19 @@ export const ChallengeCard = ({
                                 {GithubChallengeLink(challenge)}
                                 <Divider className={styles.divider} />
                                 <Text type='secondary' className={styles.linkDescription}>
-                                    Generate a public link to the challenge source code and share it with a candidate.
-                                    Public link access will expire once you complete interview.
+                                    Share the challenge with the candidate. The link expires once the interview is
+                                    completed.
                                 </Text>
                                 <div>
-                                    <Button
-                                        type='primary'
-                                        ghost
-                                        className={styles.generateLinkButton}
-                                        onClick={e => onGenerateLinkClicked(e, challenge)}
+                                    <ButtonSecondary
+                                        style={{ marginTop: 16 }}
+                                        onClick={(e: React.MouseEvent<HTMLElement>) =>
+                                            onGenerateLinkClicked(e, challenge)
+                                        }
                                         icon={buttonIcon}
                                     >
                                         {buttonText}
-                                    </Button>
+                                    </ButtonSecondary>
                                 </div>
                             </>
                         )}

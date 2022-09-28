@@ -7,13 +7,13 @@
 }
 
 .infoCard {
-    background: #F4EAFC;
+    background: var(--color-primary-50);
     border-radius: 8px;
     padding: 12px;
 }
 
 .infoText {
-    color: #541A88;
+    color: var(--color-strong);
     font-weight: 500;
     margin-left: 12px;
 }

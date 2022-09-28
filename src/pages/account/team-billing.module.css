@@ -16,7 +16,7 @@
 }
 
 .featuresRow {
-    background-color: #F9FAFB;
+    background-color: var(--color-background);
     padding-left: 24px;
     padding-right: 24px;
     padding-top: 24px;

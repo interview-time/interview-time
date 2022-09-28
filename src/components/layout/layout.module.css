@@ -2,6 +2,8 @@
     --logo-height: 48px;
     --menu-height: calc(100% - var(--logo-height));
     --color-primary: #8C2BE3;
+    --color-primary-50: #F4EAFC;
+    --color-primary-100: #E8D5F9;
     --color-background: #F9FAFB;
     --color-strong: #541A88;
 }

@@ -29,13 +29,13 @@ const LiveCodingChallengeCard = ({ challenges, teamId, interviewId, onChallengeS
     }, [buttonState]);
 
     const onGenerateLink = (challenge: LiveCodingChallenge) => {
-        if (challenge.selected) {
-            message.info("Link copied to clipboard");
-            copy(`${getHost()}${routeLiveCodingChallenge(challenge.shareToken)}`);
-            setButtonState(ButtonState.COPIED);
-        } else {
-            message.error("Use 'switch' button to select challenge and then copy link.");
+        if (!challenge.selected) {
+            onChallengeSelectionChanged(true, challenge);
         }
+
+        message.info("Link copied to clipboard");
+        copy(`${getHost()}${routeLiveCodingChallenge(challenge.shareToken)}`);
+        setButtonState(ButtonState.COPIED);
     };
 
     const getGenerateLinkButtonText = () => {
