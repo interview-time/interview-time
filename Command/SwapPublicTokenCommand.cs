@@ -62,6 +62,7 @@ namespace CafApi.Command
             }
 
             team.Integration.MergeAccessToken = response.AccountToken;
+            team.Integration.Status = IntegrationStatus.Completed.ToString();
             team.ModifiedDate = DateTime.UtcNow;
 
             await _context.SaveAsync(team);

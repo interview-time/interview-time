@@ -34,5 +34,11 @@ namespace CafApi.Models
     public class AtsIntegration
     {
         public string MergeAccessToken { get; set; }
+
+        public string Status { get; set; }
+
+        public string ATS { get; set; }
+
+        public DateTime? LastSync { get; set; }
     }
 }
