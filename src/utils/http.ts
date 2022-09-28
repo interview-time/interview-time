@@ -6,20 +6,6 @@ import { log } from "./log";
 import { v4 as uuidv4 } from "uuid";
 import { getApiUrl } from "./route";
 
-export const generateInterviewChallengeToken = (
-    teamId: string,
-    challengeId: string,
-    interviewId: string,
-    onSuccess: (token: string) => void,
-    onError: (token: Error) => void
-) => {
-    const url = `${getApiUrl()}/team/${teamId}/challenge/${challengeId}/interview/${interviewId}/token`;
-    getAccessTokenSilently()
-        .then(token => axios.get(url, config(token)))
-        .then(res => onSuccess(res.data))
-        .catch((error: Error) => onError(error));
-};
-
 export const uploadChallengeFile = (teamId: string, challengeId: string) => {
     return async (options: RcCustomRequestOptions<string>) => {
         const { file, onSuccess, onError, onProgress } = options;

@@ -19,8 +19,7 @@ const LiveCodingChallengeCard = ({ teamId, challenges, onChallengeSelectionChang
         <ChallengeCard
             teamId={teamId}
             challenges={challenges}
-            buttonText='Generate and Copy Link'
-            buttonLoading={false}
+            buttonText='Copy Challenge Link'
             buttonIcon={<LinkIcon />}
             onGenerateLink={onNotAvailable}
             onChallengeSelectionChanged={onChallengeSelectionChanged}

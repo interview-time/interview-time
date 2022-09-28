@@ -14,7 +14,6 @@ type Props = {
     challenges: Readonly<LiveCodingChallenge[]>;
     teamId: string;
     buttonText: string;
-    buttonLoading: boolean;
     buttonIcon: React.ReactNode;
     onChallengeSelectionChanged: (selected: boolean, challenge: LiveCodingChallenge) => void;
     onGenerateLink: (challenge: LiveCodingChallenge) => void;
@@ -24,7 +23,6 @@ export const ChallengeCard = ({
     challenges,
     teamId,
     buttonText,
-    buttonLoading,
     buttonIcon,
     onGenerateLink,
     onChallengeSelectionChanged,
@@ -87,8 +85,8 @@ export const ChallengeCard = ({
                                 <div>
                                     <Button
                                         type='primary'
+                                        ghost
                                         className={styles.generateLinkButton}
-                                        loading={buttonLoading}
                                         onClick={e => onGenerateLinkClicked(e, challenge)}
                                         icon={buttonIcon}
                                     >

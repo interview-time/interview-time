@@ -1,5 +1,4 @@
 import { LiveCodingChallenge } from "../../../store/models";
-import { generateInterviewChallengeToken } from "../../../utils/http";
 import { useEffect, useState } from "react";
 import { message } from "antd";
 import copy from "copy-to-clipboard";
@@ -17,47 +16,34 @@ type Props = {
 
 enum ButtonState {
     DEFAULT,
-    LOADING,
-    SUCCESS,
+    COPIED,
 }
 
 const LiveCodingChallengeCard = ({ challenges, teamId, interviewId, onChallengeSelectionChanged }: Props) => {
     const [buttonState, setButtonState] = useState<ButtonState>(ButtonState.DEFAULT);
 
     useEffect(() => {
-        if (buttonState === ButtonState.SUCCESS) {
+        if (buttonState === ButtonState.COPIED) {
             setTimeout(() => setButtonState(ButtonState.DEFAULT), 1000);
         }
     }, [buttonState]);
 
     const onGenerateLink = (challenge: LiveCodingChallenge) => {
         if (challenge.selected) {
-            setButtonState(ButtonState.LOADING);
-            generateInterviewChallengeToken(
-                teamId,
-                challenge.challengeId,
-                interviewId,
-                (token: string) => {
-                    setButtonState(ButtonState.SUCCESS);
-                    message.info("Link copied to clipboard");
-                    copy(`${getHost()}${routeLiveCodingChallenge(token)}`);
-                },
-                () => {
-                    setButtonState(ButtonState.DEFAULT);
-                    message.error("Error during link generation, please try again");
-                }
-            );
+            message.info("Link copied to clipboard");
+            copy(`${getHost()}${routeLiveCodingChallenge(challenge.shareToken)}`);
+            setButtonState(ButtonState.COPIED);
+        } else {
+            message.error("Use 'switch' button to select challenge and then copy link.");
         }
     };
 
     const getGenerateLinkButtonText = () => {
         switch (buttonState) {
             case ButtonState.DEFAULT:
-                return "Generate and Copy Link";
-            case ButtonState.LOADING:
-                return "Generating Link...";
-            case ButtonState.SUCCESS:
-                return "Copied to clipboard";
+                return "Copy Challenge Link";
+            case ButtonState.COPIED:
+                return "Copied to Clipboard";
         }
     };
     return (
@@ -65,8 +51,7 @@ const LiveCodingChallengeCard = ({ challenges, teamId, interviewId, onChallengeS
             teamId={teamId}
             challenges={challenges}
             buttonText={getGenerateLinkButtonText()}
-            buttonLoading={buttonState === ButtonState.LOADING}
-            buttonIcon={buttonState === ButtonState.SUCCESS ? <CheckOutlined /> : <LinkIcon />}
+            buttonIcon={buttonState === ButtonState.COPIED ? <CheckOutlined /> : <LinkIcon />}
             onGenerateLink={onGenerateLink}
             onChallengeSelectionChanged={onChallengeSelectionChanged}
         />
