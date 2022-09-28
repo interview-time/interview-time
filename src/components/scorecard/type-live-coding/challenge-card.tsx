@@ -5,12 +5,10 @@ import React from "react";
 import Card from "../../card/card";
 import Title from "antd/lib/typography/Title";
 import { Button, Divider, message, Switch, Tooltip } from "antd";
-import GithubIcon from "../../../assets/icons/github.svg";
-import FileDownloadIcon from "../../../assets/icons/file-download.svg";
-import FileDownloadIconSmall from "../../../assets/icons/file-download-outlined-small.svg";
 import { isEmpty } from "lodash";
 import { GithubFilled } from "@ant-design/icons";
 import { downloadChallengeFile } from "../../../utils/http";
+import { DownloadFileIcon, DownloadFileOutlinedIcon } from "../../../utils/icons";
 
 type Props = {
     challenges: Readonly<LiveCodingChallenge[]>;
@@ -120,10 +118,10 @@ export const FileChallengeLink = (challenge: LiveCodingChallenge, teamId: string
 
     return (
         !isEmpty(challenge.fileName) && (
-            <Button type='link' className={styles.challengeLink} onClick={e => onFileLinkClicked(e, challenge)}>
-                <img src={FileDownloadIconSmall} alt='Download file icon' />
+            <span className={styles.challengeLink} onClick={e => onFileLinkClicked(e, challenge)}>
+                <DownloadFileOutlinedIcon style={{ fontSize: 16 }} />
                 <span className={styles.challengeText}>{`challenge-file-${challenge.fileName}`}</span>
-            </Button>
+            </span>
         )
     );
 };
@@ -151,12 +149,12 @@ export const GithubChallengeLink = (challenge: LiveCodingChallenge) => {
 
 export const GithubChallengeIcon = () => (
     <Tooltip title='Challenge source code is available via the GitHub link.'>
-        <img src={GithubIcon} alt='Github file icon' style={{ cursor: "pointer" }} />
+        <GithubFilled style={{ fontSize: 20, color: "#9DA3AE" }} />
     </Tooltip>
 );
 
 export const FileChallengeIcon = () => (
     <Tooltip title='Challenge source code is available via the download link.'>
-        <img src={FileDownloadIcon} alt='Download file icon' style={{ cursor: "pointer" }} />
+        <DownloadFileIcon style={{ fontSize: 20, color: "#9DA3AE" }} />
     </Tooltip>
 );

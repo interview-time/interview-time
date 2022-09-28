@@ -82,6 +82,7 @@
 
 .challengeLink {
     color: #1F2937;
+    cursor: pointer;
 }
 
 .challengeLink:hover {
