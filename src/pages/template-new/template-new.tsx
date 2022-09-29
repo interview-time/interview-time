@@ -103,6 +103,8 @@ const TemplateNew = ({
     }, []);
 
     useEffect(() => {
+        console.log("originalTemplate", originalTemplate);
+        console.log("template", template);
         if (originalTemplate && isEmpty(template.templateId)) {
             dispatch({
                 type: ReducerActionType.SET_TEMPLATE,
@@ -255,6 +257,7 @@ const mapState = (state: RootState, ownProps: any) => {
         let sharedTemplate = state.templates.sharedTemplate;
         if (sharedTemplate) {
             template = cloneDeep(sharedTemplate);
+            template.templateId = uuidv4();
             allQuestionTags = interviewToTags(template);
         }
     } else {
