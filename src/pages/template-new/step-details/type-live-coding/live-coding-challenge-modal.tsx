@@ -6,7 +6,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import Title from "antd/lib/typography/Title";
 import { GithubFilled } from "@ant-design/icons";
-import { Challenge } from "../../../../store/models";
+import { TemplateChallenge } from "../../../../store/models";
 import { v4 as uuidv4 } from "uuid";
 import Dragger from "antd/lib/upload/Dragger";
 import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
@@ -14,16 +14,15 @@ import { log } from "../../../../utils/log";
 import { uploadChallengeFile } from "../../../../utils/http";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadFile } from "antd/lib/upload/interface";
-import { formatDate, formatDateISO, parseDateISO } from "../../../../utils/date-fns";
 
 type Props = {
     visible: boolean;
-    existingChallenge: Readonly<Challenge> | null;
+    existingChallenge: Readonly<TemplateChallenge> | null;
     teamId: string;
-    onAdd: (challenge: Challenge) => void;
-    onUpdate: (challenge: Challenge) => void;
+    onAdd: (challenge: TemplateChallenge) => void;
+    onUpdate: (challenge: TemplateChallenge) => void;
     onCancel: () => void;
-    onDelete: (challenge: Challenge) => void;
+    onDelete: (challenge: TemplateChallenge) => void;
 };
 
 const LiveCodingChallengeModal = ({
@@ -40,7 +39,7 @@ const LiveCodingChallengeModal = ({
         name: "",
         gitHubUrl: "",
     };
-    const [challenge, setChallenge] = useState<Challenge>(newChallenge);
+    const [challenge, setChallenge] = useState<TemplateChallenge>(newChallenge);
     useEffect(() => {
         if (existingChallenge) {
             setChallenge(existingChallenge);
@@ -93,17 +92,12 @@ const LiveCodingChallengeModal = ({
         return challenge.name.length !== 0 && (githubUrlValid || fileNameValid);
     };
 
-    const getLastModifiedDate = () =>
-        challenge.modifiedDate
-            ? formatDate(parseDateISO(challenge.modifiedDate!), "dd-MM-yyyy-HH:mm")
-            : formatDate(new Date(), "dd-MM-yyyy-HH:mm");
-
     const defaultFileList = (): Array<UploadFile> =>
         challenge.fileName
             ? [
                   {
                       uid: challenge.challengeId,
-                      name: "uploaded-task-file " + getLastModifiedDate(),
+                      name: `challenge-file-${challenge.fileName}`,
                       status: "done",
                   },
               ]
@@ -120,8 +114,7 @@ const LiveCodingChallengeModal = ({
             if (status === "done") {
                 setChallenge({
                     ...challenge,
-                    fileName: response,
-                    modifiedDate: formatDateISO(new Date()),
+                    fileName: response
                 });
             } else if (status === "error" || status === "removed") {
                 setChallenge({
@@ -136,13 +129,13 @@ const LiveCodingChallengeModal = ({
         /* @ts-ignore */
         <Modal visible={visible} closable={false} destroyOnClose={true} onClose={onCancelClicked} footer={null}>
             <div className={styles.header}>
-                <Title level={4}>{existingChallenge ? "Update Task" : "New Task"}</Title>
-                <Text type='secondary'>Enter task details and source code.</Text>
+                <Title level={4}>{existingChallenge ? "Update Challenge" : "New Challenge"}</Title>
+                <Text type='secondary'>Enter challenge details and source code.</Text>
             </div>
             <Text strong>Title</Text>
             <Input
                 className={styles.taskInput}
-                placeholder='Enter task title e.g. "News Feed Code Challenge"'
+                placeholder='Enter challenge title e.g. "News Feed Code Challenge"'
                 onChange={onTitleChange}
                 defaultValue={challenge.name}
             />
@@ -150,7 +143,7 @@ const LiveCodingChallengeModal = ({
             <TextArea
                 className={styles.taskInput}
                 autoSize={{ minRows: 2, maxRows: 5 }}
-                placeholder='Enter task description'
+                placeholder='Enter challenge description'
                 onChange={onDescriptionChange}
                 defaultValue={challenge.description}
             />

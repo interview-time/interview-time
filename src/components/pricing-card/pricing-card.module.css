@@ -62,7 +62,7 @@
 }
 .featuredWrapper {
     border-radius: 8px;
-    background-color: #f9fafb;
+    background-color: var(--color-background);
     padding: 32px;
 }
 

@@ -1,4 +1,4 @@
-import { Challenge, Template, TemplateGroup, TemplateQuestion } from "../../store/models";
+import { TemplateChallenge, Template, TemplateGroup, TemplateQuestion } from "../../store/models";
 import { cloneDeep } from "lodash";
 import { arrayMoveMutable } from "array-move";
 
@@ -96,17 +96,17 @@ export type MoveGroupAction = {
 };
 export type AddChallengeAction = {
     type: ReducerActionType.ADD_CHALLENGE;
-    challenge: Challenge;
+    challenge: TemplateChallenge;
 };
 
 export type UpdateChallengeAction = {
     type: ReducerActionType.UPDATE_CHALLENGE;
-    challenge: Challenge;
+    challenge: TemplateChallenge;
 };
 
 export type RemoveChallengeAction = {
     type: ReducerActionType.REMOVE_CHALLENGE;
-    challenge: Challenge;
+    challenge: TemplateChallenge;
 };
 
 export type MoveChallengeAction = {

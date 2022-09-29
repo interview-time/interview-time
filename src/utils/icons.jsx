@@ -679,3 +679,30 @@ const LightingFilledIconSvg = () => (
 );
 
 export const LightingFilledIcon = props => <Icon component={LightingFilledIconSvg} {...props} />;
+
+const DownloadFileOutlinedIconSvg = () => (
+    <svg width='14' height='16' viewBox='0 0 14 16' fill='none'>
+        <path
+            d='M7.00011 6.44444V11.1111M7.00011 11.1111L4.66677 8.77778M7.00011 11.1111L9.33344 8.77778M10.889 15H3.11122C2.25211 15 1.55566 14.3036 1.55566 13.4444V2.55556C1.55566 1.69645 2.25211 1 3.11122 1H7.45572C7.662 1 7.85983 1.08194 8.00569 1.22781L12.2167 5.43886C12.3626 5.58472 12.4446 5.78255 12.4446 5.98883V13.4444C12.4446 14.3036 11.7481 15 10.889 15Z'
+            stroke='currentColor'
+            stroke-width='1.67'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+        />
+    </svg>
+);
+
+export const DownloadFileOutlinedIcon = props => <Icon component={DownloadFileOutlinedIconSvg} {...props} />;
+
+const DownloadFileIconSvg = () => (
+    <svg width='24' height='24' viewBox='0 0 24 24' fill='none'>
+        <path
+            fill-rule='evenodd'
+            clip-rule='evenodd'
+            d='M7.1998 2.39844C5.87432 2.39844 4.7998 3.47296 4.7998 4.79844V19.1984C4.7998 20.5239 5.87432 21.5984 7.1998 21.5984H16.7998C18.1253 21.5984 19.1998 20.5239 19.1998 19.1984V8.89549C19.1998 8.25897 18.9469 7.64853 18.4969 7.19844L14.3998 3.10138C13.9497 2.65129 13.3393 2.39844 12.7027 2.39844H7.1998ZM13.1998 9.59844C13.1998 8.9357 12.6625 8.39844 11.9998 8.39844C11.3371 8.39844 10.7998 8.9357 10.7998 9.59844V13.9014L9.24833 12.3499C8.7797 11.8813 8.01991 11.8813 7.55128 12.3499C7.08265 12.8185 7.08265 13.5783 7.55128 14.047L11.1513 17.647C11.6199 18.1156 12.3797 18.1156 12.8483 17.647L16.4483 14.047C16.917 13.5783 16.917 12.8185 16.4483 12.3499C15.9797 11.8813 15.2199 11.8813 14.7513 12.3499L13.1998 13.9014V9.59844Z'
+            fill='currentColor'
+        />
+    </svg>
+);
+
+export const DownloadFileIcon = props => <Icon component={DownloadFileIconSvg} {...props} />;

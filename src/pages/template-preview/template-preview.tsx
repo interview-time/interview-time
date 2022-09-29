@@ -191,7 +191,11 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                 {template.interviewType === InterviewType.LIVE_CODING && (
                     <>
                         <div className={styles.cardSpace}>
-                            <LiveCodingChallengeCard challenges={template.challenges || []} />
+                            <LiveCodingChallengeCard
+                                teamId={template.teamId}
+                                challenges={template.challenges || []}
+                                onChallengeSelectionChanged={()=> {}}
+                            />
                         </div>
                         <div className={styles.cardSpace}>
                             <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
