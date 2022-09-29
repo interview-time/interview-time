@@ -50,7 +50,7 @@ const LiveCodingChallenge = ({ challenge, loadChallenge, loading, isExpired }: P
                             {isEmpty(challenge.description) ? (
                                 <div style={{ marginTop: 12 }}>
                                     As a part of your interview process, you've been asked to complete the code
-                                    challenge.{" "}
+                                    challenge.
                                 </div>
                             ) : (
                                 <div style={{ marginTop: 12 }}>{challenge.description}</div>
