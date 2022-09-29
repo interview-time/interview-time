@@ -90,7 +90,7 @@ namespace CafApi.Query
                 InterviewerName = interviewer.Name,
                 InterviewDateTime = interview.InterviewDateTime,
                 InterviewEndDateTime = interview.InterviewEndDateTime,
-                InterviewType = interview.InterviewType,
+                InterviewType = interview.InterviewType ?? InterviewType.INTERVIEW.ToString(),
                 Status = interview.Status,
                 Decision = interview.Decision,
                 Notes = interview.Notes,
