@@ -3,7 +3,6 @@ import styles from "./template-preview.module.css";
 import Text from "antd/lib/typography/Text";
 import {
     IntroSection,
-    SummarySection,
     TemplateGroupsSection,
 } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
 import { addTemplate, deleteTemplate, loadTemplates, shareTemplate } from "../../store/templates/actions";
@@ -202,11 +201,6 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                         </div>
                     </>
                 )}
-
-                <Card className={styles.cardSpace}>
-                    {/* @ts-ignore */}
-                    <SummarySection interview={template} />
-                </Card>
             </div>
             {/* @ts-ignore */}
             <TemplateShareModal

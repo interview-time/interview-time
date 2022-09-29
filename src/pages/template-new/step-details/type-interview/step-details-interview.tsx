@@ -11,7 +11,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import Card from "../../../../components/card/card";
 import { sortBy } from "lodash";
 import TemplateGroupModal from "./template-group-modal";
-import TemplateFooterCard from "../template-footer-card";
 import { ReducerAction, ReducerActionType } from "../../template-reducer";
 
 type Props = {
@@ -63,13 +62,6 @@ const StepDetailsInterview = ({ template, onTemplateChange, allQuestionTags }: P
         onTemplateChange({
             type: ReducerActionType.UPDATE_HEADER,
             header: header,
-        });
-    };
-
-    const onFooterChanged = (footer: string) => {
-        onTemplateChange({
-            type: ReducerActionType.UPDATE_FOOTER,
-            footer: footer,
         });
     };
 
@@ -275,7 +267,6 @@ const StepDetailsInterview = ({ template, onTemplateChange, allQuestionTags }: P
                         </Button>
                     </Card>
 
-                    <TemplateFooterCard footer={template.structure.footer} onFooterChanged={onFooterChanged} />
                 </Form>
 
                 <TemplateGroupModal

@@ -1,6 +1,6 @@
 import React from "react";
 import { Col } from "antd";
-import { InterviewGroupsSection, IntroSection, SummarySection } from "./interview-sections";
+import { InterviewGroupsSection, IntroSection } from "./interview-sections";
 import styles from "./step-assessment-interview.module.css";
 import Card from "../../../../components/card/card";
 import {
@@ -80,11 +80,6 @@ const StepAssessmentInterview = ({ interview, teamMembers, candidate, onIntervie
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                 onRemoveGroupClicked={onQuestionsRemoved}
             />
-
-            <Card style={{ marginTop: 32 }}>
-                {/* @ts-ignore */}
-                <SummarySection interview={interview} />
-            </Card>
         </Col>
     );
 };

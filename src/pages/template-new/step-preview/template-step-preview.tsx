@@ -6,7 +6,6 @@ import Text from "antd/lib/typography/Text";
 import Card from "../../../components/card/card";
 import {
     IntroSection,
-    SummarySection,
     TemplateGroupsSection,
 } from "../../interview-scorecard/step-assessment/type-interview/interview-sections";
 import React from "react";
@@ -65,10 +64,6 @@ const TemplateStepPreview = ({ template, onTemplateChange }: Props) => {
                         </div>
                     </>
                 )}
-                <Card className={styles.cardSpace}>
-                    {/* @ts-ignore */}
-                    <SummarySection interview={template} />
-                </Card>
             </Col>
         </Row>
     );

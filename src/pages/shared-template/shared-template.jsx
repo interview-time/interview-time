@@ -1,6 +1,6 @@
 import { Button, Card, Col, Divider, Result, Row } from "antd";
 import Text from "antd/lib/typography/Text";
-import { IntroSection, SummarySection, TemplateGroupsSection } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
+import { IntroSection, TemplateGroupsSection } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
 import { connect } from "react-redux";
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
@@ -76,9 +76,6 @@ const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
                 <div className={styles.row}>
                     <TemplateGroupsSection template={template} disabled={true} />
                 </div>
-                <Card className={styles.rowEnd}>
-                    <SummarySection interview={template} />
-                </Card>
             </Col>
         </Row>
     );
