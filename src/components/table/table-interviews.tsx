@@ -8,7 +8,7 @@ import InitialsAvatar from "../avatar/initials-avatar";
 import React from "react";
 import { Avatar } from "antd";
 import InterviewStatusTag from "../tags/interview-status-tags";
-import { InterviewData } from "../../store/interviews/selector";
+import { getCandidateName, InterviewData } from "../../store/interviews/selector";
 import { ColumnType } from "rc-table/lib/interface";
 import { Link } from "react-router-dom";
 import { routeCandidateDetails, routeInterviewReport, routeInterviewScorecard } from "../../utils/route";
@@ -19,18 +19,17 @@ export const CandidateColumn = (clickable: boolean): ColumnType<InterviewData> =
     key: "candidateName",
     // @ts-ignore
     sortDirections: ["descend", "ascend"],
-    sorter: (a: InterviewData, b: InterviewData) =>
-        localeCompare(a.candidate?.candidateName ?? "", b.candidate?.candidateName ?? ""),
+    sorter: (a: InterviewData, b: InterviewData) => localeCompare(getCandidateName(a), getCandidateName(b)),
     render: (interview: InterviewData) => {
         const getLink = () => {
-            const text = interview.candidate?.candidateName ?? interview.candidateName;
+            const candidateName = getCandidateName(interview);
             if (clickable && interview.candidateId) {
                 // candidate details available
-                return <Link to={routeCandidateDetails(interview.candidateId)}>{text}</Link>;
+                return <Link to={routeCandidateDetails(interview.candidateId)}>{candidateName}</Link>;
             }
 
             // show black text
-            return text;
+            return candidateName;
         };
 
         return (
@@ -72,8 +71,9 @@ export const TemplateColumn = (): ColumnType<InterviewData> => ({
     key: "templateName",
     // @ts-ignore
     sortDirections: ["descend", "ascend"],
-    sorter: (a: InterviewData, b: InterviewData) => localeCompare(a.templateName ?? "", b.templateName ?? ""),
-    render: (interview: InterviewData) => <TableText>{interview.templateName ?? ""}</TableText>,
+    sorter: (a: InterviewData, b: InterviewData) =>
+        localeCompare(a.templateName ?? a.position ?? "", b.templateName ?? b.position ?? ""),
+    render: (interview: InterviewData) => <TableText>{interview.templateName ?? interview.position ?? ""}</TableText>,
 });
 
 export const DateColumn = (): ColumnType<InterviewData> => ({

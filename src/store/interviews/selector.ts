@@ -47,7 +47,9 @@ const toInterviewData = (
         endDateTime: new Date(interview.interviewEndDateTime),
         createdDateTime: new Date(interview.createdDate),
         linkedInterviews: [],
-        templateName: interview.templateIds ? templates.find(t => t.templateId === interview.templateIds[0])?.title : undefined,
+        templateName: interview.templateIds
+            ? templates.find(t => t.templateId === interview.templateIds[0])?.title
+            : undefined,
     };
 };
 
@@ -141,3 +143,11 @@ export const selectSharedInterview = (state: RootState, token: string) => {
 };
 
 export const selectAssessmentGroup = (interview: Interview): InterviewStructureGroup => interview.structure.groups[0]!;
+
+export const getCandidateName2 = (interview: Interview, candidate?: Candidate) => {
+    return candidate?.candidateName ?? interview.candidateName ?? "Unknown";
+};
+
+export const getCandidateName = (interview: InterviewData) => {
+    return interview.candidate?.candidateName ?? interview.candidateName ?? "Unknown";
+};

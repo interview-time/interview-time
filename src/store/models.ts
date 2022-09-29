@@ -51,7 +51,7 @@ export interface Interview {
     linkId: string;
     token?: string; // shared scorecard token
     candidateId: string;
-    candidateName?: string;
+    candidateName?: string; // DEPRECATED
     candidateNotes?: string;
     position?: string;
     interviewDateTime: string; // "2022-07-13T11:15:00Z"
