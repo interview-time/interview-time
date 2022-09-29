@@ -17,5 +17,7 @@ namespace CafApi.Services.User
         Task<bool> CanSendChallenge(string userId, string teamId, bool isInterviewer);
 
         Task<bool> CanViewCandidates(string userId, string teamId);
+
+        Task<bool> CanIntegrateWithATS(string userId, string teamId);
     }
 }

@@ -20,6 +20,7 @@ using CafApi.Common;
 using System.Threading.Tasks;
 using CafApi.Query;
 using MediatR;
+using CafApi.Services.Integration;
 
 namespace CafApi
 {
@@ -106,8 +107,11 @@ namespace CafApi
 
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Config));
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
-            
-            services.AddScoped<IUserService, UserService>();
+
+            services.Configure<MergeOptions>(Configuration.GetSection(MergeOptions.Section));
+
+            services.AddHttpClient<IMergeHttpClient, MergeHttpClient>();
+
             services.AddScoped<ITemplateService, TemplateService>();
             services.AddScoped<IInterviewService, InterviewService>();
             services.AddScoped<ITeamService, TeamService>();
@@ -121,7 +125,7 @@ namespace CafApi
             services.AddScoped<IChallengeRepository, ChallengeRepository>();
             services.AddScoped<ICandidateRepository, CandidateRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ITemplateRepository, TemplateRepository>();            
+            services.AddScoped<ITemplateRepository, TemplateRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

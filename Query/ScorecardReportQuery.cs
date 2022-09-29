@@ -59,16 +59,16 @@ namespace CafApi.Query
     {
         private readonly IInterviewRepository _interviewRepository;
         private readonly ICandidateService _candidateService;
+        private readonly IUserRepository _userRepository;
 
-        private readonly IUserService _userService;
-
-        public ScorecardReportQueryHandler(IInterviewRepository interviewRepository,
+        public ScorecardReportQueryHandler(
+            IInterviewRepository interviewRepository,
             ICandidateService candidateService,
-            IUserService userService)
+            IUserRepository userRepository)
         {
             _interviewRepository = interviewRepository;
             _candidateService = candidateService;
-            _userService = userService;
+            _userRepository = userRepository;
         }
 
         public async Task<ScorecardReportQueryResult> Handle(ScorecardReportQuery query, CancellationToken cancellationToken)
@@ -80,7 +80,7 @@ namespace CafApi.Query
             }
 
             var candidate = await _candidateService.GetCandidate(interview.TeamId, interview.CandidateId);
-            var interviewer = await _userService.GetProfile(interview.UserId);
+            var interviewer = await _userRepository.GetProfile(interview.UserId);
 
             return new ScorecardReportQueryResult
             {

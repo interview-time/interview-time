@@ -4,10 +4,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Query;
 using CafApi.Repository;
 using CafApi.Services;
 using CafApi.Services.User;
 using CafApi.ViewModel;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,9 +21,9 @@ namespace CafApi.Controllers
     [Route("team")]
     public class TeamController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly ITeamService _teamService;
-        private readonly IUserService _userService;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;        
         private readonly IPermissionsService _permissionsService;
         private readonly ILogger<UserController> _logger;
 
@@ -33,59 +35,47 @@ namespace CafApi.Controllers
             }
         }
 
-        public TeamController(ILogger<UserController> logger,
+        public TeamController(
+            IMediator mediator,
+            ILogger<UserController> logger,
             ITeamService teamService,
-            IUserService userService,
             IPermissionsService permissionsService,
             IUserRepository userRepository)
         {
+            _mediator = mediator;
             _logger = logger;
             _teamService = teamService;
-            _userService = userService;
             _permissionsService = permissionsService;
             _userRepository = userRepository;
         }
 
         [HttpGet("{teamId}")]
-        public async Task<ActionResult<TeamResponse>> GetTeam(string teamId)
+        public async Task<ActionResult<TeamDetailsQueryResult>> GetTeam(string teamId)
         {
-            var team = await _teamService.GetTeam(teamId);
-            if (team == null)
+            try
             {
-                return NotFound();
+                var query = new TeamDetailsQuery
+                {
+                    UserId = UserId,
+                    TeamId = teamId
+                };
+
+                var teamDetails = await _mediator.Send(query);
+
+                return Ok(teamDetails);
             }
-
-            List<(Profile Profile, TeamMember TeamMember)> members = await _teamService.GetTeamMembers(UserId, teamId);
-            var invites = await _teamService.GetPendingInvites(UserId, teamId);
-            var invitedByList = await _userRepository.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
-            var availableSeats = await _teamService.GetAvailableSeats(teamId);
-
-            return new TeamResponse
+            catch (AuthorizationException ex)
             {
-                TeamId = team.TeamId,
-                TeamName = team.Name,
-                TeamMembers = members.Select(m => new TeamMembersResponse
-                {
-                    UserId = m.Profile.UserId,
-                    Name = m.Profile.Name,
-                    Email = m.Profile.Email,
-                    IsAdmin = m.Profile.UserId == team.OwnerId,
-                    Roles = m.TeamMember.Roles
-                }).ToList(),
-                PendingInvites = invites.Select(i => new PendingInviteResponse
-                {
-                    InviteId = i.InviteId,
-                    InviteeEmail = i.InviteeEmail,
-                    Role = i.Role,
-                    InvitedBy = invitedByList.FirstOrDefault(invitedBy => invitedBy.UserId == i.InvitedBy)?.Name,
-                    InvitedDate = i.CreatedDate
-                }).ToList(),
-                Token = team.Token,
-                Roles = members.FirstOrDefault(m => m.TeamMember.UserId == UserId).TeamMember?.Roles,
-                Seats = team.Seats == 0 ? 2 : team.Seats,
-                Plan = team.Plan ?? SubscriptionPlan.STARTER.ToString(),
-                AvailableSeats = availableSeats
-            };
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost()]
@@ -162,7 +152,12 @@ namespace CafApi.Controllers
                 return NotFound();
             }
 
-            await _userService.UpdateCurrentTeam(UserId, teamId);
+            if (!await _permissionsService.IsBelongInTeam(UserId, teamId))
+            {
+                return Unauthorized();
+            }
+
+            await _userRepository.UpdateCurrentTeam(UserId, teamId);
 
             return Ok();
         }

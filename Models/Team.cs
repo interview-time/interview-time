@@ -20,6 +20,8 @@ namespace CafApi.Models
 
         public string Token { get; set; }
 
+        public AtsIntegration Integration { get; set; }
+
         public string StripeCustomerId { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
@@ -27,5 +29,16 @@ namespace CafApi.Models
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime ModifiedDate { get; set; }
+    }
+
+    public class AtsIntegration
+    {
+        public string MergeAccessToken { get; set; }
+
+        public string Status { get; set; }
+
+        public string ATS { get; set; }
+
+        public DateTime? LastSync { get; set; }
     }
 }
