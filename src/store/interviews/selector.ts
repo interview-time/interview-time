@@ -1,5 +1,5 @@
 import { RootState } from "../state-models";
-import { Candidate, Interview, InterviewStructureGroup, InterviewType, TeamMember } from "../models";
+import { Candidate, Interview, InterviewStructureGroup, InterviewType, TeamMember, Template } from "../models";
 import { Status } from "../../utils/constants";
 import { cloneDeep } from "lodash";
 
@@ -11,6 +11,7 @@ export interface InterviewData extends Interview {
     endDateTime: Date;
     createdDateTime: Date;
     linkedInterviews: InterviewData[];
+    templateName?: string;
 }
 
 export const toInterview = (interviewData: InterviewData): Interview => {
@@ -22,9 +23,14 @@ export const toInterview = (interviewData: InterviewData): Interview => {
     // @ts-ignore
     delete interview.linkedInterviews;
     return interview;
-}
+};
 
-const toInterviewData = (interview: Interview, candidates: Candidate[], teamMembers: TeamMember[]) => {
+const toInterviewData = (
+    interview: Interview,
+    candidates: Candidate[],
+    teamMembers: TeamMember[],
+    templates: Template[]
+) => {
     const interviewers = interview.interviewers ?? [interview.userId]; // backward compat
     const candidate = candidates.find(candidate => candidate.candidateId === interview.candidateId);
     if (candidate && !candidate.position) {
@@ -41,16 +47,20 @@ const toInterviewData = (interview: Interview, candidates: Candidate[], teamMemb
         endDateTime: new Date(interview.interviewEndDateTime),
         createdDateTime: new Date(interview.createdDate),
         linkedInterviews: [],
+        templateName: interview.templateIds
+            ? templates.find(t => t.templateId === interview.templateIds[0])?.title
+            : undefined,
     };
 };
 
 export const selectInterviewData = (state: RootState, interviewId: string) => {
     const candidates = state.candidates.candidates ?? [];
     const teamMembers = state.user.teamMembers ?? [];
+    const templates = state.templates.templates ?? [];
 
     const interview = selectInterview(state, interviewId);
     if (interview) {
-        return toInterviewData(interview, candidates, teamMembers);
+        return toInterviewData(interview, candidates, teamMembers, templates);
     }
 };
 
@@ -58,8 +68,9 @@ export const selectInterviewsData = (state: RootState): InterviewData[] => {
     const interviews = state.interviews.interviews ?? [];
     const candidates = state.candidates.candidates ?? [];
     const teamMembers = state.user.teamMembers ?? [];
+    const templates = state.templates.templates ?? [];
 
-    return interviews.map((interview: Interview) => toInterviewData(interview, candidates, teamMembers));
+    return interviews.map((interview: Interview) => toInterviewData(interview, candidates, teamMembers, templates));
 };
 
 export const selectSortedByDateInterviews = (interviews: InterviewData[], desc: boolean = false): InterviewData[] => {
@@ -132,3 +143,11 @@ export const selectSharedInterview = (state: RootState, token: string) => {
 };
 
 export const selectAssessmentGroup = (interview: Interview): InterviewStructureGroup => interview.structure.groups[0]!;
+
+export const getCandidateName2 = (interview: Interview, candidate?: Candidate) => {
+    return candidate?.candidateName ?? interview.candidateName ?? "Unknown";
+};
+
+export const getCandidateName = (interview: InterviewData) => {
+    return interview.candidate?.candidateName ?? interview.candidateName ?? "Unknown";
+};

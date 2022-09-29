@@ -13,12 +13,13 @@ import { InterviewAssessment } from "../../utils/constants";
 import { defaultTo } from "lodash/util";
 import { filterGroupsWithAssessment } from "../../utils/filters";
 import { getFormattedDateTime } from "../../utils/date-fns";
+import { getCandidateName2 } from "../../store/interviews/selector";
 
 const { TextArea } = Input;
 
 export const DATE_FORMAT_DISPLAY = "MMM DD, YYYY hh:mm a";
 
-const ExportNotes = ({ interview }) => {
+const ExportNotes = ({ interview, candidate }) => {
     const isCandidateQualified =
         interview.decision === InterviewAssessment.YES || interview.decision === InterviewAssessment.STRONG_YES;
 
@@ -66,7 +67,7 @@ const ExportNotes = ({ interview }) => {
         return `
 Candidate Report
 
-Candidate Name: ${interview.candidate}
+Candidate Name: ${getCandidateName2(interview, candidate)}
 Position: ${interview.position}
 Interview Date: ${getFormattedDateTime(interview.interviewDateTime)}
 
@@ -108,7 +109,7 @@ ${questionNotes}
 
     return (
         <div>
-            <TextArea               
+            <TextArea
                 style={{ fontFamily: "monospace" }}
                 autoSize={{ minRows: 10, maxRows: 20 }}
                 onChange={e => setNotes(e.target.value)}

@@ -5,7 +5,6 @@ import {
     InterviewQuestion,
     InterviewStatus,
     InterviewStructureGroup,
-    LiveCodingChallenge,
     QuestionAssessment,
     RedFlag,
     Template,

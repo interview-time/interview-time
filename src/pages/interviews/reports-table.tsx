@@ -16,14 +16,14 @@ import styles from "./reports-table.module.css";
 import { getFormattedDateTime } from "../../utils/date-fns";
 import InitialsAvatar from "../../components/avatar/initials-avatar";
 import { CandidateColumn, DateColumn, InterviewColumn } from "../../components/table/table-interviews";
-import { InterviewData } from "../../store/interviews/selector";
+import { getCandidateName, InterviewData } from "../../store/interviews/selector";
 import { ColumnsType } from "antd/lib/table/interface";
 import { TeamRole, UserProfile } from "../../store/models";
 
 const { Search } = Input;
 
 type Props = {
-    profile: UserProfile,
+    profile: UserProfile;
     userRole: TeamRole;
     interviews: InterviewData[];
     loading: boolean;
@@ -59,7 +59,7 @@ const ReportsTable = ({ profile, userRole, interviews, loading }: Props) => {
         setInterviews(
             interviews.filter(
                 item =>
-                    item.candidate?.candidateName?.toLocaleLowerCase()?.includes(lowerCaseText) ||
+                    getCandidateName(item)?.toLocaleLowerCase()?.includes(lowerCaseText) ||
                     item.position?.toLocaleLowerCase()?.includes(lowerCaseText) ||
                     getFormattedDateTime(item.startDateTime).toLocaleLowerCase().includes(lowerCaseText) ||
                     getDecisionText(item.decision).toLocaleLowerCase().includes(lowerCaseText)
