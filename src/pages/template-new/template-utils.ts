@@ -26,6 +26,11 @@ export const cloneLibraryTemplate = (templates: LibraryTemplate[], libraryTempla
     }
 };
 
+export const cloneSharedTemplate = (template: Template): Template => ({
+    ...template,
+    templateId: uuidv4(),
+});
+
 export const newTemplateFromType = (template: Template, type: InterviewType): Template | undefined => {
     if (type === InterviewType.INTERVIEW) {
         return {
