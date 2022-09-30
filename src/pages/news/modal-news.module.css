@@ -16,8 +16,12 @@
 
 .carouselImage {
     margin-top: 24px;
-    width: 600px;
+    max-width: 600px;
     height: 300px;
+}
+
+.carouselImageWrapper {
+    text-align: center;
 }
 
 .arrowHolder {
