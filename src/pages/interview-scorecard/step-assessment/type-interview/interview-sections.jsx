@@ -24,7 +24,6 @@ const { useBreakpoint } = Grid;
  * @constructor
  */
 export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
-    const marginTop12 = { marginTop: 12 };
     return (
         <div>
             <div className={styles.divSpaceBetween}>
@@ -37,9 +36,6 @@ export const InterviewPreviewCard = ({ interview, onCloseClicked }) => {
                 <IntroSection interview={interview} />
             </Card>
             <InterviewGroupsSection interview={interview} />
-            <Card style={marginTop12}>
-                <SummarySection interview={interview} />
-            </Card>
         </div>
     );
 };
@@ -66,33 +62,6 @@ export const IntroSection = ({ interview, hashStyle }) => {
                 💡 Interview reminders
             </Title>
             <div className={styles.multiLineText}>{getHeader()}</div>
-        </>
-    );
-};
-
-/**
- *
- * @param {(Interview|Template)} interview
- * @param onNoteChanges
- * @param hashStyle
- * @returns {JSX.Element}
- * @constructor
- */
-export const SummarySection = ({ interview, hashStyle }) => {
-    const getFooter = () => {
-        if (interview && interview.structure && interview.structure.footer) {
-            return interview.structure.footer;
-        } else {
-            return "End of interview text is empty.";
-        }
-    };
-
-    return (
-        <>
-            <Title id='summary' level={4} className={hashStyle ? hashStyle : null}>
-                End of interview
-            </Title>
-            <div className={styles.multiLineText}>{getFooter()}</div>
         </>
     );
 };

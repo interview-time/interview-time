@@ -6,7 +6,6 @@ export enum ReducerActionType {
     SET_TEMPLATE,
     UPDATE_TITLE,
     UPDATE_HEADER,
-    UPDATE_FOOTER,
     UPDATE_DESCRIPTION,
     ADD_QUESTION,
     REMOVE_QUESTION,
@@ -40,11 +39,6 @@ export type UpdateDescriptionAction = {
 export type UpdateHeaderAction = {
     type: ReducerActionType.UPDATE_HEADER;
     header: string;
-};
-
-export type UpdateFooterAction = {
-    type: ReducerActionType.UPDATE_FOOTER;
-    footer: string;
 };
 
 export type AddQuestionAction = {
@@ -128,7 +122,6 @@ export type ReducerAction =
     | UpdateGroupAction
     | MoveGroupAction
     | UpdateHeaderAction
-    | UpdateFooterAction
     | AddChallengeAction
     | UpdateChallengeAction
     | RemoveChallengeAction
@@ -146,9 +139,6 @@ export const templateReducer = (state: Template, action: ReducerAction): Templat
             return state;
         case ReducerActionType.UPDATE_HEADER:
             state.structure.header = action.header;
-            return state;
-        case ReducerActionType.UPDATE_FOOTER:
-            state.structure.footer = action.footer;
             return state;
         case ReducerActionType.ADD_QUESTION: {
             const newState = cloneDeep(state);

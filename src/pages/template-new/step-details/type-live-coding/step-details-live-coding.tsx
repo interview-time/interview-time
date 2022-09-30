@@ -4,7 +4,6 @@ import { Col, Form, Row } from "antd";
 import TemplateMetaCard from "../template-meta-card";
 import React, { useState } from "react";
 import TemplateHeaderCard from "../template-header-card";
-import TemplateFooterCard from "../template-footer-card";
 import LiveCodingAssessmentModal from "./live-coding-assessment-modal";
 import LiveCodingChallengeCard from "./live-coding-challenge-card";
 import { ReducerAction, ReducerActionType } from "../../template-reducer";
@@ -63,13 +62,6 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
         onTemplateChange({
             type: ReducerActionType.UPDATE_HEADER,
             header: header,
-        });
-    };
-
-    const onFooterChanged = (footer: string) => {
-        onTemplateChange({
-            type: ReducerActionType.UPDATE_FOOTER,
-            footer: footer,
         });
     };
 
@@ -251,7 +243,6 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
                         onUpdateQuestionClicked={onUpdateQuestionClicked}
                     />
 
-                    <TemplateFooterCard footer={template.structure.footer} onFooterChanged={onFooterChanged} />
                 </Form>
 
                 <LiveCodingAssessmentModal
