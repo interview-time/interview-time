@@ -26,7 +26,7 @@ import { routeTemplates } from "../../utils/route";
 import StepDetailsLiveCoding from "./step-details/type-live-coding/step-details-live-coding";
 import { ReducerAction, ReducerActionType, templateReducer } from "./template-reducer";
 import Spinner from "../../components/spinner/spinner";
-import { cloneLibraryTemplate, emptyTemplate, newTemplateFromType } from "./template-utils";
+import { cloneLibraryTemplate, cloneSharedTemplate, emptyTemplate, newTemplateFromType } from "./template-utils";
 import TemplateStepPreview from "./step-preview/template-step-preview";
 import { v4 as uuidv4 } from "uuid";
 
@@ -103,6 +103,8 @@ const TemplateNew = ({
     }, []);
 
     useEffect(() => {
+        console.log("originalTemplate", originalTemplate);
+        console.log("template", template);
         if (originalTemplate && isEmpty(template.templateId)) {
             dispatch({
                 type: ReducerActionType.SET_TEMPLATE,
@@ -254,7 +256,7 @@ const mapState = (state: RootState, ownProps: any) => {
     } else if (flow.sharedTemplateToken) {
         let sharedTemplate = state.templates.sharedTemplate;
         if (sharedTemplate) {
-            template = cloneDeep(sharedTemplate);
+            template = cloneSharedTemplate(sharedTemplate);
             allQuestionTags = interviewToTags(template);
         }
     } else {
