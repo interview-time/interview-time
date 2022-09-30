@@ -6,12 +6,54 @@ import { Dispatch } from "redux";
 import { RootState } from "../state-models";
 import { setIntegrationComplete } from "../team/actions";
 
-export const SET_LINK_TOKEN = "SET_LINK_TOKEN";
-export const SET_LINK_TOKEN_LOADING = "SET_LINK_TOKEN_LOADING";
-export const SET_LINK_TOKEN_ERROR = "SET_LINK_TOKEN_ERROR";
-export const RESET_INTEGRATION = "RESET_INTEGRATION";
-
 const BASE_URI = `${process.env.REACT_APP_API_URL}`;
+
+export enum IntegrationActionType {
+    SET_LINK_TOKEN = "SET_LINK_TOKEN",
+    SET_LINK_TOKEN_LOADING = "SET_LINK_TOKEN_LOADING",
+    SET_LINK_TOKEN_ERROR = "SET_LINK_TOKEN_ERROR",
+    RESET_INTEGRATION = "RESET_INTEGRATION",
+}
+
+export type SetLinkTokenAction = {
+    type: IntegrationActionType.SET_LINK_TOKEN;
+    linkToken?: string;
+};
+
+export type SetLoadingAction = {
+    type: IntegrationActionType.SET_LINK_TOKEN_LOADING;
+    loading: boolean;
+};
+
+export type SetErrorAction = {
+    type: IntegrationActionType.SET_LINK_TOKEN_ERROR;
+    error: boolean;
+};
+
+export type ResetIntegrationAction = {
+    type: IntegrationActionType.RESET_INTEGRATION;
+};
+
+export type IntegrationActions = SetLinkTokenAction | SetLoadingAction | SetErrorAction | ResetIntegrationAction;
+
+export const setError = (error: boolean): SetErrorAction => ({
+    type: IntegrationActionType.SET_LINK_TOKEN_ERROR,
+    error: error,
+});
+
+export const resetIntegration = (): ResetIntegrationAction => ({
+    type: IntegrationActionType.RESET_INTEGRATION,
+});
+
+export const setLinkToken = (linkToken?: string): SetLinkTokenAction => ({
+    type: IntegrationActionType.SET_LINK_TOKEN,
+    linkToken: linkToken,
+});
+
+export const setLoading = (loading: boolean): SetLoadingAction => ({
+    type: IntegrationActionType.SET_LINK_TOKEN_LOADING,
+    loading: loading,
+});
 
 export const getLinkToken = () => async (dispatch: Dispatch, getState: () => RootState) => {
     const token = await getAccessTokenSilently();
@@ -53,28 +95,10 @@ export const swapPublicToken = (publicToken: string) => async (dispatch: Dispatc
             config(token)
         );
 
+        dispatch(setLinkToken(undefined));
         dispatch(setIntegrationComplete());
     } catch (error) {
         logError(error);
         dispatch(setError(true));
     }
 };
-
-export const setLinkToken = (linkToken: string) => ({
-    type: SET_LINK_TOKEN,
-    payload: { linkToken },
-});
-
-export const setLoading = (loading: boolean) => ({
-    type: SET_LINK_TOKEN_LOADING,
-    payload: { loading },
-});
-
-export const setError = (error: boolean) => ({
-    type: SET_LINK_TOKEN_ERROR,
-    payload: { error },
-});
-
-export const resetIntegration = () => ({
-    type: RESET_INTEGRATION,
-});

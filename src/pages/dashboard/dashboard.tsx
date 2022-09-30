@@ -58,8 +58,6 @@ const Dashboard = ({
         // eslint-disable-next-line
     }, []);
 
-    const isInterviewer = () => userRole === TeamRole.INTERVIEWER;
-
     const onNewTemplateClicked = () => history.push(routeTemplates());
 
     const onScheduleInterviewClicked = () => history.push(routeInterviewAdd());

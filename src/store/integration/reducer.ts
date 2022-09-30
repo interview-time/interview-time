@@ -1,6 +1,5 @@
 import { IntegrationState } from "../state-models";
-import { SET_LINK_TOKEN, SET_LINK_TOKEN_LOADING, SET_LINK_TOKEN_ERROR, RESET_INTEGRATION } from "./actions";
-import { AnyAction } from "redux";
+import { IntegrationActions, IntegrationActionType } from "./actions";
 
 const initialState: IntegrationState = {
     linkToken: undefined,
@@ -8,24 +7,21 @@ const initialState: IntegrationState = {
     error: false,
 };
 
-const integrationReducer = (state = initialState, action: AnyAction) => {
+const integrationReducer = (state = initialState, action: IntegrationActions) => {
     switch (action.type) {
-        case SET_LINK_TOKEN_LOADING: {
-            const { loading } = action.payload;
-            return { ...state, loading: loading };
+        case IntegrationActionType.SET_LINK_TOKEN_LOADING: {
+            return { ...state, loading: action.loading };
         }
 
-        case SET_LINK_TOKEN_ERROR: {
-            const { error } = action.payload;
-            return { ...state, error: error };
+        case IntegrationActionType.SET_LINK_TOKEN_ERROR: {
+            return { ...state, error: action.error };
         }
 
-        case SET_LINK_TOKEN: {
-            const { linkToken } = action.payload;
-            return { ...state, linkToken: linkToken };
+        case IntegrationActionType.SET_LINK_TOKEN: {
+            return { ...state, linkToken: action.linkToken };
         }
 
-        case RESET_INTEGRATION: {
+        case IntegrationActionType.RESET_INTEGRATION: {
             return { linkToken: undefined, loading: false, error: false };
         }
 

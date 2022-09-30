@@ -22,10 +22,11 @@ type Props = {
 };
 
 const TeamIntegration = ({ linkToken, loading, teamDetails, getLinkToken, swapPublicToken, canIntegrate }: Props) => {
-    const [openMergeLink, setOpneMergeLink] = useState(false);
+    const [openMergeLink, setOpenMergeLink] = useState(false);
 
     const onSuccess = useCallback((publicToken: string) => {
         swapPublicToken(publicToken);
+        // eslint-disable-next-line
     }, []);
 
     const { open, isReady } = useMergeLink({
@@ -34,11 +35,11 @@ const TeamIntegration = ({ linkToken, loading, teamDetails, getLinkToken, swapPu
     });
 
     const onIntegrationClicked = () => {
-        setOpneMergeLink(true);
+        setOpenMergeLink(true);
 
         if (linkToken && isReady) {
             open();
-            setOpneMergeLink(false);
+            setOpenMergeLink(false);
         } else {
             getLinkToken();
         }
@@ -47,8 +48,9 @@ const TeamIntegration = ({ linkToken, loading, teamDetails, getLinkToken, swapPu
     useEffect(() => {
         if (linkToken && isReady && openMergeLink) {
             open();
-            setOpneMergeLink(false);
+            setOpenMergeLink(false);
         }
+        // eslint-disable-next-line
     }, [linkToken, isReady, openMergeLink]);
 
     return (
@@ -72,7 +74,7 @@ const TeamIntegration = ({ linkToken, loading, teamDetails, getLinkToken, swapPu
                             ) : (
                                 <EmptyState
                                     message='Integrate with your ATS.'
-                                    secondMessage='Sync canddiates and assessment results.'
+                                    secondMessage='Sync candidates and their assessment results.'
                                     buttonText='Start Integration'
                                     buttonLoading={loading}
                                     onButtonClicked={onIntegrationClicked}

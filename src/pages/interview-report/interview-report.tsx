@@ -15,7 +15,7 @@ import ExportNotes from "../../components/export-notes/export-notes";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
-import { getCandidateName, getCandidateName2, selectInterviewData, toInterview } from "../../store/interviews/selector";
+import { getCandidateName2, selectInterviewData, toInterview } from "../../store/interviews/selector";
 import { RootState } from "../../store/state-models";
 import { Candidate, Interview, TeamMember } from "../../store/models";
 import ScorecardReportSection from "../../components/scorecard/scorecard-report-section";
