@@ -14,7 +14,7 @@ import Card from "../../components/card/card";
 import CardHero from "../../components/card/card-hero";
 import emptyInterview from "../../assets/empty-interview.svg";
 import Text from "antd/lib/typography/Text";
-import { CandidateColumn, DateColumn, InterviewColumn, StatusColumn } from "../../components/table/table-interviews";
+import { CandidateColumn, DateColumn, TemplateColumn, StatusColumn } from "../../components/table/table-interviews";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { InterviewData, selectUncompletedInterviewData } from "../../store/interviews/selector";
@@ -68,12 +68,7 @@ const Dashboard = ({
 
     const onRowClicked = (interview: InterviewData) => history.push(routeInterviewScorecard(interview.interviewId));
 
-    const columns = [
-        CandidateColumn(!isInterviewer()),
-        InterviewColumn(profile.userId, !isInterviewer()),
-        DateColumn(),
-        StatusColumn(),
-    ];
+    const columns = [CandidateColumn(false), TemplateColumn(), DateColumn(), StatusColumn()];
 
     return (
         // @ts-ignore
@@ -132,13 +127,9 @@ const Dashboard = ({
                         columns={columns}
                         dataSource={interviews}
                         loading={interviewsLoading}
-                        rowClassName={isInterviewer() ? styles.row : undefined}
+                        rowClassName={styles.row}
                         onRow={record => ({
-                            onClick: () => {
-                                if (isInterviewer()) {
-                                    onRowClicked(record);
-                                }
-                            },
+                            onClick: () => onRowClicked(record),
                         })}
                     />
                 </ConfigProvider>

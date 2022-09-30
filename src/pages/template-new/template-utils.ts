@@ -1,4 +1,5 @@
 import { InterviewType, LibraryTemplate, Template } from "../../store/models";
+import { v4 as uuidv4 } from "uuid";
 
 // @ts-ignore
 export const emptyTemplate = (templateId: string): Template => ({
@@ -18,12 +19,17 @@ export const cloneLibraryTemplate = (templates: LibraryTemplate[], libraryTempla
         // @ts-ignore
         return {
             ...parent,
-            templateId: "",
+            templateId: uuidv4(),
             parentId: parent.libraryId,
             interviewType: InterviewType.INTERVIEW,
         };
     }
 };
+
+export const cloneSharedTemplate = (template: Template): Template => ({
+    ...template,
+    templateId: uuidv4(),
+});
 
 export const newTemplateFromType = (template: Template, type: InterviewType): Template | undefined => {
     if (type === InterviewType.INTERVIEW) {

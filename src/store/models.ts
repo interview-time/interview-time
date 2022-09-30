@@ -63,6 +63,7 @@ export interface Interview {
     linkId: string;
     token?: string; // shared scorecard token
     candidateId: string;
+    candidateName?: string; // DEPRECATED
     candidateNotes?: string;
     position?: string;
     interviewDateTime: string; // "2022-07-13T11:15:00Z"
@@ -79,7 +80,7 @@ export interface Interview {
     interviewers: string[];
     structure: InterviewStructure;
     interviewType: InterviewType;
-    challenges?: Challenge[];
+    liveCodingChallenges?: LiveCodingChallenge[];
     challengeDetails?: ChallengeDetails;
 }
 
@@ -189,7 +190,7 @@ export interface Template {
     createdDate: string;
     structure: TemplateStructure;
     interviewType: InterviewType;
-    challenges?: Challenge[];
+    challenges?: TemplateChallenge[];
 }
 
 export interface LibraryTemplate {
@@ -219,13 +220,23 @@ export interface TemplateGroup {
     questions: TemplateQuestion[];
 }
 
-export interface Challenge {
+export interface TemplateChallenge {
     challengeId: string;
     name: string;
     description?: string;
     gitHubUrl?: string;
     fileName?: string;
     modifiedDate?: string;
+}
+
+export interface LiveCodingChallenge {
+    challengeId: string;
+    name: string;
+    description?: string;
+    gitHubUrl?: string;
+    fileName?: string;
+    selected?: boolean;
+    shareToken?: string;
 }
 
 export interface CandidateChallenge {

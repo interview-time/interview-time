@@ -1,10 +1,9 @@
-import { Challenge, QuestionDifficulty, Template, TemplateQuestion } from "../../../../store/models";
+import { TemplateChallenge, QuestionDifficulty, Template, TemplateQuestion } from "../../../../store/models";
 import styles from "../type-interview/step-details-interview.module.css";
 import { Col, Form, Row } from "antd";
 import TemplateMetaCard from "../template-meta-card";
 import React, { useState } from "react";
 import TemplateHeaderCard from "../template-header-card";
-import TemplateFooterCard from "../template-footer-card";
 import LiveCodingAssessmentModal from "./live-coding-assessment-modal";
 import LiveCodingChallengeCard from "./live-coding-challenge-card";
 import { ReducerAction, ReducerActionType } from "../../template-reducer";
@@ -26,7 +25,7 @@ type AssessmentModal = {
 
 type TaskModal = {
     visible: boolean;
-    challenge: Challenge | null;
+    challenge: TemplateChallenge | null;
 };
 
 const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) => {
@@ -63,13 +62,6 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
         onTemplateChange({
             type: ReducerActionType.UPDATE_HEADER,
             header: header,
-        });
-    };
-
-    const onFooterChanged = (footer: string) => {
-        onTemplateChange({
-            type: ReducerActionType.UPDATE_FOOTER,
-            footer: footer,
         });
     };
 
@@ -169,7 +161,7 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
         });
     };
 
-    const onAddChallenge = (challenge: Challenge) => {
+    const onAddChallenge = (challenge: TemplateChallenge) => {
         setChallengeModal({
             ...challengeModal,
             visible: false,
@@ -180,7 +172,7 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
         });
     };
 
-    const onUpdateChallengeClicked = (challenge: Challenge) => {
+    const onUpdateChallengeClicked = (challenge: TemplateChallenge) => {
         setChallengeModal({
             ...assessmentModal,
             visible: true,
@@ -188,7 +180,7 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
         });
     };
 
-    const onUpdateChallenge = (challenge: Challenge) => {
+    const onUpdateChallenge = (challenge: TemplateChallenge) => {
         setChallengeModal({
             ...challengeModal,
             visible: false,
@@ -199,7 +191,7 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
         });
     };
 
-    const onChallengeDelete = (challenge: Challenge) => {
+    const onChallengeDelete = (challenge: TemplateChallenge) => {
         setChallengeModal({
             ...challengeModal,
             visible: false,
@@ -251,7 +243,6 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
                         onUpdateQuestionClicked={onUpdateQuestionClicked}
                     />
 
-                    <TemplateFooterCard footer={template.structure.footer} onFooterChanged={onFooterChanged} />
                 </Form>
 
                 <LiveCodingAssessmentModal

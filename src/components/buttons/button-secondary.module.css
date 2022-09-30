@@ -1,0 +1,21 @@
+.secondaryButton {
+    background-color: var(--color-primary-50);
+    color: #8C2BE3;
+    border: none;
+    box-shadow: none;
+}
+
+.secondaryButton:hover {
+    background-color: var(--color-primary-100);
+    color: #8C2BE3;
+    border: none;
+    box-shadow: none;
+}
+
+.secondaryButton:focus {
+    background-color: var(--color-primary-50);
+    color: #8C2BE3;
+    border: none;
+    box-shadow: none;
+}
+

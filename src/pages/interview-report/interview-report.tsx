@@ -15,7 +15,7 @@ import ExportNotes from "../../components/export-notes/export-notes";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import Card from "../../components/card/card";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
-import { selectInterviewData, toInterview } from "../../store/interviews/selector";
+import { getCandidateName, getCandidateName2, selectInterviewData, toInterview } from "../../store/interviews/selector";
 import { RootState } from "../../store/state-models";
 import { Candidate, Interview, TeamMember } from "../../store/models";
 import ScorecardReportSection from "../../components/scorecard/scorecard-report-section";
@@ -63,7 +63,7 @@ const InterviewReport = ({
     return (
         <div className={styles.rootContainer}>
             <Header
-                title={candidate?.candidateName ?? "Loading..."}
+                title={getCandidateName2(interview, candidate)}
                 subtitle={candidate?.position ?? ""}
                 leftComponent={<Button icon={<CloseIcon />} size='large' onClick={() => history.goBack()} />}
                 rightComponent={
@@ -91,7 +91,7 @@ const InterviewReport = ({
                     >
                         <div className={styles.decisionTextHolder}>
                             <Title level={4} style={{ margin: "0 10px 0 0" }}>
-                                🎉 {candidate?.candidateName ?? ""} scored a
+                                🎉 {getCandidateName2(interview, candidate)} scored a
                             </Title>
 
                             <InterviewDecisionTag decision={interview.decision} />
@@ -103,12 +103,12 @@ const InterviewReport = ({
             {/* @ts-ignore */}
             <Modal
                 visible={showExportNotes}
-                title={`Export Notes - ${candidate?.candidateName ?? ""}`}
+                title={`Export Notes - ${getCandidateName2(interview, candidate)}`}
                 onCancel={() => setShowExportNotes(false)}
                 footer={null}
                 width={600}
             >
-                <ExportNotes interview={interview} />
+                <ExportNotes interview={interview} candidate={candidate} />
             </Modal>
             <ShareScorecard
                 interviewId={interview.interviewId}

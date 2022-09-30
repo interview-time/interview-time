@@ -1,11 +1,8 @@
-import { Candidate, Interview, QuestionAssessment, TeamMember } from "../../../../store/models";
+import { Candidate, Interview, LiveCodingChallenge, QuestionAssessment, TeamMember } from "../../../../store/models";
 import { ReducerAction, ReducerActionType } from "../../interview-reducer";
 import styles from "./step-assessment-live-coding.module.css";
 import { Col } from "antd";
-import {
-    IntroSection,
-    SummarySection,
-} from "../type-interview/interview-sections";
+import { IntroSection } from "../type-interview/interview-sections";
 import React from "react";
 import Card from "../../../../components/card/card";
 import LiveCodingChallengeCard from "../../../../components/scorecard/type-live-coding/challenge-card-editable";
@@ -48,14 +45,11 @@ const StepAssessmentLiveCoding = ({ interview, interviewers, candidate, onInterv
         });
     };
 
-    const onChallengeSelected = (challengeId?: string) => {
+    const onChallengeSelectionChanged = (selected: boolean, challenge: LiveCodingChallenge) => {
         onInterviewChange({
-            type: ReducerActionType.UPDATE_CHALLENGE,
-            challengeDetails: challengeId
-                ? {
-                      challengeId: challengeId,
-                  }
-                : undefined,
+            type: ReducerActionType.UPDATE_SELECTED_LIVE_CODING_CHALLENGE,
+            challengeId: challenge.challengeId,
+            selected: selected
         });
     };
 
@@ -72,11 +66,10 @@ const StepAssessmentLiveCoding = ({ interview, interviewers, candidate, onInterv
             </Card>
 
             <LiveCodingChallengeCard
-                challenges={interview.challenges || []}
+                challenges={interview.liveCodingChallenges || []}
                 interviewId={interview.interviewId}
                 teamId={interview.teamId}
-                selectedChallengeId={interview.challengeDetails?.challengeId}
-                onChallengeSelected={onChallengeSelected}
+                onChallengeSelectionChanged={onChallengeSelectionChanged}
             />
 
             <LiveCodingAssessmentCard
@@ -85,10 +78,6 @@ const StepAssessmentLiveCoding = ({ interview, interviewers, candidate, onInterv
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
             />
 
-            <Card>
-                {/* @ts-ignore */}
-                <SummarySection interview={interview} />
-            </Card>
         </Col>
     );
 };

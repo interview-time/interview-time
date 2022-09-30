@@ -1,7 +1,7 @@
 import styles from "./live-coding-assessment-card.module.css";
 import Card from "../../../../components/card/card";
 import React from "react";
-import { Challenge } from "../../../../store/models";
+import { TemplateChallenge } from "../../../../store/models";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { Button, ConfigProvider, Table } from "antd";
@@ -16,9 +16,9 @@ import {
 } from "../../../../components/scorecard/type-live-coding/challenge-card";
 
 type Props = {
-    challenges: Readonly<Challenge[]>;
+    challenges: Readonly<TemplateChallenge[]>;
     onNewChallengeClicked: () => void;
-    onUpdateChallengeClicked: (challenge: Challenge) => void;
+    onUpdateChallengeClicked: (challenge: TemplateChallenge) => void;
     onChallengeSorted: (oldIndex: number, newIndex: number) => void;
 };
 
@@ -63,7 +63,7 @@ const LiveCodingChallengeCard = ({
 
     const DragHandle = SortableHandle(() => <ReorderIcon className={styles.reorderIcon} />);
 
-    let columns: ColumnsType<Challenge> = [
+    let columns: ColumnsType<TemplateChallenge> = [
         {
             width: 30,
             dataIndex: "sort",
@@ -73,28 +73,28 @@ const LiveCodingChallengeCard = ({
         {
             key: "challenge",
             className: styles.questionVisible,
-            render: (challenge: Challenge) => <Text>{challenge.name}</Text>,
+            render: (challenge: TemplateChallenge) => <Text>{challenge.name}</Text>,
         },
         {
             key: "assessment",
-            width: 24,
+            width: 96,
             className: styles.taskIconVisible,
-            render: (challenge: Challenge) => (
-                <>
+            render: (challenge: TemplateChallenge) => (
+                <div className={styles.challengeIconsHolder}>
                     {challenge.gitHubUrl && <GithubChallengeIcon />}
                     {challenge.fileName && <FileChallengeIcon />}
-                </>
+                </div>
             ),
         },
     ];
 
     return (
         <Card className={styles.cardSpace}>
-            <Title level={4}>Task</Title>
-            <Text type='secondary'>Add one or multiple tasks to use during the interview.</Text>
+            <Title level={4}>Challenges</Title>
+            <Text type='secondary'>Add one or multiple challenges to use during the interview.</Text>
             <div className={styles.questionsCard}>
                 <ConfigProvider
-                    renderEmpty={() => <img src={TaskImage} alt='Task' className={styles.assessmentsImage} />}
+                    renderEmpty={() => <img src={TaskImage} alt='Challenge' className={styles.assessmentsImage} />}
                 >
                     <Table
                         pagination={false}
@@ -130,7 +130,7 @@ const LiveCodingChallengeCard = ({
                 ghost
                 onClick={onNewChallengeClicked}
             >
-                New task
+                New challenge
             </Button>
         </Card>
     );

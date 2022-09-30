@@ -6,7 +6,7 @@ import { RootState } from "../../store/state-models";
 import React, { useEffect, useReducer } from "react";
 import { interviewReducer, ReducerAction, ReducerActionType } from "./interview-reducer";
 import { emptyInterview } from "./interview-scorecard-utils";
-import { selectInterviewData, toInterview } from "../../store/interviews/selector";
+import { getCandidateName2, selectInterviewData, toInterview } from "../../store/interviews/selector";
 import Spinner from "../../components/spinner/spinner";
 import { Button, message, Modal, Row, Space } from "antd";
 import styles from "./interview-scorecard.module.css";
@@ -159,8 +159,8 @@ const InterviewScorecard = ({
                 message.info("Please evaluate candidates' code based on assessment criteria.");
                 return false;
             }
-            if (!interview.challengeDetails) {
-                message.info("Please choose tasks to use during the interview.");
+            if (!interview.liveCodingChallenges?.find(challenge => challenge.selected)) {
+                message.info("Please choose challenges to use during the interview.");
                 return false;
             }
         }
@@ -200,7 +200,7 @@ const InterviewScorecard = ({
         <Row>
             <div className={styles.rootContainer}>
                 <Header
-                    title={candidate?.candidateName ?? "Loading..."}
+                    title={getCandidateName2(interview, candidate)}
                     subtitle={candidate?.position ?? ""}
                     leftComponent={
                         <Space size={16}>
