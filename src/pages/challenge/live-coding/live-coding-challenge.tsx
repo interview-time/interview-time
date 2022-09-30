@@ -41,7 +41,7 @@ const LiveCodingChallenge = ({ challenge, loadChallenge, loading, isExpired }: P
             {challenge && !isExpired && (
                 <Col md={{ span: 20, offset: 2 }} xl={{ span: 14, offset: 5 }} xxl={{ span: 10, offset: 7 }}>
                     <Card className={styles.card}>
-                        <img src={ProgrammerImage} width={156} alt='Programmer Image' />
+                        <img src={ProgrammerImage} width={156} alt='Programmer' />
                         <div className={styles.textContainer}>
                             <Title level={4} style={{ marginTop: 12 }}>
                                 Code Challenge
