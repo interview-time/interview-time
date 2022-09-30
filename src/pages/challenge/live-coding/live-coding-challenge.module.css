@@ -37,18 +37,24 @@
     height: var(--logo-height);
 }
 
+.textContainer {
+    flex: 1;
+    margin-left: 32px;
+}
+
 .buttonContainer {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 16px;
 }
 
 .card {
     margin: 32px 16px;
+    display: flex;
+    flex-direction: row;
 }
 
 .button {
-    margin: 6px;
+    margin: 0;
 }
 
 .icon {

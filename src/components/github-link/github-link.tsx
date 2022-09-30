@@ -7,13 +7,15 @@ import classNames from "classnames";
 type Props = {
     url: string;
     primary?: boolean;
+    className?: string;
 };
 
-const GitHubLink = ({ url, primary }: Props) => (
+const GitHubLink = ({ url, primary, className }: Props) => (
     <Button
         className={classNames({
             [styles.button]: true,
             [styles.buttonSecondary]: !primary,
+            [className ?? ""]: className,
         })}
         type={primary ? "primary" : "default"}
         href={url}
