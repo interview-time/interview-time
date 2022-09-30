@@ -54,11 +54,6 @@ export const filterOptionValue = (inputValue, option) => option.value.toLowerCas
 export const filterQuestionsWithAssessment = inputValue =>
     inputValue.questions.filter(question => question.assessment && question.assessment !== 0);
 
-/**
- *
- * @param {InterviewGroup} inputValue
- * @returns {Question[]}
- */
 export const filterQuestionsWithAssessmentNotes = inputValue =>
     inputValue.questions.filter(
         question => (question.assessment && question.assessment !== 0) || !isEmpty(question.notes)
@@ -67,11 +62,6 @@ export const filterQuestionsWithAssessmentNotes = inputValue =>
 export const filterGroupsWithAssessment = inputValue =>
     inputValue.filter(group => filterQuestionsWithAssessment(group).length > 0);
 
-/**
- *
- * @param {InterviewGroup[]} inputValue
- * @returns {InterviewGroup[]}
- */
 export const filterGroupsWithAssessmentNotes = inputValue =>
     inputValue.filter(group => filterQuestionsWithAssessmentNotes(group).length > 0);
 

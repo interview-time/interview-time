@@ -17,7 +17,7 @@ import {
     InterviewerColumn,
     StatusColumn,
 } from "../../components/table/table-interviews";
-import { InterviewData } from "../../store/interviews/selector";
+import { getCandidateName, InterviewData } from "../../store/interviews/selector";
 import { ColumnsType } from "antd/lib/table/interface";
 import { sortBy, truncate, uniqBy } from "lodash";
 import { TeamRole, UserProfile } from "../../store/models";
@@ -184,7 +184,7 @@ const InterviewsTable = ({ profile, userRole, interviews, loading, deleteIntervi
             render: (interview: InterviewData) => (
                 // @ts-ignore
                 <Dropdown
-                    overlay={createMenu(interview.interviewId, interview.status, interview.candidate?.candidateName)}
+                    overlay={createMenu(interview.interviewId, interview.status, getCandidateName(interview))}
                     placement='bottomLeft'
                 >
                     <Button icon={<MoreIcon />} style={{ width: 36, height: 36 }} onClick={e => e.stopPropagation()} />

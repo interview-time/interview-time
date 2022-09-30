@@ -6,6 +6,8 @@ export const routeReports = () => "/reports";
 
 export const routeCandidates = () => "/candidates";
 
+export const routeCandidateAdd = () => "/candidate/add";
+
 export const routeCandidateDetails = id => {
     const url = "/candidates/details/:id";
     return id ? url.replace(":id", id) : url;
@@ -73,6 +75,13 @@ export const routeTeamJoin = () => "/team/join/:id";
 
 export const routeSharedScorecard = () => "/public/scorecard/:token";
 
+export const routeLiveCodingChallenge = token => {
+    const url = "/public/challenge/live-coding/:token";
+    return token ? url.replace(":token", token) : url;
+};
+
+export const routeTakeHomeChallenge = () => "/public/challenge/take-home/:token";
+
 export const routeSubscription = () => "/subscription";
 
 export const getParameterByName = (name, url = window.location.href) => {
@@ -85,3 +94,5 @@ export const getParameterByName = (name, url = window.location.href) => {
 };
 
 export const getHost = () => window.location.protocol.concat("//").concat(window.location.host);
+
+export const getApiUrl = () => process.env.REACT_APP_API_URL;

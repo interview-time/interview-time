@@ -3,7 +3,7 @@ import styles from "./library-template-preview.module.css";
 import defaultIcon from "../../assets/layout.png";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
-import { IntroSection, SummarySection, TemplateGroupsSection } from "../interview-scorecard/interview-sections";
+import { IntroSection, TemplateGroupsSection } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
 import { loadLibrary } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
@@ -99,9 +99,6 @@ const LibraryTemplatePreview = ({ library, loadLibrary }) => {
                 <div className={styles.cardSpace}>
                     <TemplateGroupsSection template={template} />
                 </div>
-                <Card className={styles.cardSpace} loading={isInitialLoading()}>
-                    <SummarySection interview={template} />
-                </Card>
             </div>
         </Layout>
     );

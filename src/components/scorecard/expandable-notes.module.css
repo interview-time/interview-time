@@ -1,0 +1,75 @@
+.notesRoot {
+    position: sticky;
+    position: -webkit-sticky;
+    bottom: 0;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+}
+
+.notesHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.notesIconSmall {
+    color: var(--color-background);
+    font-size: 16px;
+    margin-right: 4px;
+}
+
+.notesIconBig {
+    color: #fadb14;
+    font-size: 20px;
+}
+
+.redFlagIconBig {
+    color: #EF4444;
+    font-size: 20px;
+}
+
+.notesLabel {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.notesButtonHolder {
+    text-align: center;
+}
+
+.notesButton {
+    border-radius: 8px 8px 0 0;
+    background-color: #4B5563;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-background);
+}
+
+.notesHolder {
+    background-color: #ffffff;
+    border-top: 5px solid #4B5563;
+    box-shadow: 0 -4px 8px -2px rgba(16, 24, 40, 0.1), 0 -2px 4px -2px rgba(16, 24, 40, 0.06);
+}
+
+.notesCol {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.redFlagsHolder {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 20px;
+    padding-right: 16px;
+    margin-right: 16px;
+}
+
+.notesTextArea {
+    resize: none;
+    padding: 0;
+    margin-top: 16px;
+}

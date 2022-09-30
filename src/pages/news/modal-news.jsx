@@ -2,24 +2,46 @@ import { Button, Divider, Modal } from "antd";
 import React, { useEffect } from "react";
 import styles from "./modal-news.module.css";
 import Title from "antd/lib/typography/Title";
-import redFlagsImage from "../../assets/red-flags.gif";
+import liveCodingTypeImage from "../../assets/live-coding-type.gif";
+import shareChallengeImage from "../../assets/share-challenge.gif";
 import { updateNewsVisitTime } from "../../utils/storage";
 
 export const newsData = [
     {
-        version: "v1.050722",
-        versionInt: 220705, // version reversed
-        date: new Date(2022, 7, 5),
+        version: "v1.220930",
+        versionInt: 220930, // version reversed
+        date: new Date(2022, 9, 30),
         content: (
             <div className={styles.carouselItem}>
                 <Title level={5} className={styles.carouselTitle}>
-                    Red flags
+                    Live Coding Interview Type
                 </Title>
                 <div className={styles.carouselDescription}>
-                    We added special 'red flags' card next to 'quick notes' to make it easier for you to capture and
-                    present this critical information.
+                    Now you can assess candidates coding abilities during the tech interview. Create a coding challenge
+                    and attach it to your template as a zip file or public GitHub repo.
                 </div>
-                <img alt='No answer gif' src={redFlagsImage} className={styles.carouselImage} />
+                <div className={styles.carouselImageWrapper}>
+                    <img alt='Live Coding Interview Type' src={liveCodingTypeImage} className={styles.carouselImage} />
+                </div>
+            </div>
+        ),
+    },
+    {
+        version: "v1.220930",
+        versionInt: 220930, // version reversed
+        date: new Date(2022, 9, 30),
+        content: (
+            <div className={styles.carouselItem}>
+                <Title level={5} className={styles.carouselTitle}>
+                    Share Coding Challenge
+                </Title>
+                <div className={styles.carouselDescription}>
+                    Share coding challenges with the candidate during the interview. The temporary link will expire once the
+                    interview is completed.
+                </div>
+                <div className={styles.carouselImageWrapper}>
+                    <img alt='Share coding challenge' src={shareChallengeImage} className={styles.carouselImage} />
+                </div>
             </div>
         ),
     },

@@ -2,6 +2,8 @@
     --logo-height: 48px;
     --menu-height: calc(100% - var(--logo-height));
     --color-primary: #8C2BE3;
+    --color-primary-50: #F4EAFC;
+    --color-primary-100: #E8D5F9;
     --color-background: #F9FAFB;
     --color-strong: #541A88;
 }
@@ -47,20 +49,7 @@
     margin-bottom: 24px;
 }
 
-.logo {
-    height: var(--logo-height);
-}
-
-.logoText {
-    font-family: "Inter var", "system-ui", serif;
-    font-weight: 600;
-    font-size: 20px;
-    margin-left: 12px;
-}
-
 .logoHolder {
-    display: flex;
-    align-items: center;
     margin-left: 20px;
 }
 

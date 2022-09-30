@@ -1,5 +1,7 @@
-import { CustomerServiceIcon, DesignIcon, DevelopmentIcon, ManagementIcon, OtherIcon } from "./icons";
+import { ReactComponent as TemplateInterviewIcon } from "../assets/icons/template-interview.svg";
+import { ReactComponent as TemplateLiveCodingIcon } from "../assets/icons/template-live-coding.svg";
 import { hashCode } from "./string";
+import { InterviewType } from "../store/models";
 
 export const Roles = {
     HR: "HR",
@@ -58,50 +60,26 @@ export const QuestionAssessment = {
     EXCELLENT: 3,
 };
 
-const TemplateCategoriesIconStyle = { color: "#FFFFFF", fontSize: 32 };
-
-export const TemplateCategories = [
-    {
-        key: "DEVELOPMENT",
-        title: "Engineering",
-        color: "#64B5F6",
-        icon: <DevelopmentIcon style={TemplateCategoriesIconStyle} />,
-    },
-    {
-        key: "MANAGEMENT",
-        title: "Management",
-        color: "#9575CD",
-        icon: <ManagementIcon style={TemplateCategoriesIconStyle} />,
-    },
-    {
-        key: "DESIGN",
-        title: "Design",
-        titleShort: "DESIGN",
-        color: "#E57373",
-        icon: <DesignIcon style={TemplateCategoriesIconStyle} />,
-    },
-    {
-        key: "CUSTOMER SERVICE",
-        title: "Customer Service",
-        color: "#4DD0E1",
-        icon: <CustomerServiceIcon style={TemplateCategoriesIconStyle} />,
-    },
-    {
-        key: "OTHER",
-        title: "Other",
-        color: "#616161",
-        icon: <OtherIcon style={TemplateCategoriesIconStyle} />,
-    },
-];
-
-export const getTemplateCategoryBackground = key => {
-    let category = TemplateCategories.find(category => category.key === key);
-    return category ? category.color : "#616161";
+export const getInterviewTypeDescription = interviewType => {
+    switch (interviewType) {
+        case InterviewType.INTERVIEW:
+            return "Question/Answer Interview Template";
+        case InterviewType.LIVE_CODING:
+            return "Live Coding Interview Template";
+        default:
+            return "";
+    }
 };
 
-export const getTemplateCategoryIcon = key => {
-    let category = TemplateCategories.find(category => category.key === key);
-    return category ? category.icon : <OtherIcon style={TemplateCategoriesIconStyle} />;
+export const getTemplateCategoryIcon = interviewType => {
+    switch (interviewType) {
+        case InterviewType.INTERVIEW:
+            return <TemplateInterviewIcon color='#9575CD' width={64} height={64} />;
+        case InterviewType.LIVE_CODING:
+            return <TemplateLiveCodingIcon color='#64B5F6' width={64} height={64} />;
+        default:
+            return <TemplateInterviewIcon color='#9575CD' width={64} height={64} />;
+    }
 };
 
 export const getStatusColor = status => {
@@ -173,6 +151,11 @@ export const SubscriptionPlans = {
     Premium: "PREMIUM",
 };
 
+export const ChallengeStatus = {
+    NotSent: "NotSent",
+    SentToCandidate: "SentToCandidate",
+    SolutionSubmitted: "SolutionSubmitted"
+};
 export const CandidatesFilter = {
     All: "All",
     Current: "Current",

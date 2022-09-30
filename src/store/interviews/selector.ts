@@ -1,6 +1,7 @@
 import { RootState } from "../state-models";
-import { Candidate, Interview, TeamMember } from "../models";
+import { Candidate, Interview, InterviewStructureGroup, InterviewType, TeamMember, Template } from "../models";
 import { Status } from "../../utils/constants";
+import { cloneDeep } from "lodash";
 
 export interface InterviewData extends Interview {
     candidate?: Candidate;
@@ -10,27 +11,66 @@ export interface InterviewData extends Interview {
     endDateTime: Date;
     createdDateTime: Date;
     linkedInterviews: InterviewData[];
+    templateName?: string;
 }
 
-export const selectInterviewData = (state: RootState): InterviewData[] => {
+export const toInterview = (interviewData: InterviewData): Interview => {
+    const interview = cloneDeep(interviewData);
+    delete interview.candidate;
+    delete interview.interviewerMember;
+    // @ts-ignore
+    delete interview.interviewersMember;
+    // @ts-ignore
+    delete interview.linkedInterviews;
+    return interview;
+};
+
+const toInterviewData = (
+    interview: Interview,
+    candidates: Candidate[],
+    teamMembers: TeamMember[],
+    templates: Template[]
+) => {
+    const interviewers = interview.interviewers ?? [interview.userId]; // backward compat
+    const candidate = candidates.find(candidate => candidate.candidateId === interview.candidateId);
+    if (candidate && !candidate.position) {
+        candidate.position = interview.position; // backward compat
+    }
+    return {
+        ...interview,
+        interviewers: interviewers,
+        candidate: candidate,
+        interviewType: interview.interviewType ?? InterviewType.INTERVIEW, // backward compat
+        interviewerMember: teamMembers.find(teamMember => teamMember.userId === interview.userId),
+        interviewersMember: teamMembers.filter(teamMember => interviewers.includes(teamMember.userId)),
+        startDateTime: new Date(interview.interviewDateTime),
+        endDateTime: new Date(interview.interviewEndDateTime),
+        createdDateTime: new Date(interview.createdDate),
+        linkedInterviews: [],
+        templateName: interview.templateIds
+            ? templates.find(t => t.templateId === interview.templateIds[0])?.title
+            : undefined,
+    };
+};
+
+export const selectInterviewData = (state: RootState, interviewId: string) => {
+    const candidates = state.candidates.candidates ?? [];
+    const teamMembers = state.user.teamMembers ?? [];
+    const templates = state.templates.templates ?? [];
+
+    const interview = selectInterview(state, interviewId);
+    if (interview) {
+        return toInterviewData(interview, candidates, teamMembers, templates);
+    }
+};
+
+export const selectInterviewsData = (state: RootState): InterviewData[] => {
     const interviews = state.interviews.interviews ?? [];
     const candidates = state.candidates.candidates ?? [];
     const teamMembers = state.user.teamMembers ?? [];
+    const templates = state.templates.templates ?? [];
 
-    return interviews.map((interview: Interview) => {
-        const interviewers = interview.interviewers ?? [interview.userId]; // backward compat
-        return {
-            ...interview,
-            interviewers: interviewers,
-            candidate: candidates.find(candidate => candidate.candidateId === interview.candidateId),
-            interviewerMember: teamMembers.find(teamMember => teamMember.userId === interview.userId),
-            interviewersMember: teamMembers.filter(teamMember => interviewers.includes(teamMember.userId)),
-            startDateTime: new Date(interview.interviewDateTime),
-            endDateTime: new Date(interview.interviewEndDateTime),
-            createdDateTime: new Date(interview.createdDate),
-            linkedInterviews: [],
-        };
-    });
+    return interviews.map((interview: Interview) => toInterviewData(interview, candidates, teamMembers, templates));
 };
 
 export const selectSortedByDateInterviews = (interviews: InterviewData[], desc: boolean = false): InterviewData[] => {
@@ -48,7 +88,7 @@ export const selectSortedByDateInterviews = (interviews: InterviewData[], desc: 
  * @return flat interview list.
  */
 export const selectCompletedInterviewData = (state: RootState): InterviewData[] => {
-    const interviews = selectInterviewData(state).filter(
+    const interviews = selectInterviewsData(state).filter(
         (interview: InterviewData) => interview.status === Status.SUBMITTED
     );
 
@@ -64,7 +104,7 @@ export const selectCompletedInterviewData = (state: RootState): InterviewData[] 
 export const selectUncompletedInterviewData = (state: RootState): InterviewData[] => {
     const groupedInterviews: InterviewData[] = [];
 
-    selectInterviewData(state)
+    selectInterviewsData(state)
         .filter((interview: InterviewData) => interview.status !== Status.SUBMITTED)
         .sort((a: InterviewData, b: InterviewData) =>
             // sort interviews by `userId`, so that co interviewers will appear in `linkedInterviews`
@@ -87,7 +127,7 @@ export const selectUncompletedInterviewData = (state: RootState): InterviewData[
 };
 
 export const selectCandidateInterviewData = (state: RootState, candidateId: string) => {
-    const interviews = selectInterviewData(state).filter(
+    const interviews = selectInterviewsData(state).filter(
         (interview: InterviewData) => interview.candidateId === candidateId
     );
 
@@ -98,6 +138,16 @@ export const selectInterview = (state: RootState, interviewId: string) => {
     return state.interviews.interviews.find(interview => interview.interviewId === interviewId);
 };
 
-export const selectSharedScorecard = (state: RootState, token: string) => {
-    return state.interviews.sharedScorecards.find(scorecard => scorecard.token === token);
+export const selectSharedInterview = (state: RootState, token: string) => {
+    return state.interviews.interviewsShared.find(interview => interview.token === token);
+};
+
+export const selectAssessmentGroup = (interview: Interview): InterviewStructureGroup => interview.structure.groups[0]!;
+
+export const getCandidateName2 = (interview: Interview, candidate?: Candidate) => {
+    return candidate?.candidateName ?? interview.candidateName ?? "Unknown";
+};
+
+export const getCandidateName = (interview: InterviewData) => {
+    return interview.candidate?.candidateName ?? interview.candidateName ?? "Unknown";
 };

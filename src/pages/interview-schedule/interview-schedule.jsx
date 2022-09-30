@@ -9,7 +9,7 @@ import { cloneDeep, isEmpty } from "lodash/lang";
 import { findInterview, findTemplate } from "../../utils/converters";
 import { POSITIONS, POSITIONS_OPTIONS, Status } from "../../utils/constants";
 import Layout from "../../components/layout/layout";
-import { InterviewPreviewCard } from "../interview-scorecard/interview-sections";
+import { InterviewPreviewCard } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
@@ -23,7 +23,7 @@ import {
     formatDateISO,
     generateTimeSlots,
     parseDateISO,
-    timePickerFormat
+    timePickerFormat,
 } from "../../utils/date-fns";
 import { filterOptionLabel, interviewsPositions } from "../../utils/filters";
 import Spinner from "../../components/spinner/spinner";
@@ -119,6 +119,8 @@ const InterviewSchedule = ({
             const template = cloneDeep(findTemplate(fromTemplateId(), templates));
             setInterview({
                 ...interview,
+                interviewType: template.interviewType,
+                liveCodingChallenges: template.challenges,
                 templateIds: [template.templateId],
                 structure: template.structure,
                 interviewers: [profile.userId],
@@ -301,40 +303,21 @@ const InterviewSchedule = ({
         setPreviewModalVisible(false);
     };
 
-    const onPreviewClicked = () => {
-        setPreviewModalVisible(true);
-    };
+    // const onPreviewClicked = () => {
+    //     setPreviewModalVisible(true);
+    // };
 
-    const onTemplateSelect = templateIds => {
-        if (templateIds.length !== 0) {
-            let interviewStructure = null;
-            templateIds.forEach((templateId, index) => {
-                let template = templates.find(template => template.templateId === templateIds[index]);
-                let structure = cloneDeep(template.structure);
-                if (index === 0) {
-                    // use first template to define main structure
-                    interviewStructure = structure;
-                } else {
-                    structure.groups.forEach(group => {
-                        group.name = `${template.title} - ${group.name}`;
-                    });
+    const onTemplateSelect = templateId => {
+        let template = templates.find(template => template.templateId === templateId);
+        let structure = cloneDeep(template.structure);
 
-                    interviewStructure.groups.push(...structure.groups);
-                }
-            });
-
-            setInterview({
-                ...interview,
-                templateIds: templateIds,
-                structure: interviewStructure,
-            });
-        } else {
-            setInterview({
-                ...interview,
-                templateIds: [],
-                structure: defaultStructure,
-            });
-        }
+        setInterview({
+            ...interview,
+            templateIds: [templateId],
+            interviewType: template.interviewType,
+            liveCodingChallenges: template.challenges,
+            structure: structure,
+        });
     };
 
     const onCreateTemplateClicked = () => {
@@ -451,13 +434,22 @@ const InterviewSchedule = ({
                         onChange={onInterviewersChange}
                     />
                 </Form.Item>
-                <Form.Item name='template' className={styles.formItem} label={<Text strong>Template</Text>}>
+                <Form.Item
+                    name='template'
+                    className={styles.formItem}
+                    label={<Text strong>Template</Text>}
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please select template",
+                        },
+                    ]}
+                >
                     <Select
                         showSearch
-                        allowClear
-                        mode='multiple'
+                        allowClear={false}
                         placeholder='Select interview template'
-                        onChange={onTemplateSelect}
+                        onSelect={onTemplateSelect}
                         options={templateOptions}
                         filterOption={filterOptionLabel}
                         notFoundContent={<Text>No template found.</Text>}
@@ -522,7 +514,7 @@ const InterviewSchedule = ({
                 <div className={styles.divSpaceBetween}>
                     <Text />
                     <Space>
-                        <Button onClick={onPreviewClicked}>Preview</Button>
+                        {/*<Button onClick={onPreviewClicked}>Preview</Button>*/}
                         <Button type='primary' htmlType='submit'>
                             Save
                         </Button>
@@ -543,7 +535,6 @@ const InterviewSchedule = ({
 
                         {createCandidate && (
                             <CreateCandidate
-                                teamId={profile.currentTeamId}
                                 onSave={candidateName => {
                                     var selectedCandidates = candidates.filter(c => c.candidateName === candidateName);
 

@@ -86,7 +86,7 @@ const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCa
             <div className={styles.header} style={{ marginBottom: 12 }}>
                 <div className={styles.headerTitleContainer}>
                     <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                        Candidate Details
+                        New Candidate
                     </Title>
                 </div>
             </div>
@@ -123,7 +123,7 @@ const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCa
                     <Col span={24}>
                         <Form.Item
                             name='candidateName'
-                            label={<Text strong>Candidate</Text>}
+                            label={<Text strong>Candidate Name</Text>}
                             rules={[
                                 {
                                     required: true,
@@ -225,8 +225,10 @@ const mapDispatch = {
 
 const mapState = state => {
     const candidatesState = state.candidates || {};
+    const userState = state.user || {};
 
     return {
+        teamId: userState.profile?.currentTeamId,
         candidates: candidatesState.candidates,
         loading: candidatesState.loading,
     };
