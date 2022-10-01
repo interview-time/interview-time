@@ -9,10 +9,11 @@ import {
     TemplateGroupsSection,
 } from "../../interview-scorecard/step-assessment/type-interview/interview-sections";
 import React from "react";
-import { selectAssessmentGroup } from "../../../store/templates/selector";
+import { selectAssessmentGroup, selectTakeHomeAssignment } from "../../../store/templates/selector";
 import LiveCodingAssessmentCard from "../../../components/scorecard/type-live-coding/assessment-card-template";
 import LiveCodingChallengeCard from "../../../components/scorecard/type-live-coding/challenge-card-template";
 import { ReducerAction, ReducerActionType } from "../template-reducer";
+import TakeHomeChallengeCard from "../../../components/scorecard/type-take-home/challenge-card-template";
 
 type Props = {
     template: Readonly<Template>;
@@ -28,6 +29,7 @@ const TemplateStepPreview = ({ template, onTemplateChange }: Props) => {
         onTemplateChange({
             type: ReducerActionType.UPDATE_CHALLENGE,
             challenge: newChallenge,
+            mutateState: false,
         });
     };
 
@@ -57,6 +59,19 @@ const TemplateStepPreview = ({ template, onTemplateChange }: Props) => {
                                 teamId={template.teamId}
                                 challenges={template.challenges || []}
                                 onChallengeSelectionChanged={onChallengeSelectionChanged}
+                            />
+                        </div>
+                        <div className={styles.cardSpace}>
+                            <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
+                        </div>
+                    </>
+                )}
+                {template.interviewType === InterviewType.TAKE_HOME_TASK && (
+                    <>
+                        <div className={styles.cardSpace}>
+                            <TakeHomeChallengeCard
+                                teamId={template.teamId}
+                                challenge={selectTakeHomeAssignment(template)}
                             />
                         </div>
                         <div className={styles.cardSpace}>
