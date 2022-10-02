@@ -33,6 +33,7 @@ import { personalEvent } from "../../analytics";
 import { useDebounceEffect, useDebounceFn } from "ahooks";
 import { log } from "../../utils/log";
 import StepAssessmentLiveCoding from "./step-assessment/type-live-coding/step-assessment-live-coding";
+import StepAssessmentTakeHome from "./step-assessment/type-take-home/step-assessment-take-home";
 
 export const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
 export const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
@@ -250,6 +251,15 @@ const InterviewScorecard = ({
 
                 {interview.interviewType === InterviewType.LIVE_CODING && interviewStarted && (
                     <StepAssessmentLiveCoding
+                        interview={interview}
+                        candidate={candidate}
+                        interviewers={interviewers}
+                        onInterviewChange={onInterviewChange}
+                    />
+                )}
+
+                {interview.interviewType === InterviewType.TAKE_HOME_TASK && interviewStarted && (
+                    <StepAssessmentTakeHome
                         interview={interview}
                         candidate={candidate}
                         interviewers={interviewers}
