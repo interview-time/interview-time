@@ -1,5 +1,5 @@
 import "./App.less";
-import React, { useEffect } from "react";
+import React from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
     routeCandidateDetails,
