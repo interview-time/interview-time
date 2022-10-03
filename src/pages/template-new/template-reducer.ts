@@ -96,6 +96,7 @@ export type AddChallengeAction = {
 export type UpdateChallengeAction = {
     type: ReducerActionType.UPDATE_CHALLENGE;
     challenge: TemplateChallenge;
+    mutateState: boolean;
 };
 
 export type RemoveChallengeAction = {
@@ -207,17 +208,31 @@ export const templateReducer = (state: Template, action: ReducerAction): Templat
             return newState;
         }
         case ReducerActionType.UPDATE_CHALLENGE: {
-            const newState = cloneDeep(state);
-            if (newState.challenges) {
-                const index = newState.challenges.findIndex(
+            if (action.mutateState) {
+                // performance optimization, when input fields are changed it's costly to re-render every time
+                let challenge = state.challenges?.find(
                     challenge => challenge.challengeId === action.challenge.challengeId
                 );
-                if (index >= 0) {
-                    newState.challenges[index] = action.challenge;
+                if (challenge) {
+                    challenge.name = action.challenge.name;
+                    challenge.description = action.challenge.description;
+                    challenge.gitHubUrl = action.challenge.gitHubUrl;
+                    challenge.fileName = action.challenge.fileName;
                 }
-            }
+                return state;
+            } else {
+                let newState = cloneDeep(state);
 
-            return newState;
+                if (newState.challenges) {
+                    const index = newState.challenges.findIndex(
+                        challenge => challenge.challengeId === action.challenge.challengeId
+                    );
+                    if (index >= 0) {
+                        newState.challenges[index] = action.challenge;
+                    }
+                }
+                return newState;
+            }
         }
         case ReducerActionType.REMOVE_CHALLENGE: {
             const newState = cloneDeep(state);

@@ -227,6 +227,15 @@ export interface LiveCodingChallenge {
     shareToken?: string;
 }
 
+export interface TakeHomeChallenge {
+    challengeId: string;
+    name: string;
+    description?: string;
+    gitHubUrl?: string;
+    fileName?: string;
+    shareToken?: string;
+}
+
 export interface CandidateChallenge {
     challengeId: string;    
     description?: string;
