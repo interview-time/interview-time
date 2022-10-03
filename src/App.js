@@ -1,5 +1,5 @@
 import "./App.less";
-import React, { useEffect } from "react";
+import React from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
     routeCandidateDetails,
@@ -38,7 +38,7 @@ import Reports from "./pages/reports/reports";
 import Profile from "./pages/account/profile";
 import Spinner from "./components/spinner/spinner";
 import PrivateRoute from "./components/private-route/private-route";
-import ReactGA from "react-ga";
+// import ReactGA from "react-ga";
 import TemplateLibrary from "./pages/template-library/template-library";
 import TemplateNew from "./pages/template-new/template-new";
 import LibraryTemplatePreview from "./pages/template-preview-library/library-template-preview";
@@ -58,21 +58,22 @@ import InterviewReportShared from "./pages/interview-report/interview-report-sha
 import TakeHomeChallenge from "./pages/challenge/take-home/take-home-challenge";
 import CandidateAdd from "./pages/candidate-add/candidate-add";
 
-function App({ history }) {
-    useEffect(() => {
-        if (process.env.REACT_APP_GA_TRACKING_ID) {
-            ReactGA.initialize(process.env.REACT_APP_GA_TRACKING_ID);
-            ReactGA.set({ page: window.location.pathname + window.location.search });
-            ReactGA.pageview(window.location.pathname + window.location.search);
-        }
-
-        history.listen(location => {
-            if (process.env.REACT_APP_GA_TRACKING_ID) {
-                ReactGA.set({ page: location.pathname });
-                ReactGA.pageview(location.pathname);
-            }
-        });
-    }, [history]);
+function App() {
+    // Temporary commented out to test posthog
+    // useEffect(() => {
+    //     if (process.env.REACT_APP_GA_TRACKING_ID) {
+    //         ReactGA.initialize(process.env.REACT_APP_GA_TRACKING_ID);
+    //         ReactGA.set({ page: window.location.pathname + window.location.search });
+    //         ReactGA.pageview(window.location.pathname + window.location.search);
+    //     }
+    //
+    //     history.listen(location => {
+    //         if (process.env.REACT_APP_GA_TRACKING_ID) {
+    //             ReactGA.set({ page: location.pathname });
+    //             ReactGA.pageview(location.pathname);
+    //         }
+    //     });
+    // }, [history]);
 
     const { loading } = useAuth0();
 

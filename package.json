@@ -31,6 +31,7 @@
         "inter-ui": "^3.19.3",
         "lodash": "^4.17.20",
         "pluralize": "^8.0.0",
+        "posthog-js": "^1.32.2",
         "rc-picker": "^2.5.19",
         "react": "^17.0.1",
         "react-chartjs-2": "^3.3.0",

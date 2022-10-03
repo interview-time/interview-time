@@ -1,5 +1,6 @@
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import axios from "axios";
+import posthog from 'posthog-js'
 import { config } from "../common";
 import { logError } from "../../utils/log";
 import { loadTemplates, setTemplates } from "../templates/actions";
@@ -64,6 +65,11 @@ export const loadProfile = (name, email, inviteToken) => async (dispatch, getSta
                         throw error;
                     }
                 }
+            }
+
+            let userId = profile?.data?.userId;
+            if (userId) {
+                posthog.identify(userId);
             }
 
             dispatch(setProfile(profile.data));
