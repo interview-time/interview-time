@@ -23,6 +23,8 @@ namespace CafApi.Command
         public string ChallengeId { get; set; }
 
         public string InterviewId { get; set; }
+
+        public bool SendViaLink { get; set; }
     }
 
     public class SendChallengeCommandHandler : IRequestHandler<SendChallengeCommand, bool>
@@ -74,17 +76,21 @@ namespace CafApi.Command
             {
                 throw new CandidateException($"Candidate doesn't have email");
             }
-        
+
             interview.TakeHomeChallenge.Status = ChallengeStatus.SentToCandidate.ToString();
             interview.TakeHomeChallenge.SentToCandidateOn = DateTime.UtcNow;
             interview.ModifiedDate = DateTime.UtcNow;
-            
+
             await _context.SaveAsync(interview);
 
-            var challengeToken = await _challengeRepository.GenerateChallengeToken(command.UserId, command.TeamId, command.ChallengeId, command.InterviewId);
-            var challengePageUrl = UrlHelper.GetChallengePageUrl(_appHostUrl, challengeToken);
+            if (!command.SendViaLink)
+            {
+                var challengePageUrl = UrlHelper.GetChallengePageUrl(_appHostUrl, interview.TakeHomeChallenge.ShareToken);
 
-            return await _emailService.SendTakeHomeChallenge(candidate.Email, candidate.CandidateName, challengePageUrl);
+                return await _emailService.SendTakeHomeChallenge(candidate.Email, candidate.CandidateName, challengePageUrl);
+            }
+
+            return true;
         }
     }
 }

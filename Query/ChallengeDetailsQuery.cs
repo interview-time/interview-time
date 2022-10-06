@@ -55,7 +55,7 @@ namespace CafApi.Query
             {
                 throw new ItemNotFoundException($"Token ({query.Token}) not found or expired.");
             }
-                        
+
             var interview = await _interviewRepository.GetInterview(oneTimeToken.InterviewId);
 
             Candidate candidate = null;
@@ -82,7 +82,7 @@ namespace CafApi.Query
             {
                 return new ChallengeDetailsQueryResult
                 {
-                    Status = interview.TakeHomeChallenge.Status.ToString(),
+                    Status = interview.TakeHomeChallenge.Status ?? ChallengeStatus.NotSent.ToString(),
                     SolutionSubmittedOn = interview.TakeHomeChallenge.SolutionSubmittedOn,
                     Description = interview.TakeHomeChallenge.Description,
                     DownloadFileUrl = !string.IsNullOrWhiteSpace(interview.TakeHomeChallenge.FileName) ? UrlHelper.GetDownloadChallengekPath(query.Token) : null,
