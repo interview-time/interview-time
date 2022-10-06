@@ -154,6 +154,7 @@ namespace CafApi.Command
                 if (newInterview.TakeHomeChallenge != null)
                 {
                     newInterview.TakeHomeChallenge.ShareToken = await _challengeRepository.GenerateChallengeToken(newInterview.UserId, newInterview.TeamId, newInterview.TakeHomeChallenge.ChallengeId, newInterview.InterviewId);
+                    newInterview.TakeHomeChallenge.Status = ChallengeStatus.NotSent.ToString();
                 }
 
                 await _context.SaveAsync(newInterview);

@@ -119,7 +119,8 @@ namespace CafApi.Controllers
                     UserId = UserId,
                     TeamId = teamId,
                     ChallengeId = challengeId,
-                    InterviewId = request.InterviewId
+                    InterviewId = request.InterviewId,
+                    SendVia = request.SendViaLink ? SendVia.Link : SendVia.Email
                 };
 
                 var isSent = await _mediator.Send(command);
