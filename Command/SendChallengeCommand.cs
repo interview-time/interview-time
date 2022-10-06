@@ -24,7 +24,13 @@ namespace CafApi.Command
 
         public string InterviewId { get; set; }
 
-        public bool SendViaLink { get; set; }
+        public SendVia SendVia { get; set; }
+    }
+
+    public enum SendVia
+    {
+        Email,
+        Link
     }
 
     public class SendChallengeCommandHandler : IRequestHandler<SendChallengeCommand, bool>
@@ -83,7 +89,7 @@ namespace CafApi.Command
 
             await _context.SaveAsync(interview);
 
-            if (!command.SendViaLink)
+            if (command.SendVia == SendVia.Email)
             {
                 var challengePageUrl = UrlHelper.GetChallengePageUrl(_appHostUrl, interview.TakeHomeChallenge.ShareToken);
 

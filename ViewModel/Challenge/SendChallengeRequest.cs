@@ -4,7 +4,9 @@ namespace CafApi.ViewModel
 {
     public class SendChallengeRequest
     {
-        public string InterviewId { get; set; }        
+        public string InterviewId { get; set; }
+
+        public bool SendViaLink { get; set; }
     }
 
      public class SendChallengeRequestValidator : AbstractValidator<SendChallengeRequest>
