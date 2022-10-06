@@ -10,6 +10,8 @@ namespace CafApi.ViewModel
 
         public string Position { get; set; }
 
+        public string Email { get; set; }
+
         public string ResumeUrl { get; set; }
 
         public string ResumeFile { get; set; }

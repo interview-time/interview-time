@@ -62,6 +62,7 @@ namespace CafApi.Command
                 LinkedIn = command.LinkedIn,
                 GitHub = command.GitHub,
                 Phone = command.Phone,
+                Email = command.Email,
                 Owner = command.UserId,
                 CreatedDate = DateTime.UtcNow
             };

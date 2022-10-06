@@ -31,6 +31,8 @@ namespace CafApi.Query
 
         public string CandidateName { get; set; }
 
+        public string Email { get; set; }
+
         public string Position { get; set; }
 
         public string Status { get; set; }
@@ -92,6 +94,7 @@ namespace CafApi.Query
                 {
                     CandidateId = candidate.CandidateId,
                     CandidateName = candidate.CandidateName,
+                    Email = candidate.Email,
                     Position = candidate.Position,
                     Status = candidate.Status,
                     Archived = candidate.Archived,
