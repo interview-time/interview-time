@@ -10,9 +10,6 @@ type Props = {
 };
 
 const TakeHomeChallengeCard = ({ teamId, challenge }: Props) => {
-    const onNotAvailable = () => {
-        message.error("Not available in this mode.");
-    };
 
     return (
         <ChallengeCard
@@ -22,8 +19,6 @@ const TakeHomeChallengeCard = ({ teamId, challenge }: Props) => {
             linkButtonIcon={<LinkIcon style={{ fontSize: 18 }}/>}
             sendButtonText='Send to Candidate'
             sendButtonIcon={<MailIcon style={{ fontSize: 18 }}/>}
-            onLinkClicked={onNotAvailable}
-            onSendClicked={onNotAvailable}
         />
     );
 };

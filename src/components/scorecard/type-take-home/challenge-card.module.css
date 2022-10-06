@@ -17,7 +17,25 @@
     font-weight: 500;
 }
 
+.taskNameHolder {
+    display: flex;
+    justify-content: space-between;
+}
+
+.taskSolution {
+    flex-grow: 1;
+    font-weight: 500;
+    margin-top: 16px;
+}
+
 .divider {
     margin-top: 12px;
     margin-bottom: 12px;
+}
+
+.buttons {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
 }

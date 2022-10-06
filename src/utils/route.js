@@ -80,7 +80,10 @@ export const routeLiveCodingChallenge = token => {
     return token ? url.replace(":token", token) : url;
 };
 
-export const routeTakeHomeChallenge = () => "/public/challenge/take-home/:token";
+export const routeTakeHomeChallenge = token => {
+    const url = "/public/challenge/take-home/:token";
+    return token ? url.replace(":token", token) : url;
+};
 
 export const routeSubscription = () => "/subscription";
 
