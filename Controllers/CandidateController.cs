@@ -63,6 +63,7 @@ namespace CafApi.Controllers
                 CandidateId = c.CandidateId,
                 CandidateName = c.CandidateName,
                 Position = c.Position,
+                Email = c.Email,
                 ResumeUrl = c.ResumeFile != null ? _candidateService.GetDownloadSignedUrl(c.TeamId, c.CandidateId, c.ResumeFile) : null,
                 ResumeFile = c.ResumeFile,
                 LinkedIn = c.LinkedIn,
