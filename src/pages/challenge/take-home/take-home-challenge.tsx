@@ -114,7 +114,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                                 </Card>
                             </Col>
                         </Row>
-                        {challenge.status !== ChallengeStatus.SolutionSubmitted && (
+                        {challenge.status === ChallengeStatus.SentToCandidate && (
                             <Row gutter={24} className={styles.section}>
                                 <Col span={24}>
                                     <Card

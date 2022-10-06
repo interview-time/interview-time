@@ -55,7 +55,7 @@ export const ChallengeCard = ({
                 }
                 <Divider className={styles.divider} />
                 <Text type='secondary'>
-                    Share an assignment with the candidate. The link expires once the interview is completed.
+                    Share the assignment with the candidate. The link expires once the interview is completed.
                 </Text>
                 {onLinkClicked && onSendClicked && (
                     <div className={styles.buttons}>
