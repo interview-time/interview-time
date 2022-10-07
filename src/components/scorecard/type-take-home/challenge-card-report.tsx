@@ -2,7 +2,6 @@ import { ChallengeCard } from "./challenge-card";
 import { TakeHomeChallenge } from "../../../store/models";
 import { LinkIcon, MailIcon } from "../../../utils/icons";
 import React from "react";
-import { message } from "antd";
 
 type Props = {
     teamId: string;
