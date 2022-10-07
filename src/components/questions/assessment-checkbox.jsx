@@ -39,8 +39,13 @@ const AssessmentCheckbox = ({ defaultValue, disabled, hideNoAssessment, onChange
         }
     };
 
+    const assessmentHolderClass = () =>
+        hideNoAssessment
+            ? `${styles.assessmentHolder} ${styles.withoutCross}`
+            : `${styles.assessmentHolder} ${styles.withCross}`;
+
     return (
-        <Space>
+        <div className={assessmentHolderClass()}>
             <Rate
                 count={MAX_ASSESSMENT}
                 defaultValue={defaultTo(defaultValue, 0)}
@@ -63,7 +68,7 @@ const AssessmentCheckbox = ({ defaultValue, disabled, hideNoAssessment, onChange
                     </Tooltip>
                 </div>
             )}
-        </Space>
+        </div>
     );
 };
 

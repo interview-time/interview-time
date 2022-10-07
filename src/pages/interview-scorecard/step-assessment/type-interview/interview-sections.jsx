@@ -95,7 +95,6 @@ const InterviewQuestionsCard = ({
         {
             dataIndex: "difficulty",
             key: "difficulty",
-            width: 48,
             render: difficulty => {
                 return {
                     props: {
@@ -144,7 +143,6 @@ const InterviewQuestionsCard = ({
         },
         {
             title: "Assessment",
-            width: 180,
             shouldCellUpdate: (record, prevRecord) => record.assessment !== prevRecord.assessment,
             render: question => (
                 <AssessmentCheckbox
