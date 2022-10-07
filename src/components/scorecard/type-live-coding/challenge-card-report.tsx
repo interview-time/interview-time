@@ -27,7 +27,7 @@ const LiveCodingChallengeCard = ({ teamId, challenges }: Props) => {
                                 <Text className={styles.linkDescription}>{challenge.description}</Text>
                             )}
                             {FileChallengeLink(challenge, teamId)}
-                            {GithubChallengeLink(challenge)}
+                            {GithubChallengeLink(challenge.gitHubUrl)}
                         </div>
                     );
                 })}
