@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import styles from "./assessment-checkbox.module.css";
-import { Rate, Space, Tooltip } from "antd";
+import { Rate, Tooltip } from "antd";
 import { defaultTo } from "lodash/util";
 import { CrossCircleIcon } from "../../utils/icons";
 import { QuestionAssessment } from "../../utils/constants";
 import { log } from "../../utils/log";
+import classNames from "classnames";
 
 export const MAX_ASSESSMENT = 3;
 
@@ -39,13 +40,12 @@ const AssessmentCheckbox = ({ defaultValue, disabled, hideNoAssessment, onChange
         }
     };
 
-    const assessmentHolderClass = () =>
-        hideNoAssessment
-            ? `${styles.assessmentHolder} ${styles.withoutCross}`
-            : `${styles.assessmentHolder} ${styles.withCross}`;
-
     return (
-        <div className={assessmentHolderClass()}>
+        <div className={classNames({
+            [styles.assessmentHolder]: true,
+            [styles.withoutCross]: hideNoAssessment,
+            [styles.withCross]: !hideNoAssessment,
+        })}>
             <Rate
                 count={MAX_ASSESSMENT}
                 defaultValue={defaultTo(defaultValue, 0)}
