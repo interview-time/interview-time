@@ -10,6 +10,7 @@ import { Divider } from "antd";
 import { ButtonSecondary } from "../../buttons/button-secondary";
 import TakeHomeChallengeStatusTag from "../../tags/take-home-challenge-status";
 import { getFormattedDate } from "../../../utils/date-fns";
+import { INTERVIEW_TAKE_HOME_TASK } from "../../../utils/interview";
 
 type Props = {
     teamId: string;
@@ -34,7 +35,7 @@ export const ChallengeCard = ({
 }: Props) => {
     return (
         <Card>
-            <Title level={4}>Take Home Assignment</Title>
+            <Title level={4}>{INTERVIEW_TAKE_HOME_TASK}</Title>
             <Text type='secondary'>Ask candidate to complete an assignment and return the results.</Text>
             <div className={styles.taskCard}>
                 <div className={styles.taskNameHolder}>

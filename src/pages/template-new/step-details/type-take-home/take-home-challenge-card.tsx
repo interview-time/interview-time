@@ -12,6 +12,7 @@ import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
 import { UploadFile } from "antd/lib/upload/interface";
 import { uploadChallengeFile } from "../../../../utils/http";
 import { log } from "../../../../utils/log";
+import { INTERVIEW_TAKE_HOME_TASK } from "../../../../utils/interview";
 
 type Props = {
     teamId: string;
@@ -78,7 +79,7 @@ const TakeHomeChallengeCard = ({ teamId, challenge, onUpdateChallenge }: Props) 
 
     return (
         <Card className={styles.cardSpace}>
-            <Title level={4}>Take Home Assignment</Title>
+            <Title level={4}>{INTERVIEW_TAKE_HOME_TASK}</Title>
             <Text type='secondary'>Ask candidate to complete an assignment and return the results.</Text>
             <Form.Item
                 name='assignmentTitle'

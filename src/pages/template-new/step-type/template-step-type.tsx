@@ -9,6 +9,7 @@ import TemplateImageTakeHome from "../../../assets/template-take-home-task.png";
 import TemplateImageLiveCoding from "../../../assets/template-live-coding.png";
 import TemplateImage from "../../../components/template-card/template-image";
 import { InterviewType } from "../../../store/models";
+import { INTERVIEW_LIVE_CODING, INTERVIEW_TAKE_HOME_TASK } from "../../../utils/interview";
 
 type Props = {
     interviewType?: InterviewType;
@@ -18,13 +19,13 @@ type Props = {
 const TemplateStepType = ({ onInterviewTypeChange, interviewType }: Props) => {
     const data = [
         {
-            title: "Live Coding Challenge",
+            title: INTERVIEW_LIVE_CODING,
             description: "Evaluate candidates' code across several criteria.",
             image: TemplateImageLiveCoding,
             interviewType: InterviewType.LIVE_CODING,
         },
         {
-            title: "Take Home Assignment",
+            title: INTERVIEW_TAKE_HOME_TASK,
             description: "Ask canndidate to complete an assignment and return the results.",
             image: TemplateImageTakeHome,
             interviewType: InterviewType.TAKE_HOME_TASK,
