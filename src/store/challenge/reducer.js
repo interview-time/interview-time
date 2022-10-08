@@ -1,4 +1,11 @@
-import { SET_CHALLENGE, SET_LOADING, SET_ERROR, SET_STATUS, SET_IS_EXPIRED } from "./actions";
+import {
+    SET_CHALLENGE,
+    SET_CHALLENGE_LOADING,
+    SET_CHALLENGE_ERROR,
+    SET_CHALLENGE_STATUS,
+    SET_CHALLENGE_EXPIRED,
+    RESET_CHALLENGE,
+} from "./actions";
 import { log } from "../../utils/log";
 
 const initialState = {
@@ -12,27 +19,31 @@ const challengeReducer = (state = initialState, action) => {
     log(action.type);
 
     switch (action.type) {
+        case RESET_CHALLENGE: {
+            return { details: null, loading: false, error: false, isExpired: false };
+        }
+
         case SET_CHALLENGE: {
             const { challenge } = action.payload;
             return { ...state, details: challenge };
         }
 
-        case SET_LOADING: {
+        case SET_CHALLENGE_LOADING: {
             const { loading } = action.payload;
             return { ...state, loading: loading };
         }
 
-        case SET_ERROR: {
+        case SET_CHALLENGE_ERROR: {
             const { error } = action.payload;
             return { ...state, error: error };
         }
 
-        case SET_STATUS: {
+        case SET_CHALLENGE_STATUS: {
             const { status } = action.payload;
             return { ...state, details: { ...state.details, status: status } };
         }
 
-        case SET_IS_EXPIRED: {
+        case SET_CHALLENGE_EXPIRED: {
             const { isExpired } = action.payload;
 
             if (isExpired) {

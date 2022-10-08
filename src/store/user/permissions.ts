@@ -31,3 +31,12 @@ export const canAddCandidate = (state: RootState) => {
 
     return false;
 };
+
+export const canIntegrateWithATS = (state: RootState) => {
+    const team = selectActiveTeam(state.user.profile);
+    if (team) {
+        return team.roles.some(role => role === Roles.ADMIN);
+    }
+
+    return false;
+};

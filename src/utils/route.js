@@ -67,6 +67,8 @@ export const routeTeamMembers = () => "/account/team/members";
 
 export const routeTeamBilling = () => "/account/team/billing";
 
+export const routeTeamIntegration = () => "/account/team/integration";
+
 export const routeSharedTemplate = () => "/template/shared/:token";
 
 export const routeTeamNew = (hideMenu = false) => (hideMenu ? "/team/new?hideMenu=true" : "/team/new/");
