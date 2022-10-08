@@ -2,7 +2,6 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { sumBy } from "lodash/math";
 import { routeInterviewAddFromTemplate, routeTemplatePreview } from "../../utils/route";
-import { getInterviewTypeDescription} from "../../utils/constants";
 import styles from "./template-card.module.css";
 import Card from "../card/card";
 import { defaultTo } from "lodash/util";
@@ -11,6 +10,7 @@ import { Button } from "antd";
 import DemoTag from "../demo/demo-tag";
 import Title from "antd/lib/typography/Title";
 import TemplateImage from "./template-image";
+import { interviewTypeToName } from "../../utils/template";
 
 /**
  *
@@ -32,12 +32,10 @@ const TemplateCard = ({ template }) => {
 
     const getCategoriesLabel = () => pluralize("CATEGORY", defaultTo(template.structure.groups?.length, 0), true);
 
-    const getDescriptionLabel = () => {
-        if (template.description && template.description.length > 0) {
-            return template.description
-        }
-        return getInterviewTypeDescription(template.interviewType);
-    }
+    const getDescriptionLabel = () =>
+        template.description && template.description.length > 0
+            ? template.description
+            : interviewTypeToName(template.interviewType);
 
     return (
         <>
@@ -54,7 +52,7 @@ const TemplateCard = ({ template }) => {
                     {getQuestionsLabel()} • {getCategoriesLabel()}
                 </div>
             </Card>
-            <Card withPadding={false} className={styles.cardActions} style={{backgroundColor: '#ff000000'}}>
+            <Card withPadding={false} className={styles.cardActions} style={{ backgroundColor: "#ff000000" }}>
                 <div className={styles.cardButtons}>
                     <Button className={styles.cardButtonSecondary} onClick={onPreviewClicked}>
                         Preview

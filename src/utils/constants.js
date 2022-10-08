@@ -61,17 +61,6 @@ export const QuestionAssessment = {
     EXCELLENT: 3,
 };
 
-export const getInterviewTypeDescription = interviewType => {
-    switch (interviewType) {
-        case InterviewType.INTERVIEW:
-            return "Question/Answer Interview Template";
-        case InterviewType.LIVE_CODING:
-            return "Live Coding Interview Template";
-        default:
-            return "";
-    }
-};
-
 export const getTemplateCategoryIcon = interviewType => {
     switch (interviewType) {
         case InterviewType.INTERVIEW:
