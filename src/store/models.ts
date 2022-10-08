@@ -81,6 +81,7 @@ export interface Interview {
     structure: InterviewStructure;
     interviewType: InterviewType;
     liveCodingChallenges?: LiveCodingChallenge[];
+    takeHomeChallenge?: TakeHomeChallenge;
     challengeDetails?: ChallengeDetails;
 }
 
@@ -237,6 +238,25 @@ export interface LiveCodingChallenge {
     fileName?: string;
     selected?: boolean;
     shareToken?: string;
+}
+
+export interface TakeHomeChallenge {
+    challengeId: string;
+    name: string;
+    description?: string;
+    gitHubUrl?: string;
+    fileName?: string;
+    shareToken?: string;
+    status?: TakeHomeChallengeStatus;
+    solutionGitHubUrls?: string[];
+    sentToCandidateOn?: string;
+    solutionSubmittedOn?: string;
+}
+
+export enum TakeHomeChallengeStatus {
+    NotSent= "NotSent",
+    SentToCandidate = "SentToCandidate",
+    SolutionSubmitted = "SolutionSubmitted",
 }
 
 export interface CandidateChallenge {

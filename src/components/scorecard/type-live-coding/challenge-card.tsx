@@ -78,7 +78,7 @@ export const ChallengeCard = ({
                                     <Text className={styles.linkDescription}>{challenge.description}</Text>
                                 )}
                                 {FileChallengeLink(challenge, teamId)}
-                                {GithubChallengeLink(challenge)}
+                                {GithubChallengeLink(challenge.gitHubUrl)}
                                 <Divider className={styles.divider} />
                                 <Text type='secondary' className={styles.linkDescription}>
                                     Share the challenge with the candidate. The link expires once the interview is
@@ -126,22 +126,22 @@ export const FileChallengeLink = (challenge: LiveCodingChallenge, teamId: string
     );
 };
 
-export const GithubChallengeLink = (challenge: LiveCodingChallenge) => {
+export const GithubChallengeLink = (gitHubUrl: string | undefined) => {
     const onLinkClicked = (e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation(); // prevents selection another challenge
     };
 
     return (
-        !isEmpty(challenge.gitHubUrl) && (
+        !isEmpty(gitHubUrl) && (
             <a
-                href={challenge.gitHubUrl}
+                href={gitHubUrl}
                 target='_blank'
                 rel='noreferrer'
                 className={styles.challengeLink}
                 onClick={onLinkClicked}
             >
                 <GithubFilled style={{ fontSize: 16 }} />
-                <span className={styles.challengeText}>{challenge.gitHubUrl}</span>
+                <span className={styles.challengeText}>{gitHubUrl}</span>
             </a>
         )
     );

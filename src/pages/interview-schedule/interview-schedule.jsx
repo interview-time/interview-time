@@ -34,6 +34,7 @@ import { log } from "../../utils/log";
 import { uniq } from "lodash/array";
 import DatePicker from "../../components/antd/DatePicker";
 import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
+import { InterviewType } from "../../store/models";
 
 /**
  *
@@ -308,15 +309,14 @@ const InterviewSchedule = ({
     // };
 
     const onTemplateSelect = templateId => {
-        let template = templates.find(template => template.templateId === templateId);
-        let structure = cloneDeep(template.structure);
-
+        const template = cloneDeep(findTemplate(templateId, templates));
         setInterview({
             ...interview,
             templateIds: [templateId],
             interviewType: template.interviewType,
-            liveCodingChallenges: template.challenges,
-            structure: structure,
+            liveCodingChallenges: template.interviewType  === InterviewType.LIVE_CODING ? template.challenges : undefined,
+            takeHomeChallenge: template.interviewType  === InterviewType.TAKE_HOME_TASK ? template.challenges[0] : undefined,
+            structure: template.structure,
         });
     };
 

@@ -36,11 +36,11 @@ export const newTemplateFromType = (template: Template, type: InterviewType): Te
         return {
             ...template,
             interviewType: InterviewType.INTERVIEW,
-            challenges: [],
             structure: {
                 ...template.structure,
                 groups: [],
             },
+            challenges: [],
         };
     } else if (type === InterviewType.LIVE_CODING) {
         return {
@@ -50,12 +50,34 @@ export const newTemplateFromType = (template: Template, type: InterviewType): Te
                 ...template.structure,
                 groups: [
                     {
-                        groupId: Date.now().toString(),
+                        groupId: uuidv4(),
                         name: "Assessment",
                         questions: [],
                     },
                 ],
             },
+            challenges: []
+        };
+    } else if (type === InterviewType.TAKE_HOME_TASK) {
+        return {
+            ...template,
+            interviewType: type,
+            structure: {
+                ...template.structure,
+                groups: [
+                    {
+                        groupId: uuidv4(),
+                        name: "Assessment",
+                        questions: [],
+                    },
+                ],
+            },
+            challenges: [
+                {
+                    challengeId: uuidv4(),
+                    name: "",
+                },
+            ],
         };
     }
 };

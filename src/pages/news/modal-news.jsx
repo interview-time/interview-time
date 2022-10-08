@@ -8,16 +8,16 @@ import { updateNewsVisitTime } from "../../utils/storage";
 
 export const newsData = [
     {
-        version: "v1.220901",
-        versionInt: 220901, // version reversed
-        date: new Date(2022, 7, 5),
+        version: "v1.220930",
+        versionInt: 220930, // version reversed
+        date: new Date(2022, 9, 30),
         content: (
             <div className={styles.carouselItem}>
                 <Title level={5} className={styles.carouselTitle}>
                     Live Coding Interview Type
                 </Title>
                 <div className={styles.carouselDescription}>
-                    Now you can assess candidates conding abilities during the tech interview. Create a coding challenge
+                    Now you can assess candidates coding abilities during the tech interview. Create a coding challenge
                     and attach it to your template as a zip file or public GitHub repo.
                 </div>
                 <div className={styles.carouselImageWrapper}>
@@ -27,16 +27,16 @@ export const newsData = [
         ),
     },
     {
-        version: "v1.220901",
-        versionInt: 220901, // version reversed
-        date: new Date(2022, 7, 5),
+        version: "v1.220930",
+        versionInt: 220930, // version reversed
+        date: new Date(2022, 9, 30),
         content: (
             <div className={styles.carouselItem}>
                 <Title level={5} className={styles.carouselTitle}>
                     Share Coding Challenge
                 </Title>
                 <div className={styles.carouselDescription}>
-                    Share coding challenge with the candidate during the interview. Temporary link will expire once the
+                    Share coding challenges with the candidate during the interview. The temporary link will expire once the
                     interview is completed.
                 </div>
                 <div className={styles.carouselImageWrapper}>

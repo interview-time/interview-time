@@ -1,15 +1,14 @@
 import { TemplateChallenge, QuestionDifficulty, Template, TemplateQuestion } from "../../../../store/models";
-import styles from "../type-interview/step-details-interview.module.css";
+import styles from "./step-details-take-home.module.css";
 import { Col, Form, Row } from "antd";
 import TemplateMetaCard from "../template-meta-card";
 import React, { useState } from "react";
 import TemplateHeaderCard from "../template-header-card";
-import LiveCodingAssessmentModal from "./live-coding-assessment-modal";
-import LiveCodingChallengeCard from "./live-coding-challenge-card";
 import { ReducerAction, ReducerActionType } from "../../template-reducer";
-import { selectAssessmentGroup } from "../../../../store/templates/selector";
-import LiveCodingAssessmentCard from "./live-coding-assessment-card";
-import LiveCodingChallengeModal from "./live-coding-challenge-modal";
+import { selectAssessmentGroup, selectTakeHomeAssignment } from "../../../../store/templates/selector";
+import LiveCodingAssessmentCard from "../type-live-coding/live-coding-assessment-card";
+import LiveCodingAssessmentModal from "../type-live-coding/live-coding-assessment-modal";
+import TakeHomeChallengeCard from "./take-home-challenge-card";
 
 type Props = {
     template: Readonly<Template>;
@@ -23,21 +22,11 @@ type AssessmentModal = {
     questionId: string;
 };
 
-type TaskModal = {
-    visible: boolean;
-    challenge: TemplateChallenge | null;
-};
-
-const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) => {
+const StepDetailsTakeHome = ({ template, teamId, onTemplateChange }: Props) => {
     const [assessmentModal, setAssessmentModal] = useState<AssessmentModal>({
         visible: false,
         name: "",
         questionId: "",
-    });
-
-    const [challengeModal, setChallengeModal] = useState<TaskModal>({
-        visible: false,
-        challenge: null,
     });
 
     // MARK: Template metadata
@@ -146,68 +135,11 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
 
     // MARK: Task
 
-    const onChallengeModalCancel = () => {
-        setChallengeModal({
-            ...challengeModal,
-            visible: false,
-        });
-    };
-
-    const onNewChallengeClicked = () => {
-        setChallengeModal({
-            ...challengeModal,
-            visible: true,
-            challenge: null,
-        });
-    };
-
-    const onAddChallenge = (challenge: TemplateChallenge) => {
-        setChallengeModal({
-            ...challengeModal,
-            visible: false,
-        });
-        onTemplateChange({
-            type: ReducerActionType.ADD_CHALLENGE,
-            challenge: challenge,
-        });
-    };
-
-    const onUpdateChallengeClicked = (challenge: TemplateChallenge) => {
-        setChallengeModal({
-            ...assessmentModal,
-            visible: true,
-            challenge: challenge,
-        });
-    };
-
     const onUpdateChallenge = (challenge: TemplateChallenge) => {
-        setChallengeModal({
-            ...challengeModal,
-            visible: false,
-        });
         onTemplateChange({
             type: ReducerActionType.UPDATE_CHALLENGE,
             challenge: challenge,
-            mutateState: false
-        });
-    };
-
-    const onChallengeDelete = (challenge: TemplateChallenge) => {
-        setChallengeModal({
-            ...challengeModal,
-            visible: false,
-        });
-        onTemplateChange({
-            type: ReducerActionType.REMOVE_CHALLENGE,
-            challenge: challenge,
-        });
-    };
-
-    const onChallengeSorted = (oldIndex: number, newIndex: number) => {
-        onTemplateChange({
-            type: ReducerActionType.MOVE_CHALLENGE,
-            oldIndex: oldIndex,
-            newIndex: newIndex,
+            mutateState: true
         });
     };
 
@@ -230,11 +162,10 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
 
                     <TemplateHeaderCard header={template.structure.header} onHeaderChanged={onHeaderChanged} />
 
-                    <LiveCodingChallengeCard
-                        challenges={template.challenges ?? []}
-                        onNewChallengeClicked={onNewChallengeClicked}
-                        onChallengeSorted={onChallengeSorted}
-                        onUpdateChallengeClicked={onUpdateChallengeClicked}
+                    <TakeHomeChallengeCard
+                        teamId={teamId}
+                        challenge={selectTakeHomeAssignment(template)}
+                        onUpdateChallenge={onUpdateChallenge}
                     />
 
                     <LiveCodingAssessmentCard
@@ -256,18 +187,9 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
                     onDelete={onAssessmentModalDelete}
                 />
 
-                <LiveCodingChallengeModal
-                    visible={challengeModal.visible}
-                    existingChallenge={challengeModal.challenge}
-                    teamId={teamId}
-                    onCancel={onChallengeModalCancel}
-                    onAdd={onAddChallenge}
-                    onUpdate={onUpdateChallenge}
-                    onDelete={onChallengeDelete}
-                />
             </Col>
         </Row>
     );
 };
 
-export default StepDetailsLiveCoding;
+export default StepDetailsTakeHome;

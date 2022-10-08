@@ -56,7 +56,7 @@ const Dashboard = ({
         loadTeamMembers(profile.currentTeamId);
         loadTemplates();
         // eslint-disable-next-line
-    }, []);
+    }, []);    
 
     const onNewTemplateClicked = () => history.push(routeTemplates());
 

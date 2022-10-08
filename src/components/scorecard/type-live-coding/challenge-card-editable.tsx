@@ -46,12 +46,20 @@ const LiveCodingChallengeCard = ({ challenges, teamId, interviewId, onChallengeS
                 return "Copied to Clipboard";
         }
     };
+
+    const getGenerateLinkIcon = () =>
+        buttonState === ButtonState.COPIED ? (
+            <CheckOutlined style={{ fontSize: 18 }} />
+        ) : (
+            <LinkIcon style={{ fontSize: 18 }} />
+        );
+
     return (
         <ChallengeCard
             teamId={teamId}
             challenges={challenges}
             buttonText={getGenerateLinkButtonText()}
-            buttonIcon={buttonState === ButtonState.COPIED ? <CheckOutlined /> : <LinkIcon />}
+            buttonIcon={getGenerateLinkIcon()}
             onGenerateLink={onGenerateLink}
             onChallengeSelectionChanged={onChallengeSelectionChanged}
         />

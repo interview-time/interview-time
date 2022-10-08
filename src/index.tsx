@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import * as Sentry from "@sentry/react";
+import posthog from 'posthog-js'
 import { Integrations } from "@sentry/tracing";
 import { BrowserRouter } from "react-router-dom";
 import "inter-ui/inter.css";
@@ -17,6 +18,13 @@ Sentry.init({
     denyUrls: ["http://localhost:3000/"],
     tracesSampleRate: 1.0,
 });
+
+// This will initialize PostHog with your API key.
+// https://posthog.com/docs/integrate/client/js
+//
+if (!window.location.href.includes('localhost')) {
+    posthog.init('phc_vXedHxzazcCCBwwyv0P6B08m30J2iUQCTw549Nh0bQW', { api_host: 'https://app.posthog.com' })
+}
 
 ReactDOM.render(
     <React.StrictMode>

@@ -76,12 +76,10 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                                         <p className={styles.title}>👋 Hi {challenge.candidateName},</p>
                                         <p>
                                             As a part of your interview process, you've been asked to complete the
-                                            take-home challenge.
+                                            take-home assignment.
                                         </p>
                                         <p>
-                                            {challenge.downloadFileUrl
-                                                ? "Please complete the challenge described below using the template provided in the Supporting Files section."
-                                                : "Please complete the challenge described below."}
+                                            Please complete the assignment described below.
                                         </p>
                                         <p>
                                             Once completed create a public repo in GitHub and submit the link at the
@@ -95,7 +93,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
 
                         <Row gutter={24} className={styles.section}>
                             <Col span={24}>
-                                <Card title='Challenge'>
+                                <Card title='Take Home Assignment'>
                                     <p>{challenge.description}</p>
 
                                     <Divider />
@@ -122,7 +120,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
                                     <Card
                                         className={styles.submitSolution}
                                         title='Submit Solution'
-                                        subtitle='Please submit your solution here when you finish with the challenge'
+                                        subtitle='Please submit your solution here when you finish with the assignment'
                                         featured={true}
                                     >
                                         <Form
