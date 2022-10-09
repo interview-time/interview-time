@@ -77,12 +77,6 @@ namespace CafApi.Command
                 throw new AuthorizationException($"User {command.UserId} not authorized to send challenge {command.ChallengeId}");
             }
 
-            var candidate = await _candidateRepository.GetCandidate(command.TeamId, interview.CandidateId);
-            if (candidate == null || string.IsNullOrWhiteSpace(candidate.Email))
-            {
-                throw new CandidateException($"Candidate doesn't have email");
-            }
-
             interview.TakeHomeChallenge.Status = ChallengeStatus.SentToCandidate.ToString();
             interview.TakeHomeChallenge.SentToCandidateOn = DateTime.UtcNow;
             interview.ModifiedDate = DateTime.UtcNow;
@@ -91,6 +85,17 @@ namespace CafApi.Command
 
             if (command.SendVia == SendVia.Email)
             {
+                var candidate = await _candidateRepository.GetCandidate(command.TeamId, interview.CandidateId);
+                if (candidate == null )
+                {
+                    throw new ItemNotFoundException($"Candidate not found for interview {command.InterviewId}");
+                }
+
+                if (string.IsNullOrWhiteSpace(candidate.Email))
+                {
+                    throw new CandidateException($"Candidate doesn't have email");
+                }
+
                 var challengePageUrl = UrlHelper.GetChallengePageUrl(_appHostUrl, interview.TakeHomeChallenge.ShareToken);
 
                 return await _emailService.SendTakeHomeChallenge(candidate.Email, candidate.CandidateName, challengePageUrl);
