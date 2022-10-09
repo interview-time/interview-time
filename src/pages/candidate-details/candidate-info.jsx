@@ -58,6 +58,11 @@ const CandidateInfo = ({ profile, userRole, candidate, interviews, onUpdateStatu
                                 <Title level={5} style={{ marginBottom: 0 }}>
                                     {candidate.candidateName}
                                 </Title>
+                                {candidate.email && (
+                                    <Text type='secondary' className={styles.label}>
+                                        {candidate.email}
+                                    </Text>
+                                )}
                                 {candidate.position && (
                                     <Text type='secondary' className={styles.label}>
                                         {candidate.position}

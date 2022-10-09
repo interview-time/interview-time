@@ -1,19 +1,19 @@
 import styles from "./status-tags.module.css";
 import { Tag } from "antd";
 import React from "react";
-import { TakeHomeChallengeStatus } from "../../store/models";
+import { ChallengeStatus } from "../../store/models";
 
 type Props = {
-    status?: TakeHomeChallengeStatus;
+    status?: ChallengeStatus;
 };
 const TakeHomeChallengeStatusTag = ({ status }: Props) => {
     const createTag = () => {
         let tagClass;
         let tagText;
-        if (status === TakeHomeChallengeStatus.SolutionSubmitted) {
+        if (status === ChallengeStatus.SolutionSubmitted) {
             tagClass = styles.tagGreen;
             tagText = "Completed";
-        } else if (status === TakeHomeChallengeStatus.SentToCandidate) {
+        } else if (status === ChallengeStatus.SentToCandidate) {
             tagClass = styles.tagOrange;
             tagText = "Sent";
         } else {

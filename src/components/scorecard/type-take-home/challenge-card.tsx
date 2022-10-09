@@ -1,12 +1,12 @@
 import styles from "./challenge-card.module.css";
 import Card from "../../card/card";
-import { TakeHomeChallenge, TakeHomeChallengeStatus } from "../../../store/models";
+import { Candidate, ChallengeStatus, TakeHomeChallenge } from "../../../store/models";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import React from "react";
 import { isEmpty } from "lodash";
 import { FileChallengeLink, GithubChallengeLink } from "../type-live-coding/challenge-card";
-import { Divider } from "antd";
+import { Divider, Tooltip } from "antd";
 import { ButtonSecondary } from "../../buttons/button-secondary";
 import TakeHomeChallengeStatusTag from "../../tags/take-home-challenge-status";
 import { getFormattedDate } from "../../../utils/date-fns";
@@ -15,6 +15,7 @@ import { INTERVIEW_TAKE_HOME_TASK } from "../../../utils/interview";
 type Props = {
     teamId: string;
     challenge: Readonly<TakeHomeChallenge>;
+    candidate?: Readonly<Candidate>;
     sendButtonText: string;
     sendButtonIcon: React.ReactNode;
     linkButtonText: string;
@@ -26,6 +27,7 @@ type Props = {
 export const ChallengeCard = ({
     teamId,
     challenge,
+    candidate,
     sendButtonText,
     sendButtonIcon,
     linkButtonText,
@@ -33,6 +35,21 @@ export const ChallengeCard = ({
     onLinkClicked,
     onSendClicked,
 }: Props) => {
+    const SendChallengeButton = () => {
+        const hasEmail = !isEmpty(candidate?.email);
+        const button = (
+            <ButtonSecondary
+                onClick={() => onSendClicked?.(challenge)}
+                icon={sendButtonIcon}
+                disabled={challenge.status === ChallengeStatus.SolutionSubmitted}
+            >
+                {sendButtonText}
+            </ButtonSecondary>
+        );
+
+        return hasEmail ? button : <Tooltip title="Candidate doesn't have email">{button}</Tooltip>;
+    };
+
     return (
         <Card>
             <Title level={4}>{INTERVIEW_TAKE_HOME_TASK}</Title>
@@ -47,13 +64,13 @@ export const ChallengeCard = ({
                 {GithubChallengeLink(challenge.gitHubUrl)}
                 <Text className={styles.taskSolution}>Solution</Text>
                 <Text>
-                    {challenge.status === TakeHomeChallengeStatus.SolutionSubmitted
-                        ? `Take home assignment solution submitted on ${getFormattedDate(challenge.solutionSubmittedOn)}.`
+                    {challenge.status === ChallengeStatus.SolutionSubmitted
+                        ? `Take home assignment solution submitted on ${getFormattedDate(
+                              challenge.solutionSubmittedOn
+                          )}.`
                         : "Take home assignment solution submitted by the candidate will be available here."}
                 </Text>
-                {challenge.solutionGitHubUrls && challenge.solutionGitHubUrls.map(url =>
-                    GithubChallengeLink(url))
-                }
+                {challenge.solutionGitHubUrls && challenge.solutionGitHubUrls.map(url => GithubChallengeLink(url))}
                 <Divider className={styles.divider} />
                 <Text type='secondary'>
                     Share the assignment with the candidate. The link expires once the interview is completed.
@@ -63,17 +80,11 @@ export const ChallengeCard = ({
                         <ButtonSecondary
                             onClick={() => onLinkClicked?.(challenge)}
                             icon={linkButtonIcon}
-                            disabled={challenge.status === TakeHomeChallengeStatus.SolutionSubmitted}
+                            disabled={challenge.status === ChallengeStatus.SolutionSubmitted}
                         >
                             {linkButtonText}
                         </ButtonSecondary>
-                        <ButtonSecondary
-                            onClick={() => onSendClicked?.(challenge)}
-                            icon={sendButtonIcon}
-                            disabled={challenge.status === TakeHomeChallengeStatus.SolutionSubmitted}
-                        >
-                            {sendButtonText}
-                        </ButtonSecondary>
+                        {SendChallengeButton()}
                     </div>
                 )}
             </div>

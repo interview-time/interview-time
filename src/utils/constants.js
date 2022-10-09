@@ -143,11 +143,6 @@ export const SubscriptionPlans = {
     Premium: "PREMIUM",
 };
 
-export const ChallengeStatus = {
-    NotSent: "NotSent",
-    SentToCandidate: "SentToCandidate",
-    SolutionSubmitted: "SolutionSubmitted"
-};
 export const CandidatesFilter = {
     All: "All",
     Current: "Current",

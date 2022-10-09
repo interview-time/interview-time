@@ -95,6 +95,7 @@ const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCa
                 layout='vertical'
                 initialValues={{
                     candidateName: candidate?.candidateName,
+                    email: candidate?.email,
                     linkedIn: candidate?.linkedIn,
                     gitHub: candidate?.gitHub,
                 }}
@@ -102,6 +103,7 @@ const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCa
                     if (candidate) {
                         const updatedCandidate = cloneDeep(candidate);
                         updatedCandidate.candidateName = values.candidateName;
+                        updatedCandidate.email = values.email;
                         updatedCandidate.linkedIn = values.linkedIn;
                         updatedCandidate.gitHub = values.gitHub;
                         if (resumeFile) {
@@ -132,6 +134,21 @@ const CreateCandidate = ({ candidate, teamId, loading, createCandidate, updateCa
                             ]}
                         >
                             <Input className='fs-mask' placeholder="Candidate's full name" />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={16} style={{ marginTop: 16 }}>
+                    <Col span={24}>
+                        <Form.Item
+                            name='email'
+                            label={<Text strong>Email</Text>}
+                            rules={[
+                                {
+                                    required: false,
+                                },
+                            ]}
+                        >
+                            <Input className='fs-mask' placeholder="Candidate's email" />
                         </Form.Item>
                     </Col>
                 </Row>

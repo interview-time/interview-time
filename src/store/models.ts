@@ -138,6 +138,7 @@ export interface Candidate {
     codingRepo?: string;
     gitHub?: string;
     linkedIn?: string;
+    email?: string;
     archived: boolean;
 }
 
@@ -247,16 +248,10 @@ export interface TakeHomeChallenge {
     gitHubUrl?: string;
     fileName?: string;
     shareToken?: string;
-    status?: TakeHomeChallengeStatus;
+    status?: ChallengeStatus;
     solutionGitHubUrls?: string[];
     sentToCandidateOn?: string;
     solutionSubmittedOn?: string;
-}
-
-export enum TakeHomeChallengeStatus {
-    NotSent= "NotSent",
-    SentToCandidate = "SentToCandidate",
-    SolutionSubmitted = "SolutionSubmitted",
 }
 
 export interface CandidateChallenge {
@@ -271,4 +266,10 @@ export interface CandidateChallenge {
 
 export interface ChallengeDetails {
     challengeId: string;
+}
+
+export enum ChallengeStatus {
+    NotSent = "NotSent",
+    SentToCandidate = "SentToCandidate",
+    SolutionSubmitted = "SolutionSubmitted",
 }
