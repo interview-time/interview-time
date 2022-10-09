@@ -60,6 +60,8 @@ namespace CafApi.Services
                 candidate.GitHub = updatedCandidate.GitHub;
                 candidate.LinkedIn = updatedCandidate.LinkedIn;
                 candidate.Position = updatedCandidate.Position;
+                candidate.Email = updatedCandidate.Email;
+                candidate.Phone = updatedCandidate.Phone;
                 candidate.ResumeFile = updatedCandidate.ResumeFile;
                 candidate.Status = updatedCandidate.Status;
                 candidate.Archived = updatedCandidate.Archived;
