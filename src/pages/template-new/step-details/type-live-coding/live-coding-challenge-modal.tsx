@@ -11,9 +11,9 @@ import { v4 as uuidv4 } from "uuid";
 import Dragger from "antd/lib/upload/Dragger";
 import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
 import { log } from "../../../../utils/log";
-import { uploadChallengeFile } from "../../../../utils/http";
 import TextArea from "antd/lib/input/TextArea";
 import { UploadFile } from "antd/lib/upload/interface";
+import { uploadChallengeFile } from "../../../../store/challenge/actions";
 
 type Props = {
     visible: boolean;

@@ -7,9 +7,9 @@ import Title from "antd/lib/typography/Title";
 import { Divider, message, Switch, Tooltip } from "antd";
 import { isEmpty } from "lodash";
 import { GithubFilled } from "@ant-design/icons";
-import { downloadChallengeFile } from "../../../utils/http";
 import { DownloadFileIcon, DownloadFileOutlinedIcon } from "../../../utils/icons";
 import { ButtonSecondary } from "../../buttons/button-secondary";
+import { downloadChallengeFile } from "../../../store/challenge/actions";
 
 type Props = {
     challenges: Readonly<LiveCodingChallenge[]>;

@@ -10,9 +10,9 @@ import { GithubFilled } from "@ant-design/icons";
 import Dragger from "antd/lib/upload/Dragger";
 import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
 import { UploadFile } from "antd/lib/upload/interface";
-import { uploadChallengeFile } from "../../../../utils/http";
 import { log } from "../../../../utils/log";
 import { INTERVIEW_TAKE_HOME_TASK } from "../../../../utils/interview";
+import { uploadChallengeFile } from "../../../../store/challenge/actions";
 
 type Props = {
     teamId: string;

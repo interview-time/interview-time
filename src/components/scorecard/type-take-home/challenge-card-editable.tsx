@@ -6,7 +6,7 @@ import { message } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import { getHost, routeTakeHomeChallenge } from "../../../utils/route";
-import { SendChallengeProps } from "../../../store/challenge/actions";
+import { sendChallenge } from "../../../store/challenge/actions";
 import { isEmpty } from "lodash";
 
 type Props = {
@@ -14,7 +14,6 @@ type Props = {
     teamId: string;
     challenge: Readonly<TakeHomeChallenge>;
     candidate?: Readonly<Candidate>;
-    sendChallenge: (props: SendChallengeProps) => void;
 };
 
 enum LinkButtonState {
@@ -28,7 +27,7 @@ enum EmailButtonState {
     SENT,
 }
 
-const TakeHomeChallengeCard = ({ interviewId, teamId, challenge, candidate, sendChallenge }: Props) => {
+const TakeHomeChallengeCard = ({ interviewId, teamId, challenge, candidate }: Props) => {
     const [generateLinkState, setGenerateLinkState] = useState<LinkButtonState>(LinkButtonState.DEFAULT);
     const [sendEmailState, setSendEmailState] = useState<EmailButtonState>(EmailButtonState.DEFAULT);
 
@@ -47,6 +46,7 @@ const TakeHomeChallengeCard = ({ interviewId, teamId, challenge, candidate, send
     const onSendChallenge = () => {
         setSendEmailState(EmailButtonState.LOADING);
         sendChallenge({
+            teamId: teamId,
             interviewId: interviewId,
             challengeId: challenge.challengeId,
             sendViaLink: false,
@@ -63,6 +63,7 @@ const TakeHomeChallengeCard = ({ interviewId, teamId, challenge, candidate, send
 
     const onGenerateLink = (challenge: TakeHomeChallenge) => {
         sendChallenge({
+            teamId: teamId,
             interviewId: interviewId,
             challengeId: challenge.challengeId,
             sendViaLink: true,

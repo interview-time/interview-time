@@ -1,11 +1,12 @@
-import axios from "axios";
-import { logError } from "../../utils/log";
-import { ChallengeStatus } from "../models";
-import { ChallengeDetails } from "../models";
+import axios, { AxiosRequestConfig } from "axios";
+import { UploadRequestOption as RcCustomRequestOptions } from "rc-upload/lib/interface";
+import { log, logError } from "../../utils/log";
+import { ChallengeDetails, ChallengeStatus } from "../models";
 import { Dispatch } from "redux";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
-import { RootState } from "../state-models";
+import { getApiUrl } from "../../utils/route";
+import { v4 as uuidv4 } from "uuid";
 
 const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 
@@ -91,7 +92,8 @@ export const setStatus = (status: ChallengeStatus): SetStatusAction => ({
     status: status,
 });
 
-export type SendChallengeProps = {
+type SendChallengeProps = {
+    teamId: string;
     interviewId: string;
     challengeId: string;
     sendViaLink: boolean;
@@ -99,26 +101,27 @@ export type SendChallengeProps = {
     onError?: () => void;
 };
 
-export const sendChallenge =
-    ({ interviewId, challengeId, sendViaLink, onSuccess, onError }: SendChallengeProps) =>
-    async (dispatch: Dispatch, getState: () => RootState) => {
-        const token = await getAccessTokenSilently();
-        const { user } = getState();
-        try {
-            await axios.post(
-                `${BASE_URI}/team/${user.profile.currentTeamId}/challenge/${challengeId}/send`,
-                {
-                    interviewId: interviewId,
-                    sendViaLink: sendViaLink,
-                },
-                config(token)
-            );
-            onSuccess?.();
-        } catch (error) {
+export const sendChallenge = ({
+    teamId,
+    interviewId,
+    challengeId,
+    sendViaLink,
+    onSuccess,
+    onError,
+}: SendChallengeProps) => {
+    let url = `${BASE_URI}/team/${teamId}/challenge/${challengeId}/send`;
+    let data = {
+        interviewId: interviewId,
+        sendViaLink: sendViaLink,
+    };
+    getAccessTokenSilently()
+        .then(token => axios.post(url, data, config(token)))
+        .then(() => onSuccess?.())
+        .catch((error: Error) => {
             logError(error);
             onError?.();
-        }
-    };
+        });
+};
 
 export const loadChallenge = (token: string) => async (dispatch: Dispatch) => {
     dispatch(setLoading(true));
@@ -159,4 +162,47 @@ export const submitSolution = (token: string, gitHubUrl: string) => async (dispa
     } finally {
         dispatch(setLoading(false));
     }
+};
+export const downloadChallengeFile = (
+    teamId: string,
+    challengeId: string,
+    filename: string,
+    onSuccess: (token: string) => void,
+    onError: (token: Error) => void
+) => {
+    const url = `${getApiUrl()}/team/${teamId}/challenge/${challengeId}/filename/${filename}/download`;
+    getAccessTokenSilently()
+        .then(token => axios.get(url, config(token)))
+        .then(res => onSuccess(res.data.url))
+        .catch((error: Error) => onError(error));
+};
+export const uploadChallengeFile = (teamId: string, challengeId: string) => {
+    return async (options: RcCustomRequestOptions<string>) => {
+        const { file, onSuccess, onError, onProgress } = options;
+
+        log(file);
+        let filename = uuidv4();
+
+        if (file instanceof File) {
+            const fileExtension = file.name.split(".").pop();
+            if (fileExtension) {
+                filename += `.${fileExtension}`;
+            }
+        }
+
+        const axiosConfig: AxiosRequestConfig = {
+            onUploadProgress: (event: any) => {
+                // @ts-ignore
+                onProgress?.({ percent: (event.loaded / event.total) * 100 });
+            },
+        };
+
+        const url = `${getApiUrl()}/team/${teamId}/challenge/${challengeId}/filename/${filename}/upload`;
+
+        getAccessTokenSilently()
+            .then(token => axios.get(url, config(token)))
+            .then(res => axios.put(res.data.url, file, axiosConfig))
+            .then(() => onSuccess?.(filename))
+            .catch((error: Error) => onError?.(error));
+    };
 };
