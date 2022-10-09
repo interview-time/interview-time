@@ -12,15 +12,17 @@ import LiveCodingAssessmentCard from "../../../../components/scorecard/type-live
 import { useDebounceFn } from "ahooks";
 import { DATA_CHANGE_DEBOUNCE, DATA_CHANGE_DEBOUNCE_MAX } from "../../interview-scorecard";
 import TakeHomeChallengeCard from "../../../../components/scorecard/type-take-home/challenge-card-editable";
+import { SendChallengeProps } from "../../../../store/challenge/actions";
 
 type Props = {
     interview: Readonly<Interview>;
     interviewers: Readonly<TeamMember[]>;
     candidate?: Readonly<Candidate>;
     onInterviewChange: (action: ReducerAction) => void;
-}
+    sendChallenge: (props: SendChallengeProps) => void;
+};
 
-const StepAssessmentTakeHome = ({ interview, interviewers, candidate, onInterviewChange }: Props) => {
+const StepAssessmentTakeHome = ({ interview, interviewers, candidate, onInterviewChange, sendChallenge }: Props) => {
     const onNotesChangeDebounce = useDebounceFn(
         (questionId: string, notes: string) => {
             onInterviewChange({
@@ -57,8 +59,13 @@ const StepAssessmentTakeHome = ({ interview, interviewers, candidate, onIntervie
                 <IntroSection interview={interview} />
             </Card>
 
-            <TakeHomeChallengeCard teamId={interview.teamId}
-                                   challenge={interview.takeHomeChallenge!} />
+            <TakeHomeChallengeCard
+                teamId={interview.teamId}
+                interviewId={interview.interviewId}
+                challenge={interview.takeHomeChallenge!}
+                candidate={candidate}
+                sendChallenge={sendChallenge}
+            />
 
             <LiveCodingAssessmentCard
                 questions={selectAssessmentGroup(interview).questions || []}
@@ -67,6 +74,6 @@ const StepAssessmentTakeHome = ({ interview, interviewers, candidate, onIntervie
             />
         </Col>
     );
-}
+};
 
 export default StepAssessmentTakeHome;

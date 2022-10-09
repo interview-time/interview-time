@@ -54,7 +54,7 @@ const CandidateInfo = ({ profile, userRole, candidate, interviews, onUpdateStatu
                 <Col xl={8} lg={12} span={24}>
                     <Card>
                         <div className={styles.divSpaceBetween}>
-                            <div>
+                            <div className={styles.divInfo}>
                                 <Title level={5} style={{ marginBottom: 0 }}>
                                     {candidate.candidateName}
                                 </Title>

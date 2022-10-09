@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { deleteInterview, loadInterviews, updateInterview, updateScorecard } from "../../store/interviews/actions";
 import { loadTeamMembers, switchTeam } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
+import { sendChallenge, SendChallengeProps } from "../../store/challenge/actions";
 import { RootState } from "../../store/state-models";
 import React, { useEffect, useReducer } from "react";
 import { interviewReducer, ReducerAction, ReducerActionType } from "./interview-reducer";
@@ -50,6 +51,7 @@ type Props = {
     loadTeamMembers: Function;
     updateScorecard: Function;
     switchTeam: Function;
+    sendChallenge: (props: SendChallengeProps) => void;
 };
 
 const InterviewScorecard = ({
@@ -64,6 +66,7 @@ const InterviewScorecard = ({
     loadTeamMembers,
     updateScorecard,
     switchTeam,
+    sendChallenge,
 }: Props) => {
     const history = useHistory();
 
@@ -264,6 +267,7 @@ const InterviewScorecard = ({
                         candidate={candidate}
                         interviewers={interviewers}
                         onInterviewChange={onInterviewChange}
+                        sendChallenge={sendChallenge}
                     />
                 )}
 
@@ -298,6 +302,7 @@ const mapDispatch = {
     loadTeamMembers,
     loadCandidates,
     switchTeam,
+    sendChallenge,
 };
 
 const mapStateToProps = (state: RootState, ownProps: any) => {

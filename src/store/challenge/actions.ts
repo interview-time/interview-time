@@ -3,6 +3,9 @@ import { logError } from "../../utils/log";
 import { ChallengeStatus } from "../models";
 import { ChallengeDetails } from "../models";
 import { Dispatch } from "redux";
+import { getAccessTokenSilently } from "../../react-auth0-spa";
+import { config } from "../common";
+import { RootState } from "../state-models";
 
 const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 
@@ -13,6 +16,7 @@ export enum ChallengeActionType {
     SET_CHALLENGE_STATUS = "SET_CHALLENGE_STATUS",
     SET_CHALLENGE_EXPIRED = "SET_CHALLENGE_EXPIRED",
     RESET_CHALLENGE = "RESET_CHALLENGE",
+    SEND_CHALLENGE = "SEND_CHALLENGE",
 }
 
 export type ResetChallengeAction = {
@@ -44,13 +48,19 @@ export type SetStatusAction = {
     status: ChallengeStatus;
 };
 
+export type SendChallengeAction = {
+    type: ChallengeActionType.SEND_CHALLENGE;
+    sendViaLink: boolean;
+};
+
 export type ChallengeActions =
     | ResetChallengeAction
     | SetChallengeAction
     | SetIsExpiredAction
     | SetLoadingAction
     | SetErrorAction
-    | SetStatusAction;
+    | SetStatusAction
+    | SendChallengeAction;
 
 export const resetChallenge = (): ResetChallengeAction => ({
     type: ChallengeActionType.RESET_CHALLENGE,
@@ -80,6 +90,35 @@ export const setStatus = (status: ChallengeStatus): SetStatusAction => ({
     type: ChallengeActionType.SET_CHALLENGE_STATUS,
     status: status,
 });
+
+export type SendChallengeProps = {
+    interviewId: string;
+    challengeId: string;
+    sendViaLink: boolean;
+    onSuccess?: () => void;
+    onError?: () => void;
+};
+
+export const sendChallenge =
+    ({ interviewId, challengeId, sendViaLink, onSuccess, onError }: SendChallengeProps) =>
+    async (dispatch: Dispatch, getState: () => RootState) => {
+        const token = await getAccessTokenSilently();
+        const { user } = getState();
+        try {
+            await axios.post(
+                `${BASE_URI}/team/${user.profile.currentTeamId}/challenge/${challengeId}/send`,
+                {
+                    interviewId: interviewId,
+                    sendViaLink: sendViaLink,
+                },
+                config(token)
+            );
+            onSuccess?.();
+        } catch (error) {
+            logError(error);
+            onError?.();
+        }
+    };
 
 export const loadChallenge = (token: string) => async (dispatch: Dispatch) => {
     dispatch(setLoading(true));

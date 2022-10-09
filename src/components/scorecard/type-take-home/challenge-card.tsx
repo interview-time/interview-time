@@ -15,39 +15,40 @@ import { INTERVIEW_TAKE_HOME_TASK } from "../../../utils/interview";
 type Props = {
     teamId: string;
     challenge: Readonly<TakeHomeChallenge>;
-    candidate?: Readonly<Candidate>;
-    sendButtonText: string;
-    sendButtonIcon: React.ReactNode;
-    linkButtonText: string;
-    linkButtonIcon: React.ReactNode;
-    onLinkClicked?: (challenge: TakeHomeChallenge) => void;
-    onSendClicked?: (challenge: TakeHomeChallenge) => void;
+    generateLinkButton: ButtonProps;
+    sendEmailButton: ButtonProps;
 };
 
-export const ChallengeCard = ({
-    teamId,
-    challenge,
-    candidate,
-    sendButtonText,
-    sendButtonIcon,
-    linkButtonText,
-    linkButtonIcon,
-    onLinkClicked,
-    onSendClicked,
-}: Props) => {
+type ButtonProps = {
+    text: string;
+    loading?: boolean;
+    disabled?: boolean;
+    tooltip?: string;
+    icon: React.ReactNode;
+    onClick?: (challenge: TakeHomeChallenge) => void;
+};
+
+export const ChallengeCard = ({ teamId, challenge, generateLinkButton, sendEmailButton }: Props) => {
     const SendChallengeButton = () => {
-        const hasEmail = !isEmpty(candidate?.email);
         const button = (
             <ButtonSecondary
-                onClick={() => onSendClicked?.(challenge)}
-                icon={sendButtonIcon}
-                disabled={challenge.status === ChallengeStatus.SolutionSubmitted}
+                onClick={() => sendEmailButton.onClick?.(challenge)}
+                icon={sendEmailButton.icon}
+                loading={sendEmailButton.loading}
+                disabled={challenge.status === ChallengeStatus.SolutionSubmitted || sendEmailButton.disabled}
             >
-                {sendButtonText}
+                {sendEmailButton.text}
             </ButtonSecondary>
         );
 
-        return hasEmail ? button : <Tooltip title="Candidate doesn't have email">{button}</Tooltip>;
+        return sendEmailButton.tooltip ? (
+            <Tooltip title={sendEmailButton.tooltip}>
+                {/*div is required to show Tooltip for disabled button*/}
+                <div>{button}</div>
+            </Tooltip>
+        ) : (
+            button
+        );
     };
 
     return (
@@ -75,18 +76,16 @@ export const ChallengeCard = ({
                 <Text type='secondary'>
                     Share the assignment with the candidate. The link expires once the interview is completed.
                 </Text>
-                {onLinkClicked && onSendClicked && (
-                    <div className={styles.buttons}>
-                        <ButtonSecondary
-                            onClick={() => onLinkClicked?.(challenge)}
-                            icon={linkButtonIcon}
-                            disabled={challenge.status === ChallengeStatus.SolutionSubmitted}
-                        >
-                            {linkButtonText}
-                        </ButtonSecondary>
-                        {SendChallengeButton()}
-                    </div>
-                )}
+                <div className={styles.buttons}>
+                    <ButtonSecondary
+                        onClick={() => generateLinkButton.onClick?.(challenge)}
+                        icon={generateLinkButton.icon}
+                        disabled={challenge.status === ChallengeStatus.SolutionSubmitted || generateLinkButton.disabled}
+                    >
+                        {generateLinkButton.text}
+                    </ButtonSecondary>
+                    {SendChallengeButton()}
+                </div>
             </div>
         </Card>
     );

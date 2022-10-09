@@ -18,12 +18,16 @@ const TakeHomeChallengeCard = ({ teamId, challenge }: Props) => {
         <ChallengeCard
             teamId={teamId}
             challenge={challenge}
-            linkButtonText='Copy Assignment Link'
-            linkButtonIcon={<LinkIcon style={{ fontSize: 18 }}/>}
-            sendButtonText='Send to Candidate'
-            sendButtonIcon={<MailIcon style={{ fontSize: 18 }}/>}
-            onLinkClicked={onNotAvailable}
-            onSendClicked={onNotAvailable}
+            generateLinkButton={{
+                text: "Copy Assignment Link",
+                icon: <LinkIcon style={{ fontSize: 18 }}/>,
+                onClick: onNotAvailable,
+            }}
+            sendEmailButton={{
+                text: "Send to Candidate",
+                icon: <MailIcon style={{ fontSize: 18 }}/>,
+                onClick: onNotAvailable,
+            }}
         />
     );
 };
