@@ -117,15 +117,7 @@ const InterviewSchedule = ({
             setInterview(existingInterview);
         } else if (isFromTemplateFlow() && interview.templateIds.length === 0 && templates.length !== 0) {
             // new interview from template
-            const template = cloneDeep(findTemplate(fromTemplateId(), templates));
-            setInterview({
-                ...interview,
-                interviewType: template.interviewType,
-                liveCodingChallenges: template.challenges,
-                templateIds: [template.templateId],
-                structure: template.structure,
-                interviewers: [profile.userId],
-            });
+            onTemplateSelect(fromTemplateId());
         } else {
             // pre-select current user as interviewer
             setInterview({
