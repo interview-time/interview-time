@@ -35,6 +35,7 @@ import { uniq } from "lodash/array";
 import DatePicker from "../../components/antd/DatePicker";
 import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
 import { InterviewType } from "../../store/models";
+import { interviewTypeToName } from "../../utils/template";
 
 /**
  *
@@ -146,7 +147,7 @@ const InterviewSchedule = ({
             setTemplateOptions(
                 templates.map(template => ({
                     value: template.templateId,
-                    label: template.title,
+                    label: `${template.title} (${interviewTypeToName(template.interviewType)})`,
                 }))
             );
         }
