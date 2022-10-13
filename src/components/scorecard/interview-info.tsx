@@ -5,6 +5,7 @@ import Text from "antd/lib/typography/Text";
 import { getFormattedDate, getFormattedTimeRange } from "../../utils/date-fns";
 import React from "react";
 import { Interview, TeamMember } from "../../store/models";
+import { interviewWithoutDate } from "../../utils/interview";
 
 type Props = {
     interview: Readonly<Interview>;
@@ -22,16 +23,20 @@ export const InterviewInfo = ({ interview, interviewers }: Props) => {
                 <UsersIcon style={iconStyle} />
                 <Text className={styles.reportLabel}>{interviewersName}</Text>
             </div>
-            <div className={styles.divHorizontal}>
-                <CalendarIcon style={iconStyle} />
-                <Text className={styles.reportLabel}>{getFormattedDate(interview.interviewDateTime)}</Text>
-            </div>
-            <div className={styles.divHorizontal}>
-                <TimeIcon style={iconStyle} />
-                <Text className={styles.reportLabel}>
-                    {getFormattedTimeRange(interview.interviewDateTime, interview.interviewEndDateTime)}
-                </Text>
-            </div>
+            {!interviewWithoutDate(interview) && (
+                <div className={styles.divHorizontal}>
+                    <CalendarIcon style={iconStyle} />
+                    <Text className={styles.reportLabel}>{getFormattedDate(interview.interviewDateTime)}</Text>
+                </div>
+            )}
+            {!interviewWithoutDate(interview) && (
+                <div className={styles.divHorizontal}>
+                    <TimeIcon style={iconStyle} />
+                    <Text className={styles.reportLabel}>
+                        {getFormattedTimeRange(interview.interviewDateTime, interview.interviewEndDateTime)}
+                    </Text>
+                </div>
+            )}
         </Space>
     );
 };

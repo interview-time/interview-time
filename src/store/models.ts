@@ -83,6 +83,7 @@ export interface Interview {
     liveCodingChallenges?: LiveCodingChallenge[];
     takeHomeChallenge?: TakeHomeChallenge;
     challengeDetails?: ChallengeDetails;
+    sendChallenge?: boolean;
 }
 
 export interface SharedInterview extends Interview {

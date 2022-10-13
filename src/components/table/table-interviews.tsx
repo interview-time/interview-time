@@ -13,6 +13,7 @@ import { ColumnType } from "rc-table/lib/interface";
 import { Link } from "react-router-dom";
 import { routeCandidateDetails, routeInterviewReport, routeInterviewScorecard } from "../../utils/route";
 import { InterviewStatus } from "../../store/models";
+import { interviewWithoutDate, NO_DATE_LABEL } from "../../utils/interview";
 
 export const CandidateColumn = (clickable: boolean): ColumnType<InterviewData> => ({
     title: <TableHeader>CANDIDATE</TableHeader>,
@@ -85,8 +86,10 @@ export const DateColumn = (): ColumnType<InterviewData> => ({
     sorter: (a: InterviewData, b: InterviewData) => a.startDateTime - b.startDateTime,
     render: (interview: InterviewData) => (
         <div className={styles.tableDateDiv}>
-            <TableText>{getFormattedDate(interview.startDateTime)}</TableText>
-            <TableText className={styles.tableTime}>at {getFormattedTime(interview.startDateTime)}</TableText>
+            <TableText>{interviewWithoutDate(interview) ? NO_DATE_LABEL : getFormattedDate(interview.startDateTime)}</TableText>
+            {!interviewWithoutDate(interview) && (
+                <TableText className={styles.tableTime}>at {getFormattedTime(interview.startDateTime)}</TableText>
+            )}
         </div>
     ),
 });

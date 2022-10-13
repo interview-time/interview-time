@@ -1,7 +1,22 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { AutoComplete, Button, Col, Divider, Form, Input, message, Modal, Row, Select, Space } from "antd";
+import {
+    AutoComplete,
+    Button,
+    Checkbox,
+    Col,
+    Divider,
+    Form,
+    Input,
+    message,
+    Modal,
+    Row,
+    Select,
+    Space,
+    Switch,
+    Tooltip,
+} from "antd";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import { useHistory, useLocation, useParams } from "react-router-dom";
@@ -36,6 +51,7 @@ import DatePicker from "../../components/antd/DatePicker";
 import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
 import { InterviewType } from "../../store/models";
 import { interviewTypeToName } from "../../utils/template";
+import { INTERVIEW_TAKE_HOME_TASK, interviewWithoutDate } from "../../utils/interview";
 
 /**
  *
@@ -102,6 +118,8 @@ const InterviewSchedule = ({
     const [interviewersOptions, setInterviewersOptions] = useState([]);
     const [createCandidate, setCreateCandidate] = useState(false);
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
+
+    const selectedCandidate = candidates.find(c => c.candidateId === interview.candidateId);
 
     React.useEffect(() => {
         // existing interview
@@ -307,8 +325,10 @@ const InterviewSchedule = ({
             ...interview,
             templateIds: [templateId],
             interviewType: template.interviewType,
-            liveCodingChallenges: template.interviewType  === InterviewType.LIVE_CODING ? template.challenges : undefined,
-            takeHomeChallenge: template.interviewType  === InterviewType.TAKE_HOME_TASK ? template.challenges[0] : undefined,
+            liveCodingChallenges:
+                template.interviewType === InterviewType.LIVE_CODING ? template.challenges : undefined,
+            takeHomeChallenge:
+                template.interviewType === InterviewType.TAKE_HOME_TASK ? template.challenges[0] : undefined,
             structure: template.structure,
         });
     };
@@ -317,8 +337,42 @@ const InterviewSchedule = ({
         history.push(routeTemplateLibrary());
     };
 
+    const onSendChallengeChanged = checked => {
+        setInterview({
+            ...interview,
+            sendChallenge: checked,
+        });
+    };
+
     const marginTop12 = { marginTop: 12 };
     const [form] = Form.useForm();
+
+    const SendAssignmentFormItem = () => {
+        const checkbox = (
+            <Checkbox
+                checked={interview.sendChallenge}
+                disabled={isEmpty(selectedCandidate?.email)}
+                onChange={e => onSendChallengeChanged(e.target.checked)}
+            >
+                {interview.sendChallenge ? "Send assignment via email now" : "Send assignment later"}
+            </Checkbox>
+        );
+
+        const formContent = isEmpty(selectedCandidate?.email) ? (
+            <Tooltip title='Candidate email is not available'>
+                {/*span is required to show Tooltip for disabled button*/}
+                <span>{checkbox}</span>
+            </Tooltip>
+        ) : (
+            checkbox
+        );
+
+        return (
+            <Form.Item className={styles.formItem} label={<Text strong>{INTERVIEW_TAKE_HOME_TASK}</Text>}>
+                {formContent}
+            </Form.Item>
+        );
+    };
 
     const InterviewDetails = () => (
         <Card style={marginTop12} key={interview.interviewId}>
@@ -385,8 +439,11 @@ const InterviewSchedule = ({
                             allowClear
                             placeholder='Select candidate'
                             onChange={(value, option) => {
-                                interview.candidateId = value;
-                                interview.candidate = option.label;
+                                setInterview({
+                                    ...interview,
+                                    candidateId: value,
+                                    candidate: option.label,
+                                });
                             }}
                             options={candidatesOptions}
                             filterOption={filterOptionLabel}
@@ -457,41 +514,44 @@ const InterviewSchedule = ({
                         )}
                     />
                 </Form.Item>
-                <div className={styles.formDate}>
-                    <Form.Item
-                        name='date'
-                        label={<Text strong>Interview Date</Text>}
-                        className={styles.fillWidth}
-                        style={{ marginRight: 16 }}
-                    >
-                        <DatePicker
-                            allowClear={false}
-                            format={datePickerFormat()}
+                {interview.interviewType === InterviewType.TAKE_HOME_TASK && SendAssignmentFormItem()}
+                {!interviewWithoutDate(interview) && (
+                    <div className={styles.formDate}>
+                        <Form.Item
+                            name='date'
+                            label={<Text strong>Interview Date</Text>}
                             className={styles.fillWidth}
-                            onChange={onDateChange}
-                        />
-                    </Form.Item>
-                    <Form.Item name='startTime' style={{ marginRight: 16 }}>
-                        <Select
-                            allowClear={false}
-                            showSearch
-                            placeholder='Start time'
-                            options={generateTimeSlots()}
-                            onSelect={onStartTimeChange}
-                            className={styles.fillWidth}
-                        />
-                    </Form.Item>
-                    <Form.Item name='endTime'>
-                        <Select
-                            allowClear={false}
-                            showSearch
-                            placeholder='End time'
-                            options={generateTimeSlots()}
-                            onSelect={onEndTimeChange}
-                            className={styles.fillWidth}
-                        />
-                    </Form.Item>
-                </div>
+                            style={{ marginRight: 16 }}
+                        >
+                            <DatePicker
+                                allowClear={false}
+                                format={datePickerFormat()}
+                                className={styles.fillWidth}
+                                onChange={onDateChange}
+                            />
+                        </Form.Item>
+                        <Form.Item name='startTime' style={{ marginRight: 16 }}>
+                            <Select
+                                allowClear={false}
+                                showSearch
+                                placeholder='Start time'
+                                options={generateTimeSlots()}
+                                onSelect={onStartTimeChange}
+                                className={styles.fillWidth}
+                            />
+                        </Form.Item>
+                        <Form.Item name='endTime'>
+                            <Select
+                                allowClear={false}
+                                showSearch
+                                placeholder='End time'
+                                options={generateTimeSlots()}
+                                onSelect={onEndTimeChange}
+                                className={styles.fillWidth}
+                            />
+                        </Form.Item>
+                    </div>
+                )}
                 <Form.Item name='position' className={styles.formItem} label={<Text strong>Position</Text>}>
                     <AutoComplete
                         allowClear
