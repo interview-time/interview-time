@@ -64,18 +64,23 @@ namespace CafApi.Command
         public List<LiveCodingChallenge> LiveCodingChallenges { get; set; }
 
         public TakeHomeChallenge TakeHomeChallenge { get; set; }
+
+        public bool SendChallenge { get; set; }
     }
 
     public class ScheduleInterviewCommandHandler : IRequestHandler<ScheduleInterviewCommand, Interview>
     {
+        private readonly ICandidateRepository _candidateRepository;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly string _demoUserId;
+        private readonly string _appHostUrl;
         private readonly DynamoDBContext _context;
 
         public ScheduleInterviewCommandHandler(
+            ICandidateRepository candidateRepository,
             IChallengeRepository challengeRepository,
             IPermissionsService permissionsService,
             IUserRepository userRepository,
@@ -83,11 +88,13 @@ namespace CafApi.Command
             IConfiguration configuration,
             IAmazonDynamoDB dynamoDbClient)
         {
+            _candidateRepository = candidateRepository;
             _challengeRepository = challengeRepository;
             _permissionsService = permissionsService;
             _userRepository = userRepository;
             _emailService = emailService;
             _demoUserId = configuration["DemoUserId"];
+            _appHostUrl = configuration["AppHostUri"];
             _context = new DynamoDBContext(dynamoDbClient);
         }
 
@@ -154,7 +161,10 @@ namespace CafApi.Command
                 if (newInterview.TakeHomeChallenge != null)
                 {
                     newInterview.TakeHomeChallenge.ShareToken = await _challengeRepository.GenerateChallengeToken(newInterview.UserId, newInterview.TeamId, newInterview.TakeHomeChallenge.ChallengeId, newInterview.InterviewId);
-                    newInterview.TakeHomeChallenge.Status = ChallengeStatus.NotSent.ToString();
+                    newInterview.TakeHomeChallenge.Status = command.SendChallenge
+                        ? ChallengeStatus.SentToCandidate.ToString()
+                        : ChallengeStatus.NotSent.ToString();
+                    newInterview.TakeHomeChallenge.SentToCandidateOn = command.SendChallenge ? DateTime.UtcNow : null;
                 }
 
                 await _context.SaveAsync(newInterview);
@@ -162,7 +172,14 @@ namespace CafApi.Command
                 interviews.Add(interviewerId, newInterview);
             }
 
-            await SendEmailNotifications(mainInterview, interviews);
+            if (command.InterviewType == InterviewType.TAKE_HOME_TASK.ToString() && command.SendChallenge)
+            {
+                await SendTakeHomeChallenge(command.TeamId, command.CandidateId, interviews?.First().Value.TakeHomeChallenge.ShareToken);
+            }
+            else
+            {
+                await SendEmailNotifications(mainInterview, interviews);
+            }
 
             return interviews.GetValueOrDefault(command.UserId);
         }
@@ -175,6 +192,24 @@ namespace CafApi.Command
                 var interviewId = interviews.GetValueOrDefault(profile.UserId)?.InterviewId;
                 await _emailService.SendNewInterviewInvitation(profile.Email, profile.Name, mainInterview.Candidate, mainInterview.InterviewDateTime, mainInterview.InterviewEndDateTime, interviewId, profile.Timezone, mainInterview.TeamId);
             }
+        }
+
+        private async Task SendTakeHomeChallenge(string teamId, string candidateId, string shareToken)
+        {
+            var candidate = await _candidateRepository.GetCandidate(teamId, candidateId);
+            if (candidate == null)
+            {
+                throw new ItemNotFoundException($"Candidate {candidateId} not found");
+            }
+
+            if (string.IsNullOrWhiteSpace(candidate.Email))
+            {
+                throw new CandidateException($"Candidate doesn't have email");
+            }
+
+            var challengePageUrl = UrlHelper.GetChallengePageUrl(_appHostUrl, shareToken);
+
+            await _emailService.SendTakeHomeChallenge(candidate.Email, candidate.CandidateName, challengePageUrl);
         }
     }
 }
