@@ -15,6 +15,7 @@ import {
     Select,
     Space,
     Switch,
+    Tag,
     Tooltip,
 } from "antd";
 import Title from "antd/lib/typography/Title";
@@ -52,6 +53,8 @@ import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
 import { InterviewType } from "../../store/models";
 import { interviewTypeToName } from "../../utils/template";
 import { INTERVIEW_TAKE_HOME_TASK, interviewWithoutDate } from "../../utils/interview";
+
+const { Option } = Select;
 
 /**
  *
@@ -500,7 +503,7 @@ const InterviewSchedule = ({
                         allowClear={false}
                         placeholder='Select interview template'
                         onSelect={onTemplateSelect}
-                        options={templateOptions}
+                        // options={templateOptions}
                         filterOption={filterOptionLabel}
                         notFoundContent={<Text>No template found.</Text>}
                         dropdownRender={menu => (
@@ -512,7 +515,19 @@ const InterviewSchedule = ({
                                 </Button>
                             </div>
                         )}
-                    />
+                    >
+                        {templates &&
+                            templates.map(template => (
+                                <Option value={template.templateId} label={template.title}>
+                                    <div className='demo-option-label-item'>
+                                        {template.title}
+                                        <Tag style={{ marginLeft: 8 }}>
+                                            {interviewTypeToName(template.interviewType)}
+                                        </Tag>
+                                    </div>
+                                </Option>
+                            ))}
+                    </Select>
                 </Form.Item>
                 {interview.interviewType === InterviewType.TAKE_HOME_TASK && SendAssignmentFormItem()}
                 {!interviewWithoutDate(interview) && (
