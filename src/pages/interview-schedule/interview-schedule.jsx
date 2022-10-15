@@ -120,6 +120,7 @@ const InterviewSchedule = ({
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
 
     const selectedCandidate = candidates.find(c => c.candidateId === interview.candidateId);
+    const isTakeHomeChallenge = interview.interviewType === InterviewType.TAKE_HOME_TASK;
 
     React.useEffect(() => {
         // existing interview
@@ -320,6 +321,16 @@ const InterviewSchedule = ({
         });
     };
 
+    const onCandidateChange = (candidateId, candidate) => {
+        const selectedCandidate = candidates.find(c => c.candidateId === candidateId);
+        setInterview({
+            ...interview,
+            candidateId: candidateId,
+            candidate: candidate,
+            sendChallenge: !isEmpty(selectedCandidate?.email),
+        });
+    };
+
     const onCreateTemplateClicked = () => {
         history.push(routeTemplateLibrary());
     };
@@ -341,7 +352,7 @@ const InterviewSchedule = ({
                 disabled={isEmpty(selectedCandidate?.email)}
                 onChange={e => onSendChallengeChanged(e.target.checked)}
             >
-                {interview.sendChallenge ? "Send assignment via email now" : "Send assignment later"}
+                Send assignment via email now
             </Checkbox>
         );
 
@@ -425,13 +436,7 @@ const InterviewSchedule = ({
                             showSearch
                             allowClear
                             placeholder='Select candidate'
-                            onChange={(value, option) => {
-                                setInterview({
-                                    ...interview,
-                                    candidateId: value,
-                                    candidate: option.label,
-                                });
-                            }}
+                            onChange={(value, option) => onCandidateChange(value, option.label)}
                             options={candidatesOptions}
                             filterOption={filterOptionLabel}
                             notFoundContent={<Text>No candidate found.</Text>}
@@ -510,7 +515,7 @@ const InterviewSchedule = ({
                             ))}
                     </Select>
                 </Form.Item>
-                {interview.interviewType === InterviewType.TAKE_HOME_TASK && SendAssignmentFormItem()}
+                {isTakeHomeChallenge && SendAssignmentFormItem()}
                 {!interviewWithoutDate(interview) && (
                     <div className={styles.formDate}>
                         <Form.Item
@@ -523,7 +528,7 @@ const InterviewSchedule = ({
                                 allowClear={false}
                                 format={datePickerFormat()}
                                 className={styles.fillWidth}
-                                onChange={onDateChange}
+                                oChange={onDateChange}
                             />
                         </Form.Item>
                         <Form.Item name='startTime' style={{ marginRight: 16 }}>
@@ -561,7 +566,14 @@ const InterviewSchedule = ({
                 </Form.Item>
                 <Divider />
                 <div className={styles.divSpaceBetween}>
-                    <Text />
+                    <div>
+                        {isTakeHomeChallenge && interview.sendChallenge && (
+                            <span>
+                            <Text>Take-home assignment will be sent to </Text>
+                            <Text strong>{selectedCandidate.email}</Text>
+                        </span>
+                        )}
+                    </div>
                     <Space>
                         {/*<Button onClick={onPreviewClicked}>Preview</Button>*/}
                         <Button type='primary' htmlType='submit'>
