@@ -10,7 +10,7 @@ import { loadChallenge, submitSolution } from "../../../store/challenge/actions"
 import { Logo } from "../../../components/logo/logo";
 import GitHubLink from "../../../components/github-link/github-link";
 import { CloudDownloadOutlined } from "@ant-design/icons";
-import { INTERVIEW_TAKE_HOME_TASK } from "../../../utils/interview";
+import { INTERVIEW_TAKE_HOME } from "../../../utils/interview";
 
 const { Text } = Typography;
 
@@ -93,7 +93,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
 
                         <Row gutter={24} className={styles.section}>
                             <Col span={24}>
-                                <Card title={INTERVIEW_TAKE_HOME_TASK}>
+                                <Card title={INTERVIEW_TAKE_HOME}>
                                     <p>{challenge.description}</p>
 
                                     <Divider />

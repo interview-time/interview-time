@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 import { InterviewType, LibraryTemplate, Template } from "../store/models";
-import { INTERVIEW_LIVE_CODING, INTERVIEW_QA, INTERVIEW_TAKE_HOME_TASK } from "./interview";
 
 // @ts-ignore
 export const emptyTemplate = (templateId: string): Template => ({
@@ -57,7 +56,7 @@ export const newTemplateFromType = (template: Template, type: InterviewType): Te
                     },
                 ],
             },
-            challenges: []
+            challenges: [],
         };
     } else if (type === InterviewType.TAKE_HOME_TASK) {
         return {
@@ -82,14 +81,3 @@ export const newTemplateFromType = (template: Template, type: InterviewType): Te
         };
     }
 };
-
-export const interviewTypeToName = (type: InterviewType): string => {
-    switch (type) {
-        case InterviewType.INTERVIEW:
-            return INTERVIEW_QA;
-        case InterviewType.LIVE_CODING:
-            return INTERVIEW_LIVE_CODING;
-        case InterviewType.TAKE_HOME_TASK:
-            return INTERVIEW_TAKE_HOME_TASK;
-    }
-}

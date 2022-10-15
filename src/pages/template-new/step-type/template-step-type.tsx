@@ -9,7 +9,7 @@ import TemplateImageTakeHome from "../../../assets/template-take-home-task.png";
 import TemplateImageLiveCoding from "../../../assets/template-live-coding.png";
 import TemplateImage from "../../../components/template-card/template-image";
 import { InterviewType } from "../../../store/models";
-import { INTERVIEW_LIVE_CODING, INTERVIEW_TAKE_HOME_TASK } from "../../../utils/interview";
+import { INTERVIEW_LIVE_CODING, INTERVIEW_TAKE_HOME } from "../../../utils/interview";
 
 type Props = {
     interviewType?: InterviewType;
@@ -25,7 +25,7 @@ const TemplateStepType = ({ onInterviewTypeChange, interviewType }: Props) => {
             interviewType: InterviewType.LIVE_CODING,
         },
         {
-            title: INTERVIEW_TAKE_HOME_TASK,
+            title: INTERVIEW_TAKE_HOME,
             description: "Ask canndidate to complete an assignment and return the results.",
             image: TemplateImageTakeHome,
             interviewType: InterviewType.TAKE_HOME_TASK,

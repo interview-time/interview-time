@@ -14,8 +14,6 @@ import {
     Row,
     Select,
     Space,
-    Switch,
-    Tag,
     Tooltip,
 } from "antd";
 import Title from "antd/lib/typography/Title";
@@ -51,8 +49,8 @@ import { uniq } from "lodash/array";
 import DatePicker from "../../components/antd/DatePicker";
 import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
 import { InterviewType } from "../../store/models";
-import { interviewTypeToName } from "../../utils/template";
-import { INTERVIEW_TAKE_HOME_TASK, interviewWithoutDate } from "../../utils/interview";
+import { INTERVIEW_TAKE_HOME, interviewWithoutDate } from "../../utils/interview";
+import InterviewTypeTag from "../../components/tags/interview-type-tag";
 
 const { Option } = Select;
 
@@ -116,7 +114,6 @@ const InterviewSchedule = ({
 
     const [interview, setInterview] = useState(emptyInterview);
     const [positionOptions, setPositionOptions] = useState(POSITIONS_OPTIONS);
-    const [templateOptions, setTemplateOptions] = useState([]);
     const [candidatesOptions, setCandidateOptions] = useState([]);
     const [interviewersOptions, setInterviewersOptions] = useState([]);
     const [createCandidate, setCreateCandidate] = useState(false);
@@ -161,19 +158,6 @@ const InterviewSchedule = ({
         }
         // eslint-disable-next-line
     }, [interviews]);
-
-    React.useEffect(() => {
-        // templates selector
-        if (templates.length !== 0) {
-            setTemplateOptions(
-                templates.map(template => ({
-                    value: template.templateId,
-                    label: `${template.title} (${interviewTypeToName(template.interviewType)})`,
-                }))
-            );
-        }
-        // eslint-disable-next-line
-    }, [templates]);
 
     React.useEffect(() => {
         // templates selector
@@ -371,7 +355,7 @@ const InterviewSchedule = ({
         );
 
         return (
-            <Form.Item className={styles.formItem} label={<Text strong>{INTERVIEW_TAKE_HOME_TASK}</Text>}>
+            <Form.Item className={styles.formItem} label={<Text strong>{INTERVIEW_TAKE_HOME}</Text>}>
                 {formContent}
             </Form.Item>
         );
@@ -503,7 +487,6 @@ const InterviewSchedule = ({
                         allowClear={false}
                         placeholder='Select interview template'
                         onSelect={onTemplateSelect}
-                        // options={templateOptions}
                         filterOption={filterOptionLabel}
                         notFoundContent={<Text>No template found.</Text>}
                         dropdownRender={menu => (
@@ -521,9 +504,7 @@ const InterviewSchedule = ({
                                 <Option value={template.templateId} label={template.title}>
                                     <div className='demo-option-label-item'>
                                         {template.title}
-                                        <Tag style={{ marginLeft: 8 }}>
-                                            {interviewTypeToName(template.interviewType)}
-                                        </Tag>
+                                        <InterviewTypeTag interviewType={template.interviewType} />
                                     </div>
                                 </Option>
                             ))}

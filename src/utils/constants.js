@@ -3,6 +3,7 @@ import { ReactComponent as TemplateLiveCodingIcon } from "../assets/icons/templa
 import { ReactComponent as TemplateTakeHomeTaskIcon } from "../assets/icons/template-take-home-task.svg";
 import { hashCode } from "./string";
 import { InterviewType } from "../store/models";
+import { interviewTypeToColor } from "./interview";
 
 export const Roles = {
     HR: "HR",
@@ -64,13 +65,13 @@ export const QuestionAssessment = {
 export const getTemplateCategoryIcon = interviewType => {
     switch (interviewType) {
         case InterviewType.INTERVIEW:
-            return <TemplateInterviewIcon color='#9575CD' width={64} height={64} />;
+            return <TemplateInterviewIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
         case InterviewType.LIVE_CODING:
-            return <TemplateLiveCodingIcon color='#64B5F6' width={64} height={64} />;
+            return <TemplateLiveCodingIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
         case InterviewType.TAKE_HOME_TASK:
-            return <TemplateTakeHomeTaskIcon color='#43B97F' width={64} height={64} />;
+            return <TemplateTakeHomeTaskIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
         default:
-            return <TemplateInterviewIcon color='#9575CD' width={64} height={64} />;
+            return <TemplateInterviewIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
     }
 };
 

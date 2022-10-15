@@ -11,7 +11,7 @@ import Dragger from "antd/lib/upload/Dragger";
 import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
 import { UploadFile } from "antd/lib/upload/interface";
 import { log } from "../../../../utils/log";
-import { INTERVIEW_TAKE_HOME_TASK } from "../../../../utils/interview";
+import { INTERVIEW_TAKE_HOME } from "../../../../utils/interview";
 import { uploadChallengeFile } from "../../../../store/challenge/actions";
 
 type Props = {
@@ -79,7 +79,7 @@ const TakeHomeChallengeCard = ({ teamId, challenge, onUpdateChallenge }: Props) 
 
     return (
         <Card className={styles.cardSpace}>
-            <Title level={4}>{INTERVIEW_TAKE_HOME_TASK}</Title>
+            <Title level={4}>{INTERVIEW_TAKE_HOME}</Title>
             <Text type='secondary'>Ask candidate to complete an assignment and return the results.</Text>
             <Form.Item
                 name='assignmentTitle'

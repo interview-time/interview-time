@@ -10,7 +10,7 @@ import { Button } from "antd";
 import DemoTag from "../demo/demo-tag";
 import Title from "antd/lib/typography/Title";
 import TemplateImage from "./template-image";
-import { interviewTypeToName } from "../../utils/template";
+import { interviewTypeToName } from "../../utils/interview";
 
 /**
  *
