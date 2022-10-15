@@ -1,6 +1,6 @@
 import styles from "./challenge-card.module.css";
 import Card from "../../card/card";
-import { Candidate, ChallengeStatus, TakeHomeChallenge } from "../../../store/models";
+import { ChallengeStatus, TakeHomeChallenge } from "../../../store/models";
 import Title from "antd/lib/typography/Title";
 import Text from "antd/lib/typography/Text";
 import React from "react";
