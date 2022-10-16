@@ -18,7 +18,7 @@ type Props = {
     interviewers: Readonly<TeamMember[]>;
     candidate?: Readonly<Candidate>;
     onInterviewChange: (action: ReducerAction) => void;
-}
+};
 
 const StepAssessmentTakeHome = ({ interview, interviewers, candidate, onInterviewChange }: Props) => {
     const onNotesChangeDebounce = useDebounceFn(
@@ -57,8 +57,12 @@ const StepAssessmentTakeHome = ({ interview, interviewers, candidate, onIntervie
                 <IntroSection interview={interview} />
             </Card>
 
-            <TakeHomeChallengeCard teamId={interview.teamId}
-                                   challenge={interview.takeHomeChallenge!} />
+            <TakeHomeChallengeCard
+                teamId={interview.teamId}
+                interviewId={interview.interviewId}
+                challenge={interview.takeHomeChallenge!}
+                candidate={candidate}
+            />
 
             <LiveCodingAssessmentCard
                 questions={selectAssessmentGroup(interview).questions || []}
@@ -67,6 +71,6 @@ const StepAssessmentTakeHome = ({ interview, interviewers, candidate, onIntervie
             />
         </Col>
     );
-}
+};
 
 export default StepAssessmentTakeHome;

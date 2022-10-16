@@ -45,7 +45,7 @@ export interface CandidateState {
 }
 
 export interface ChallengeState {
-    details: CandidateChallenge;
+    details?: CandidateChallenge;
     loading: boolean;
     error: boolean;
     isExpired: boolean;

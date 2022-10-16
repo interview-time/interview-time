@@ -20,6 +20,11 @@
     justify-content: space-between;
 }
 
+.divInfo {
+    display: flex;
+    flex-direction: column;
+}
+
 .divider {
     background-color: #E5E7EB;
     margin-top: 24px;

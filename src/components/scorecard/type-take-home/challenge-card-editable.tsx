@@ -1,15 +1,19 @@
 import { ChallengeCard } from "./challenge-card";
-import { TakeHomeChallenge } from "../../../store/models";
+import { Candidate, TakeHomeChallenge } from "../../../store/models";
 import { LinkIcon, MailIcon } from "../../../utils/icons";
 import React, { useEffect, useState } from "react";
 import { message } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import copy from "copy-to-clipboard";
 import { getHost, routeTakeHomeChallenge } from "../../../utils/route";
+import { sendChallenge } from "../../../store/challenge/actions";
+import { isEmpty } from "lodash";
 
 type Props = {
+    interviewId: string;
     teamId: string;
     challenge: Readonly<TakeHomeChallenge>;
+    candidate?: Readonly<Candidate>;
 };
 
 enum LinkButtonState {
@@ -17,28 +21,60 @@ enum LinkButtonState {
     COPIED,
 }
 
-const TakeHomeChallengeCard = ({ teamId, challenge }: Props) => {
+enum EmailButtonState {
+    DEFAULT,
+    LOADING,
+    SENT,
+}
 
-    const [buttonState, setButtonState] = useState<LinkButtonState>(LinkButtonState.DEFAULT);
+const TakeHomeChallengeCard = ({ interviewId, teamId, challenge, candidate }: Props) => {
+    const [generateLinkState, setGenerateLinkState] = useState<LinkButtonState>(LinkButtonState.DEFAULT);
+    const [sendEmailState, setSendEmailState] = useState<EmailButtonState>(EmailButtonState.DEFAULT);
 
     useEffect(() => {
-        if (buttonState === LinkButtonState.COPIED) {
-            setTimeout(() => setButtonState(LinkButtonState.DEFAULT), 1000);
+        if (generateLinkState === LinkButtonState.COPIED) {
+            setTimeout(() => setGenerateLinkState(LinkButtonState.DEFAULT), 1000);
         }
-    }, [buttonState]);
+    }, [generateLinkState]);
 
-    const onNotAvailable = () => {
-        message.error("Not available in this mode.");
+    useEffect(() => {
+        if (sendEmailState === EmailButtonState.SENT) {
+            setTimeout(() => setSendEmailState(EmailButtonState.DEFAULT), 1000);
+        }
+    }, [sendEmailState]);
+
+    const onSendChallenge = () => {
+        setSendEmailState(EmailButtonState.LOADING);
+        sendChallenge({
+            teamId: teamId,
+            interviewId: interviewId,
+            challengeId: challenge.challengeId,
+            sendViaLink: false,
+            onSuccess: () => {
+                message.info("Take home assignment sent to candidate");
+                setSendEmailState(EmailButtonState.SENT);
+            },
+            onError: () => {
+                message.info("Error sending assignment to candidate");
+                setSendEmailState(EmailButtonState.DEFAULT);
+            },
+        });
     };
 
     const onGenerateLink = (challenge: TakeHomeChallenge) => {
-        message.info("Link copied to clipboard");
+        sendChallenge({
+            teamId: teamId,
+            interviewId: interviewId,
+            challengeId: challenge.challengeId,
+            sendViaLink: true,
+        });
         copy(`${getHost()}${routeTakeHomeChallenge(challenge.shareToken)}`);
-        setButtonState(LinkButtonState.COPIED);
+        setGenerateLinkState(LinkButtonState.COPIED);
+        message.info("Link copied to clipboard");
     };
 
     const getGenerateLinkButtonText = () => {
-        switch (buttonState) {
+        switch (generateLinkState) {
             case LinkButtonState.DEFAULT:
                 return "Copy Assignment Link";
             case LinkButtonState.COPIED:
@@ -46,23 +82,52 @@ const TakeHomeChallengeCard = ({ teamId, challenge }: Props) => {
         }
     };
 
-    const getGenerateLinkIcon = () =>
-        buttonState === LinkButtonState.COPIED ? (
-            <CheckOutlined style={{ fontSize: 18 }} />
-        ) : (
-            <LinkIcon style={{ fontSize: 18 }} />
-        );
+    const getGenerateLinkIcon = () => {
+        switch (generateLinkState) {
+            case LinkButtonState.DEFAULT:
+                return <LinkIcon style={{ fontSize: 18 }} />;
+            case LinkButtonState.COPIED:
+                return <CheckOutlined style={{ fontSize: 18 }} />;
+        }
+    };
+
+    const getSendEmailButtonText = () => {
+        switch (sendEmailState) {
+            case EmailButtonState.DEFAULT:
+                return "Send to Candidate";
+            case EmailButtonState.LOADING:
+                return "Sending...";
+            case EmailButtonState.SENT:
+                return "Assignment Sent";
+        }
+    };
+
+    const getSendEmailIcon = () => {
+        switch (sendEmailState) {
+            case EmailButtonState.DEFAULT:
+                return <MailIcon style={{ fontSize: 18 }} />;
+            case EmailButtonState.SENT:
+                return <CheckOutlined style={{ fontSize: 18 }} />;
+        }
+    };
 
     return (
         <ChallengeCard
             teamId={teamId}
             challenge={challenge}
-            linkButtonText={getGenerateLinkButtonText()}
-            linkButtonIcon={getGenerateLinkIcon()}
-            sendButtonText='Send to Candidate'
-            sendButtonIcon={<MailIcon style={{ fontSize: 18 }} />}
-            onLinkClicked={onGenerateLink}
-            onSendClicked={onNotAvailable}
+            generateLinkButton={{
+                text: getGenerateLinkButtonText(),
+                icon: getGenerateLinkIcon(),
+                onClick: onGenerateLink,
+            }}
+            sendEmailButton={{
+                text: getSendEmailButtonText(),
+                icon: getSendEmailIcon(),
+                loading: sendEmailState === EmailButtonState.LOADING,
+                disabled: isEmpty(candidate?.email),
+                tooltip: isEmpty(candidate?.email) ? "Candidate email is not available" : undefined,
+                onClick: onSendChallenge,
+            }}
         />
     );
 };

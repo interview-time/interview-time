@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
-import { CandidateChallenge } from "../../../store/models";
+import { CandidateChallenge, ChallengeStatus } from "../../../store/models";
 import { Button, Col, Row, Form, Input, Typography, message, Divider } from "antd";
 import Card from "../../../components/card/card";
 import styles from "./take-home-challenge.module.css";
 import { RootState } from "../../../store/state-models";
 import { loadChallenge, submitSolution } from "../../../store/challenge/actions";
-import { ChallengeStatus } from "../../../utils/constants";
 import { Logo } from "../../../components/logo/logo";
 import GitHubLink from "../../../components/github-link/github-link";
 import { CloudDownloadOutlined } from "@ant-design/icons";
-import { INTERVIEW_TAKE_HOME_TASK } from "../../../utils/interview";
+import { INTERVIEW_TAKE_HOME } from "../../../utils/interview";
 
 const { Text } = Typography;
 
 type Props = {
-    challenge: CandidateChallenge;
+    challenge?: CandidateChallenge;
     loadChallenge: any;
     submitSolution: any;
     loading: boolean;
@@ -94,7 +93,7 @@ const ChallengeDetails = ({ challenge, loadChallenge, submitSolution, loading }:
 
                         <Row gutter={24} className={styles.section}>
                             <Col span={24}>
-                                <Card title={INTERVIEW_TAKE_HOME_TASK}>
+                                <Card title={INTERVIEW_TAKE_HOME}>
                                     <p>{challenge.description}</p>
 
                                     <Divider />

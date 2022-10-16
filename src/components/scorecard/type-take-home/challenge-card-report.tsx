@@ -9,15 +9,20 @@ type Props = {
 };
 
 const TakeHomeChallengeCard = ({ teamId, challenge }: Props) => {
-
     return (
         <ChallengeCard
             teamId={teamId}
             challenge={challenge}
-            linkButtonText='Copy Assignment Link'
-            linkButtonIcon={<LinkIcon style={{ fontSize: 18 }}/>}
-            sendButtonText='Send to Candidate'
-            sendButtonIcon={<MailIcon style={{ fontSize: 18 }}/>}
+            generateLinkButton={{
+                text: "Copy Assignment Link",
+                icon: <LinkIcon style={{ fontSize: 18 }} />,
+                disabled: true,
+            }}
+            sendEmailButton={{
+                text: "Send to Candidate",
+                icon: <MailIcon style={{ fontSize: 18 }} />,
+                disabled: true,
+            }}
         />
     );
 };

@@ -15,7 +15,7 @@ import ProgrammerImage from "../../../assets/illustrations/undraw_programmer_re_
 import { isEmpty } from "lodash";
 
 type Props = {
-    challenge: CandidateChallenge;
+    challenge?: CandidateChallenge;
     loadChallenge: any;
     loading: boolean;
     isExpired: boolean;
