@@ -13,7 +13,15 @@ namespace CafApi.Models
         [DynamoDBRangeKey]
         public string CandidateId { get; set; }
 
+        public string MergeId { get; set; } // candidate ID in Merge.dev (exists when candidate imported from ATS)
+
+        public string RemoteId { get; set; } // candidate ID in the ATS 
+
         public string CandidateName { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
 
         public string Email { get; set; }
 
@@ -42,5 +50,11 @@ namespace CafApi.Models
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime? ModifiedDate { get; set; }
+
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
+        public DateTime? RemoteCreatedDate { get; set; } // CreatedDate in ATS
+
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
+        public DateTime? RemoteModifiedDate { get; set; } // ModifiedDate in ATS
     }
 }

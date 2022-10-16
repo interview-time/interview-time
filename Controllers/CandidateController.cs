@@ -130,6 +130,28 @@ namespace CafApi.Controllers
             }
         }
 
+        [HttpGet("team/{teamId}/candidate/{candidateId}")]
+        public async Task<ActionResult<CandidateDetailsQueryResult>> GetCandidate(string teamId, string candidateId)
+        {
+            try
+            {
+                return await _mediator.Send(new CandidateDetailsQuery { UserId = UserId, TeamId = teamId, CandidateId = candidateId });
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return NotFound(ex.Message);
+            }
+        }
+
+
         [HttpPost("team/{teamId}/candidate")]
         public async Task<ActionResult<Candidate>> CreateCandidate(string teamId, [FromBody] CreateCandidateCommand command)
         {

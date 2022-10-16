@@ -121,19 +121,14 @@ namespace CafApi.Services.User
             return false;
         }
 
-        public async Task<bool> CanViewCandidates(string userId, string teamId)
+        public bool CanViewCandidate(List<TeamRole> userRoles, bool isInterviewer)
         {
-            var teamMember = await GetTeamMember(userId, teamId);
-
-            // belongs to the team
-            if (teamMember != null)
+            if (isInterviewer)
             {
-                var userRoles = GetUserRoles(teamMember);
-
-                return userRoles != null && userRoles.Any(role => role != TeamRole.INTERVIEWER);
+                return true;
             }
 
-            return false;
+            return userRoles != null && userRoles.Any(role => role != TeamRole.INTERVIEWER);
         }
 
         public async Task<bool> CanIntegrateWithATS(string userId, string teamId)
