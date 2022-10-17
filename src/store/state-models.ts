@@ -18,6 +18,7 @@ export interface RootState {
     candidates: CandidateState;
     challenge: ChallengeState;
     templates: TemplateState;
+    integration: IntegrationState;
 }
 
 export interface UserState {
@@ -44,7 +45,7 @@ export interface CandidateState {
 }
 
 export interface ChallengeState {
-    details: CandidateChallenge;
+    details?: CandidateChallenge;
     loading: boolean;
     error: boolean;
     isExpired: boolean;
@@ -54,4 +55,10 @@ export interface TemplateState {
     templates: Template[];
     library: LibraryTemplate[];
     sharedTemplate: Template | undefined | null;
+}
+
+export interface IntegrationState {
+    linkToken?: string;
+    loading: boolean;
+    error: boolean;
 }

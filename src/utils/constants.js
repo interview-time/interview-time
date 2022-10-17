@@ -1,7 +1,9 @@
 import { ReactComponent as TemplateInterviewIcon } from "../assets/icons/template-interview.svg";
 import { ReactComponent as TemplateLiveCodingIcon } from "../assets/icons/template-live-coding.svg";
+import { ReactComponent as TemplateTakeHomeTaskIcon } from "../assets/icons/template-take-home-task.svg";
 import { hashCode } from "./string";
 import { InterviewType } from "../store/models";
+import { interviewTypeToColor } from "./interview";
 
 export const Roles = {
     HR: "HR",
@@ -60,25 +62,16 @@ export const QuestionAssessment = {
     EXCELLENT: 3,
 };
 
-export const getInterviewTypeDescription = interviewType => {
-    switch (interviewType) {
-        case InterviewType.INTERVIEW:
-            return "Question/Answer Interview Template";
-        case InterviewType.LIVE_CODING:
-            return "Live Coding Interview Template";
-        default:
-            return "";
-    }
-};
-
 export const getTemplateCategoryIcon = interviewType => {
     switch (interviewType) {
         case InterviewType.INTERVIEW:
-            return <TemplateInterviewIcon color='#9575CD' width={64} height={64} />;
+            return <TemplateInterviewIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
         case InterviewType.LIVE_CODING:
-            return <TemplateLiveCodingIcon color='#64B5F6' width={64} height={64} />;
+            return <TemplateLiveCodingIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
+        case InterviewType.TAKE_HOME_TASK:
+            return <TemplateTakeHomeTaskIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
         default:
-            return <TemplateInterviewIcon color='#9575CD' width={64} height={64} />;
+            return <TemplateInterviewIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
     }
 };
 
@@ -151,11 +144,6 @@ export const SubscriptionPlans = {
     Premium: "PREMIUM",
 };
 
-export const ChallengeStatus = {
-    NotSent: "NotSent",
-    SentToCandidate: "SentToCandidate",
-    SolutionSubmitted: "SolutionSubmitted"
-};
 export const CandidatesFilter = {
     All: "All",
     Current: "Current",

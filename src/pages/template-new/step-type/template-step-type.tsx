@@ -5,25 +5,33 @@ import Title from "antd/lib/typography/Title";
 import React from "react";
 import Text from "antd/lib/typography/Text";
 import TemplateImageTechnicalQA from "../../../assets/template-technical-qa.png";
+import TemplateImageTakeHome from "../../../assets/template-take-home-task.png";
 import TemplateImageLiveCoding from "../../../assets/template-live-coding.png";
 import TemplateImage from "../../../components/template-card/template-image";
 import { InterviewType } from "../../../store/models";
+import { INTERVIEW_LIVE_CODING, INTERVIEW_TAKE_HOME } from "../../../utils/interview";
 
 type Props = {
     interviewType?: InterviewType;
-    onInterviewTypeChange: any;
+    onInterviewTypeChange: (type: InterviewType) => void;
 };
 
 const TemplateStepType = ({ onInterviewTypeChange, interviewType }: Props) => {
     const data = [
         {
-            title: "Live Coding",
+            title: INTERVIEW_LIVE_CODING,
             description: "Evaluate candidates' code across several criteria.",
             image: TemplateImageLiveCoding,
             interviewType: InterviewType.LIVE_CODING,
         },
         {
-            title: "Question/Answer",
+            title: INTERVIEW_TAKE_HOME,
+            description: "Ask canndidate to complete an assignment and return the results.",
+            image: TemplateImageTakeHome,
+            interviewType: InterviewType.TAKE_HOME_TASK,
+        },
+        {
+            title: "Technical Q/A",
             description: "Ask questions from different competence areas.",
             image: TemplateImageTechnicalQA,
             interviewType: InterviewType.INTERVIEW,

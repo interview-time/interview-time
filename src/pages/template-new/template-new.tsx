@@ -26,9 +26,10 @@ import { routeTemplates } from "../../utils/route";
 import StepDetailsLiveCoding from "./step-details/type-live-coding/step-details-live-coding";
 import { ReducerAction, ReducerActionType, templateReducer } from "./template-reducer";
 import Spinner from "../../components/spinner/spinner";
-import { cloneLibraryTemplate, cloneSharedTemplate, emptyTemplate, newTemplateFromType } from "./template-utils";
+import { cloneLibraryTemplate, cloneSharedTemplate, emptyTemplate, newTemplateFromType } from "../../utils/template";
 import TemplateStepPreview from "./step-preview/template-step-preview";
 import { v4 as uuidv4 } from "uuid";
+import StepDetailsTakeHome from "./step-details/type-take-home/step-details-take-home";
 
 const { Step } = Steps;
 
@@ -212,6 +213,10 @@ const TemplateNew = ({
 
             {step === STEP_DETAILS && template.interviewType === InterviewType.LIVE_CODING && (
                 <StepDetailsLiveCoding template={template} teamId={teamId} onTemplateChange={onTemplateChange} />
+            )}
+
+            {step === STEP_DETAILS && template.interviewType === InterviewType.TAKE_HOME_TASK && (
+                <StepDetailsTakeHome template={template} teamId={teamId} onTemplateChange={onTemplateChange} />
             )}
 
             {step === STEP_PREVIEW && (

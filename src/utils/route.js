@@ -67,6 +67,8 @@ export const routeTeamMembers = () => "/account/team/members";
 
 export const routeTeamBilling = () => "/account/team/billing";
 
+export const routeTeamIntegration = () => "/account/team/integration";
+
 export const routeSharedTemplate = () => "/template/shared/:token";
 
 export const routeTeamNew = (hideMenu = false) => (hideMenu ? "/team/new?hideMenu=true" : "/team/new/");
@@ -80,7 +82,10 @@ export const routeLiveCodingChallenge = token => {
     return token ? url.replace(":token", token) : url;
 };
 
-export const routeTakeHomeChallenge = () => "/public/challenge/take-home/:token";
+export const routeTakeHomeChallenge = token => {
+    const url = "/public/challenge/take-home/:token";
+    return token ? url.replace(":token", token) : url;
+};
 
 export const routeSubscription = () => "/subscription";
 

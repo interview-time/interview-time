@@ -8,6 +8,18 @@ export interface TeamDetails {
     pendingInvites: TeamInvite[];
     roles: string[];
     teamMembers: TeamMember[];
+    integration: Integration;
+}
+
+export interface Integration {
+    status: string;
+    ats?: string;
+    lastSync: string;
+}
+
+export enum IntegrationStatus {
+    None = "None",
+    Completed = "Completed",
 }
 
 export interface TeamMember {
@@ -69,7 +81,9 @@ export interface Interview {
     structure: InterviewStructure;
     interviewType: InterviewType;
     liveCodingChallenges?: LiveCodingChallenge[];
+    takeHomeChallenge?: TakeHomeChallenge;
     challengeDetails?: ChallengeDetails;
+    sendChallenge?: boolean;
 }
 
 export interface SharedInterview extends Interview {
@@ -125,6 +139,7 @@ export interface Candidate {
     codingRepo?: string;
     gitHub?: string;
     linkedIn?: string;
+    email?: string;
     archived: boolean;
 }
 
@@ -227,8 +242,21 @@ export interface LiveCodingChallenge {
     shareToken?: string;
 }
 
+export interface TakeHomeChallenge {
+    challengeId: string;
+    name: string;
+    description?: string;
+    gitHubUrl?: string;
+    fileName?: string;
+    shareToken?: string;
+    status?: ChallengeStatus;
+    solutionGitHubUrls?: string[];
+    sentToCandidateOn?: string;
+    solutionSubmittedOn?: string;
+}
+
 export interface CandidateChallenge {
-    challengeId: string;    
+    challengeId: string;
     description?: string;
     gitHubUrl?: string;
     modifiedDate?: string;
@@ -239,4 +267,10 @@ export interface CandidateChallenge {
 
 export interface ChallengeDetails {
     challengeId: string;
+}
+
+export enum ChallengeStatus {
+    NotSent = "NotSent",
+    SentToCandidate = "SentToCandidate",
+    SolutionSubmitted = "SolutionSubmitted",
 }

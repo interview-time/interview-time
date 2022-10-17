@@ -188,6 +188,7 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
         onTemplateChange({
             type: ReducerActionType.UPDATE_CHALLENGE,
             challenge: challenge,
+            mutateState: false
         });
     };
 

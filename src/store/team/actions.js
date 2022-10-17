@@ -5,15 +5,18 @@ import { logError } from "../../utils/log";
 
 export const SET_PENDING_INVITES_LOADING = "SET_PENDING_INVITES_LOADING";
 export const SET_PENDING_INVITES = "SET_PENDING_INVITES";
-
 export const SET_TEAM = "SET_TEAM";
 export const SET_LOADING = "SET_LOADING";
 export const SET_ERROR = "SET_ERROR";
 export const RESET_TEAM = "RESET_TEAM";
-
 export const REMOVE_INVITE = "REMOVE_INVITE";
+export const SET_INTEGRATION_COMPLETE = "SET_INTEGRATION_COMPLETE";
 
 const BASE_URI = `${process.env.REACT_APP_API_URL}`;
+
+export const setIntegrationComplete = () => ({
+    type: SET_INTEGRATION_COMPLETE,
+});
 
 export const setPendingInvitesLoading = loading => ({
     type: SET_PENDING_INVITES_LOADING,

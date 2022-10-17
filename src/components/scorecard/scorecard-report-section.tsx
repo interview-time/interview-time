@@ -12,6 +12,7 @@ import { getOverallPerformanceColor, getOverallPerformancePercent } from "../../
 import Text from "antd/lib/typography/Text";
 import { InterviewInfo } from "./interview-info";
 import { CandidateInfo } from "./candidate-info";
+import TakeHomeChallengeCard from "./type-take-home/challenge-card-report";
 
 type Props = {
     interview: Readonly<Interview>;
@@ -72,13 +73,15 @@ const ScorecardReportSection = ({
             {interview.interviewType === InterviewType.INTERVIEW && <InterviewChartsCard interview={interview} />}
 
             {interview.interviewType === InterviewType.LIVE_CODING && (
-                <LiveCodingChallengeCard
-                    teamId={interview.teamId}
-                    challenges={interview.liveCodingChallenges || []}
-                />
+                <LiveCodingChallengeCard teamId={interview.teamId} challenges={interview.liveCodingChallenges || []} />
             )}
 
-            {interview.interviewType === InterviewType.LIVE_CODING && (
+            {interview.interviewType === InterviewType.TAKE_HOME_TASK && (
+                <TakeHomeChallengeCard teamId={interview.teamId} challenge={interview.takeHomeChallenge!} />
+            )}
+
+            {(interview.interviewType === InterviewType.LIVE_CODING ||
+                interview.interviewType === InterviewType.TAKE_HOME_TASK) && (
                 <LiveCodingAssessmentCard questions={selectAssessmentGroup(interview).questions || []} />
             )}
 

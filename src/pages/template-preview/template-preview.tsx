@@ -27,9 +27,10 @@ import TitleBack from "../../components/title/title-back";
 import TemplateImage from "../../components/template-card/template-image";
 import { RootState } from "../../store/state-models";
 import { InterviewType, SharedTemplate, Template } from "../../store/models";
-import { selectAssessmentGroup, selectTemplate } from "../../store/templates/selector";
+import { selectAssessmentGroup, selectTakeHomeAssignment, selectTemplate } from "../../store/templates/selector";
 import LiveCodingAssessmentCard from "../../components/scorecard/type-live-coding/assessment-card-template";
 import LiveCodingChallengeCard from "../../components/scorecard/type-live-coding/challenge-card-template";
+import TakeHomeChallengeCard from "../../components/scorecard/type-take-home/challenge-card-template";
 
 type Props = {
     originalTemplate?: Readonly<Template>;
@@ -194,6 +195,19 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                                 teamId={template.teamId}
                                 challenges={template.challenges || []}
                                 onChallengeSelectionChanged={()=> {}}
+                            />
+                        </div>
+                        <div className={styles.cardSpace}>
+                            <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
+                        </div>
+                    </>
+                )}
+                {template.interviewType === InterviewType.TAKE_HOME_TASK && (
+                    <>
+                        <div className={styles.cardSpace}>
+                            <TakeHomeChallengeCard
+                                teamId={template.teamId}
+                                challenge={selectTakeHomeAssignment(template)}
                             />
                         </div>
                         <div className={styles.cardSpace}>
