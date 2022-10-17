@@ -4,9 +4,29 @@ import styles from "./modal-news.module.css";
 import Title from "antd/lib/typography/Title";
 import liveCodingTypeImage from "../../assets/live-coding-type.gif";
 import shareChallengeImage from "../../assets/share-challenge.gif";
+import takeHomeImage from "../../assets/take-home-assignment.gif";
 import { updateNewsVisitTime } from "../../utils/storage";
 
 export const newsData = [
+    {
+        version: "v1.221017",
+        versionInt: 221017, // version reversed
+        date: new Date(2022, 10, 17),
+        content: (
+            <div className={styles.carouselItem}>
+                <Title level={5} className={styles.carouselTitle}>
+                    Take-Home Assignment Interview Type
+                </Title>
+                <div className={styles.carouselDescription}>
+                    Create and share take-home assignments with the candidate. Wait until the candidate submits the
+                    solution. Evaluate candidates' codes based on your assessment criteria.
+                </div>
+                <div className={styles.carouselImageWrapper}>
+                    <img alt='Take-Home Assignment Interview Type' src={takeHomeImage} className={styles.carouselImage} />
+                </div>
+            </div>
+        ),
+    },
     {
         version: "v1.220930",
         versionInt: 220930, // version reversed
@@ -36,8 +56,8 @@ export const newsData = [
                     Share Coding Challenge
                 </Title>
                 <div className={styles.carouselDescription}>
-                    Share coding challenges with the candidate during the interview. The temporary link will expire once the
-                    interview is completed.
+                    Share coding challenges with the candidate during the interview. The temporary link will expire once
+                    the interview is completed.
                 </div>
                 <div className={styles.carouselImageWrapper}>
                     <img alt='Share coding challenge' src={shareChallengeImage} className={styles.carouselImage} />
