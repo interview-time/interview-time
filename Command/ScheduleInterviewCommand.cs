@@ -132,7 +132,7 @@ namespace CafApi.Command
                 ModifiedDate = DateTime.UtcNow,
                 LinkId = command.Interviewers.Count > 1 ? Guid.NewGuid().ToString() : null,
                 IsDemo = command.UserId == _demoUserId, // Demo account
-                Checklist = command.Checklist != null ? command.Checklist.Select(c => new IterviewChecklistItem
+                Checklist = command.Checklist != null ? command.Checklist.Select(c => new InterviewChecklistItem
                 {
                     Item = c.Item,
                     Order = c.Order
