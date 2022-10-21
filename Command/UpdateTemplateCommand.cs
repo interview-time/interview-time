@@ -34,6 +34,8 @@ namespace CafApi.Command
         public TemplateStructure Structure { get; set; }
 
         public List<Challenge> Challenges { get; set; }
+
+         public List<ChecklistItem> Checklist { get; set; }
     }
 
     public class UpdateTemplateCommandHandler : IRequestHandler<UpdateTemplateCommand>
@@ -67,6 +69,7 @@ namespace CafApi.Command
             template.Type = command.Type;
             template.Description = command.Description;
             template.Structure = command.Structure;
+            template.Checklist = command.Checklist;
             template.ModifiedDate = DateTime.UtcNow;
 
             if (string.IsNullOrWhiteSpace(template.Token))

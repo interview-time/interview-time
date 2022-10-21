@@ -35,6 +35,8 @@ namespace CafApi.Command
         public TemplateStructure Structure { get; set; }
 
         public List<Challenge> Challenges { get; set; }
+
+        public List<ChecklistItem> Checklist { get; set; }
     }
 
     public class CreateTemplateCommandHandler : IRequestHandler<CreateTemplateCommand, Template>
@@ -92,7 +94,8 @@ namespace CafApi.Command
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
                 Token = StringHelper.GenerateToken(),
-                Challenges = request.Challenges
+                Challenges = request.Challenges,
+                Checklist = request.Checklist
             };
 
             // assign ids to groups if missing

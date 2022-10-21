@@ -66,6 +66,8 @@ namespace CafApi.Command
         public TakeHomeChallenge TakeHomeChallenge { get; set; }
 
         public bool SendChallenge { get; set; }
+
+        public List<ChecklistItem> Checklist { get; set; }
     }
 
     public class ScheduleInterviewCommandHandler : IRequestHandler<ScheduleInterviewCommand, Interview>
@@ -129,7 +131,12 @@ namespace CafApi.Command
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
                 LinkId = command.Interviewers.Count > 1 ? Guid.NewGuid().ToString() : null,
-                IsDemo = command.UserId == _demoUserId // Demo account
+                IsDemo = command.UserId == _demoUserId, // Demo account
+                Checklist = command.Checklist != null ? command.Checklist.Select(c => new IterviewChecklistItem
+                {
+                    Item = c.Item,
+                    Order = c.Order
+                }).ToList() : null
             };
 
             var interviews = new Dictionary<string, Interview>();

@@ -64,10 +64,12 @@ namespace CafApi.Models
         public bool IsShared { get; set; }
 
         public string InterviewType { get; set; }
-        
+
         public List<LiveCodingChallenge> LiveCodingChallenges { get; set; }
-        
+
         public TakeHomeChallenge TakeHomeChallenge { get; set; }
+
+        public List<IterviewChecklistItem> Checklist { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
@@ -162,5 +164,14 @@ namespace CafApi.Models
         public string Label { get; set; }
 
         public int Order { get; set; }
+    }
+
+    public class IterviewChecklistItem
+    {
+        public int Order { get; set; }
+
+        public string Item { get; set; }
+
+        public bool Checked { get; set; }
     }
 }
