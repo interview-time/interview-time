@@ -56,8 +56,8 @@ namespace CafApi.Models
 
     public class ChecklistItem
     {
-        public int Order { get; set; }
-
         public string Item { get; set; }
+
+        public bool Checked { get; set; }
     }
 }

@@ -1,112 +1,17 @@
-# REST API
+# InterviewTime REST API
 
-interviewtime.io REST API
-
-## Get My Interview Templates
-
-### Request
-
-`GET https://api.interviewtime.io/template`
-
-## Create Interview Template
-
-### Request
-
-`POST https://api.interviewtime.io/template`
-
-    {
-    "title": "Senior Android Engineer",
-    "image": "https://img.talkandroid.com/uploads/2019/08/Android-10-New-Logo-Green-Color.jpg",
-    "type": "Technical",
-    "description": "This guid helps to evaluate overall knowledge about Android SDK.",
-    "structure": {
-        "header": "Hello world header",
-        "footer": "Hello World footer",
-        "groups": [
-            {
-                "name": "C#",
-                "questions": [
-                    {
-                        "questionId": "ae420b5b-2cd1-4895-90a1-c6eeb61380a6",
-                        "question": "What is Boxing and Unboxing in C#?"
-                    },
-                    {
-                        "questionId": "cfa7e550-5a22-4738-979d-de0efed79fcb",
-                        "question": "What is the difference between a struct and a class in C#?"
-                    }
-                ]
-            },
-            {
-                "name": "JavaScript",
-                "questions": [
-                    {
-                        "questionId": "567ebd2a-c083-4999-adee-40945909f783",
-                        "question": "Explain Hoisting in javascript."
-                    },
-                    {
-                        "questionId": "28be069c-3a24-4d0b-b7a3-5bcd1981366a",
-                        "question": "Difference between “ == “ and “ === “ operators."
-                    }
-                ]
-            }
-        ]
-    }
-
-}
-
-## Update Interview Template
-
-### Request
-
-`PUT https://api.interviewtime.io/template`
-
-    {
-        "templateId": "1bb6724f-3e03-4a45-a38a-bde564fda95e",
-        "title": "C# Engineer",
-        "type": "Technical",
-        "description": "This guid helps to evaluate overall knowledge about Android SDK.",
-        "structure": {
-            "header": "Introduce yourself",
-            "footer": "Hello World footer",
-            "groups": [
-                {
-                    "name": "C#",
-                    "questions": [
-                        {
-                            "questionId": "ae420b5b-2cd1-4895-90a1-c6eeb61380a6",
-                            "question": "What is Boxing and Unboxing in C#?"
-                        },
-                        {
-                            "questionId": "cfa7e550-5a22-4738-979d-de0efed79fcb",
-                            "question": "What is the difference between a struct and a class in C#?"
-                        }
-                    ]
-                },
-                {
-                    "name": "JavaScript",
-                    "questions": [
-                        {
-                            "questionId": "567ebd2a-c083-4999-adee-40945909f783",
-                            "question": "Explain Hoisting in javascript."
-                        },
-                        {
-                            "questionId": "28be069c-3a24-4d0b-b7a3-5bcd1981366a",
-                            "question": "Difference between “ == “ and “ === “ operators."
-                        }
-                    ]
-                }
-            ]
-        }
-    }
-
-## Delete Interview Template
-
-### Request
-
-`DELETE https://api.interviewtime.io/template/{templateId}`
-
-## Get Library of Templates
-
-### Request
-
-`GET https://api.interviewtime.io/template/library`
+## Set up on Mac
+- Install .NET 6 SDK
+- Create AWS profile
+    - Create file `credentials` in folder `~/.aws/`. You can use these commands in terminal:
+        `mkdir .aws`
+        `cd .aws`
+        `touch credentials`
+        Then manually add file content like this:
+        ```
+        [default]
+        aws_access_key_id=YOUR-ACCESS-KEY
+        aws_secret_access_key=YOUR-SECRET
+        ```
+    - You can create a new user in AWS or use the existing one named `caf`. Once you have a user create credentials in the Security credentials tab.
+    - Replace the placeholders in the `credentials` file with your key and secret.
