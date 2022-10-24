@@ -42,6 +42,8 @@ namespace CafApi.Models
 
         public List<string> ChallengeIds { get; set; }
 
+        public List<ChecklistItem> Checklist { get; set; }
+
         [DynamoDBIgnore]
         public List<Challenge> Challenges { get; set; }
 
@@ -50,5 +52,12 @@ namespace CafApi.Models
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime ModifiedDate { get; set; }
+    }
+
+    public class ChecklistItem
+    {
+        public string Item { get; set; }
+
+        public bool Checked { get; set; }
     }
 }

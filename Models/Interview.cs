@@ -64,10 +64,12 @@ namespace CafApi.Models
         public bool IsShared { get; set; }
 
         public string InterviewType { get; set; }
-        
+
         public List<LiveCodingChallenge> LiveCodingChallenges { get; set; }
-        
+
         public TakeHomeChallenge TakeHomeChallenge { get; set; }
+
+        public List<ChecklistItem> Checklist { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
