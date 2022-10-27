@@ -45,6 +45,7 @@
 }
 
 .interviewSectionContainer {
+    margin-top: 32px;
     min-height: 100vh;
 }
 
@@ -202,4 +203,20 @@
 
 .reportInterviewRight {
     justify-self: right;
+}
+
+.panelTitle {
+    padding-top: 24px;
+    padding-left: 24px;
+}
+
+.panelContent {
+    padding-left: 24px;
+    padding-bottom: 24px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
 }

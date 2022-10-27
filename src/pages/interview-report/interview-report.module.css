@@ -34,3 +34,7 @@
     top: 0;
     z-index: 99;
 }
+
+.blackLink {
+    color: rgba(0, 0, 0, 0.85);
+}

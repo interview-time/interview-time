@@ -1,6 +1,6 @@
 import styles from "./scorecard-report-section.module.css";
 import { Col, Progress } from "antd";
-import { Candidate, Interview, InterviewType, TeamMember } from "../../store/models";
+import { Interview, InterviewType, TeamMember } from "../../store/models";
 import LiveCodingChallengeCard from "./type-live-coding/challenge-card-report";
 import LiveCodingAssessmentCard from "../scorecard/type-live-coding/assessment-card-readonly";
 import { selectAssessmentGroup } from "../../store/interviews/selector";
@@ -11,13 +11,11 @@ import InterviewCompetenceAreaCard from "./type-interview/competence-area";
 import { getOverallPerformanceColor, getOverallPerformancePercent } from "../../utils/assessment";
 import Text from "antd/lib/typography/Text";
 import { InterviewInfo } from "./interview-info";
-import { CandidateInfo } from "./candidate-info";
 import TakeHomeChallengeCard from "./type-take-home/challenge-card-report";
 
 type Props = {
     interview: Readonly<Interview>;
     interviewers: Readonly<TeamMember[]>;
-    candidate?: Readonly<Candidate>;
     header?: ReactNode[] | ReactNode;
     footer?: ReactNode[] | ReactNode;
     onNotesChange?: (text: string) => void;
@@ -27,7 +25,6 @@ type Props = {
 const ScorecardReportSection = ({
     interview,
     interviewers,
-    candidate,
     header,
     footer,
     onNotesChange,
@@ -63,7 +60,6 @@ const ScorecardReportSection = ({
                         />
                     )}
                 </div>
-                <CandidateInfo className={styles.reportInterviewRight} candidate={candidate} />
             </div>
 
             {interview.interviewType === InterviewType.INTERVIEW && (

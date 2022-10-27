@@ -5,7 +5,7 @@ import Header from "../../components/header/header";
 import styles from "./interview-report.module.css";
 import Title from "antd/lib/typography/Title";
 import { CloseIcon } from "../../utils/icons";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
@@ -20,6 +20,7 @@ import { RootState } from "../../store/state-models";
 import { Candidate, Interview, TeamMember } from "../../store/models";
 import ScorecardReportSection from "../../components/scorecard/scorecard-report-section";
 import ShareScorecard from "./share-report-modal";
+import { routeCandidateDetails } from "../../utils/route";
 
 type Props = {
     currentTeamId: string;
@@ -63,7 +64,15 @@ const InterviewReport = ({
     return (
         <div className={styles.rootContainer}>
             <Header
-                title={getCandidateName2(interview, candidate)}
+                title={
+                    <Link
+                        to={routeCandidateDetails(candidate?.candidateId)}
+                        target='_blank'
+                        style={{ color: 'rgba(0, 0, 0, 0.85)' }}
+                    >
+                        {getCandidateName2(interview, candidate)}
+                    </Link>
+                }
                 subtitle={candidate?.position ?? ""}
                 leftComponent={<Button icon={<CloseIcon />} size='large' onClick={() => history.goBack()} />}
                 rightComponent={

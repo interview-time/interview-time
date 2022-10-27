@@ -43,7 +43,7 @@ export const ChallengeCard = ({
         }
     };
 
-    const onSwitchChanged = (checked: boolean, e: MouseEvent, challenge: LiveCodingChallenge) => {
+    const onSwitchChanged = (checked: boolean, e: React.MouseEvent, challenge: LiveCodingChallenge) => {
         e.stopPropagation(); // prevents selection another challenge
         onChallengeSelectionChanged(checked, challenge);
     };
@@ -69,7 +69,7 @@ export const ChallengeCard = ({
                             <Text className={styles.taskName}>{challenge.name}</Text>
                             <Switch
                                 checked={challenge.selected}
-                                onChange={(checked: boolean, e: MouseEvent) => onSwitchChanged(checked, e, challenge)}
+                                onChange={(checked: boolean, e: React.MouseEvent) => onSwitchChanged(checked, e, challenge)}
                             />
                         </div>
                         {isExpanded && (
