@@ -69,7 +69,7 @@ namespace CafApi.Models
 
         public TakeHomeChallenge TakeHomeChallenge { get; set; }
 
-        public List<ChecklistItem> Checklist { get; set; }
+        public List<ChecklistItem> Checklist { get; set; }        
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
@@ -118,6 +118,8 @@ namespace CafApi.Models
         public DateTime? SolutionSubmittedOn { get; set; }
 
         public string ShareToken { get; set; }
+
+        public bool IsAnonymised { get; set; }
     }
 
     public class InterviewStructure

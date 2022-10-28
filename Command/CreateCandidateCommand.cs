@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -31,6 +32,10 @@ namespace CafApi.Command
         public string LinkedIn { get; set; }
 
         public string GitHub { get; set; }
+
+        public string Location { get; set; }
+
+        public List<string> Tags { get; set; }
     }
 
     public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateCommand, Candidate>
@@ -64,6 +69,8 @@ namespace CafApi.Command
                 Phone = command.Phone,
                 Email = command.Email,
                 Owner = command.UserId,
+                Location = command.Location,
+                Tags = command.Tags,
                 CreatedDate = DateTime.UtcNow
             };
 

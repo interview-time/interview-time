@@ -48,6 +48,12 @@ namespace CafApi.Query
 
         public List<Interview> Interviews { get; set; }
 
+        public bool IsAnonymised { get; set; }
+
+        public string Location { get; set; }
+
+        public List<string> Tags { get; set; }
+
         public DateTime CreatedDate { get; set; }
     }
 
@@ -96,6 +102,8 @@ namespace CafApi.Query
                 throw new AuthorizationException($"User ({query.UserId}) cannot view candidate details ({query.CandidateId})");
             }
 
+            var IsAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
+
             return new CandidateDetailsQueryResult
             {
                 CandidateId = candidate.CandidateId,
@@ -106,6 +114,8 @@ namespace CafApi.Query
                 LinkedIn = candidate.LinkedIn,
                 GitHub = candidate.GitHub,
                 Status = candidate.Status,
+                Location = candidate.Location,
+                Tags = candidate.Tags,
                 Archived = candidate.Archived,
                 IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
                 Interviews = interviews,

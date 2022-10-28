@@ -175,9 +175,12 @@ namespace CafApi.Command
                 interviews.Add(interviewerId, newInterview);
             }
 
-            if (command.InterviewType == InterviewType.TAKE_HOME_TASK.ToString() && command.SendChallenge)
+            if (command.InterviewType == InterviewType.TAKE_HOME_TASK.ToString())
             {
-                await SendTakeHomeChallenge(command.TeamId, command.CandidateId, interviews?.First().Value.TakeHomeChallenge.ShareToken);
+                if (command.SendChallenge)
+                {
+                    await SendTakeHomeChallenge(command.TeamId, command.CandidateId, interviews?.First().Value.TakeHomeChallenge.ShareToken);
+                }
             }
             else
             {

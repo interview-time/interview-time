@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 
@@ -33,15 +34,17 @@ namespace CafApi.Models
 
         public string LinkedIn { get; set; }
 
-        public string GitHub { get; set; }
-
-        public string CodingRepo { get; set; }
+        public string GitHub { get; set; }        
 
         public string Status { get; set; }
 
         public bool Archived { get; set; }
 
         public string Owner { get; set; }
+
+        public string Location { get; set; }
+
+        public List<string> Tags { get; set; }
 
         public string ModifiedBy { get; set; }
 
