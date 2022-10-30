@@ -58,16 +58,16 @@ namespace CafApi.Query
     public class ScorecardReportQueryHandler : IRequestHandler<ScorecardReportQuery, ScorecardReportQueryResult>
     {
         private readonly IInterviewRepository _interviewRepository;
-        private readonly ICandidateService _candidateService;
+        private readonly ICandidateRepository _candidateRepository;
         private readonly IUserRepository _userRepository;
 
         public ScorecardReportQueryHandler(
             IInterviewRepository interviewRepository,
-            ICandidateService candidateService,
+            ICandidateRepository candidateRepository,
             IUserRepository userRepository)
         {
             _interviewRepository = interviewRepository;
-            _candidateService = candidateService;
+            _candidateRepository = candidateRepository;
             _userRepository = userRepository;
         }
 
@@ -79,7 +79,7 @@ namespace CafApi.Query
                 throw new ItemNotFoundException($"Report card with id {query.Token} not found");
             }
 
-            var candidate = await _candidateService.GetCandidate(interview.TeamId, interview.CandidateId);
+            var candidate = await _candidateRepository.GetCandidate(interview.TeamId, interview.CandidateId);
             var interviewer = await _userRepository.GetProfile(interview.UserId);
 
             return new ScorecardReportQueryResult

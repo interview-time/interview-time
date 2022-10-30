@@ -131,6 +131,21 @@ namespace CafApi.Services.User
             return userRoles != null && userRoles.Any(role => role != TeamRole.INTERVIEWER);
         }
 
+        public async Task<bool> CanUpdateOrDeleteOrArchiveCandidate(string userId, string teamId)
+        {
+            var teamMember = await GetTeamMember(userId, teamId);
+
+            // belongs to the team
+            if (teamMember != null)
+            {
+                var userRoles = GetUserRoles(teamMember);
+
+                return userRoles != null && userRoles.Any(role => role != TeamRole.INTERVIEWER);
+            }
+
+            return false;
+        }
+
         public async Task<bool> CanIntegrateWithATS(string userId, string teamId)
         {
             var teamMember = await GetTeamMember(userId, teamId);

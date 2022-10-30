@@ -18,6 +18,8 @@ namespace CafApi.Services.User
 
         bool CanViewCandidate(List<TeamRole> userRoles, bool isInterviewer);
 
+        Task<bool> CanUpdateOrDeleteOrArchiveCandidate(string userId, string teamId);
+
         Task<bool> CanIntegrateWithATS(string userId, string teamId);
     }
 }
