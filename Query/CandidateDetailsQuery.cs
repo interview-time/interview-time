@@ -22,6 +22,8 @@ namespace CafApi.Query
         public string TeamId { get; set; }
 
         public string CandidateId { get; set; }
+
+        public bool IsShallow { get; set; }
     }
 
     public class CandidateDetailsQueryResult
@@ -118,7 +120,7 @@ namespace CafApi.Query
                 Tags = candidate.Tags,
                 Archived = candidate.Archived,
                 IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
-                Interviews = interviews,
+                Interviews = !query.IsShallow ? interviews : null,
                 CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate
             };
         }

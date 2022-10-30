@@ -135,11 +135,19 @@ namespace CafApi.Controllers
         }
 
         [HttpGet("team/{teamId}/candidate/{candidateId}")]
-        public async Task<ActionResult<CandidateDetailsQueryResult>> GetCandidate(string teamId, string candidateId)
+        public async Task<ActionResult<CandidateDetailsQueryResult>> GetCandidate([FromQuery] bool? shallow, string teamId, string candidateId)
         {
             try
             {
-                return await _mediator.Send(new CandidateDetailsQuery { UserId = UserId, TeamId = teamId, CandidateId = candidateId });
+                var query = new CandidateDetailsQuery
+                {
+                    UserId = UserId,
+                    TeamId = teamId,
+                    CandidateId = candidateId,
+                    IsShallow = shallow ?? false
+                };
+
+                return await _mediator.Send(query);
             }
             catch (AuthorizationException ex)
             {
