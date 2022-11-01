@@ -104,24 +104,27 @@ namespace CafApi.Query
                 throw new AuthorizationException($"User ({query.UserId}) cannot view candidate details ({query.CandidateId})");
             }
 
-            var IsAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
+            var isAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
 
             return new CandidateDetailsQueryResult
             {
                 CandidateId = candidate.CandidateId,
-                CandidateName = candidate.CandidateName,
+                CandidateName = !isAnonymised ? candidate.CandidateName : AnonymiseName(candidate.CandidateName),
                 Position = candidate.Position,
-                Email = candidate.Email,
-                ResumeUrl = candidate.ResumeFile != null ? GetDownloadSignedUrl(query.TeamId, query.CandidateId, candidate.ResumeFile) : null,
-                LinkedIn = candidate.LinkedIn,
-                GitHub = candidate.GitHub,
+                Email = !isAnonymised ? candidate.Email : null,
+                ResumeUrl = !isAnonymised && candidate.ResumeFile != null 
+                    ? GetDownloadSignedUrl(query.TeamId, query.CandidateId, candidate.ResumeFile) 
+                    : null,
+                LinkedIn = !isAnonymised ? candidate.LinkedIn : null,
+                GitHub = !isAnonymised ? candidate.GitHub : null,
                 Status = candidate.Status,
                 Location = candidate.Location,
                 Tags = candidate.Tags,
                 Archived = candidate.Archived,
                 IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
                 Interviews = !query.IsShallow ? interviews : null,
-                CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate
+                CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate,
+                IsAnonymised = isAnonymised
             };
         }
 
@@ -136,6 +139,11 @@ namespace CafApi.Query
             };
 
             return _s3Client.GetPreSignedURL(request);
+        }
+
+        private string AnonymiseName(string name)
+        {
+            return $"{name.First()}*****{name.Last()}";
         }
     }
 }
