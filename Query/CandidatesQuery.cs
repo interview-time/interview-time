@@ -31,13 +31,27 @@ namespace CafApi.Query
 
         public string CandidateName { get; set; }
 
+        public string Position { get; set; }
+
         public string Email { get; set; }
 
-        public string Position { get; set; }
+        public string ResumeUrl { get; set; }
+
+        public string LinkedIn { get; set; }
+
+        public string GitHub { get; set; }
 
         public string Status { get; set; }
 
         public bool Archived { get; set; }
+
+        public bool IsFromATS { get; set; }
+
+        public bool IsAnonymised { get; set; }
+
+        public string Location { get; set; }
+
+        public List<string> Tags { get; set; }
 
         public DateTime CreatedDate { get; set; }
     }
@@ -68,9 +82,11 @@ namespace CafApi.Query
             }
 
             List<Candidate> candidates = null;
+            List<string> anonymisedCandidateIds = new List<string>();
+
             if (teamMember.Roles.Contains(TeamRole.INTERVIEWER))
             {
-                // Interviewer can only see candidates they interviewed and will interview
+                // Interviewer can only see candidates they interviewed or will interview
                 var config = new DynamoDBOperationConfig();
                 var interviews = await _context.QueryAsync<Interview>(query.UserId, config).GetRemainingAsync();
 
@@ -81,6 +97,15 @@ namespace CafApi.Query
                     .ToList();
 
                 candidates = await _candidateRepository.GetCandidates(query.TeamId, candidateIds);
+
+                anonymisedCandidateIds = interviews
+                   .Where(i => i.TeamId == query.TeamId
+                       && !string.IsNullOrWhiteSpace(i.CandidateId)
+                       && i.TakeHomeChallenge != null
+                       && i.TakeHomeChallenge.IsAnonymised)
+                   .Select(i => i.CandidateId)
+                   .Distinct()
+                   .ToList();
             }
             else
             {
@@ -93,14 +118,29 @@ namespace CafApi.Query
                 Candidates = candidates.Select(candidate => new CandidateItem
                 {
                     CandidateId = candidate.CandidateId,
-                    CandidateName = candidate.CandidateName,
-                    Email = candidate.Email,
+                    CandidateName = anonymisedCandidateIds.Contains(candidate.CandidateId)
+                        ? AnonymiseName(candidate.CandidateName)
+                        : candidate.CandidateName,
+                    Email = !anonymisedCandidateIds.Contains(candidate.CandidateId)
+                        ? candidate.Email
+                        : null,
                     Position = candidate.Position,
+                    LinkedIn = candidate.LinkedIn,
+                    GitHub = candidate.GitHub,
+                    Location = candidate.Location,
                     Status = candidate.Status,
                     Archived = candidate.Archived,
-                    CreatedDate = candidate.CreatedDate
+                    Tags = candidate.Tags,
+                    IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
+                    CreatedDate = candidate.CreatedDate,
+                    IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId)
                 }).ToList()
             };
+        }
+
+        private string AnonymiseName(string name)
+        {
+            return $"{name.First()}*****{name.Last()}";
         }
     }
 }

@@ -50,11 +50,16 @@ namespace CafApi.Services
                         var interviews = await search.GetRemainingAsync();
 
                         // Admin, Hiring Manager and HR can see all interviews conducted by any member of the team
-                        if (teamMember.Roles.Any(r => !r.Equals(TeamRole.ADMIN.ToString())
-                            && !r.Equals(TeamRole.HIRING_MANAGER.ToString())
-                            && !r.Equals(TeamRole.HR.ToString())))
+                        if (teamMember.Roles.Any(r => r.Equals(TeamRole.INTERVIEWER.ToString())))
                         {
                             interviews = interviews.Where(i => i.UserId == userId).ToList();
+                            foreach (var interview in interviews)
+                            {
+                                if (interview.TakeHomeChallenge != null && interview.TakeHomeChallenge.IsAnonymised)
+                                {
+                                    interview.TakeHomeChallenge.ShareToken = null;
+                                }
+                            }
                         }
 
                         foreach (var interview in interviews)

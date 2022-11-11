@@ -26,37 +26,9 @@ namespace CafApi.Query
         public bool IsShallow { get; set; }
     }
 
-    public class CandidateDetailsQueryResult
+    public class CandidateDetailsQueryResult : CandidateItem
     {
-        public string CandidateId { get; set; }
-
-        public string CandidateName { get; set; }
-
-        public string Position { get; set; }
-
-        public string Email { get; set; }
-
-        public string ResumeUrl { get; set; }
-
-        public string LinkedIn { get; set; }
-
-        public string GitHub { get; set; }
-
-        public string Status { get; set; }
-
-        public bool Archived { get; set; }
-
-        public bool IsFromATS { get; set; }
-
         public List<Interview> Interviews { get; set; }
-
-        public bool IsAnonymised { get; set; }
-
-        public string Location { get; set; }
-
-        public List<string> Tags { get; set; }
-
-        public DateTime CreatedDate { get; set; }
     }
 
     public class CandidateDetailsQueryHandler : IRequestHandler<CandidateDetailsQuery, CandidateDetailsQueryResult>
@@ -104,24 +76,27 @@ namespace CafApi.Query
                 throw new AuthorizationException($"User ({query.UserId}) cannot view candidate details ({query.CandidateId})");
             }
 
-            var IsAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
+            var isAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
 
             return new CandidateDetailsQueryResult
             {
                 CandidateId = candidate.CandidateId,
-                CandidateName = candidate.CandidateName,
+                CandidateName = !isAnonymised ? candidate.CandidateName : AnonymiseName(candidate.CandidateName),
                 Position = candidate.Position,
-                Email = candidate.Email,
-                ResumeUrl = candidate.ResumeFile != null ? GetDownloadSignedUrl(query.TeamId, query.CandidateId, candidate.ResumeFile) : null,
-                LinkedIn = candidate.LinkedIn,
-                GitHub = candidate.GitHub,
+                Email = !isAnonymised ? candidate.Email : null,
+                ResumeUrl = !isAnonymised && candidate.ResumeFile != null
+                    ? GetDownloadSignedUrl(query.TeamId, query.CandidateId, candidate.ResumeFile)
+                    : null,
+                LinkedIn = !isAnonymised ? candidate.LinkedIn : null,
+                GitHub = !isAnonymised ? candidate.GitHub : null,
                 Status = candidate.Status,
                 Location = candidate.Location,
                 Tags = candidate.Tags,
                 Archived = candidate.Archived,
                 IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
                 Interviews = !query.IsShallow ? interviews : null,
-                CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate
+                CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate,
+                IsAnonymised = isAnonymised
             };
         }
 
@@ -136,6 +111,11 @@ namespace CafApi.Query
             };
 
             return _s3Client.GetPreSignedURL(request);
+        }
+
+        private string AnonymiseName(string name)
+        {
+            return $"{name.First()}*****{name.Last()}";
         }
     }
 }
