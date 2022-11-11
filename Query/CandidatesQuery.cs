@@ -31,13 +31,27 @@ namespace CafApi.Query
 
         public string CandidateName { get; set; }
 
+        public string Position { get; set; }
+
         public string Email { get; set; }
 
-        public string Position { get; set; }
+        public string ResumeUrl { get; set; }
+
+        public string LinkedIn { get; set; }
+
+        public string GitHub { get; set; }
 
         public string Status { get; set; }
 
         public bool Archived { get; set; }
+
+        public bool IsFromATS { get; set; }
+
+        public bool IsAnonymised { get; set; }
+
+        public string Location { get; set; }
+
+        public List<string> Tags { get; set; }
 
         public DateTime CreatedDate { get; set; }
     }
@@ -111,9 +125,15 @@ namespace CafApi.Query
                         ? candidate.Email
                         : null,
                     Position = candidate.Position,
+                    LinkedIn = candidate.LinkedIn,
+                    GitHub = candidate.GitHub,
+                    Location = candidate.Location,
                     Status = candidate.Status,
                     Archived = candidate.Archived,
-                    CreatedDate = candidate.CreatedDate
+                    Tags = candidate.Tags,
+                    IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
+                    CreatedDate = candidate.CreatedDate,
+                    IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId)
                 }).ToList()
             };
         }

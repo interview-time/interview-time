@@ -26,37 +26,9 @@ namespace CafApi.Query
         public bool IsShallow { get; set; }
     }
 
-    public class CandidateDetailsQueryResult
+    public class CandidateDetailsQueryResult : CandidateItem
     {
-        public string CandidateId { get; set; }
-
-        public string CandidateName { get; set; }
-
-        public string Position { get; set; }
-
-        public string Email { get; set; }
-
-        public string ResumeUrl { get; set; }
-
-        public string LinkedIn { get; set; }
-
-        public string GitHub { get; set; }
-
-        public string Status { get; set; }
-
-        public bool Archived { get; set; }
-
-        public bool IsFromATS { get; set; }
-
         public List<Interview> Interviews { get; set; }
-
-        public bool IsAnonymised { get; set; }
-
-        public string Location { get; set; }
-
-        public List<string> Tags { get; set; }
-
-        public DateTime CreatedDate { get; set; }
     }
 
     public class CandidateDetailsQueryHandler : IRequestHandler<CandidateDetailsQuery, CandidateDetailsQueryResult>
@@ -112,8 +84,8 @@ namespace CafApi.Query
                 CandidateName = !isAnonymised ? candidate.CandidateName : AnonymiseName(candidate.CandidateName),
                 Position = candidate.Position,
                 Email = !isAnonymised ? candidate.Email : null,
-                ResumeUrl = !isAnonymised && candidate.ResumeFile != null 
-                    ? GetDownloadSignedUrl(query.TeamId, query.CandidateId, candidate.ResumeFile) 
+                ResumeUrl = !isAnonymised && candidate.ResumeFile != null
+                    ? GetDownloadSignedUrl(query.TeamId, query.CandidateId, candidate.ResumeFile)
                     : null,
                 LinkedIn = !isAnonymised ? candidate.LinkedIn : null,
                 GitHub = !isAnonymised ? candidate.GitHub : null,
