@@ -528,7 +528,7 @@ const InterviewSchedule = ({
                                 allowClear={false}
                                 format={datePickerFormat()}
                                 className={styles.fillWidth}
-                                oChange={onDateChange}
+                                onChange={onDateChange}
                             />
                         </Form.Item>
                         <Form.Item name='startTime' style={{ marginRight: 16 }}>
