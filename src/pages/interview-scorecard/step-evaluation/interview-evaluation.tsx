@@ -4,7 +4,7 @@ import { InterviewAssessmentButtons } from "../step-assessment/type-interview/in
 import styles from "./interview-evaluation.module.css";
 import Title from "antd/lib/typography/Title";
 import Card from "../../../components/card/card";
-import { Candidate, Interview, InterviewAssessment, TeamMember } from "../../../store/models";
+import { Interview, InterviewAssessment, TeamMember } from "../../../store/models";
 import { ReducerAction, ReducerActionType } from "../interview-reducer";
 import { useDebounceFn } from "ahooks";
 import { DATA_CHANGE_DEBOUNCE, DATA_CHANGE_DEBOUNCE_MAX } from "../interview-scorecard";
@@ -15,11 +15,10 @@ const { Text } = Typography;
 type Props = {
     interview: Readonly<Interview>;
     interviewers: Readonly<TeamMember[]>;
-    candidate?: Readonly<Candidate>;
     onInterviewChange: (action: ReducerAction) => void;
 };
 
-const InterviewEvaluation = ({ interview, interviewers, candidate, onInterviewChange }: Props) => {
+const InterviewEvaluation = ({ interview, interviewers, onInterviewChange }: Props) => {
     const onAssessmentChanged = (assessment: InterviewAssessment) => {
         onInterviewChange({
             type: ReducerActionType.UPDATE_ASSESSMENT,
@@ -55,7 +54,6 @@ const InterviewEvaluation = ({ interview, interviewers, candidate, onInterviewCh
         <ScorecardReportSection
             interview={interview}
             interviewers={interviewers}
-            candidate={candidate}
             onNotesChange={onNotesChange}
             onRedFlagsChange={onRedFlagsChange}
             footer={

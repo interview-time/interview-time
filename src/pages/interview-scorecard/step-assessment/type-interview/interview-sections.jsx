@@ -8,7 +8,14 @@ import Title from "antd/lib/typography/Title";
 import { localeCompare, localeCompareArray } from "../../../../utils/comparators";
 import AssessmentCheckbox from "../../../../components/questions/assessment-checkbox";
 import { CloseOutlined } from "@ant-design/icons";
-import { MenuIcon, NoteIcon, StarEmphasisIcon, StarFilledIcon, StarHalfIcon, StarIcon } from "../../../../utils/icons";
+import {
+    MoreIcon,
+    NoteIcon,
+    StarEmphasisIcon,
+    StarFilledIcon,
+    StarHalfIcon,
+    StarIcon
+} from "../../../../utils/icons";
 import { isEmpty } from "../../../../utils/date";
 import Card from "../../../../components/card/card";
 import QuestionDifficultyTag from "../../../../components/tags/question-difficulty-tag";
@@ -197,7 +204,7 @@ const InterviewQuestionsCard = ({
     );
 
     return (
-        <Card withPadding={false} style={{ marginTop: 32 }}>
+        <Card withPadding={false}>
             <div className={styles.questionsHeaderContainer}>
                 <Space>
                     <Title
@@ -214,7 +221,7 @@ const InterviewQuestionsCard = ({
                     </span>
                 </Space>
                 <Dropdown overlay={menu}>
-                    <MenuIcon style={{ cursor: "pointer" }} />
+                    <MoreIcon style={{ cursor: "pointer" }} />
                 </Dropdown>
             </div>
             {!collapsed && (

@@ -3,18 +3,14 @@ import { deleteInterview, loadInterviews, updateInterview, updateScorecard } fro
 import { loadTeamMembers, switchTeam } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { RootState } from "../../store/state-models";
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { interviewReducer, ReducerAction, ReducerActionType } from "./interview-reducer";
 import { emptyInterview } from "./interview-scorecard-utils";
-import { getCandidateName2, selectInterviewData, toInterview } from "../../store/interviews/selector";
+import { selectInterviewData, toInterview } from "../../store/interviews/selector";
 import Spinner from "../../components/spinner/spinner";
-import { Button, message, Modal, Row, Space } from "antd";
+import { Col, Divider, message, Modal, Row } from "antd";
 import styles from "./interview-scorecard.module.css";
-import { BackIcon, CloseIcon } from "../../utils/icons";
-import { routeHome, routeInterviewReport } from "../../utils/route";
-import TimeAgo from "../../components/time-ago/time-ago";
-import InterviewStatusTag from "../../components/tags/interview-status-tags";
-import Header from "../../components/header/header";
+import { routeInterviewReport } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import StepAssessmentInterview from "./step-assessment/type-interview/step-assessment-interview";
 import {
@@ -34,6 +30,10 @@ import { useDebounceEffect, useDebounceFn } from "ahooks";
 import { log } from "../../utils/log";
 import StepAssessmentLiveCoding from "./step-assessment/type-live-coding/step-assessment-live-coding";
 import StepAssessmentTakeHome from "./step-assessment/type-take-home/step-assessment-take-home";
+import Card from "../../components/card/card";
+import { InterviewInfo } from "../../components/scorecard/interview-info";
+import Title from "antd/lib/typography/Title";
+import InterviewScorecardHeader from "./interview-scorecard-header";
 
 export const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
 export const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
@@ -65,9 +65,15 @@ const InterviewScorecard = ({
     updateScorecard,
     switchTeam,
 }: Props) => {
+    type LayoutPanel = {
+        mainLayoutSpan: number;
+        panelLayoutSpan: number;
+    };
+
     const history = useHistory();
 
     const [interview, dispatch] = useReducer(interviewReducer, emptyInterview());
+    const [panelVisible, setPanelVisible] = useState(true);
 
     const interviewLoaded = interview.interviewId && interview.interviewId.length > 0;
     const interviewStarted = interview.status === Status.NEW || interview.status === Status.STARTED;
@@ -112,7 +118,7 @@ const InterviewScorecard = ({
         dispatch(action);
     };
 
-    const onCompletedClicked = () => {
+    const onCompleteClicked = () => {
         if (canCompleteInterview()) {
             onInterviewChange({
                 type: ReducerActionType.UPDATE_STATUS,
@@ -193,6 +199,20 @@ const InterviewScorecard = ({
             })),
         });
 
+    const onPanelVisibilityChange = (visible: boolean) => setPanelVisible(visible);
+
+    const visibleLayoutPanel: LayoutPanel = {
+        mainLayoutSpan: 18,
+        panelLayoutSpan: 6,
+    };
+
+    const invisibleLayoutPanel: LayoutPanel = {
+        mainLayoutSpan: 24,
+        panelLayoutSpan: 0,
+    };
+
+    const layoutPanel = panelVisible ? visibleLayoutPanel : invisibleLayoutPanel;
+
     if (!interviewLoaded) {
         return <Spinner />;
     }
@@ -200,77 +220,66 @@ const InterviewScorecard = ({
     return (
         <Row>
             <div className={styles.rootContainer}>
-                <Header
-                    title={getCandidateName2(interview, candidate)}
-                    subtitle={candidate?.position ?? ""}
-                    leftComponent={
-                        <Space size={16}>
-                            {history.action !== "POP" ? (
-                                <Button icon={<BackIcon />} size='large' onClick={() => history.goBack()} />
-                            ) : (
-                                <Button
-                                    icon={<CloseIcon />}
-                                    size='large'
-                                    onClick={() => history.replace(routeHome())}
-                                />
-                            )}
-                            <TimeAgo timestamp={interview.modifiedDate} saving={interviewUploading} />
-                        </Space>
-                    }
-                    rightComponent={
-                        <Space size={16}>
-                            <InterviewStatusTag
-                                interviewStartDateTime={new Date(interview.interviewDateTime)}
-                                status={interview.status}
-                            />
-                            {interviewStarted && (
-                                <Button type='primary' onClick={onCompletedClicked}>
-                                    Complete Interview
-                                </Button>
-                            )}
-                            {interviewCompleted && (
-                                <>
-                                    <Button onClick={onEditClicked}>Edit</Button>
-                                    <Button type='primary' onClick={onSubmitClicked}>
-                                        Submit Evaluation
-                                    </Button>
-                                </>
-                            )}
-                        </Space>
-                    }
+                <InterviewScorecardHeader
+                    candidate={candidate}
+                    interview={interview}
+                    interviewStarted={interviewStarted}
+                    interviewCompleted={interviewCompleted}
+                    interviewUploading={interviewUploading}
+                    history={history}
+                    onPanelVisibilityChange={onPanelVisibilityChange}
+                    onEditClicked={onEditClicked}
+                    onCompleteClicked={onCompleteClicked}
+                    onSubmitClicked={onSubmitClicked}
                 />
 
-                {interview.interviewType === InterviewType.INTERVIEW && interviewStarted && (
-                    <StepAssessmentInterview
-                        interview={interview}
-                        candidate={candidate}
-                        teamMembers={interviewers}
-                        onInterviewChange={onInterviewChange}
-                    />
-                )}
+                {interviewStarted && (
+                    <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} className={styles.interviewSectionContainer}>
+                        <Row gutter={32}>
+                            <Col span={layoutPanel.mainLayoutSpan} className={styles.column}>
+                                {interview.interviewType === InterviewType.INTERVIEW && (
+                                    <StepAssessmentInterview
+                                        interview={interview}
+                                        candidate={candidate}
+                                        teamMembers={interviewers}
+                                        onInterviewChange={onInterviewChange}
+                                    />
+                                )}
 
-                {interview.interviewType === InterviewType.LIVE_CODING && interviewStarted && (
-                    <StepAssessmentLiveCoding
-                        interview={interview}
-                        candidate={candidate}
-                        interviewers={interviewers}
-                        onInterviewChange={onInterviewChange}
-                    />
-                )}
+                                {interview.interviewType === InterviewType.LIVE_CODING && (
+                                    <StepAssessmentLiveCoding
+                                        interview={interview}
+                                        onInterviewChange={onInterviewChange}
+                                    />
+                                )}
 
-                {interview.interviewType === InterviewType.TAKE_HOME_TASK && interviewStarted && (
-                    <StepAssessmentTakeHome
-                        interview={interview}
-                        candidate={candidate}
-                        interviewers={interviewers}
-                        onInterviewChange={onInterviewChange}
-                    />
+                                {interview.interviewType === InterviewType.TAKE_HOME_TASK && (
+                                    <StepAssessmentTakeHome
+                                        interview={interview}
+                                        candidate={candidate}
+                                        onInterviewChange={onInterviewChange}
+                                    />
+                                )}
+                            </Col>
+
+                            <Col span={layoutPanel.panelLayoutSpan}>
+                                <Card withPadding={false}>
+                                    <Title level={5} className={styles.panelTitle}>
+                                        Interview
+                                    </Title>
+                                    <Divider />
+                                    <div className={styles.panelContent}>
+                                        <InterviewInfo interview={interview} interviewers={interviewers} />
+                                    </div>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Col>
                 )}
 
                 {interviewCompleted && (
                     <InterviewEvaluation
                         interview={interview}
-                        candidate={candidate}
                         interviewers={interviewers}
                         onInterviewChange={onInterviewChange}
                     />
