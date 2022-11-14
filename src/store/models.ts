@@ -73,6 +73,7 @@ export interface Interview {
     decision: InterviewAssessment;
     notes?: string;
     redFlags?: RedFlag[];
+    checklist?: InterviewChecklist[];
     isDemo: boolean;
     isShared: boolean;
     createdDate: string;
@@ -183,6 +184,11 @@ export enum InterviewType {
     TAKE_HOME_TASK = "TAKE_HOME_TASK",
 }
 
+export interface InterviewChecklist {
+    item: string;
+    checked: boolean;
+}
+
 export interface Template {
     userId: string;
     templateId: string;
@@ -194,6 +200,7 @@ export interface Template {
     structure: TemplateStructure;
     interviewType: InterviewType;
     challenges?: TemplateChallenge[];
+    checklist?: InterviewChecklist[];
 }
 
 export interface LibraryTemplate {

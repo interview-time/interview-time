@@ -30,6 +30,7 @@ import { cloneLibraryTemplate, cloneSharedTemplate, emptyTemplate, newTemplateFr
 import TemplateStepPreview from "./step-preview/template-step-preview";
 import { v4 as uuidv4 } from "uuid";
 import StepDetailsTakeHome from "./step-details/type-take-home/step-details-take-home";
+import { log } from "../../utils/log";
 
 const { Step } = Steps;
 
@@ -104,8 +105,8 @@ const TemplateNew = ({
     }, []);
 
     useEffect(() => {
-        console.log("originalTemplate", originalTemplate);
-        console.log("template", template);
+        log("originalTemplate", originalTemplate);
+        log("template", template);
         if (originalTemplate && isEmpty(template.templateId)) {
             dispatch({
                 type: ReducerActionType.SET_TEMPLATE,

@@ -22,7 +22,6 @@ type Props = {
 const TakeHomeChallengeCard = ({ teamId, challenge, onUpdateChallenge }: Props) => {
 
     const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("onTitleChange", challenge);
         onUpdateChallenge({
             ...challenge,
             name: e.target.value,
@@ -30,7 +29,6 @@ const TakeHomeChallengeCard = ({ teamId, challenge, onUpdateChallenge }: Props) 
     };
 
     const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        console.log("onDescriptionChange", challenge);
         onUpdateChallenge({
             ...challenge,
             description: e.target.value,

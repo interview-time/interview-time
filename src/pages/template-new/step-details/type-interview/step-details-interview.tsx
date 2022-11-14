@@ -1,4 +1,10 @@
-import { QuestionDifficulty, Template, TemplateGroup, TemplateQuestion } from "../../../../store/models";
+import {
+    InterviewChecklist,
+    QuestionDifficulty,
+    Template,
+    TemplateGroup,
+    TemplateQuestion,
+} from "../../../../store/models";
 import styles from "./step-details-interview.module.css";
 import TemplateMetaCard from "../template-meta-card";
 import React, { useState } from "react";
@@ -12,6 +18,7 @@ import Card from "../../../../components/card/card";
 import { sortBy } from "lodash";
 import TemplateGroupModal from "./template-group-modal";
 import { ReducerAction, ReducerActionType } from "../../template-reducer";
+import TemplateChecklistCard from "../template-checklist-card";
 
 type Props = {
     template: Readonly<Template>;
@@ -207,9 +214,29 @@ const StepDetailsInterview = ({ template, onTemplateChange, allQuestionTags }: P
         });
     };
 
+    const onUpdateChecklist = (checklist: InterviewChecklist, index: number) =>
+        onTemplateChange({
+            type: ReducerActionType.UPDATE_CHECKLIST,
+            checklist: checklist,
+            checklistIndex: index,
+        });
+
+    const onAddChecklist = (checklist: InterviewChecklist) =>
+        onTemplateChange({
+            type: ReducerActionType.ADD_CHECKLIST,
+            checklist: checklist,
+        });
+
+
+    const onRemoveChecklist = (index: number) =>
+        onTemplateChange({
+            type: ReducerActionType.REMOVE_CHECKLIST,
+            checklistIndex: index,
+        });
+
     return (
         <Row justify='center'>
-            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }} className={styles.rootCol}>
+            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }}>
                 <Form
                     name='basic'
                     layout='vertical'
@@ -217,6 +244,7 @@ const StepDetailsInterview = ({ template, onTemplateChange, allQuestionTags }: P
                         title: template.title,
                         description: template.description,
                     }}
+                    className={styles.column}
                 >
                     <TemplateMetaCard
                         interviewType={template.interviewType}
@@ -224,9 +252,21 @@ const StepDetailsInterview = ({ template, onTemplateChange, allQuestionTags }: P
                         onDescriptionChange={onDescriptionChange}
                     />
 
-                    <TemplateHeaderCard header={template.structure.header} onHeaderChanged={onHeaderChanged} />
+                    <Row gutter={24}>
+                        <Col span={16} className={styles.colStretch}>
+                            <TemplateHeaderCard header={template.structure.header} onHeaderChanged={onHeaderChanged} />
+                        </Col>
+                        <Col span={8} className={styles.colStretch}>
+                            <TemplateChecklistCard
+                                checklist={template.checklist || []}
+                                onUpdateChecklist={onUpdateChecklist}
+                                onAddChecklist={onAddChecklist}
+                                onRemoveChecklist={onRemoveChecklist}
+                            />
+                        </Col>
+                    </Row>
 
-                    <Card className={styles.cardSpace}>
+                    <Card>
                         <Title level={4}>Questions</Title>
                         <Text type='secondary'>
                             Grouping questions helps to evaluate skills in a particular competence area and make a more
@@ -234,7 +274,7 @@ const StepDetailsInterview = ({ template, onTemplateChange, allQuestionTags }: P
                         </Text>
                         <div>
                             {template.structure.groups.map((group: TemplateGroup, index) => {
-                                console.log(index, group)
+                                console.log(index, group);
                                 return (
                                     <TemplateQuestionsCard
                                         key={group.groupId} /* @ts-ignore */
@@ -266,7 +306,6 @@ const StepDetailsInterview = ({ template, onTemplateChange, allQuestionTags }: P
                             New question group
                         </Button>
                     </Card>
-
                 </Form>
 
                 <TemplateGroupModal

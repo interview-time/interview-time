@@ -1,5 +1,5 @@
 import { TemplateChallenge, QuestionDifficulty, Template, TemplateQuestion } from "../../../../store/models";
-import styles from "../type-interview/step-details-interview.module.css";
+import styles from "./step-details-live-coding.module.css";
 import { Col, Form, Row } from "antd";
 import TemplateMetaCard from "../template-meta-card";
 import React, { useState } from "react";
@@ -213,7 +213,7 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
 
     return (
         <Row justify='center'>
-            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }} className={styles.rootCol}>
+            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }}>
                 <Form
                     name='basic'
                     layout='vertical'
@@ -221,6 +221,7 @@ const StepDetailsLiveCoding = ({ template, teamId, onTemplateChange }: Props) =>
                         title: template.title,
                         description: template.description,
                     }}
+                    className={styles.column}
                 >
                     <TemplateMetaCard
                         interviewType={template.interviewType}

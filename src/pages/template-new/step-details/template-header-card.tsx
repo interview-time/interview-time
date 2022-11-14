@@ -1,7 +1,6 @@
 import Text from "antd/lib/typography/Text";
 import Card from "../../../components/card/card";
 import React from "react";
-import styles from "./template-header-card.module.css";
 import Title from "antd/lib/typography/Title";
 import TextArea from "antd/lib/input/TextArea";
 
@@ -12,10 +11,10 @@ type Props = {
 
 const TemplateHeaderCard = ({ header, onHeaderChanged }: Props) => {
     return (
-        <Card className={styles.cardSpace}>
-            <Title level={4}>Intro</Title>
+        <Card>
+            <Title level={4}>💡 Interview reminders</Title>
             <Text type='secondary'>
-                Intro section serves as a reminder for what interviewer should do at the beginning of the interview.
+                This section serves as a reminder for what interviewer should do at the beginning of the interview.
             </Text>
             <TextArea
                 style={{ marginTop: 16 }}

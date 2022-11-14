@@ -1,0 +1,39 @@
+.checkboxGroup {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.checkboxItem {
+    display: flex;
+    align-items: center;
+}
+
+.checkboxItem:hover .removeIcon {
+    opacity: 1;
+}
+
+.checkboxInput {
+    padding: 0;
+    min-height: 24px;
+}
+
+.linkIconButton {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.addButtonHolder {
+    display: flex;
+    justify-content: center;
+}
+
+.removeIcon {
+    cursor: pointer;
+    opacity: 0;
+}
+
+/*.removeIcon:hover {*/
+/*    opacity: 1;*/
+/*}*/

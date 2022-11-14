@@ -22,6 +22,7 @@ export enum ReducerActionType {
     ADD_QUESTIONS = "ADD_QUESTIONS",
     REMOVE_QUESTIONS = "REMOVE_QUESTIONS",
     UPDATE_STATUS = "UPDATE_STATUS",
+    UPDATE_CHECKLIST_ITEM = "UPDATE_CHECKLIST_ITEM",
     UPDATE_ASSESSMENT = "UPDATE_ASSESSMENT",
     UPDATE_SELECTED_LIVE_CODING_CHALLENGE = "UPDATE_SELECTED_LIVE_CODING_CHALLENGE",
 }
@@ -79,6 +80,12 @@ export type UpdateChallengeAction = {
     selected: boolean;
 };
 
+export type UpdateChecklistItemAction = {
+    type: ReducerActionType.UPDATE_CHECKLIST_ITEM;
+    index: number;
+    checked: boolean;
+};
+
 export type ReducerAction =
     | SetInterviewAction
     | UpdateNotesAction
@@ -89,7 +96,8 @@ export type ReducerAction =
     | RemoveQuestionsAction
     | UpdateStatusAction
     | UpdateAssessmentAction
-    | UpdateChallengeAction;
+    | UpdateChallengeAction
+    | UpdateChecklistItemAction;
 
 export const interviewReducer = (state: Interview, action: ReducerAction): Interview => {
     switch (action.type) {
@@ -156,6 +164,14 @@ export const interviewReducer = (state: Interview, action: ReducerAction): Inter
             );
             if (challenge) {
                 challenge.selected = action.selected;
+            }
+
+            return newState;
+        }
+        case ReducerActionType.UPDATE_CHECKLIST_ITEM: {
+            const newState = cloneDeep(state);
+            if (newState.checklist) {
+                newState.checklist[action.index].checked = action.checked;
             }
 
             return newState;

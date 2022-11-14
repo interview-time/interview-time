@@ -318,6 +318,7 @@ const InterviewSchedule = ({
             takeHomeChallenge:
                 template.interviewType === InterviewType.TAKE_HOME_TASK ? template.challenges[0] : undefined,
             structure: template.structure,
+            checklist: template.checklist,
         });
     };
 

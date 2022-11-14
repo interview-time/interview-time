@@ -35,48 +35,38 @@ const TemplateStepPreview = ({ template, onTemplateChange }: Props) => {
 
     return (
         <Row justify='center'>
-            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }} className={styles.rootCol}>
+            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }} className={styles.column}>
                 <div className={styles.infoCard}>
                     <img src={InfoCircleIcon} alt='Info icon' />
                     <Text className={styles.infoText}>
                         This is a preview of the experience that will be available during the interview.
                     </Text>
                 </div>
-                <Card className={styles.cardSpace}>
+                <Card>
                     {/* @ts-ignore */}
                     <IntroSection interview={template} />
                 </Card>
                 {template.interviewType === InterviewType.INTERVIEW && (
-                    <div className={styles.cardSpace}>
-                        {/* @ts-ignore */}
-                        <TemplateGroupsSection template={template} />
-                    </div>
+                    /* @ts-ignore */
+                    <TemplateGroupsSection template={template} />
                 )}
                 {template.interviewType === InterviewType.LIVE_CODING && (
                     <>
-                        <div className={styles.cardSpace}>
-                            <LiveCodingChallengeCard
-                                teamId={template.teamId}
-                                challenges={template.challenges || []}
-                                onChallengeSelectionChanged={onChallengeSelectionChanged}
-                            />
-                        </div>
-                        <div className={styles.cardSpace}>
-                            <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
-                        </div>
+                        <LiveCodingChallengeCard
+                            teamId={template.teamId}
+                            challenges={template.challenges || []}
+                            onChallengeSelectionChanged={onChallengeSelectionChanged}
+                        />
+                        <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
                     </>
                 )}
                 {template.interviewType === InterviewType.TAKE_HOME_TASK && (
                     <>
-                        <div className={styles.cardSpace}>
-                            <TakeHomeChallengeCard
-                                teamId={template.teamId}
-                                challenge={selectTakeHomeAssignment(template)}
-                            />
-                        </div>
-                        <div className={styles.cardSpace}>
-                            <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
-                        </div>
+                        <TakeHomeChallengeCard
+                            teamId={template.teamId}
+                            challenge={selectTakeHomeAssignment(template)}
+                        />
+                        <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
                     </>
                 )}
             </Col>
