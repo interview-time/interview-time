@@ -130,7 +130,7 @@ namespace CafApi.Command
                 TakeHomeChallenge = command.TakeHomeChallenge,
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
-                LinkId = command.Interviewers.Count > 1 ? Guid.NewGuid().ToString() : null,
+                LinkId = Guid.NewGuid().ToString(),
                 IsDemo = command.UserId == _demoUserId, // Demo account
                 Checklist = command.Checklist
             };

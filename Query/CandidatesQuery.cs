@@ -35,6 +35,8 @@ namespace CafApi.Query
 
         public string Email { get; set; }
 
+        public string Phone { get; set; }
+
         public string ResumeUrl { get; set; }
 
         public string LinkedIn { get; set; }
@@ -123,6 +125,9 @@ namespace CafApi.Query
                         : candidate.CandidateName,
                     Email = !anonymisedCandidateIds.Contains(candidate.CandidateId)
                         ? candidate.Email
+                        : null,
+                    Phone = !anonymisedCandidateIds.Contains(candidate.CandidateId)
+                        ? candidate.Phone
                         : null,
                     Position = candidate.Position,
                     LinkedIn = candidate.LinkedIn,

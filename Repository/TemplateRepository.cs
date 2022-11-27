@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
@@ -10,10 +11,10 @@ namespace CafApi.Repository
     public class TemplateRepository : ITemplateRepository
     {
         private readonly DynamoDBContext _context;
-        
+
         public TemplateRepository(IAmazonDynamoDB dynamoDbClient)
         {
-             _context = new DynamoDBContext(dynamoDbClient);
+            _context = new DynamoDBContext(dynamoDbClient);
         }
 
         public async Task<Template> GetTemplate(string templateId)
@@ -26,6 +27,6 @@ namespace CafApi.Repository
             var templates = await search.GetRemainingAsync();
 
             return templates.FirstOrDefault();
-        }
+        }      
     }
 }
