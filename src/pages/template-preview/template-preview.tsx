@@ -3,7 +3,7 @@ import styles from "./template-preview.module.css";
 import Text from "antd/lib/typography/Text";
 import {
     IntroSection,
-    TemplateGroupsSection,
+    TemplateGroupsSection
 } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
 import { addTemplate, deleteTemplate, loadTemplates, shareTemplate } from "../../store/templates/actions";
 import { connect } from "react-redux";
@@ -15,7 +15,7 @@ import {
     DeleteOutlined,
     EditOutlined,
     ExclamationCircleOutlined,
-    ShareAltOutlined,
+    ShareAltOutlined
 } from "@ant-design/icons";
 import Spinner from "../../components/spinner/spinner";
 import confirm from "antd/lib/modal/confirm";
@@ -54,7 +54,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
             setTemplate({
                 ...originalTemplate,
                 isShared: false,
-                token: "",
+                token: ""
             });
         }
         // eslint-disable-next-line
@@ -98,7 +98,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                 deleteTemplate(template.templateId);
                 history.push(routeTemplates());
                 message.success(`Template '${template.title}' removed.`);
-            },
+            }
         });
     };
 
@@ -113,7 +113,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
     const onShareChange = (shared: boolean) => {
         setTemplate({
             ...template,
-            isShared: shared,
+            isShared: shared
         });
         shareTemplate(template.templateId, shared);
     };
@@ -145,10 +145,10 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
     return (
         // @ts-ignore
         <Layout contentStyle={styles.rootContainer}>
-            <div>
+            <div className={styles.column}>
                 <Card>
                     <Row gutter={[32, 32]} wrap={false}>
-                        <Col flex='auto'>
+                        <Col flex="auto">
                             <div style={{ marginBottom: 16 }}>
                                 {/* @ts-ignore */}
                                 <TitleBack
@@ -156,7 +156,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                                     onBackClicked={onBackClicked}
                                 />
                             </div>
-                            <Text type='secondary'>
+                            <Text type="secondary">
                                 Use this template to schedule new interview and customize as you go.
                             </Text>
                         </Col>
@@ -168,7 +168,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                     <Divider />
 
                     <div className={styles.divSpaceBetween}>
-                        <Button type='primary' onClick={onScheduleInterviewClicked}>
+                        <Button type="primary" onClick={onScheduleInterviewClicked}>
                             Schedule interview
                         </Button>
 
@@ -177,42 +177,35 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                         </Dropdown.Button>
                     </div>
                 </Card>
-                <Card className={styles.cardSpace}>
+                <Card>
                     {/* @ts-ignore */}
                     <IntroSection interview={template} />
                 </Card>
 
                 {template.interviewType === InterviewType.INTERVIEW && (
-                    <div className={styles.cardSpace}>
+                    <>
                         {/* @ts-ignore */}
                         <TemplateGroupsSection template={template} />
-                    </div>
+                    </>
                 )}
                 {template.interviewType === InterviewType.LIVE_CODING && (
                     <>
-                        <div className={styles.cardSpace}>
-                            <LiveCodingChallengeCard
-                                teamId={template.teamId}
-                                challenges={template.challenges || []}
-                                onChallengeSelectionChanged={()=> {}}
-                            />
-                        </div>
-                        <div className={styles.cardSpace}>
-                            <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
-                        </div>
+                        <LiveCodingChallengeCard
+                            teamId={template.teamId}
+                            challenges={template.challenges || []}
+                            onChallengeSelectionChanged={() => {
+                            }}
+                        />
+                        <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
                     </>
                 )}
                 {template.interviewType === InterviewType.TAKE_HOME_TASK && (
                     <>
-                        <div className={styles.cardSpace}>
-                            <TakeHomeChallengeCard
-                                teamId={template.teamId}
-                                challenge={selectTakeHomeAssignment(template)}
-                            />
-                        </div>
-                        <div className={styles.cardSpace}>
-                            <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
-                        </div>
+                        <TakeHomeChallengeCard
+                            teamId={template.teamId}
+                            challenge={selectTakeHomeAssignment(template)}
+                        />
+                        <LiveCodingAssessmentCard questions={selectAssessmentGroup(template).questions || []} />
                     </>
                 )}
             </div>
@@ -234,7 +227,7 @@ const mapState = (state: RootState, ownProps: any) => {
     const templateId = ownProps.match.params.id;
 
     return {
-        originalTemplate: selectTemplate(state.templates, templateId),
+        originalTemplate: selectTemplate(state.templates, templateId)
     };
 };
 

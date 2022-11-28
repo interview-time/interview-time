@@ -2,10 +2,6 @@
     padding: 40px;
 }
 
-.cardSpace {
-    margin-top: 32px;
-}
-
 .rowEnd {
     margin-top: 12px;
     margin-bottom: 12px;
@@ -25,5 +21,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
 }
 
