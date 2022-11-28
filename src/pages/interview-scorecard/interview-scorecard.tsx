@@ -64,10 +64,6 @@ const InterviewScorecard = ({
     updateScorecard,
     switchTeam,
 }: Props) => {
-    type LayoutPanel = {
-        mainLayoutSpan: number;
-        panelLayoutSpan: number;
-    };
 
     const history = useHistory();
 
@@ -208,18 +204,6 @@ const InterviewScorecard = ({
 
     const onPanelVisibilityChange = (visible: boolean) => setPanelVisible(visible);
 
-    const visibleLayoutPanel: LayoutPanel = {
-        mainLayoutSpan: 18,
-        panelLayoutSpan: 6,
-    };
-
-    const invisibleLayoutPanel: LayoutPanel = {
-        mainLayoutSpan: 24,
-        panelLayoutSpan: 0,
-    };
-
-    const layoutPanel = panelVisible ? visibleLayoutPanel : invisibleLayoutPanel;
-
     if (!interviewLoaded) {
         return <Spinner />;
     }
@@ -243,7 +227,7 @@ const InterviewScorecard = ({
                 {interviewStarted && (
                     <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} className={styles.interviewSectionContainer}>
                         <Row gutter={32}>
-                            <Col span={layoutPanel.mainLayoutSpan} className={styles.column}>
+                            <Col span={panelVisible ? 18 : 24} className={styles.column}>
                                 {interview.interviewType === InterviewType.INTERVIEW && (
                                     <StepAssessmentInterview
                                         interview={interview}
@@ -269,7 +253,7 @@ const InterviewScorecard = ({
                                 )}
                             </Col>
 
-                            <Col span={layoutPanel.panelLayoutSpan} className={styles.column}>
+                            {panelVisible && <Col span={6} className={styles.column}>
                                 <InterviewInfoCard interview={interview} interviewers={interviewers} />
 
                                 {interview.checklist && interview.checklist.length > 0 && (
@@ -278,7 +262,7 @@ const InterviewScorecard = ({
                                         onChecklistItemClicked={onChecklistItemClicked}
                                     />
                                 )}
-                            </Col>
+                            </Col>}
                         </Row>
                     </Col>
                 )}
