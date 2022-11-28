@@ -117,6 +117,7 @@ const InterviewQuestionsCard = ({
             key: "question",
             sortDirections: ["descend", "ascend"],
             className: styles.questionCell,
+            width: '100%',
             shouldCellUpdate: (record, prevRecord) => record.question !== prevRecord.question,
             sorter: (a, b) => localeCompare(a.question, b.question),
             render: question => {
