@@ -21,6 +21,9 @@ namespace CafApi.Models
         [DynamoDBIgnore]
         public string CandidateName { get; set; }
 
+        [DynamoDBIgnore]
+        public string InterviewerName { get; set; }
+
         public string CandidateNotes { get; set; }
 
         public string Position { get; set; }
@@ -69,7 +72,7 @@ namespace CafApi.Models
 
         public TakeHomeChallenge TakeHomeChallenge { get; set; }
 
-        public List<ChecklistItem> Checklist { get; set; }        
+        public List<ChecklistItem> Checklist { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }

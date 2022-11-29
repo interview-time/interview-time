@@ -28,11 +28,24 @@ namespace CafApi.Query
 
     public class CandidateDetailsQueryResult : CandidateItem
     {
+        public List<InterviewStage> Stages { get; set; }
+    }
+
+    public class InterviewStage
+    {
+        public string StageName { get; set; }
+
+        public DateTime? InterviewStartDate { get; set; }
+
+        public string LinkId { get; set; }
+
         public List<Interview> Interviews { get; set; }
     }
 
     public class CandidateDetailsQueryHandler : IRequestHandler<CandidateDetailsQuery, CandidateDetailsQueryResult>
     {
+        private readonly IUserRepository _userRepository;
+        private readonly ITemplateRepository _templateRepository;
         private readonly ICandidateRepository _candidateRepository;
         private readonly IInterviewRepository _interviewRepository;
         private readonly IPermissionsService _permissionsService;
@@ -40,12 +53,16 @@ namespace CafApi.Query
         private readonly IAmazonS3 _s3Client;
 
         public CandidateDetailsQueryHandler(
+            IUserRepository userRepository,
+            ITemplateRepository templateRepository,
             ICandidateRepository candidateRepository,
             IInterviewRepository interviewRepository,
             IPermissionsService permissionsService,
             IAmazonDynamoDB dynamoDbClient,
             IAmazonS3 s3Client)
         {
+            _userRepository = userRepository;
+            _templateRepository = templateRepository;
             _candidateRepository = candidateRepository;
             _interviewRepository = interviewRepository;
             _permissionsService = permissionsService;
@@ -77,6 +94,20 @@ namespace CafApi.Query
             }
 
             var isAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
+            List<InterviewStage> stages = null;
+
+            if (!query.IsShallow)
+            {
+                await AssignInterviewerName(interviews);
+
+                // some of the older interviews with one interviewer don't have LinkId so fixing it here
+                if (interviews.Any(i => i.LinkId == null))
+                {
+                    await AssignLinkId(interviews);
+                }
+
+                stages = await GetStages(interviews);
+            }
 
             return new CandidateDetailsQueryResult
             {
@@ -84,6 +115,7 @@ namespace CafApi.Query
                 CandidateName = !isAnonymised ? candidate.CandidateName : AnonymiseName(candidate.CandidateName),
                 Position = candidate.Position,
                 Email = !isAnonymised ? candidate.Email : null,
+                Phone = !isAnonymised ? candidate.Phone : null,
                 ResumeUrl = !isAnonymised && candidate.ResumeFile != null
                     ? GetDownloadSignedUrl(query.TeamId, query.CandidateId, candidate.ResumeFile)
                     : null,
@@ -94,7 +126,7 @@ namespace CafApi.Query
                 Tags = candidate.Tags,
                 Archived = candidate.Archived,
                 IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
-                Interviews = !query.IsShallow ? interviews : null,
+                Stages = !query.IsShallow ? stages : null,
                 CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate,
                 IsAnonymised = isAnonymised
             };
@@ -116,6 +148,54 @@ namespace CafApi.Query
         private string AnonymiseName(string name)
         {
             return $"{name.First()}*****{name.Last()}";
+        }
+
+        private async Task AssignLinkId(List<Interview> interviews)
+        {
+            var interviewsWithoutLink = interviews.Where(i => i.LinkId == null).ToList();
+
+            foreach (var interview in interviewsWithoutLink)
+            {
+                interview.LinkId = Guid.NewGuid().ToString();
+                await _context.SaveAsync(interview);
+            }
+        }
+
+        private async Task AssignInterviewerName(List<Interview> interviews)
+        {
+            var interviewerIds = interviews.Select(i => i.UserId).Distinct().ToList();
+            var profiles = await _userRepository.GetUserProfiles(interviewerIds);
+
+            foreach (var interview in interviews)
+            {
+                interview.InterviewerName = profiles.FirstOrDefault(p => p.UserId == interview.UserId)?.Name;
+            }
+        }
+
+        private async Task<List<InterviewStage>> GetStages(List<Interview> interviews)
+        {
+            var templates = new List<Template>();
+            var templatesIds = interviews
+                .Where(i => i.TemplateId != null || i.TemplateIds != null)
+                .Select(i => i.TemplateIds?.FirstOrDefault() ?? i.TemplateId)
+                .Distinct().ToList();
+
+            foreach (var templateId in templatesIds)
+            {
+                var template = await _templateRepository.GetTemplate(templateId);
+                templates.Add(template);
+            }
+
+            var stages = interviews
+                .GroupBy(i => i.LinkId).Select(ig => new InterviewStage
+                {
+                    StageName = templates.FirstOrDefault(t => t.TemplateId == (ig.FirstOrDefault()?.TemplateIds?.FirstOrDefault() ?? ig.FirstOrDefault()?.TemplateId))?.Title,
+                    LinkId = ig.Key,
+                    InterviewStartDate = ig.FirstOrDefault()?.InterviewDateTime,
+                    Interviews = ig.ToList()
+                }).OrderBy(s => s.InterviewStartDate).ToList();
+
+            return stages;
         }
     }
 }
