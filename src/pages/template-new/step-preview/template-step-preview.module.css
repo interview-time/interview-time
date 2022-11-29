@@ -6,14 +6,23 @@
     padding-top: 32px;
 }
 
-.infoCard {
+.previewCard {
     background: var(--color-primary-50);
     border-radius: 8px;
     padding: 12px;
 }
 
-.infoText {
+.previewText {
     color: var(--color-strong);
     font-weight: 500;
     margin-left: 12px;
+}
+
+.introCardCol {
+    display: flex;
+    align-items: stretch;
+}
+
+.introCard {
+    width: 100%;
 }

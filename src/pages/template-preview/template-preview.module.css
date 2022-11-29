@@ -29,3 +29,12 @@
     row-gap: 32px;
 }
 
+.introCardCol {
+    display: flex;
+    align-items: stretch;
+}
+
+.introCard {
+    width: 100%;
+}
+

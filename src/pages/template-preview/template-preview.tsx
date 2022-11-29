@@ -31,6 +31,7 @@ import { selectAssessmentGroup, selectTakeHomeAssignment, selectTemplate } from 
 import LiveCodingAssessmentCard from "../../components/scorecard/type-live-coding/assessment-card-template";
 import LiveCodingChallengeCard from "../../components/scorecard/type-live-coding/challenge-card-template";
 import TakeHomeChallengeCard from "../../components/scorecard/type-take-home/challenge-card-template";
+import { InterviewChecklistCard } from "../../components/scorecard/interview-checklist-card";
 
 type Props = {
     originalTemplate?: Readonly<Template>;
@@ -177,10 +178,21 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                         </Dropdown.Button>
                     </div>
                 </Card>
-                <Card>
-                    {/* @ts-ignore */}
-                    <IntroSection interview={template} />
-                </Card>
+                <Row gutter={[32, 32]} wrap={false}>
+                    <Col flex="auto" className={styles.introCardCol}>
+                        <Card className={styles.introCard}>
+                            {/* @ts-ignore */}
+                            <IntroSection interview={template} />
+                        </Card>
+                    </Col>
+                    {template.checklist && template.checklist.length > 0 && (<Col flex="400px">
+                        <InterviewChecklistCard
+                            checklist={template.checklist}
+                            onChecklistItemClicked={() => {
+                            }}
+                        />
+                    </Col>)}
+                </Row>
 
                 {template.interviewType === InterviewType.INTERVIEW && (
                     <>
