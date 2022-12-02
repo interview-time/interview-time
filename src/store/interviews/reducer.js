@@ -122,7 +122,7 @@ const interviewsReducer = (state = initialState, action) => {
 
             interview.modifiedDate = formatDateISO(new Date());
 
-            console.log(interview)
+            log(interview)
 
             getAccessTokenSilently()
                 .then(token => axios.put(URL, interview, config(token)))

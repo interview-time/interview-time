@@ -8,7 +8,7 @@ import { interviewReducer, ReducerAction, ReducerActionType } from "./interview-
 import { emptyInterview } from "./interview-scorecard-utils";
 import { selectInterviewData, toInterview } from "../../store/interviews/selector";
 import Spinner from "../../components/spinner/spinner";
-import { Col, Divider, message, Modal, Row } from "antd";
+import { Col, message, Modal, Row } from "antd";
 import styles from "./interview-scorecard.module.css";
 import { routeInterviewReport } from "../../utils/route";
 import { useHistory } from "react-router-dom";
@@ -30,10 +30,9 @@ import { useDebounceEffect, useDebounceFn } from "ahooks";
 import { log } from "../../utils/log";
 import StepAssessmentLiveCoding from "./step-assessment/type-live-coding/step-assessment-live-coding";
 import StepAssessmentTakeHome from "./step-assessment/type-take-home/step-assessment-take-home";
-import Card from "../../components/card/card";
-import { InterviewInfo } from "../../components/scorecard/interview-info";
-import Title from "antd/lib/typography/Title";
 import InterviewScorecardHeader from "./interview-scorecard-header";
+import { InterviewChecklistCard } from "../../components/scorecard/interview-checklist-card";
+import { InterviewInfoCard } from "../../components/scorecard/interview-info-card";
 
 export const DATA_CHANGE_DEBOUNCE_MAX = 10 * 1000; // 10 sec
 export const DATA_CHANGE_DEBOUNCE = 2 * 1000; // 2 sec
@@ -65,10 +64,6 @@ const InterviewScorecard = ({
     updateScorecard,
     switchTeam,
 }: Props) => {
-    type LayoutPanel = {
-        mainLayoutSpan: number;
-        panelLayoutSpan: number;
-    };
 
     const history = useHistory();
 
@@ -199,19 +194,15 @@ const InterviewScorecard = ({
             })),
         });
 
+    const onChecklistItemClicked = (index: number, checked: boolean) => {
+        onInterviewChange({
+            type: ReducerActionType.UPDATE_CHECKLIST_ITEM,
+            index: index,
+            checked: checked,
+        });
+    };
+
     const onPanelVisibilityChange = (visible: boolean) => setPanelVisible(visible);
-
-    const visibleLayoutPanel: LayoutPanel = {
-        mainLayoutSpan: 18,
-        panelLayoutSpan: 6,
-    };
-
-    const invisibleLayoutPanel: LayoutPanel = {
-        mainLayoutSpan: 24,
-        panelLayoutSpan: 0,
-    };
-
-    const layoutPanel = panelVisible ? visibleLayoutPanel : invisibleLayoutPanel;
 
     if (!interviewLoaded) {
         return <Spinner />;
@@ -236,7 +227,7 @@ const InterviewScorecard = ({
                 {interviewStarted && (
                     <Col span={22} offset={1} xl={{ span: 20, offset: 2 }} className={styles.interviewSectionContainer}>
                         <Row gutter={32}>
-                            <Col span={layoutPanel.mainLayoutSpan} className={styles.column}>
+                            <Col span={panelVisible ? 18 : 24} className={styles.column}>
                                 {interview.interviewType === InterviewType.INTERVIEW && (
                                     <StepAssessmentInterview
                                         interview={interview}
@@ -262,17 +253,16 @@ const InterviewScorecard = ({
                                 )}
                             </Col>
 
-                            <Col span={layoutPanel.panelLayoutSpan}>
-                                <Card withPadding={false}>
-                                    <Title level={5} className={styles.panelTitle}>
-                                        Interview
-                                    </Title>
-                                    <Divider />
-                                    <div className={styles.panelContent}>
-                                        <InterviewInfo interview={interview} interviewers={interviewers} />
-                                    </div>
-                                </Card>
-                            </Col>
+                            {panelVisible && <Col span={6} className={styles.column}>
+                                <InterviewInfoCard interview={interview} interviewers={interviewers} />
+
+                                {interview.checklist && interview.checklist.length > 0 && (
+                                    <InterviewChecklistCard
+                                        checklist={interview.checklist}
+                                        onChecklistItemClicked={onChecklistItemClicked}
+                                    />
+                                )}
+                            </Col>}
                         </Row>
                     </Col>
                 )}

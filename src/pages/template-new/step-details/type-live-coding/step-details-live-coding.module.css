@@ -1,7 +1,7 @@
-.rootCol {
-    padding: 36px;
-}
-
-.cardSpace {
-    margin-top: 32px;
+.column {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+    padding-bottom: 32px;
+    padding-top: 32px;
 }
