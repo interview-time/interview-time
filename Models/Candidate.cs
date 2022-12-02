@@ -46,6 +46,8 @@ namespace CafApi.Models
 
         public List<string> Tags { get; set; }
 
+        public bool IsDemo { get; set; }
+
         public string ModifiedBy { get; set; }
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
