@@ -1,5 +1,6 @@
+import { ApiRequest } from "./candidates/actions";
 import {
-    Candidate,
+    CandidateDetails,
     CandidateChallenge,
     Interview,
     LibraryTemplate,
@@ -10,6 +11,20 @@ import {
     Template,
     UserProfile,
 } from "./models";
+
+export interface IApiResults extends Record<ApiRequest, IApiRequestResult> {}
+
+export enum ApiRequestStatus {
+    NotSubmitted,
+    InProgress,
+    Success,
+    Failed,
+}
+
+export interface IApiRequestResult {
+    status: ApiRequestStatus;
+    error?: string;
+}
 
 export interface RootState {
     user: UserState;
@@ -41,7 +56,11 @@ export interface InterviewState {
 }
 
 export interface CandidateState {
-    candidates: Candidate[];
+    candidates: CandidateDetails[];
+    loading: boolean;
+    error: boolean;
+    uploadUrl?: string;
+    apiResults: IApiResults;
 }
 
 export interface ChallengeState {

@@ -157,7 +157,6 @@
  * @property {string} position
  * @property {string} resumeUrl
  * @property {string} status
- * @property {string} codingRepo
  * @property {string} gitHub
  * @property {string} linkedIn
  * @property {boolean} archived

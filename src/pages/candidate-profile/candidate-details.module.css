@@ -1,0 +1,25 @@
+.avatar {
+    background-color: #e0f9eb;
+    color: #1f2937;
+    margin-top: -45px;
+    font-size: 20px;
+    font-weight: 500;
+    border: 2px solid #ffffff;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #111827;
+    padding-bottom: 56px;
+}
+
+.position {
+    margin-top: 16px;
+    line-height: 20px;
+}
+
+.scheduleInterview {
+    margin-top: 32px;
+}

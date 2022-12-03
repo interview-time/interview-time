@@ -2,7 +2,7 @@ import "./App.less";
 import React from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
-    routeCandidateDetails,
+    routeCandidateProfile,
     routeCandidates,
     routeHome,
     routeInterviewAdd,
@@ -26,14 +26,13 @@ import {
     routeTemplateLibrary,
     routeTemplatePreview,
     routeTemplates,
-    routeCandidateAdd,
     routeTakeHomeChallenge,
     routeTeamIntegration,
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
 import InterviewScorecard from "./pages/interview-scorecard/interview-scorecard";
-import InterviewSchedule from "./pages/interview-schedule/interview-schedule";
+import InterviewSchedulePage from "./pages/interview-schedule/interview-schedule-page";
 import Templates from "./pages/templates/templates";
 import Reports from "./pages/reports/reports";
 import Profile from "./pages/account/profile";
@@ -49,7 +48,6 @@ import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
 import InterviewReport from "./pages/interview-report/interview-report";
 import Candidates from "./pages/candidates/candidates";
-import CandidateDetails from "./pages/candidate-details/candidate-details";
 import Subscription from "./pages/subscription/subscription";
 import TeamProfile from "./pages/account/team-profile";
 import TeamMembers from "./pages/account/team-members";
@@ -58,7 +56,7 @@ import TeamIntegration from "./pages/account/team-integration";
 import LiveCodingChallenge from "./pages/challenge/live-coding/live-coding-challenge";
 import InterviewReportShared from "./pages/interview-report/interview-report-shared";
 import TakeHomeChallenge from "./pages/challenge/take-home/take-home-challenge";
-import CandidateAdd from "./pages/candidate-add/candidate-add";
+import CandidateProfile from "./pages/candidate-profile/candidate-profile";
 
 function App() {
     // Temporary commented out to test posthog
@@ -88,8 +86,8 @@ function App() {
             <PrivateRoute path={routeHome()} exact component={Default} />
             <PrivateRoute path={routeInterviews()} exact component={Interviews} />
             <PrivateRoute path={routeReports()} exact component={Reports} />
-            <PrivateRoute path={routeInterviewAdd()} exact component={InterviewSchedule} />
-            <PrivateRoute path={routeInterviewDetails()} exact component={InterviewSchedule} />
+            <PrivateRoute path={routeInterviewAdd()} exact component={InterviewSchedulePage} />
+            <PrivateRoute path={routeInterviewDetails()} exact component={InterviewSchedulePage} />
             <PrivateRoute path={routeInterviewScorecard()} exact component={InterviewScorecard} />
             <PrivateRoute path={routeInterviewReport()} exact component={InterviewReport} />
             <PrivateRoute path={routeTemplates()} exact component={Templates} />
@@ -105,9 +103,8 @@ function App() {
             <PrivateRoute path={routeTeamBilling()} exact component={TeamBilling} />
             <PrivateRoute path={routeTeamIntegration()} exact component={TeamIntegration} />
             <PrivateRoute path={routeCandidates()} exact component={Candidates} />
-            <PrivateRoute path={routeCandidateDetails()} exact component={CandidateDetails} />
+            <PrivateRoute path={routeCandidateProfile()} exact component={CandidateProfile} />
             <PrivateRoute path={routeSubscription()} exact component={Subscription} />
-            <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
             <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
             <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
             <Route path={routeLiveCodingChallenge()} exact component={LiveCodingChallenge} />

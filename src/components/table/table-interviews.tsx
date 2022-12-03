@@ -11,7 +11,7 @@ import InterviewStatusTag from "../tags/interview-status-tags";
 import { getCandidateName, InterviewData } from "../../store/interviews/selector";
 import { ColumnType } from "rc-table/lib/interface";
 import { Link } from "react-router-dom";
-import { routeCandidateDetails, routeInterviewReport, routeInterviewScorecard } from "../../utils/route";
+import { routeCandidateProfile, routeInterviewReport, routeInterviewScorecard } from "../../utils/route";
 import { InterviewStatus } from "../../store/models";
 import { interviewWithoutDate, NO_DATE_LABEL } from "../../utils/interview";
 
@@ -26,7 +26,7 @@ export const CandidateColumn = (clickable: boolean): ColumnType<InterviewData> =
             const candidateName = getCandidateName(interview);
             if (clickable && interview.candidateId) {
                 // candidate details available
-                return <Link to={routeCandidateDetails(interview.candidateId)}>{candidateName}</Link>;
+                return <Link to={routeCandidateProfile(interview.candidateId)}>{candidateName}</Link>;
             }
 
             // show black text
@@ -50,7 +50,7 @@ export const InterviewColumn = (userId: string, clickable: boolean): ColumnType<
     sorter: (a: InterviewData, b: InterviewData) => localeCompare(a.position ?? "", b.position ?? ""),
     render: (interview: InterviewData) => {
         const getLink = () => {
-            const text = interview.position ?? "Interview";
+            const text = interview.position ?? interview.candidate?.position ?? "Interview";
             if (clickable && interview.status === InterviewStatus.SUBMITTED) {
                 // submitted interview, open report
                 return <Link to={routeInterviewReport(interview.interviewId)}>{text}</Link>;
@@ -86,7 +86,9 @@ export const DateColumn = (): ColumnType<InterviewData> => ({
     sorter: (a: InterviewData, b: InterviewData) => a.startDateTime - b.startDateTime,
     render: (interview: InterviewData) => (
         <div className={styles.tableDateDiv}>
-            <TableText>{interviewWithoutDate(interview) ? NO_DATE_LABEL : getFormattedDate(interview.startDateTime)}</TableText>
+            <TableText>
+                {interviewWithoutDate(interview) ? NO_DATE_LABEL : getFormattedDate(interview.startDateTime)}
+            </TableText>
             {!interviewWithoutDate(interview) && (
                 <TableText className={styles.tableTime}>at {getFormattedTime(interview.startDateTime)}</TableText>
             )}

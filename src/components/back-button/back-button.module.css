@@ -1,0 +1,12 @@
+.component:hover {
+    color: #ac54f0;
+    cursor: pointer;
+}
+
+.component:hover .button {
+    border-color: #ac54f0;
+}
+
+.button {
+    margin-right: 8px;
+}

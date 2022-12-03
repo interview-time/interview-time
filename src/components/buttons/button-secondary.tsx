@@ -1,9 +1,23 @@
-import styles from "./button-secondary.module.css";
 import { Button } from "antd";
-import React from "react";
+import styled from "styled-components";
 
-type Props = {
-    [props: string]: any;
-};
+export const ButtonSecondary = styled(Button)`
+    background-color: #f4eafc;
+    color: #8c2be3;
+    border: none;
+    box-shadow: none;
 
-export const ButtonSecondary = ({ ...props }: Props) => <Button {...props} className={styles.secondaryButton} />;
+    &:hover {
+        background-color: #e8d5f9;
+        color: #8c2be3;
+        border: none;
+        box-shadow: none;
+    }
+
+    &:focus {
+        background-color: #f4eafc;
+        color: #8c2be3;
+        border: none;
+        box-shadow: none;
+    }
+`;

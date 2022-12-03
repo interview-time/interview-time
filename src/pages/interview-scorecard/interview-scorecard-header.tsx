@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { routeCandidateDetails, routeHome } from "../../utils/route";
+import { routeCandidateProfile, routeHome } from "../../utils/route";
 import { getCandidateName2 } from "../../store/interviews/selector";
 import { Button, Segmented, Space } from "antd";
 import { BackIcon, CloseIcon } from "../../utils/icons";
@@ -47,7 +47,7 @@ const InterviewScorecardHeader = ({
         <Header
             title={
                 <Link
-                    to={routeCandidateDetails(candidate?.candidateId)}
+                    to={routeCandidateProfile(candidate?.candidateId)}
                     target='_blank'
                     style={{ color: "rgba(0, 0, 0, 0.85)" }}
                 >

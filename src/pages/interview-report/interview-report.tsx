@@ -20,7 +20,7 @@ import { RootState } from "../../store/state-models";
 import { Candidate, Interview, TeamMember } from "../../store/models";
 import ScorecardReportSection from "../../components/scorecard/scorecard-report-section";
 import ShareScorecard from "./share-report-modal";
-import { routeCandidateDetails } from "../../utils/route";
+import { routeCandidateProfile } from "../../utils/route";
 
 type Props = {
     currentTeamId: string;
@@ -66,7 +66,7 @@ const InterviewReport = ({
             <Header
                 title={
                     <Link
-                        to={routeCandidateDetails(candidate?.candidateId)}
+                        to={routeCandidateProfile(candidate?.candidateId)}
                         target='_blank'
                         style={{ color: 'rgba(0, 0, 0, 0.85)' }}
                     >

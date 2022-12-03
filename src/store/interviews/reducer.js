@@ -15,7 +15,7 @@ import {
     REQUEST_STARTED,
     REQUEST_FINISHED,
     GENERATING_LINK_STARTED,
-    GENERATING_LINK_FINISHED
+    GENERATING_LINK_FINISHED,
 } from "./actions";
 import axios from "axios";
 import store from "../../store";
@@ -23,6 +23,7 @@ import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../common";
 import { log } from "../../utils/log";
 import { formatDateISO } from "../../utils/date-fns";
+import { fetchCandidateDetails } from "../candidates/actions";
 
 /**
  *
@@ -109,6 +110,7 @@ const interviewsReducer = (state = initialState, action) => {
                 .then(token => axios.post(URL, interview, config(token)))
                 .then(() => log(`Interview added: ${JSON.stringify(interview)}`))
                 .then(() => store.dispatch(loadInterviews(true)))
+                .then(() => store.dispatch(fetchCandidateDetails(interview.candidateId)))
                 .catch(reason => console.error(reason));
 
             return {

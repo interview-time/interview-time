@@ -3,7 +3,7 @@ import { Difficulty, InterviewAssessment, QuestionAssessment } from "./constants
 import { defaultTo } from "lodash/util";
 
 const COLOR_RED_5 = "#ff4d4f";
-const COLOR_MAIN = "#8C2BE3";
+const COLOR_DEFAULT = "#E5E7EB";
 
 const COLOR_GREEN_DARK = "#16A34A";
 const COLOR_ORANGE_DARK = "#FFA940";
@@ -51,9 +51,8 @@ export const getDecisionColor = decision => {
         return COLOR_RED_5;
     }
 
-    return COLOR_MAIN;
+    return COLOR_DEFAULT;
 };
-
 
 export const getOverallPerformanceColor = groups => {
     let performance = getOverallPerformancePercent(groups);
@@ -61,8 +60,10 @@ export const getOverallPerformanceColor = groups => {
         return COLOR_GREEN_DARK;
     } else if (performance >= Score.SKILLED) {
         return COLOR_ORANGE_DARK;
-    } else {
+    } else if (performance > 0 && performance < Score.SKILLED) {
         return COLOR_RED_5;
+    } else {
+        return COLOR_DEFAULT;
     }
 };
 

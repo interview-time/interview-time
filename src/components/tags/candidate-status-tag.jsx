@@ -3,10 +3,6 @@ import { Tag } from "antd";
 import { CandidateStatus } from "../../utils/constants";
 import styles from "./status-tags.module.css";
 
-/**
- * @param {string} status
- * @returns {React.ReactElement}
- */
 const CandidateStatusTag = ({ status }) => {
     const getClass = () => {
         if (status === CandidateStatus.HIRE) {
@@ -30,7 +26,7 @@ export default CandidateStatusTag;
  * @param {string} status
  * @returns {string}
  */
-export const getCandidateStatusText = (status) => {
+export const getCandidateStatusText = status => {
     if (status === CandidateStatus.HIRE) {
         return "Hired";
     } else if (status === CandidateStatus.INTERVIEWING) {
