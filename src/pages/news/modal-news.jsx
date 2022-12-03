@@ -2,7 +2,8 @@ import { Button, Divider, Modal } from "antd";
 import React, { useEffect } from "react";
 import styles from "./modal-news.module.css";
 import Title from "antd/lib/typography/Title";
-import candidateProfileImg from "../../assets/candidate-profile.png";
+import candidateProfileImg from "../../assets/whats-new/candidate-profile.png";
+import checklistImg from "../../assets/whats-new/checklist.png";
 
 import { updateNewsVisitTime } from "../../utils/storage";
 
@@ -22,14 +23,37 @@ export const newsData = [
                 </div>
                 <div className={styles.carouselImageWrapper}>
                     <img
-                        alt='Take-Home Assignment Interview Type'
+                        alt="Take-Home Assignment Interview Type"
                         src={candidateProfileImg}
                         className={styles.carouselImage}
                     />
                 </div>
             </div>
-        ),
+        )
     },
+    {
+        version: "v1.221203",
+        versionInt: 221203, // version reversed
+        date: new Date(2022, 12, 3),
+        content: (
+            <div className={styles.carouselItem}>
+                <Title level={5} className={styles.carouselTitle}>
+                    Interview Checklist
+                </Title>
+                <div className={styles.carouselDescription}>
+                    Interview information moved to collapsible right panel along with a new feature - interview
+                    checklist. You can use it to define quick reminders for you prior to interview.
+                </div>
+                <div className={styles.carouselImageWrapper}>
+                    <img
+                        alt="Take-Home Assignment Interview Type"
+                        src={checklistImg}
+                        className={styles.carouselImage}
+                    />
+                </div>
+            </div>
+        )
+    }
 ];
 
 const NewsModal = ({ visible, onClose }) => {
@@ -67,10 +91,10 @@ const NewsModal = ({ visible, onClose }) => {
                 {newsData[activeItem].content}
                 <Divider className={styles.divider} />
                 <div className={styles.arrowHolder}>
-                    <Button type='text' disabled={activeItem === 0} onClick={onPreviousClicked}>
+                    <Button type="text" disabled={activeItem === 0} onClick={onPreviousClicked}>
                         ← Previous
                     </Button>
-                    <Button type='text' disabled={activeItem === newsData.length - 1} onClick={onNextClicked}>
+                    <Button type="text" disabled={activeItem === newsData.length - 1} onClick={onNextClicked}>
                         Next →
                     </Button>
                 </div>
