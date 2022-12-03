@@ -183,7 +183,10 @@ namespace CafApi.Query
             foreach (var templateId in templatesIds)
             {
                 var template = await _templateRepository.GetTemplate(templateId);
-                templates.Add(template);
+                if (template != null)
+                {
+                    templates.Add(template);
+                }
             }
 
             var stages = interviews
