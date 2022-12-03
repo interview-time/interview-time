@@ -1,7 +1,7 @@
 import React from "react";
 import { Col, Row } from "antd";
 import Layout from "../../components/layout/layout";
-import CreateCandidate from "../candidate-details/create-candidate";
+import CreateCandidate from "../candidate-profile/create-candidate";
 import { routeCandidates } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import styles from "./candidate-add.module.css";

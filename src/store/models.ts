@@ -58,6 +58,7 @@ export interface Team {
 
 export interface Interview {
     userId: string;
+    interviewerName: string;
     interviewId: string;
     teamId: string;
     linkId: string;
@@ -65,7 +66,7 @@ export interface Interview {
     candidateId: string;
     candidateName?: string; // DEPRECATED
     candidateNotes?: string;
-    position?: string;
+    position?: string;      // DEPRECATED
     interviewDateTime: string; // "2022-07-13T11:15:00Z"
     interviewEndDateTime: string; // "2022-07-13T12:15:00Z"
     templateIds: string[];
@@ -73,6 +74,7 @@ export interface Interview {
     decision: InterviewAssessment;
     notes?: string;
     redFlags?: RedFlag[];
+    checklist?: InterviewChecklist[];
     isDemo: boolean;
     isShared: boolean;
     createdDate: string;
@@ -86,6 +88,13 @@ export interface Interview {
     sendChallenge?: boolean;
 }
 
+export interface InterviewStage {
+    stageName: string;
+    linkId: string;
+    interviewStartDate: string;
+    interviews: Interview[];
+
+}
 export interface SharedInterview extends Interview {
     candidateName: string;
     interviewerName: string;
@@ -135,12 +144,21 @@ export interface Candidate {
     createdDate: string;
     position?: string;
     resumeUrl?: string;
+    resumeFile?: string;
     status: string;
-    codingRepo?: string;
     gitHub?: string;
     linkedIn?: string;
     email?: string;
+    phone?: string;
     archived: boolean;
+    location: string;
+    isFromATS: boolean;
+    isAnonymised: boolean;
+    tags: string[];
+}
+
+export interface CandidateDetails extends Candidate {
+    stages: InterviewStage[];
 }
 
 export enum QuestionAssessment {
@@ -183,6 +201,11 @@ export enum InterviewType {
     TAKE_HOME_TASK = "TAKE_HOME_TASK",
 }
 
+export interface InterviewChecklist {
+    item: string;
+    checked: boolean;
+}
+
 export interface Template {
     userId: string;
     templateId: string;
@@ -194,6 +217,7 @@ export interface Template {
     structure: TemplateStructure;
     interviewType: InterviewType;
     challenges?: TemplateChallenge[];
+    checklist?: InterviewChecklist[];
 }
 
 export interface LibraryTemplate {

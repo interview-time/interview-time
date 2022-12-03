@@ -65,11 +65,6 @@ export const filterGroupsWithAssessment = inputValue =>
 export const filterGroupsWithAssessmentNotes = inputValue =>
     inputValue.filter(group => filterQuestionsWithAssessmentNotes(group).length > 0);
 
-/**
- *
- * @param {Interview[]} interviews
- * @returns {string[]}
- */
 export const interviewsPositions = interviews => uniq(interviews.map(interview => interview.position))
     .filter(position => !isEmpty(position) && position !== "Hello world") // bug introduced somewhere in the past
     .sort();

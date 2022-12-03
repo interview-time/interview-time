@@ -1,5 +1,5 @@
-import { TemplateChallenge, Template, TemplateGroup, TemplateQuestion } from "../../store/models";
-import { cloneDeep } from "lodash";
+import { InterviewChecklist, Template, TemplateChallenge, TemplateGroup, TemplateQuestion } from "../../store/models";
+import { cloneDeep, remove } from "lodash";
 import { arrayMoveMutable } from "array-move";
 
 export enum ReducerActionType {
@@ -19,6 +19,9 @@ export enum ReducerActionType {
     UPDATE_CHALLENGE,
     REMOVE_CHALLENGE,
     MOVE_CHALLENGE,
+    ADD_CHECKLIST,
+    UPDATE_CHECKLIST,
+    REMOVE_CHECKLIST,
 }
 
 export type SetStateAction = {
@@ -110,6 +113,22 @@ export type MoveChallengeAction = {
     newIndex: number;
 };
 
+export type AddChecklistAction = {
+    type: ReducerActionType.ADD_CHECKLIST;
+    checklist: InterviewChecklist;
+};
+
+export type UpdateChecklistAction = {
+    type: ReducerActionType.UPDATE_CHECKLIST;
+    checklist: InterviewChecklist;
+    checklistIndex: number;
+};
+
+export type RemoveChecklistAction = {
+    type: ReducerActionType.REMOVE_CHECKLIST;
+    checklistIndex: number;
+};
+
 export type ReducerAction =
     | SetStateAction
     | UpdateTitleAction
@@ -126,7 +145,10 @@ export type ReducerAction =
     | AddChallengeAction
     | UpdateChallengeAction
     | RemoveChallengeAction
-    | MoveChallengeAction;
+    | MoveChallengeAction
+    | AddChecklistAction
+    | UpdateChecklistAction
+    | RemoveChecklistAction;
 
 export const templateReducer = (state: Template, action: ReducerAction): Template => {
     switch (action.type) {
@@ -251,6 +273,29 @@ export const templateReducer = (state: Template, action: ReducerAction): Templat
             }
 
             return newState;
+        }
+        case ReducerActionType.ADD_CHECKLIST: {
+            const newState = cloneDeep(state);
+            newState.checklist = (newState.checklist || []).concat(action.checklist);
+            console.log(newState.checklist);
+
+            return newState;
+        }
+        case ReducerActionType.REMOVE_CHECKLIST: {
+            const newState = cloneDeep(state);
+            remove((newState.checklist || []), (_, index) => index === action.checklistIndex);
+
+            return newState;
+        }
+        case ReducerActionType.UPDATE_CHECKLIST: {
+            // state mutation
+            const checklistItem = state.checklist?.find((_, index) => index === action.checklistIndex);
+            if (checklistItem) {
+                checklistItem.item = action.checklist.item;
+                checklistItem.checked = action.checklist.checked;
+            }
+
+            return state;
         }
         default:
             return state;

@@ -43,7 +43,7 @@ export const ChallengeCard = ({
         }
     };
 
-    const onSwitchChanged = (checked: boolean, e: MouseEvent, challenge: LiveCodingChallenge) => {
+    const onSwitchChanged = (checked: boolean, e: React.MouseEvent, challenge: LiveCodingChallenge) => {
         e.stopPropagation(); // prevents selection another challenge
         onChallengeSelectionChanged(checked, challenge);
     };
@@ -58,7 +58,6 @@ export const ChallengeCard = ({
             <Title level={4}>{getChallengesTitle()}</Title>
             <Text type='secondary'>Choose challenges to use during the interview.</Text>
             {challenges.map(challenge => {
-                console.log("challenge", challenge);
                 const isExpanded = challenge.challengeId === expandedChallenge;
                 return (
                     <div
@@ -69,7 +68,7 @@ export const ChallengeCard = ({
                             <Text className={styles.taskName}>{challenge.name}</Text>
                             <Switch
                                 checked={challenge.selected}
-                                onChange={(checked: boolean, e: MouseEvent) => onSwitchChanged(checked, e, challenge)}
+                                onChange={(checked: boolean, e: React.MouseEvent) => onSwitchChanged(checked, e, challenge)}
                             />
                         </div>
                         {isExpanded && (

@@ -1,36 +1,18 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import {
-    AutoComplete,
-    Button,
-    Checkbox,
-    Col,
-    Divider,
-    Form,
-    Input,
-    message,
-    Modal,
-    Row,
-    Select,
-    Space,
-    Tooltip,
-} from "antd";
-import Title from "antd/lib/typography/Title";
+import { Button, Checkbox, Divider, Form, Input, message, Select, Space, Tooltip, Modal } from "antd";
 import Text from "antd/lib/typography/Text";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { cloneDeep, isEmpty } from "lodash/lang";
 import { findInterview, findTemplate } from "../../utils/converters";
-import { POSITIONS, POSITIONS_OPTIONS, Status } from "../../utils/constants";
-import Layout from "../../components/layout/layout";
-import { InterviewPreviewCard } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
+import { Status } from "../../utils/constants";
 import { addInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTemplates } from "../../store/templates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { personalEvent } from "../../analytics";
-import { routeInterviews, routeTemplateLibrary } from "../../utils/route";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { routeTemplateLibrary } from "../../utils/route";
 import {
     datePickerFormat,
     formatDate,
@@ -39,13 +21,11 @@ import {
     parseDateISO,
     timePickerFormat,
 } from "../../utils/date-fns";
-import { filterOptionLabel, interviewsPositions } from "../../utils/filters";
+import { filterOptionLabel } from "../../utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
-import CreateCandidate from "../candidate-details/create-candidate";
-import Card from "../../components/card/card";
+import CreateCandidate from "../candidate-profile/create-candidate";
 import { log } from "../../utils/log";
-import { uniq } from "lodash/array";
 import DatePicker from "../../components/antd/DatePicker";
 import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
 import { InterviewType } from "../../store/models";
@@ -71,6 +51,9 @@ const { Option } = Select;
  * @constructor
  */
 const InterviewSchedule = ({
+    interviewId,
+    candidateId,
+    onScheduled,
     profile,
     interviews,
     templates,
@@ -85,7 +68,6 @@ const InterviewSchedule = ({
 }) => {
     const history = useHistory();
 
-    const { id } = useParams();
     const { user } = useAuth0();
     const location = useLocation();
 
@@ -104,6 +86,7 @@ const InterviewSchedule = ({
      */
     const emptyInterview = {
         interviewId: undefined,
+        candidateId: candidateId,
         templateIds: [],
         status: Status.NEW,
         title: "",
@@ -113,11 +96,9 @@ const InterviewSchedule = ({
     };
 
     const [interview, setInterview] = useState(emptyInterview);
-    const [positionOptions, setPositionOptions] = useState(POSITIONS_OPTIONS);
     const [candidatesOptions, setCandidateOptions] = useState([]);
     const [interviewersOptions, setInterviewersOptions] = useState([]);
     const [createCandidate, setCreateCandidate] = useState(false);
-    const [previewModalVisible, setPreviewModalVisible] = useState(false);
 
     const selectedCandidate = candidates.find(c => c.candidateId === interview.candidateId);
     const isTakeHomeChallenge = interview.interviewType === InterviewType.TAKE_HOME_TASK;
@@ -125,7 +106,7 @@ const InterviewSchedule = ({
     React.useEffect(() => {
         // existing interview
         if (isExistingInterviewFlow() && !interview.interviewId && interviews.length !== 0) {
-            const existingInterview = cloneDeep(findInterview(id, interviews));
+            const existingInterview = cloneDeep(findInterview(interviewId, interviews));
             // backwards compatibility for interviews without dates
             if (!parseDateISO(existingInterview.interviewDateTime)) {
                 existingInterview.interviewDateTime = defaultStartDateTime;
@@ -148,17 +129,6 @@ const InterviewSchedule = ({
 
         // eslint-disable-next-line
     }, [interviews, templates, teamMembers]);
-
-    React.useEffect(() => {
-        if (!isEmpty(interviews)) {
-            setPositionOptions(
-                uniq(interviewsPositions(interviews).concat(POSITIONS)).map(position => ({
-                    value: position,
-                }))
-            );
-        }
-        // eslint-disable-next-line
-    }, [interviews]);
 
     React.useEffect(() => {
         // templates selector
@@ -203,7 +173,7 @@ const InterviewSchedule = ({
         // eslint-disable-next-line
     }, []);
 
-    const isExistingInterviewFlow = () => id;
+    const isExistingInterviewFlow = () => interviewId;
 
     const isFromTemplateFlow = () => fromTemplateId() !== null;
 
@@ -218,14 +188,6 @@ const InterviewSchedule = ({
     const fromTemplateId = () => {
         const params = new URLSearchParams(location.search);
         return params.get("fromTemplate");
-    };
-
-    const onBackClicked = () => {
-        history.goBack();
-    };
-
-    const onPositionChange = value => {
-        interview.position = value;
     };
 
     const onInterviewersChange = values => {
@@ -290,22 +252,17 @@ const InterviewSchedule = ({
     const onSaveClicked = () => {
         if (isExistingInterviewFlow()) {
             updateInterview(interview);
-            message.success(`Interview '${interview.candidate}' updated.`);
+            message.success("Interview successfully updated");
         } else {
             addInterview(interview);
             personalEvent("Interview created");
-            message.success(`Interview '${interview.candidate}' created.`);
+            message.success("Interview successfully scheduled");
         }
-        history.push(routeInterviews());
-    };
 
-    const onPreviewClosed = () => {
-        setPreviewModalVisible(false);
+        if (onScheduled) {
+            onScheduled();
+        }
     };
-
-    // const onPreviewClicked = () => {
-    //     setPreviewModalVisible(true);
-    // };
 
     const onTemplateSelect = templateId => {
         const template = cloneDeep(findTemplate(templateId, templates));
@@ -318,15 +275,16 @@ const InterviewSchedule = ({
             takeHomeChallenge:
                 template.interviewType === InterviewType.TAKE_HOME_TASK ? template.challenges[0] : undefined,
             structure: template.structure,
+            checklist: template.checklist,
         });
     };
 
-    const onCandidateChange = (candidateId, candidate) => {
+    const onCandidateChange = (candidateId, candidateName) => {
         const selectedCandidate = candidates.find(c => c.candidateId === candidateId);
         setInterview({
             ...interview,
             candidateId: candidateId,
-            candidate: candidate,
+            candidate: candidateName,
             sendChallenge: !isEmpty(selectedCandidate?.email),
         });
     };
@@ -373,18 +331,7 @@ const InterviewSchedule = ({
     };
 
     const InterviewDetails = () => (
-        <Card style={marginTop12} key={interview.interviewId}>
-            <div className={styles.header} style={{ marginBottom: 12 }}>
-                <div className={styles.headerTitleContainer} onClick={onBackClicked}>
-                    <ArrowLeftOutlined />
-                    <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
-                        Schedule Interview
-                    </Title>
-                </div>
-            </div>
-            <Text type='secondary'>
-                Enter interview details information so you can easily discover it among other interviews.
-            </Text>
+        <>
             <Form
                 name='basic'
                 style={marginTop12}
@@ -392,12 +339,11 @@ const InterviewSchedule = ({
                 layout='vertical'
                 initialValues={{
                     template: interview.templateIds,
-                    candidateId: interview.candidateId,
+                    candidateId: interview.candidateId ?? candidateId,
                     candidate: interview.candidate,
                     date: parseDateISO(interview.interviewDateTime),
                     startTime: formatDate(interview.interviewDateTime, timePickerFormat()),
                     endTime: formatDate(interview.interviewEndDateTime, timePickerFormat()),
-                    position: interview.position ? interview.position : undefined,
                     interviewers: interview.interviewers || [],
                 }}
                 onFinish={onSaveClicked}
@@ -435,6 +381,7 @@ const InterviewSchedule = ({
                         <Select
                             showSearch
                             allowClear
+                            disabled={!!candidateId}
                             placeholder='Select candidate'
                             onChange={(value, option) => onCandidateChange(value, option.label)}
                             options={candidatesOptions}
@@ -553,83 +500,62 @@ const InterviewSchedule = ({
                         </Form.Item>
                     </div>
                 )}
-                <Form.Item name='position' className={styles.formItem} label={<Text strong>Position</Text>}>
-                    <AutoComplete
-                        allowClear
-                        placeholder='Select position you are hiring for'
-                        options={positionOptions}
-                        filterOption={(inputValue, option) =>
-                            option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                        }
-                        onChange={onPositionChange}
-                    />
-                </Form.Item>
-                <Divider />
+
+                <Divider style={{ marginTop: 0 }} />
+
                 <div className={styles.divSpaceBetween}>
                     <div>
                         {isTakeHomeChallenge && interview.sendChallenge && (
                             <span>
-                            <Text>Take-home assignment will be sent to </Text>
-                            <Text strong>{selectedCandidate.email}</Text>
-                        </span>
+                                <Text>Take-home assignment will be sent to </Text>
+                                <Text strong>{selectedCandidate.email}</Text>
+                            </span>
                         )}
                     </div>
                     <Space>
-                        {/*<Button onClick={onPreviewClicked}>Preview</Button>*/}
                         <Button type='primary' htmlType='submit'>
-                            Save
+                            Schedule
                         </Button>
                     </Space>
                 </div>
             </Form>
-        </Card>
+        </>
     );
 
+    if (isInitialLoading()) {
+        return <Spinner />;
+    }
+
     return (
-        <Layout contentStyle={styles.rootContainer}>
-            {isInitialLoading() ? (
-                <Spinner />
-            ) : (
-                <Row>
-                    <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
-                        {!createCandidate && <InterviewDetails />}
-
-                        {createCandidate && (
-                            <CreateCandidate
-                                onSave={candidateName => {
-                                    var selectedCandidates = candidates.filter(c => c.candidateName === candidateName);
-
-                                    if (selectedCandidates.length > 0) {
-                                        interview.candidateId = selectedCandidates[0].candidateId;
-                                        interview.candidate = selectedCandidates[0].candidateName;
-
-                                        form.setFieldsValue({
-                                            candidateId: selectedCandidates[0].candidateId,
-                                        });
-                                    }
-                                    setCreateCandidate(false);
-                                }}
-                                onCancel={() => setCreateCandidate(false)}
-                            />
-                        )}
-                    </Col>
-                </Row>
-            )}
+        <div>
+            <InterviewDetails />
 
             <Modal
-                title={null}
+                title='Candidate Details'
+                centered={true}
+                width={600}
+                visible={createCandidate}
+                onCancel={() => setCreateCandidate(false)}
                 footer={null}
-                closable={false}
-                destroyOnClose={true}
-                width={1000}
-                style={{ top: "5%" }}
-                bodyStyle={{ backgroundColor: "#EEF0F2F5" }}
-                onCancel={onPreviewClosed}
-                visible={previewModalVisible}
             >
-                <InterviewPreviewCard interview={interview} onCloseClicked={onPreviewClosed} />
+                <CreateCandidate
+                    onSave={candidateId => {
+                        var newCandidate = candidates.find(c => c.candidateId === candidateId);
+
+                        if (newCandidate) {
+                            interview.candidateId = newCandidate.candidateId;
+                            interview.candidate = newCandidate.candidateName;
+
+                            form.setFieldsValue({
+                                candidateId: newCandidate.candidateId,
+                            });
+                        }
+                        setCreateCandidate(false);
+                    }}
+                    onCancel={() => setCreateCandidate(false)}
+                />
             </Modal>
-        </Layout>
+        </div>
     );
 };
 

@@ -1,11 +1,11 @@
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import axios from "axios";
-import posthog from 'posthog-js'
+import posthog from "posthog-js";
 import { config } from "../common";
 import { logError } from "../../utils/log";
 import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
-import { loadCandidates, setCandidates } from "../candidates/actions";
+import { loadCandidates, setCandidateList } from "../candidates/actions";
 import { resetTeam, loadTeam } from "../team/actions";
 import { resetIntegration } from "../integration/actions";
 import { resetChallenge } from "../challenge/actions";
@@ -232,7 +232,7 @@ export const joinTeam = team => async dispatch => {
 export const resetData = teamId => dispatch => {
     dispatch(setTemplates([]));
     dispatch(setInterviews([]));
-    dispatch(setCandidates([]));
+    dispatch(setCandidateList([]));
     dispatch(resetTeam());
     dispatch(resetIntegration());
     dispatch(resetChallenge());

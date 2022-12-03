@@ -1,7 +1,5 @@
 import React from "react";
-import { Col } from "antd";
 import { InterviewGroupsSection, IntroSection } from "./interview-sections";
-import styles from "./step-assessment-interview.module.css";
 import Card from "../../../../components/card/card";
 import {
     Candidate,
@@ -13,8 +11,6 @@ import {
 import { ReducerAction, ReducerActionType } from "../../interview-reducer";
 import { useDebounceFn } from "ahooks";
 import { DATA_CHANGE_DEBOUNCE, DATA_CHANGE_DEBOUNCE_MAX } from "../../interview-scorecard";
-import { InterviewInfo } from "../../../../components/scorecard/interview-info";
-import { CandidateInfo } from "../../../../components/scorecard/candidate-info";
 
 type Props = {
     interview: Readonly<Interview>;
@@ -56,19 +52,8 @@ const StepAssessmentInterview = ({ interview, teamMembers, candidate, onIntervie
     };
 
     return (
-        <Col
-            span={22}
-            offset={1}
-            xl={{ span: 20, offset: 2 }}
-            xxl={{ span: 16, offset: 4 }}
-            className={styles.interviewSectionContainer}
-        >
-            <div className={styles.divSpaceBetween} style={{ marginTop: 32 }}>
-                <InterviewInfo interview={interview} interviewers={teamMembers} />
-                <CandidateInfo candidate={candidate} />
-            </div>
-
-            <Card style={{ marginTop: 32 }}>
+        <>
+            <Card>
                 {/* @ts-ignore */}
                 <IntroSection interview={interview} />
             </Card>
@@ -80,7 +65,7 @@ const StepAssessmentInterview = ({ interview, teamMembers, candidate, onIntervie
                 onQuestionAssessmentChanged={onQuestionAssessmentChanged}
                 onRemoveGroupClicked={onQuestionsRemoved}
             />
-        </Col>
+        </>
     );
 };
 

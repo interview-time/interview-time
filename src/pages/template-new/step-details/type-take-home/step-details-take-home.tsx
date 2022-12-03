@@ -145,7 +145,7 @@ const StepDetailsTakeHome = ({ template, teamId, onTemplateChange }: Props) => {
 
     return (
         <Row justify='center'>
-            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }} className={styles.rootCol}>
+            <Col span={24} xl={{ span: 20 }} xxl={{ span: 16 }}>
                 <Form
                     name='basic'
                     layout='vertical'
@@ -153,6 +153,7 @@ const StepDetailsTakeHome = ({ template, teamId, onTemplateChange }: Props) => {
                         title: template.title,
                         description: template.description,
                     }}
+                    className={styles.column}
                 >
                     <TemplateMetaCard
                         interviewType={template.interviewType}

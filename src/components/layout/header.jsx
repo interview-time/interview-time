@@ -1,6 +1,6 @@
 import styles from "./header.module.css";
 import React from "react";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import BackButton from "../back-button/back-button";
 import { useHistory } from "react-router-dom";
 
 /**
@@ -14,18 +14,9 @@ import { useHistory } from "react-router-dom";
 const Header = ({ title, backButton, children }) => {
     const history = useHistory();
 
-    const onBackClicked = () => {
-        history.goBack();
-    };
-
     return (
         <div className={styles.header} style={{ flexDirection: "column" }}>
-            {backButton && (
-                <div onClick={onBackClicked} style={{ cursor: "pointer" }}>
-                    <ArrowLeftOutlined />
-                    <span className={styles.headerTitle}>{title}</span>
-                </div>
-            )}
+            {backButton && <BackButton title={title} onClick={() => history.goBack()} />}
             {!backButton && <span className={styles.headerTitle}>{title}</span>}
             {children}
         </div>

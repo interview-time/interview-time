@@ -20,19 +20,17 @@ export const GENERATING_LINK_FINISHED = "GENERATING_LINK_FINISHED";
 
 const BASE_URL = `${process.env.REACT_APP_API_URL}`;
 
-export function loadInterviews(forceFetch = false) {
-    return (dispatch, getState) => {
-        const { user } = getState();
+export const loadInterviews = (forceFetch = false) => (dispatch, getState) => {
+    const { user } = getState();
 
-        dispatch({
-            type: LOAD_INTERVIEWS,
-            payload: {
-                forceFetch: forceFetch,
-                teamId: user.profile.currentTeamId,
-            },
-        });
-    };
-}
+    dispatch({
+        type: LOAD_INTERVIEWS,
+        payload: {
+            forceFetch: forceFetch,
+            teamId: user.profile.currentTeamId,
+        },
+    });
+};
 
 export const setInterviews = interviews => ({
     type: SET_INTERVIEWS,

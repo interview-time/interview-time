@@ -14,7 +14,7 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { selectCandidates, filterCandidates, searchCandidates } from "../../store/candidates/selector";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import styles from "./candidates.module.css";
-import { routeCandidateDetails, routeCandidates, routeCandidateAdd } from "../../utils/route";
+import { routeCandidates, routeCandidateProfile } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import ArchivedTag from "../../components/tags/candidate-archived-tag";
 import { CandidatesFilter } from "../../utils/constants";
@@ -22,6 +22,7 @@ import { MoreIcon } from "../../utils/icons";
 import { cloneDeep } from "lodash/lang";
 import { getFormattedDateShort } from "../../utils/date-fns";
 import Filter from "../../components/filter/filter";
+import CreateCandidate from "../candidate-profile/create-candidate";
 
 /**
  *
@@ -39,6 +40,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
     const [candidates, setCandidates] = useState([]);
     const [filter, setFilter] = useState(CandidatesFilter.Current);
     const [searchQuery, setSearchQuery] = useState();
+    const [createCandidate, setCreateCandidate] = useState(false);
 
     React.useEffect(() => {
         loadCandidates();
@@ -148,7 +150,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
     ];
 
     const onRowClicked = record => {
-        history.push(routeCandidateDetails(record.candidateId));
+        history.push(routeCandidateProfile(record.candidateId));
     };
 
     return (
@@ -158,7 +160,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
                     Candidates
                 </Title>
                 {canAddCandidate && (
-                    <Button type='primary' icon={<UserAddOutlined />} onClick={() => history.push(routeCandidateAdd())}>
+                    <Button type='primary' icon={<UserAddOutlined />} onClick={() => setCreateCandidate(true)}>
                         Add Candidate
                     </Button>
                 )}
@@ -198,6 +200,17 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
                     })}
                 />
             </Card>
+
+            <Modal
+                title='Schedule Interview'
+                visible={createCandidate}
+                centered={true}
+                width={600}
+                onCancel={() => setCreateCandidate(false)}
+                footer={null}
+            >
+                <CreateCandidate onSave={() => setCreateCandidate(false)} onCancel={() => setCreateCandidate(false)} />
+            </Modal>
         </Layout>
     );
 };

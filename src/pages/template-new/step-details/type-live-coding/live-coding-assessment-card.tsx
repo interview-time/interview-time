@@ -82,7 +82,7 @@ const LiveCodingAssessmentCard = ({
     ];
 
     return (
-        <Card className={styles.cardSpace}>
+        <Card>
             <Title level={4}>{group.name}</Title>
             <Text type='secondary'>Define several code assessment criteria.</Text>
             <div className={styles.questionsCard}>
