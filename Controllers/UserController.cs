@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CafApi.Command;
 using CafApi.Models;
 using CafApi.Repository;
 using CafApi.Services;
 using CafApi.Services.User;
 using CafApi.ViewModel;
-using MailChimp.Net;
-using MailChimp.Net.Interfaces;
-using MailChimp.Net.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,15 +21,11 @@ namespace CafApi.Controllers
     [Route("user")]
     public class UserController : ControllerBase
     {
-        private readonly IPermissionsService _permissionsService;
-        private readonly IInterviewService _interviewService;
-        private readonly IInterviewRepository _interviewRepository;
-        private readonly ITemplateService _templateService;
+        private readonly IMediator _mediator;
+        private readonly IPermissionsService _permissionsService;                 
         private readonly IUserRepository _userRepository;
         private readonly ITeamService _teamService;
         private readonly ILogger<UserController> _logger;
-        private readonly IMailChimpManager _mailChimpManager;
-        private readonly string _demoUserId;
 
         private string UserId
         {
@@ -42,25 +36,18 @@ namespace CafApi.Controllers
         }
 
         public UserController(
+            IMediator mediator,
             IPermissionsService permissionsService,
-            ILogger<UserController> logger,
-            IInterviewService interviewService,
-            ITemplateService templateService,
+            ILogger<UserController> logger,                   
             IUserRepository userRepository,
             ITeamService teamService,
-            IConfiguration configuration,
-            IInterviewRepository interviewRepository)
+            IConfiguration configuration)
         {
+            _mediator = mediator;
             _permissionsService = permissionsService;
-            _logger = logger;
-            _interviewService = interviewService;
-            _templateService = templateService;
+            _logger = logger;                     
             _userRepository = userRepository;
-            _teamService = teamService;
-            _mailChimpManager = new MailChimpManager(configuration["MailChimpApiKey"]);
-
-            _demoUserId = configuration["DemoUserId"];
-            _interviewRepository = interviewRepository;
+            _teamService = teamService;                        
         }
 
         [HttpGet]
@@ -93,54 +80,11 @@ namespace CafApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ProfileResponse> SetupUser(SetupUserRequest request)
+        public async Task<SignUpUserCommandResult> SetupUser(SignUpUserCommand command)
         {
-            var profile = await _userRepository.GetProfile(UserId);
-            var teams = new List<TeamItemResponse>();
+            command.UserId = UserId;
 
-            if (profile == null)
-            {
-                var team = await _teamService.CreateTeam(UserId, "Personal Team");
-                profile = await _userRepository.CreateProfile(UserId, request.Name, request.Email, request.TimezoneOffset, request.Timezone, team.TeamId);
-
-                teams.Add(new TeamItemResponse
-                {
-                    TeamId = team.TeamId,
-                    TeamName = team.Name,
-                    Roles = new List<string> { TeamRole.ADMIN.ToString() }
-                });
-
-                // populate demo data            
-                var demoInterviews = await _interviewService.GetInterviews(_demoUserId);
-
-                foreach (var interview in demoInterviews)
-                {
-                    var toTemplate = await _templateService.GetTemplate(UserId, interview.TemplateId);
-                    if (toTemplate == null)
-                    {
-                        toTemplate = await _templateService.CloneTemplate(_demoUserId, interview.TemplateId, UserId, team.TeamId);
-                    }
-
-                    var toInterview = await _interviewRepository.GetInterview(UserId, interview.InterviewId);
-                    if (toInterview == null)
-                    {
-                        await _interviewService.CloneInterviewAsDemo(_demoUserId, interview.InterviewId, UserId, team.TeamId, toTemplate.TemplateId);
-                    }
-                }
-
-                await AddNewUserInMailchimp(request.Email, request.Name);
-            }
-
-            return new ProfileResponse
-            {
-                UserId = profile.UserId,
-                Name = profile.Name,
-                Email = profile.Email,
-                TimezoneOffset = profile.TimezoneOffset,
-                Timezone = profile.Timezone,
-                Teams = teams,
-                CurrentTeamId = profile.CurrentTeamId
-            };
+            return await _mediator.Send(command);
         }
 
         [HttpPut]
@@ -160,20 +104,6 @@ namespace CafApi.Controllers
             await _userRepository.UpdateCurrentTeam(UserId, request.CurrentTeamId);
 
             return Ok();
-        }
-
-        private async Task AddNewUserInMailchimp(string email, string name)
-        {
-            try
-            {
-                var member = new Member { EmailAddress = email, StatusIfNew = Status.Subscribed };
-                member.MergeFields.Add("FNAME", name);
-                await _mailChimpManager.Members.AddOrUpdateAsync("43f230a3ba", member);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error adding user {email} to MailChimp contacts.");
-            }
         }
     }
 }

@@ -56,15 +56,18 @@ namespace CafApi.Query
     {
         private readonly IPermissionsService _permissionsService;
         private readonly ITeamService _teamService;
+        private readonly ITeamRepository _teamRepository;
         private readonly IUserRepository _userRepository;
 
         public TeamDetailsQueryHandler(
             IPermissionsService permissionsService,
             ITeamService teamService,
+            ITeamRepository teamRepository,
             IUserRepository userRepository)
         {
             _permissionsService = permissionsService;
             _teamService = teamService;
+            _teamRepository = teamRepository;
             _userRepository = userRepository;
         }
 
@@ -76,7 +79,7 @@ namespace CafApi.Query
                 throw new AuthorizationException($"User ({query.UserId}) doesn't have access to the details of team ({query.TeamId})");
             }
 
-            var team = await _teamService.GetTeam(query.TeamId);
+            var team = await _teamRepository.GetTeam(query.TeamId);
             if (team == null)
             {
                 throw new ItemNotFoundException($"Team ({query.TeamId}) not found");

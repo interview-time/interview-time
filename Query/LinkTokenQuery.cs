@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CafApi.Common;
 using CafApi.Repository;
-using CafApi.Services;
 using CafApi.Services.Integration;
 using CafApi.Services.User;
 using MediatR;
@@ -27,18 +24,18 @@ namespace CafApi.Query
     public class LinkTokenQueryHandler : IRequestHandler<LinkTokenQuery, LinkTokenQueryResult>
     {
         private readonly IMergeHttpClient _mergeHttpClient;
-        private readonly ITeamService _teamService;
+        private readonly ITeamRepository _teamRepository;
         private readonly IPermissionsService _permissionsService;
         private readonly IUserRepository _userRepository;
 
         public LinkTokenQueryHandler(
             IMergeHttpClient mergeHttpClient,
-            ITeamService teamService,
+            ITeamRepository teamRepository,
             IPermissionsService permissionsService,
             IUserRepository userRepository)
         {
             _mergeHttpClient = mergeHttpClient;
-            _teamService = teamService;
+            _teamRepository = teamRepository;
             _permissionsService = permissionsService;
             _userRepository = userRepository;
         }
@@ -50,7 +47,7 @@ namespace CafApi.Query
                 throw new AuthorizationException($"User ({query.UserId}) doesn't have permission to intergrate with ATS");
             }
 
-            var team = await _teamService.GetTeam(query.TeamId);
+            var team = await _teamRepository.GetTeam(query.TeamId);
             var user = await _userRepository.GetProfile(query.UserId);
 
             var request = new CreateLinkTokenRequest

@@ -6,11 +6,7 @@ namespace CafApi.Services
 {
     public interface ITeamService
     {
-        Task<Team> GetTeam(string teamId);
-
-        Task<TeamMember> GetTeamMember(string userId, string teamId);
-
-        Task<Team> CreateTeam(string userId, string name);
+        Task<TeamMember> GetTeamMember(string userId, string teamId);        
 
         Task Update(string userId, string teamId, string name);
 

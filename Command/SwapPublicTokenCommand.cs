@@ -5,7 +5,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
-using CafApi.Services;
+using CafApi.Repository;
 using CafApi.Services.Integration;
 using CafApi.Services.User;
 using MediatR;
@@ -25,19 +25,19 @@ namespace CafApi.Command
     {
         private readonly IMergeHttpClient _mergeHttpClient;
         private readonly IPermissionsService _permissionsService;
-        private readonly ITeamService _teamService;
+        private readonly ITeamRepository _teamRepository;
         private readonly DynamoDBContext _context;
 
 
         public SwapPublicTokenCommandHandler(
             IMergeHttpClient mergeHttpClient,
             IPermissionsService permissionsService,
-            ITeamService teamService,
+            ITeamRepository teamRepository,
             IAmazonDynamoDB dynamoDbClient)
         {
             _mergeHttpClient = mergeHttpClient;
             _permissionsService = permissionsService;
-            _teamService = teamService;
+            _teamRepository = teamRepository;
             _context = new DynamoDBContext(dynamoDbClient);
         }
 
@@ -54,7 +54,7 @@ namespace CafApi.Command
                 throw new MergeException("Error swaping public token for account token");
             }
 
-            var team = await _teamService.GetTeam(command.TeamId);
+            var team = await _teamRepository.GetTeam(command.TeamId);
 
             if (team.Integration == null)
             {

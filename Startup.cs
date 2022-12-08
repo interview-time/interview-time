@@ -21,6 +21,9 @@ using System.Threading.Tasks;
 using CafApi.Query;
 using MediatR;
 using CafApi.Services.Integration;
+using MailChimp.Net.Interfaces;
+using MailChimp.Net;
+using CafApi.Services.Demo;
 
 namespace CafApi
 {
@@ -105,6 +108,8 @@ namespace CafApi
                 options.ApiKey = Configuration["SendGridApiKey"];
             });
 
+            services.AddSingleton<IMailChimpManager>(new MailChimpManager(Configuration["MailChimpApiKey"]));
+
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Config));
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
 
@@ -120,12 +125,14 @@ namespace CafApi
             services.AddScoped<IPermissionsService, PermissionsService>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<IChallengeService, ChallengeService>();
+            services.AddScoped<IDemoService, DemoService>();            
 
             services.AddScoped<IInterviewRepository, InterviewRepository>();
             services.AddScoped<IChallengeRepository, ChallengeRepository>();
             services.AddScoped<ICandidateRepository, CandidateRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITemplateRepository, TemplateRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
