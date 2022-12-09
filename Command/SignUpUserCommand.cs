@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using CafApi.Models;
 using CafApi.Repository;
 using CafApi.Services.Demo;
@@ -51,21 +52,21 @@ namespace CafApi.Command
         private readonly IUserRepository _userRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly IMailChimpManager _mailChimpManager;
-        private readonly IDemoService _demoService;
         private readonly ILogger<SignUpUserCommandHandler> _logger;
+        private readonly DynamoDBContext _context;
 
         public SignUpUserCommandHandler(
             IUserRepository userRepository,
             ITeamRepository teamRepository,
             IMailChimpManager mailChimpManager,
-            IDemoService demoService,
-            ILogger<SignUpUserCommandHandler> logger)
+            ILogger<SignUpUserCommandHandler> logger,
+            IAmazonDynamoDB dynamoDbClient)
         {
             _userRepository = userRepository;
             _teamRepository = teamRepository;
             _mailChimpManager = mailChimpManager;
-            _demoService = demoService;
             _logger = logger;
+            _context = new DynamoDBContext(dynamoDbClient);
         }
 
         public async Task<SignUpUserCommandResult> Handle(SignUpUserCommand command, CancellationToken cancellationToken)
@@ -104,13 +105,28 @@ namespace CafApi.Command
 
         private async Task PopulateDemoData(string userId, string teamId, string timezone)
         {
-            var candidates = await _demoService.CreateDemoCandidates(userId, teamId);
-            var templates = await _demoService.CreateDemoTemplates(userId, teamId);
+            var javaScriptTemplate = DemoData.GetJavaScriptTemplate(userId, teamId);
+            await _context.SaveAsync(javaScriptTemplate);
 
-            foreach (var template in templates)
-            {
-                await _demoService.CreateDemoInterview(userId, teamId, candidates.FirstOrDefault().CandidateId, template, timezone);
-            }
+            var nodeTemplate = DemoData.GetNodeTemplate(userId, teamId);
+            await _context.SaveAsync(nodeTemplate);
+
+            // John Smith (javascript)
+            var johnCandidate = DemoData.GetJohnCandidate(userId, teamId);
+            await _context.SaveAsync(johnCandidate);
+
+            var futureJohnInterview = DemoData.GetInterviewFromTemplate(userId, teamId, johnCandidate.CandidateId, javaScriptTemplate, timezone);
+            await _context.SaveAsync(futureJohnInterview);
+
+            // Sami Yao (Node dev)
+            var samiCandidate = DemoData.GetSamiCandidate(userId, teamId);
+            await _context.SaveAsync(samiCandidate);
+
+            var completedInterview = DemoData.GetCompltedInterview(userId, teamId, samiCandidate.CandidateId, nodeTemplate.TemplateId, timezone);
+            await _context.SaveAsync(completedInterview);
+
+            var futureInterview = DemoData.GetInterviewFromTemplate(userId, teamId, samiCandidate.CandidateId, javaScriptTemplate, timezone);
+            await _context.SaveAsync(futureInterview);
         }
 
         private async Task AddNewUserInMailchimp(string email, string name)

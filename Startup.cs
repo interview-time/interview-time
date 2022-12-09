@@ -125,7 +125,6 @@ namespace CafApi
             services.AddScoped<IPermissionsService, PermissionsService>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<IChallengeService, ChallengeService>();
-            services.AddScoped<IDemoService, DemoService>();            
 
             services.AddScoped<IInterviewRepository, InterviewRepository>();
             services.AddScoped<IChallengeRepository, ChallengeRepository>();

@@ -14,13 +14,9 @@ namespace CafApi.Services
 
         Task ShareTemplate(string userId, string templateId, bool share);
 
-        Task DeleteTemplate(string userId, string templateId);
+        Task DeleteTemplate(string userId, string templateId);        
 
-        Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId, string toTeamId);
-
-        Task<Template> GetSharedTemplate(string token);
-
-        Task<Template> AddToSharedWithMe(string userId, string token);
+        Task<Template> GetSharedTemplate(string token);        
 
         Task<List<Template>> GetSharedWithMe(string userId);       
     }
