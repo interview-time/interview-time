@@ -15,56 +15,32 @@ namespace CafApi.Services
     public class TeamService : ITeamService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ITeamRepository _teamRepository;
         private readonly IEmailService _emailService;
         private readonly IPermissionsService _permissionsService;
         private readonly DynamoDBContext _context;
 
         public TeamService(IAmazonDynamoDB dynamoDbClient,
             IUserRepository userRepository,
+            ITeamRepository teamRepository,
             IEmailService emailService,
             IPermissionsService permissionsService)
         {
             _context = new DynamoDBContext(dynamoDbClient);
             _userRepository = userRepository;
+            _teamRepository = teamRepository;
             _emailService = emailService;
             _permissionsService = permissionsService;
-        }
-
-        public async Task<Team> GetTeam(string teamId)
-        {
-            return await _context.LoadAsync<Team>(teamId);
-        }
+        }      
 
         public async Task<TeamMember> GetTeamMember(string userId, string teamId)
         {
             return await _context.LoadAsync<TeamMember>(teamId, userId);
-        }
-
-        public async Task<Team> CreateTeam(string userId, string name)
-        {
-            var team = new Team
-            {
-                TeamId = Guid.NewGuid().ToString(),
-                OwnerId = userId,
-                Name = name,
-                Seats = 2,
-                Plan = SubscriptionPlan.STARTER.ToString(),
-                Token = StringHelper.GenerateToken(),
-                CreatedDate = DateTime.UtcNow,
-                ModifiedDate = DateTime.UtcNow,
-            };
-
-            await _context.SaveAsync(team);
-
-            // add the user to the team
-            await AddToTeam(userId, team.TeamId, TeamRole.ADMIN.ToString());
-
-            return team;
-        }
+        }        
 
         public async Task Update(string userId, string teamId, string name)
         {
-            var team = await GetTeam(teamId);
+            var team = await _teamRepository.GetTeam(teamId);
             if (team != null && team.OwnerId == userId)
             {
                 team.Name = name;
@@ -76,7 +52,7 @@ namespace CafApi.Services
 
         public async Task Delete(string userId, string teamId)
         {
-            var team = await GetTeam(teamId);
+            var team = await _teamRepository.GetTeam(teamId);
             if (team != null && team.OwnerId == userId)
             {
                 // get team interviews
@@ -232,7 +208,7 @@ namespace CafApi.Services
                     }
 
                     var inviter = await _userRepository.GetProfile(userId);
-                    var team = await GetTeam(teamId);
+                    var team = await _teamRepository.GetTeam(teamId);
 
                     await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);
                 }
@@ -258,7 +234,7 @@ namespace CafApi.Services
 
         public async Task<int> GetAvailableSeats(string teamId)
         {
-            var team = await GetTeam(teamId);
+            var team = await _teamRepository.GetTeam(teamId);
             var teamMembers = await GetTeamMembers(teamId);
             var pendingInvites = await GetPendingInvites(teamId);
 
@@ -275,7 +251,7 @@ namespace CafApi.Services
             var invite = await _context.LoadAsync<Invite>(inviteToken);
             if (invite != null && !invite.IsAccepted)
             {
-                if (await AddToTeam(userId, invite.TeamId, invite.Role))
+                if (await _teamRepository.AddToTeam(userId, invite.TeamId, invite.Role))
                 {
                     invite.AcceptedBy = userId;
                     invite.IsAccepted = true;
@@ -324,7 +300,7 @@ namespace CafApi.Services
 
         public async Task UpdateSubscription(string teamId, SubscriptionPlan plan, int seats, string stripeCustomerId)
         {
-            var team = await GetTeam(teamId);
+            var team = await _teamRepository.GetTeam(teamId);
             if (team == null)
             {
                 throw new ArgumentException($"Team {teamId} not found");
@@ -357,30 +333,6 @@ namespace CafApi.Services
         private async Task<List<TeamMember>> GetTeamMembers(string teamId)
         {
             return await _context.QueryAsync<TeamMember>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
-        }
-
-        private async Task<bool> AddToTeam(string userId, string teamId, string role = null)
-        {
-            var teamMember = await _context.LoadAsync<TeamMember>(teamId, userId);
-            var team = await GetTeam(teamId);
-
-            if (teamMember == null && team != null)
-            {
-                teamMember = new TeamMember
-                {
-                    TeamId = teamId,
-                    UserId = userId,
-                    Roles = new List<string> { role ?? TeamRole.INTERVIEWER.ToString() },
-                    ModifiedDate = DateTime.UtcNow,
-                    CreatedDate = DateTime.UtcNow
-                };
-
-                await _context.SaveAsync(teamMember);
-
-                return true;
-            }
-
-            return false;
-        }
+        }       
     }
 }

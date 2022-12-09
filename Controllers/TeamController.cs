@@ -23,6 +23,7 @@ namespace CafApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ITeamService _teamService;
+        private readonly ITeamRepository _teamRepository;
         private readonly IUserRepository _userRepository;        
         private readonly IPermissionsService _permissionsService;
         private readonly ILogger<UserController> _logger;
@@ -39,12 +40,14 @@ namespace CafApi.Controllers
             IMediator mediator,
             ILogger<UserController> logger,
             ITeamService teamService,
+            ITeamRepository teamRepository,
             IPermissionsService permissionsService,
             IUserRepository userRepository)
         {
             _mediator = mediator;
             _logger = logger;
             _teamService = teamService;
+            _teamRepository = teamRepository;
             _permissionsService = permissionsService;
             _userRepository = userRepository;
         }
@@ -81,7 +84,7 @@ namespace CafApi.Controllers
         [HttpPost()]
         public async Task<Team> CreateTeam(CreateTeamRequest request)
         {
-            var team = await _teamService.CreateTeam(UserId, request.TeamName);
+            var team = await _teamRepository.CreateTeam(UserId, request.TeamName);
 
             return team;
         }
@@ -101,7 +104,7 @@ namespace CafApi.Controllers
         [HttpGet("members/{teamId}")]
         public async Task<ActionResult<List<TeamMembersResponse>>> GetTeamMembers(string teamId)
         {
-            var team = await _teamService.GetTeam(teamId);
+            var team = await _teamRepository.GetTeam(teamId);
             if (team == null)
             {
                 return NotFound();

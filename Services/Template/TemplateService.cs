@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -95,31 +94,6 @@ namespace CafApi.Services
             await _context.DeleteAsync<Template>(userId, templateId);
         }
 
-        public async Task<Template> CloneTemplate(string fromUserId, string fromTemplateId, string toUserId, string toTeamId)
-        {
-            var fromTemplate = await GetTemplate(fromUserId, fromTemplateId);
-
-            fromTemplate.UserId = toUserId;
-            fromTemplate.TeamId = toTeamId;
-            fromTemplate.TemplateId = Guid.NewGuid().ToString();
-            fromTemplate.CreatedDate = DateTime.UtcNow;
-            fromTemplate.ModifiedDate = DateTime.UtcNow;
-            fromTemplate.Token = StringHelper.GenerateToken();
-
-            // assign new ids to groups
-            if (fromTemplate.Structure != null && fromTemplate.Structure.Groups != null)
-            {
-                foreach (var group in fromTemplate.Structure.Groups)
-                {
-                    group.GroupId = Guid.NewGuid().ToString();
-                }
-            }
-
-            await _context.SaveAsync(fromTemplate);
-
-            return fromTemplate;
-        }
-
         public async Task ShareTemplate(string userId, string templateId, bool share)
         {
             var template = await GetTemplate(userId, templateId);
@@ -141,27 +115,6 @@ namespace CafApi.Services
             {
                 var templateOwner = await _context.LoadAsync<Profile>(sharedTemplate.UserId);
                 sharedTemplate.Owner = templateOwner.Name;
-            }
-
-            return sharedTemplate;
-        }
-
-        public async Task<Template> AddToSharedWithMe(string userId, string token)
-        {
-            var sharedTemplate = await GetSharedTemplate(token);
-
-            if (sharedTemplate != null)
-            {
-                var sharedWithMe = new SharedWithMe
-                {
-                    UserId = userId,
-                    TemplateId = sharedTemplate.TemplateId,
-                    TemplateOwnerId = sharedTemplate.UserId,
-                    ModifiedDate = DateTime.UtcNow,
-                    CreatedDate = DateTime.UtcNow,
-                };
-
-                await _context.SaveAsync(sharedWithMe);
             }
 
             return sharedTemplate;
