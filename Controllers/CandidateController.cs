@@ -262,5 +262,36 @@ namespace CafApi.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPost("team/{teamId}/candidate/{candidateId}/restore-archive")]
+        public async Task<ActionResult> RestoreArchivedCandidate(string teamId, string candidateId)
+        {
+            try
+            {
+                var command = new ArchiveCandidateCommand
+                {
+                    UserId = UserId,
+                    TeamId = teamId,
+                    CandidateId = candidateId,
+                    Archieve = false
+                };
+
+                await _mediator.Send(command);
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

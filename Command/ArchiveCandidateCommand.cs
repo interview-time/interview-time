@@ -41,7 +41,7 @@ namespace CafApi.Command
         {
             if (!await _permissionsService.CanUpdateOrDeleteOrArchiveCandidate(command.UserId, command.TeamId))
             {
-                throw new AuthorizationException($"User ({command.UserId}) doesn't have permissions to archive candidate {command.CandidateId}");
+                throw new AuthorizationException($"User ({command.UserId}) doesn't have permissions to archive/restore candidate {command.CandidateId}");
             }
 
             var candidate = await _candidateRepository.GetCandidate(command.TeamId, command.CandidateId);
