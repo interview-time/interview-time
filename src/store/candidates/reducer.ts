@@ -74,7 +74,7 @@ const candidatesReducer = (state = initialState, action: CandidateActions) => {
                 if (item.candidateId === action.candidateId) {
                     return {
                         ...item,
-                        archived: true,
+                        archived: action.archived,
                     };
                 }
 

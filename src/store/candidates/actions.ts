@@ -70,6 +70,7 @@ export type RemoveCandidateAction = {
 export type SetArchiveCandidateAction = {
     type: CandidateActionType.SET_ARCHIVE_CANDIDATE;
     candidateId: string;
+    archived: boolean;
 };
 
 export type SetRequestSuccessAction = {
@@ -142,9 +143,10 @@ export const removeCandidate = (candidateId: string): RemoveCandidateAction => (
     candidateId: candidateId,
 });
 
-export const setArchiveCandidate = (candidateId: string): SetArchiveCandidateAction => ({
+export const setArchiveCandidate = (candidateId: string, archived: boolean): SetArchiveCandidateAction => ({
     type: CandidateActionType.SET_ARCHIVE_CANDIDATE,
     candidateId: candidateId,
+    archived: archived,
 });
 
 export const setRequestSuccess = (requestType: ApiRequest): SetRequestSuccessAction => ({
@@ -317,9 +319,9 @@ export const archiveCandidate = (candidateId: string) => async (dispatch: Dispat
     dispatch(setRequestInProgress(ApiRequest.ArchiveCandidate));
 
     try {
-        await axios.post(`${BASE_URI}/team/${teamId}/candidate/${candidateId}/archive`, config(token));
+        await axios.post(`${BASE_URI}/team/${teamId}/candidate/${candidateId}/archive`, null, config(token));
 
-        dispatch(setArchiveCandidate(candidateId));
+        dispatch(setArchiveCandidate(candidateId, true));
 
         dispatch(setRequestSuccess(ApiRequest.ArchiveCandidate));
         dispatch(setRequestReset(ApiRequest.ArchiveCandidate));
@@ -330,3 +332,31 @@ export const archiveCandidate = (candidateId: string) => async (dispatch: Dispat
         dispatch(setRequestFailed(ApiRequest.ArchiveCandidate, axiosErr?.message));
     }
 };
+
+export const restoreArchivedCandidate =
+    (candidateId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+        const { user } = getState();
+
+        const token = await getAccessTokenSilently();
+        const teamId = user.profile.currentTeamId;
+
+        dispatch(setRequestInProgress(ApiRequest.ArchiveCandidate));
+
+        try {
+            await axios.post(
+                `${BASE_URI}/team/${teamId}/candidate/${candidateId}/restore-archive`,
+                null,
+                config(token)
+            );
+
+            dispatch(setArchiveCandidate(candidateId, false));
+
+            dispatch(setRequestSuccess(ApiRequest.ArchiveCandidate));
+            dispatch(setRequestReset(ApiRequest.ArchiveCandidate));
+        } catch (error) {
+            logError(error);
+
+            const axiosErr = error as AxiosError;
+            dispatch(setRequestFailed(ApiRequest.ArchiveCandidate, axiosErr?.message));
+        }
+    };
