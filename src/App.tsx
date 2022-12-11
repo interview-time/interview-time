@@ -111,6 +111,19 @@ const GlobalStyle = createGlobalStyle`
   .assessment-question-row .assessed {
     opacity: 1;
   }
+
+  .ant-picker .ant-picker-input > input {
+    font-size: 16px;
+    font-family: 'Inter', 'system-ui';
+  }
+
+  .ant-picker:hover {
+    border-color: ${Colors.Primary_500};
+  }
+
+  .ant-picker-focused {
+    border-color: ${Colors.Primary_500};
+  }
 `;
 
 const GlobalThemeConfig: ThemeConfig = {

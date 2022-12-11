@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Badge, Button, Divider, Layout as AntLayout, Menu, notification, Select, Typography, Avatar } from "antd";
+import { Avatar, Badge, Button, Divider, Layout as AntLayout, Menu, notification, Select, Typography } from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
@@ -12,16 +12,16 @@ import {
     UserAddIcon,
 } from "../../utils/icons";
 import {
-    routeProfile,
     routeCandidates,
     routeHome,
     routeInterviewAdd,
     routeInterviews,
+    routeProfile,
     routeReports,
+    routeTeamMembers,
     routeTeamNew,
     routeTemplateLibrary,
     routeTemplates,
-    routeTeamMembers,
 } from "../../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
@@ -186,7 +186,7 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                 className={styles.globalSider}
             >
                 <div className={styles.globalSiderContainer}>
-                    <Logo className={styles.logoHolder}/>
+                    <Logo className={styles.logoHolder} />
                     <Menu
                         theme='light'
                         mode='vertical'
