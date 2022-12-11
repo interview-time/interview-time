@@ -26,7 +26,7 @@ import {
     routeTemplateEdit,
     routeTemplateLibrary,
     routeTemplatePreview,
-    routeTemplates
+    routeTemplates,
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -58,6 +58,7 @@ import CandidateProfile from "./pages/candidate-profile/candidate-profile";
 import { ConfigProvider } from "antd";
 import { createGlobalStyle } from "styled-components";
 import { Colors } from "./assets/styles/colors";
+import { ThemeConfig } from "antd/es/config-provider/context";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -90,7 +91,7 @@ const GlobalStyle = createGlobalStyle`
     background: ${Colors.White};
   }
 
-  // TODO fix with styled component https://styled-components.com/docs/advanced#existing-css
+  // TODO fix with styled component https://styled-components.com/docs/faqs#how-can-i-override-styles-with-higher-specificity
   .ant-list .ant-list-item {
     padding: 0;
   }
@@ -112,58 +113,60 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-function App() {
+const GlobalThemeConfig: ThemeConfig = {
+    token: {
+        colorPrimary: Colors.Primary_500,
+        colorPrimaryBgHover: Colors.Primary_50,
+        colorLink: Colors.Primary_500,
+        colorLinkActive: Colors.Primary_500,
+        colorLinkHover: Colors.Primary_300,
+        colorTextHeading: Colors.Neutral_800,
+        colorTextTertiary: Colors.Neutral_500,
+        fontSize: 16,
+        fontFamily: "Inter, system-ui",
+    },
+    components: {
+        Input: {
+            controlHeight: 44,
+        },
+        Select: {
+            controlHeight: 44,
+        },
+        DatePicker: {
+            controlHeight: 44,
+        },
+        Button: {
+            controlHeight: 44,
+        },
+        Segmented: {
+            controlHeight: 44,
+        },
+        Rate: {
+            controlHeight: 44,
+            colorFillContent: Colors.Neutral_200,
+        },
+        Menu: {
+            colorItemTextSelected: Colors.Primary_500,
+        },
+        Tag: {
+            colorTextLightSolid: Colors.Neutral_800,
+        },
+    },
+};
 
+function App() {
     const { loading } = useAuth0();
 
     if (loading) {
-        return <Spinner />;
+        return (
+            <ConfigProvider theme={GlobalThemeConfig}>
+                <Spinner />
+            </ConfigProvider>
+        );
     }
 
     return (
-        <ConfigProvider
-            theme={{
-                token: {
-                    colorPrimary: Colors.Primary_500,
-                    colorPrimaryBgHover: Colors.Primary_50,
-                    colorLink: Colors.Primary_500,
-                    colorLinkActive: Colors.Primary_500,
-                    colorLinkHover: Colors.Primary_300,
-                    colorTextHeading: Colors.Neutral_800,
-                    colorTextTertiary: Colors.Neutral_500,
-                    fontSize: 16,
-                    fontFamily: "Inter, system-ui"
-
-                },
-                components: {
-                    Input: {
-                        controlHeight: 44
-                    },
-                    Select: {
-                        controlHeight: 44
-                    },
-                    DatePicker: {
-                        controlHeight: 44
-                    },
-                    Button: {
-                        controlHeight: 44
-                    },
-                    Segmented: {
-                        controlHeight: 44
-                    },
-                    Rate: {
-                        controlHeight: 44,
-                        colorFillContent: Colors.Neutral_200
-                    },
-                    Menu: {
-                        colorItemTextSelected: Colors.Primary_500
-                    },
-                    Tag: {
-                        colorTextLightSolid: Colors.Neutral_800
-                    }
-                }
-            }}
-        >
+        <ConfigProvider theme={GlobalThemeConfig}>
             <Switch>
                 <PrivateRoute path={routeHome()} exact component={Default} />
                 <PrivateRoute path={routeInterviews()} exact component={Interviews} />

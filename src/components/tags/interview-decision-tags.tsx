@@ -5,10 +5,12 @@ import styled from "styled-components";
 import { InterviewAssessment } from "../../utils/constants";
 
 const DecisionTag = styled(Tag)`
+  && {
     font-size: 14px;
     font-weight: 500;
     border-radius: 24px;
     color: ${({ decision }: Props) => (decision === InterviewAssessment.NONE ? "#6B7280" : "#fff")};
+  }
 `;
 
 type Props = {
