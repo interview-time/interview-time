@@ -1,10 +1,11 @@
 import styles from "./interview-checklist-card.module.css";
-import Text from "antd/lib/typography/Text";
 import React from "react";
 import { InterviewChecklist } from "../../store/models";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import Card from "../card/card";
 import { Checkbox, Divider } from "antd";
+
+const { Title, Text } = Typography;
 
 type Props = {
     checklist: InterviewChecklist[];

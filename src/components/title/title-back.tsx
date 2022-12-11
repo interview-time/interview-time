@@ -1,5 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
+
+const { Title } = Typography;
 
 type Props = {
     title: string;

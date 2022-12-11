@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Badge, Button, Divider, Layout as AntLayout, Menu, notification, Select } from "antd";
+import { Badge, Button, Divider, Layout as AntLayout, Menu, notification, Select, Typography, Avatar } from "antd";
 import styles from "./layout.module.css";
 import {
     CandidatesIcon,
@@ -25,18 +25,18 @@ import {
 } from "../../utils/route";
 
 import { useAuth0 } from "../../react-auth0-spa";
-import Avatar from "antd/es/avatar/avatar";
 import { truncate } from "lodash/string";
 import FeedbackModal from "../../pages/feedback/modal-feedback";
 import { joinTeam, switchTeam } from "../../store/user/actions";
 import { connect } from "react-redux";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash/util";
-import Text from "antd/lib/typography/Text";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 import { selectProfileName } from "../../store/user/selector";
 import { Logo } from "../logo/logo";
+
+const { Text } = Typography;
 
 /**
  * @typedef {Object} ActiveTeam

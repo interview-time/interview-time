@@ -1,15 +1,16 @@
 import { LiveCodingChallenge } from "../../../store/models";
 import styles from "./challenge-card.module.css";
-import Text from "antd/lib/typography/Text";
 import React from "react";
 import Card from "../../card/card";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { Divider, message, Switch, Tooltip } from "antd";
 import { isEmpty } from "lodash";
 import { GithubFilled } from "@ant-design/icons";
 import { DownloadFileIcon, DownloadFileOutlinedIcon } from "../../../utils/icons";
 import { ButtonSecondary } from "../../buttons/button-secondary";
 import { downloadChallengeFile } from "../../../store/challenge/actions";
+
+const { Title, Text } = Typography;
 
 type Props = {
     challenges: Readonly<LiveCodingChallenge[]>;

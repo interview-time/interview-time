@@ -1,10 +1,11 @@
 import { Col, Form, Input, Row } from "antd";
-import Text from "antd/lib/typography/Text";
 import TemplateImage from "../../../components/template-card/template-image";
 import Card from "../../../components/card/card";
 import React from "react";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { InterviewType } from "../../../store/models";
+
+const { Title, Text } = Typography;
 
 type Props = {
     interviewType: InterviewType;

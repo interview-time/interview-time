@@ -1,8 +1,7 @@
 import styles from "./challenge-card.module.css";
 import Card from "../../card/card";
 import { ChallengeStatus, TakeHomeChallenge } from "../../../store/models";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import React from "react";
 import { isEmpty } from "lodash";
 import { FileChallengeLink, GithubChallengeLink } from "../type-live-coding/challenge-card";
@@ -11,6 +10,8 @@ import { ButtonSecondary } from "../../buttons/button-secondary";
 import TakeHomeChallengeStatusTag from "../../tags/take-home-challenge-status";
 import { getFormattedDate } from "../../../utils/date-fns";
 import { INTERVIEW_TAKE_HOME } from "../../../utils/interview";
+
+const { Title, Text } = Typography;
 
 type Props = {
     teamId: string;

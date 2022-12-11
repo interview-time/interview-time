@@ -1,15 +1,16 @@
 import styles from "./template-step-type.module.css";
 import { Col, List, Row } from "antd";
 import Card from "../../../components/card/card";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import React from "react";
-import Text from "antd/lib/typography/Text";
 import TemplateImageTechnicalQA from "../../../assets/template-technical-qa.png";
 import TemplateImageTakeHome from "../../../assets/template-take-home-task.png";
 import TemplateImageLiveCoding from "../../../assets/template-live-coding.png";
 import TemplateImage from "../../../components/template-card/template-image";
 import { InterviewType } from "../../../store/models";
 import { INTERVIEW_LIVE_CODING, INTERVIEW_TAKE_HOME } from "../../../utils/interview";
+
+const { Title, Text } = Typography;
 
 type Props = {
     interviewType?: InterviewType;

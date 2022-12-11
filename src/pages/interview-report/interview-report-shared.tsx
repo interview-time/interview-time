@@ -10,11 +10,13 @@ import { Result } from "antd";
 import styles from "./interview-report.module.css";
 import Card from "../../components/card/card";
 import { getDecisionColor } from "../../utils/assessment";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import InterviewDecisionTag from "../../components/tags/interview-decision-tags";
 import ScorecardReportSection from "../../components/scorecard/scorecard-report-section";
 import { v4 as uuidv4 } from "uuid";
 import { Logo } from "../../components/logo/logo";
+
+const { Title } = Typography;
 
 type Props = {
     interview: SharedInterview | undefined;

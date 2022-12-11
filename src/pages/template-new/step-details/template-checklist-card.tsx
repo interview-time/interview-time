@@ -1,12 +1,12 @@
-import Text from "antd/lib/typography/Text";
 import Card from "../../../components/card/card";
 import React from "react";
 import styles from "./template-checklist-card.module.css";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { InterviewChecklist } from "../../../store/models";
 import { Button, Checkbox, Input } from "antd";
 import { Plus, Trash2 } from "lucide-react";
 
+const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 type Props = {

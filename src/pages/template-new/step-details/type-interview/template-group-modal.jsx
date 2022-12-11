@@ -1,8 +1,9 @@
 import Modal from "antd/lib/modal/Modal";
 import styles from "./template-group-modal.module.css";
-import { Button, Input, Space } from "antd";
-import Text from "antd/lib/typography/Text";
+import { Button, Input, Space, Typography } from "antd";
 import * as React from "react";
+
+const { Text } = Typography;
 
 const TemplateGroupModal = ({ visible, name, id, onAdd, onUpdate, onCancel }) => {
     const [groupName, setGroupName] = React.useState();

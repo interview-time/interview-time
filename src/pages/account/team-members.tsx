@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import AccountLayout from "./account-layout";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { selectActiveTeam } from "../../store/user/selector";
 import { isTeamAdmin } from "../../store/user/permissions";
 import TeamInvite from "./team-members-invite";
@@ -12,7 +12,6 @@ import { Button, Modal, Space } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Roles } from "../../utils/constants";
 import TeamRoleTag from "../../components/tags/team-role-tags";
-import Text from "antd/lib/typography/Text";
 import { TeamMembersTable } from "./team-members-table";
 import { loadTeam, cancelInvite } from "../../store/team/actions";
 import TeamMembersPendingInvites from "./team-members-pending-invites";
@@ -23,6 +22,8 @@ import ErrorImage from "../../assets/error.svg";
 import { changeRole, removeMember } from "../../store/user/actions";
 import { Team, TeamDetails } from "../../store/models";
 import { RootState } from "../../store/state-models";
+
+const { Title, Text } = Typography;
 
 type Props = {
     userId: string;

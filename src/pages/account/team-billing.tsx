@@ -4,10 +4,9 @@ import { connect } from "react-redux";
 import React, { useEffect } from "react";
 import AccountLayout from "./account-layout";
 import Spinner from "../../components/spinner/spinner";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import Card from "../../components/card/card";
 import { Button, Col, Modal, Row } from "antd";
-import Text from "antd/lib/typography/Text";
 import styles from "./team-billing.module.css";
 import { CheckFilledIcon, UncheckFilledIcon } from "../../utils/icons";
 import { SubscriptionPlans } from "../../utils/constants";
@@ -19,6 +18,8 @@ import CancelImage from "../../assets/cancel.svg";
 import FeedbackModal from "../feedback/modal-feedback";
 import { Team, TeamDetails } from "../../store/models";
 import { RootState } from "../../store/state-models";
+
+const { Title, Text } = Typography;
 
 type Props = {
     userEmail?: string;
@@ -76,7 +77,7 @@ const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }: Props) => {
                             </Col>
                             <Col span={6}>
                                 <div className={styles.priceHolder}>
-                                    <Title level={2} className={styles.noMargin}>
+                                    <Title level={1} className={styles.noMargin}>
                                         {teamDetails.seats}
                                     </Title>
                                     <Text className={styles.priceLabel}>seats</Text>
@@ -84,13 +85,13 @@ const TeamBilling = ({ userEmail, team, teamDetails, loadTeam }: Props) => {
                             </Col>
                             <Col span={6}>
                                 {isStarterPlan() && (
-                                    <Title level={2} className={styles.noMargin}>
+                                    <Title level={1} className={styles.noMargin}>
                                         {selectTeamPrice(teamDetails)}
                                     </Title>
                                 )}
                                 {isPremiumPlan() && (
                                     <div className={styles.priceHolder}>
-                                        <Title level={2} className={styles.noMargin}>
+                                        <Title level={1} className={styles.noMargin}>
                                             {selectTeamPrice(teamDetails)}
                                         </Title>
                                         <Text className={styles.priceLabel}>$ per month</Text>

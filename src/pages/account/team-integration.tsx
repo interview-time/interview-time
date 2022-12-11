@@ -1,5 +1,5 @@
 import { Button, Card } from "antd";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import AccountLayout from "./account-layout";
 import { useMergeLink } from "@mergeapi/react-merge-link";
@@ -11,6 +11,8 @@ import { ReactComponent as NoIntegrationImg } from "../../assets/illustrations/i
 import EmptyState from "../../components/empty-state/empty-state";
 import Spinner from "../../components/spinner/spinner";
 import { canIntegrateWithATS } from "../../store/user/permissions";
+
+const { Title } = Typography;
 
 type Props = {
     linkToken?: string;

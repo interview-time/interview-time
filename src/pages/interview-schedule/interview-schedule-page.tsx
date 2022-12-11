@@ -1,12 +1,14 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Card, Col, Row } from "antd";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import InterviewSchedule from "./interview-schedule";
 import styles from "./interview-schedule.module.css";
 import { routeInterviews } from "../../utils/route";
+
+const { Title } = Typography;
 
 const InterviewSchedulePage = () => {
     const history = useHistory();

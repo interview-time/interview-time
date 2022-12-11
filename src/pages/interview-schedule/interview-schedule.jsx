@@ -1,8 +1,7 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Checkbox, Divider, Form, Input, message, Select, Space, Tooltip, Modal } from "antd";
-import Text from "antd/lib/typography/Text";
+import { Button, Checkbox, Divider, Form, Input, message, Select, Space, Tooltip, Modal, Typography } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
 import { cloneDeep, isEmpty } from "lodash/lang";
 import { findInterview, findTemplate } from "../../utils/converters";
@@ -33,6 +32,7 @@ import { INTERVIEW_TAKE_HOME, interviewWithoutDate } from "../../utils/interview
 import InterviewTypeTag from "../../components/tags/interview-type-tag";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 /**
  *

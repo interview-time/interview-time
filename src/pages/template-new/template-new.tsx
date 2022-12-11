@@ -15,7 +15,7 @@ import React, { useEffect, useReducer, useState } from "react";
 import styles from "./template-new.module.css";
 import { useHistory, useLocation } from "react-router-dom";
 import { Button, message, Steps } from "antd";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import TemplateStepType from "./step-type/template-step-type";
 import StepDetailsInterview from "./step-details/type-interview/step-details-interview";
 import { cloneDeep, isEmpty } from "lodash";
@@ -33,6 +33,7 @@ import StepDetailsTakeHome from "./step-details/type-take-home/step-details-take
 import { log } from "../../utils/log";
 
 const { Step } = Steps;
+const { Text } = Typography;
 
 type Flow = {
     existingTemplateId: string | null;

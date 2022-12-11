@@ -1,16 +1,16 @@
 import styles from "./candidate-details.module.css";
-import { Button, Col, Divider, Row, Select } from "antd";
+import { Button, Col, Divider, Row, Select, Avatar } from "antd";
 import React from "react";
 import InterviewsTable from "../interviews/interviews-table";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import Card from "../../components/card/card";
-import Text from "antd/lib/typography/Text";
 import { CandidateStatus } from "../../utils/constants";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import { Option } from "antd/lib/mentions";
 import { AlertIcon, ProfileIcon } from "../../utils/icons";
-import Avatar from "antd/es/avatar/avatar";
 import { CandidateInfo as CandidateInfoSection } from "../../components/scorecard/candidate-info";
+
+const { Title, Text } = Typography;
 
 /**
  *

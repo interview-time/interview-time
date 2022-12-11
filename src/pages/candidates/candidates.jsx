@@ -6,7 +6,7 @@ import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import TableHeader from "../../components/table/table-header";
 import { archiveCandidate, restoreArchivedCandidate } from "../../store/candidates/actions";
 import { canAddCandidate } from "../../store/user/permissions";
@@ -22,6 +22,8 @@ import { MoreIcon } from "../../utils/icons";
 import { getFormattedDateShort } from "../../utils/date-fns";
 import Filter from "../../components/filter/filter";
 import CreateCandidate from "../candidate-profile/create-candidate";
+
+const { Title } = Typography;
 
 /**
  *

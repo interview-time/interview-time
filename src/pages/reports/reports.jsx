@@ -12,7 +12,7 @@ import { localeCompare } from "../../utils/comparators";
 import { reverse } from "lodash/array";
 import { cloneDeep } from "lodash/lang";
 import { routeInterviewReport } from "../../utils/route";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import Card from "../../components/card/card";
 import TableHeader from "../../components/table/table-header";
@@ -24,6 +24,7 @@ import { defaultTo } from "lodash/util";
 import { getFormattedDateTime } from "../../utils/date-fns";
 
 const { Search } = Input;
+const { Title } = Typography;
 
 const Reports = ({ interviews, loading, loadInterviews }) => {
     const history = useHistory();

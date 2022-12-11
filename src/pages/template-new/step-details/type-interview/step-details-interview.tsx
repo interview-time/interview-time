@@ -10,8 +10,7 @@ import TemplateMetaCard from "../template-meta-card";
 import React, { useState } from "react";
 import { Button, Col, Form, Row } from "antd";
 import TemplateHeaderCard from "../template-header-card";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import { TemplateQuestionsCard } from "./template-questions-card";
 import { PlusOutlined } from "@ant-design/icons";
 import Card from "../../../../components/card/card";
@@ -19,6 +18,8 @@ import { sortBy } from "lodash";
 import TemplateGroupModal from "./template-group-modal";
 import { ReducerAction, ReducerActionType } from "../../template-reducer";
 import TemplateChecklistCard from "../template-checklist-card";
+
+const { Title, Text } = Typography;
 
 type Props = {
     template: Readonly<Template>;

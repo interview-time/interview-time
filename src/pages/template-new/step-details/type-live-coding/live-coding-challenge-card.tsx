@@ -2,8 +2,7 @@ import styles from "./live-coding-assessment-card.module.css";
 import Card from "../../../../components/card/card";
 import React from "react";
 import { TemplateChallenge } from "../../../../store/models";
-import Text from "antd/lib/typography/Text";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { Button, ConfigProvider, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { SortableContainer, SortableElement, SortableHandle, SortEnd } from "react-sortable-hoc";
@@ -14,6 +13,8 @@ import {
     FileChallengeIcon,
     GithubChallengeIcon
 } from "../../../../components/scorecard/type-live-coding/challenge-card";
+
+const { Title, Text } = Typography;
 
 type Props = {
     challenges: Readonly<TemplateChallenge[]>;

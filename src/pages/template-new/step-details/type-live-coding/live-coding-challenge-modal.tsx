@@ -1,19 +1,19 @@
 import Modal from "antd/lib/modal/Modal";
 import styles from "./live-coding-challenge-modal.module.css";
-import { Button, Input, Space, UploadProps } from "antd";
-import Text from "antd/lib/typography/Text";
+import { Button, Input, Space, UploadProps, Typography, Upload } from "antd";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import Title from "antd/lib/typography/Title";
 import { GithubFilled } from "@ant-design/icons";
 import { TemplateChallenge } from "../../../../store/models";
 import { v4 as uuidv4 } from "uuid";
-import Dragger from "antd/lib/upload/Dragger";
 import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
 import { log } from "../../../../utils/log";
-import TextArea from "antd/lib/input/TextArea";
 import { UploadFile } from "antd/lib/upload/interface";
 import { uploadChallengeFile } from "../../../../store/challenge/actions";
+
+const { Dragger } = Upload;
+const { TextArea } = Input;
+const { Title, Text } = Typography;
 
 type Props = {
     visible: boolean;

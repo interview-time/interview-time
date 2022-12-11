@@ -1,5 +1,5 @@
 import { Button, ConfigProvider, Dropdown, Menu, Modal, Select, Space, Table } from "antd";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import Card from "../../components/card/card";
 import React, { useState } from "react";
 import { MoreIcon } from "../../utils/icons";
@@ -7,7 +7,6 @@ import { Status } from "../../utils/constants";
 import { routeInterviewDetails, routeInterviewScorecard } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import emptyInterview from "../../assets/empty-interview.svg";
-import Text from "antd/lib/typography/Text";
 import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import styles from "../interviews/interviews.module.css";
 import {
@@ -21,6 +20,8 @@ import { getCandidateName, InterviewData } from "../../store/interviews/selector
 import { ColumnsType } from "antd/lib/table/interface";
 import { sortBy, truncate, uniqBy } from "lodash";
 import { TeamRole, UserProfile } from "../../store/models";
+
+const { Title, Text } = Typography;
 
 type Props = {
     interviews: InterviewData[];

@@ -5,7 +5,7 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { Col, Row } from "antd";
 import { connect } from "react-redux";
 import { Status } from "../../utils/constants";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { ArchiveIcon, CalendarIcon, IdeaIcon } from "../../utils/icons";
 import { loadTeamMembers } from "../../store/user/actions";
 import CardHero from "../../components/card/card-hero";
@@ -20,6 +20,8 @@ import {
 import { TeamRole, UserProfile } from "../../store/models";
 import { RootState } from "../../store/state-models";
 import { selectUserRole } from "../../store/team/selector";
+
+const { Title } = Typography;
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 

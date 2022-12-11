@@ -2,8 +2,7 @@ import React from "react";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import AccountLayout from "./account-layout";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import { Button, Form, Input, message, Popconfirm, Space } from "antd";
 import { deleteTeam, leaveTeam, updateTeam } from "../../store/user/actions";
 import { selectActiveTeam } from "../../store/user/selector";
@@ -11,6 +10,8 @@ import { isTeamAdmin } from "../../store/user/permissions";
 import { useHistory } from "react-router-dom";
 import { Team } from "../../store/models";
 import { RootState } from "../../store/state-models";
+
+const { Title, Text } = Typography;
 
 type Props = {
     team?: Team;

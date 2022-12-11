@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ConfigProvider, Input, Select, Space, Table } from "antd";
-import Text from "antd/lib/typography/Text";
 import { getDecisionText } from "../../utils/assessment";
 import { routeInterviewReport } from "../../utils/route";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
 import Card from "../../components/card/card";
 import TableHeader from "../../components/table/table-header";
@@ -21,6 +20,7 @@ import { ColumnsType } from "antd/lib/table/interface";
 import { TeamRole, UserProfile } from "../../store/models";
 
 const { Search } = Input;
+const { Title, Text } = Typography;
 
 type Props = {
     profile: UserProfile;
