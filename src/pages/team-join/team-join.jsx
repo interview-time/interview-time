@@ -1,14 +1,12 @@
 import { Button, Card, Col, Divider, Row, Typography } from "antd";
-import Title from "antd/lib/typography/Title";
 import styles from "./team-join.module.css";
 import React from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
-import Paragraph from "antd/lib/typography/Paragraph";
 import { routeHome } from "../../utils/route";
 import { setJoinTeam } from "../../utils/storage";
 import { Logo } from "../../components/logo/logo";
 
-const { Text, Link } = Typography;
+const { Title, Text, Link, Paragraph } = Typography;
 const JoinTeam = () => {
     const { id } = useParams();
 

@@ -3,7 +3,7 @@ import { Button, Modal, Space } from "antd";
 import { getDecisionColor } from "../../utils/assessment";
 import Header from "../../components/header/header";
 import styles from "./interview-report.module.css";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { CloseIcon } from "../../utils/icons";
 import { Link, useHistory } from "react-router-dom";
 import { loadInterviews } from "../../store/interviews/actions";
@@ -21,6 +21,8 @@ import { Candidate, Interview, TeamMember } from "../../store/models";
 import ScorecardReportSection from "../../components/scorecard/scorecard-report-section";
 import ShareScorecard from "./share-report-modal";
 import { routeCandidateProfile } from "../../utils/route";
+
+const { Title } = Typography;
 
 type Props = {
     currentTeamId: string;

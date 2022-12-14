@@ -1,10 +1,12 @@
 import styles from "./interview-info-card.module.css";
 import React from "react";
 import { Interview, TeamMember } from "../../store/models";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import Card from "../card/card";
 import { Divider } from "antd";
 import { InterviewInfo } from "./interview-info";
+
+const { Title } = Typography;
 
 type Props = {
     interview: Readonly<Interview>;

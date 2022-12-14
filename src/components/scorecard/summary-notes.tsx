@@ -1,13 +1,13 @@
-import { Col, Row } from "antd";
+import { Col, Row, Typography, Input } from "antd";
 import Card from "../card/card";
 import styles from "./summary-notes.module.css";
-import Title from "antd/lib/typography/Title";
-import Paragraph from "antd/lib/typography/Paragraph";
-import TextArea from "antd/lib/input/TextArea";
 import { Status } from "../../utils/constants";
 import { RedFlagsTags } from "../tags/red-flags-tags";
 import { defaultTo } from "lodash";
 import { Interview } from "../../store/models";
+
+const { TextArea } = Input;
+const { Title, Paragraph } = Typography;
 
 type Props = {
     interview: Readonly<Interview>;

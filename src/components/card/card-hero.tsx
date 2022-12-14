@@ -1,8 +1,9 @@
 import styles from "./card-hero.module.css";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
 import Card from "./card";
 import React from "react";
+import { Typography } from "antd";
+
+const { Title, Text } = Typography;
 
 /**
  *

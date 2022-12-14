@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@ant-design/cssinjs": "^1.1.1",
         "@ant-design/icons": "^4.3.0",
         "@auth0/auth0-spa-js": "^1.13.5",
         "@craco/craco": "^6.4.0",
@@ -17,9 +18,9 @@
         "@types/node": "^18.0.4",
         "@types/react": "^18.0.15",
         "@types/react-dom": "^18.0.6",
-        "@types/redux-actions": "^2.6.2",        
+        "@types/redux-actions": "^2.6.2",
         "ahooks": "^3.7.0",
-        "antd": "^4.23.6",
+        "antd": "^5.0.5",
         "array-move": "^4.0.0",
         "axios": "^0.21.1",
         "chart.js": "^3.7.1",
@@ -55,9 +56,9 @@
         "web-vitals": "^0.2.4"
     },
     "scripts": {
-        "start": "craco start",
-        "build": "craco build",
-        "test": "craco test ; jest",
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test; jtest",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {

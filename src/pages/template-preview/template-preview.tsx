@@ -1,6 +1,5 @@
-import { Button, Col, Divider, Dropdown, Menu, message, Row } from "antd";
+import { Button, Col, Divider, Dropdown, Menu, message, Row, Typography } from "antd";
 import styles from "./template-preview.module.css";
-import Text from "antd/lib/typography/Text";
 import {
     IntroSection,
     TemplateGroupsSection
@@ -32,6 +31,8 @@ import LiveCodingAssessmentCard from "../../components/scorecard/type-live-codin
 import LiveCodingChallengeCard from "../../components/scorecard/type-live-coding/challenge-card-template";
 import TakeHomeChallengeCard from "../../components/scorecard/type-take-home/challenge-card-template";
 import { InterviewChecklistCard } from "../../components/scorecard/interview-checklist-card";
+
+const { Text } = Typography;
 
 type Props = {
     originalTemplate?: Readonly<Template>;
@@ -173,7 +174,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
                             Schedule interview
                         </Button>
 
-                        <Dropdown.Button overlay={menu} onClick={onEditClicked}>
+                        <Dropdown.Button overlay={menu} onClick={onEditClicked} style={{ width: 'auto'}}>
                             <EditOutlined /> Edit
                         </Dropdown.Button>
                     </div>

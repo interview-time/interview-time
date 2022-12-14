@@ -1,9 +1,10 @@
-import { message, Modal } from "antd";
+import { message, Modal, Typography, Input } from "antd";
 import React, { useState } from "react";
-import Text from "antd/es/typography/Text";
-import TextArea from "antd/lib/input/TextArea";
 import { sendFeedback } from "../../utils/feedback";
 import { useAuth0 } from "../../react-auth0-spa";
+
+const { Text } = Typography;
+const { TextArea } = Input;
 
 /**
  *

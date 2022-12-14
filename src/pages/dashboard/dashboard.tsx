@@ -13,7 +13,6 @@ import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../utils/icons";
 import Card from "../../components/card/card";
 import CardHero from "../../components/card/card-hero";
 import emptyInterview from "../../assets/empty-interview.svg";
-import Text from "antd/lib/typography/Text";
 import { CandidateColumn, DateColumn, TemplateColumn, StatusColumn } from "../../components/table/table-interviews";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
@@ -22,7 +21,7 @@ import { TeamRole, Template, UserProfile } from "../../store/models";
 import { RootState } from "../../store/state-models";
 import { selectUserRole } from "../../store/team/selector";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
 type Props = {

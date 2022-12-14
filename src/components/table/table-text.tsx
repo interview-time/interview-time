@@ -1,6 +1,8 @@
 import styles from "./table-text.module.css";
-import Text from "antd/lib/typography/Text";
 import React from "react";
+import { Typography } from "antd";
+
+const { Text } = Typography;
 
 type Props = {
     className?: string;

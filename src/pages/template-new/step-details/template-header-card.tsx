@@ -1,8 +1,9 @@
-import Text from "antd/lib/typography/Text";
 import Card from "../../../components/card/card";
 import React from "react";
-import Title from "antd/lib/typography/Title";
-import TextArea from "antd/lib/input/TextArea";
+import { Typography, Input } from "antd";
+
+const { Title, Text } = Typography;
+const { TextArea } = Input;
 
 type Props = {
     header: string | undefined;

@@ -1,18 +1,18 @@
 import React from "react";
 import styles from "./profile.module.css";
 import { ProfileIcon } from "../../utils/icons";
-import Avatar from "antd/es/avatar/avatar";
 import { useAuth0 } from "../../react-auth0-spa";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import AccountLayout from "./account-layout";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
-import { Button, Col, Form, Input, message, Row, Select, Space } from "antd";
+import { Button, Col, Form, Input, message, Row, Select, Space, Typography, Avatar } from "antd";
 import { updateProfile } from "../../store/user/actions";
 import { getAllTimezones, getCurrentTimezone } from "../../utils/date-fns";
 import { log } from "../../utils/log";
 import { RootState } from "../../store/state-models";
+import { UserProfile } from "../../store/models";
+
+const { Title, Text } = Typography;
 
 type Props = {
     profile?: UserProfile;

@@ -1,11 +1,12 @@
 import { Space } from "antd";
 import styles from "./interview-info.module.css";
 import { CalendarIcon, TimeIcon, UsersIcon } from "../../utils/icons";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import { getFormattedDate, getFormattedTimeRange } from "../../utils/date-fns";
 import React from "react";
 import { Interview, TeamMember } from "../../store/models";
 import { interviewWithoutDate } from "../../utils/interview";
+const { Text } = Typography;
 
 type Props = {
     interview: Readonly<Interview>;

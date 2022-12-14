@@ -1,11 +1,13 @@
 import { Button, Divider, Modal } from "antd";
 import React, { useEffect } from "react";
 import styles from "./modal-news.module.css";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import candidateProfileImg from "../../assets/whats-new/candidate-profile.png";
 import checklistImg from "../../assets/whats-new/checklist.png";
 
 import { updateNewsVisitTime } from "../../utils/storage";
+
+const { Title } = Typography;
 
 export const newsData = [
     {

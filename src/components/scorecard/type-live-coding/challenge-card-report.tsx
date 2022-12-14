@@ -1,11 +1,12 @@
 import { LiveCodingChallenge } from "../../../store/models";
 import React from "react";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import styles from "./challenge-card.module.css";
 import Card from "../../card/card";
 import { isEmpty } from "lodash";
 import { FileChallengeLink, GithubChallengeLink } from "./challenge-card";
+
+const { Title, Text } = Typography;
 
 type Props = {
     teamId: string;

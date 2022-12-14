@@ -9,9 +9,11 @@ import { SummaryNotesCard } from "./summary-notes";
 import InterviewChartsCard from "./type-interview/charts-card";
 import InterviewCompetenceAreaCard from "./type-interview/competence-area";
 import { getOverallPerformanceColor, getOverallPerformancePercent } from "../../utils/assessment";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import { InterviewInfo } from "./interview-info";
 import TakeHomeChallengeCard from "./type-take-home/challenge-card-report";
+
+const { Text } = Typography;
 
 type Props = {
     interview: Readonly<Interview>;

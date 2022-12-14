@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Form, Input, Select } from "antd";
-import Text from "antd/lib/typography/Text";
+import { Button, Form, Input, Select, Typography } from "antd";
 import { CheckIcon, MailIcon } from "../../utils/icons";
 import { Option } from "antd/lib/mentions";
 import { inviteUser } from "../../store/user/actions";
 import styles from "./team-members.module.css";
+const { Text } = Typography;
 
 /**
  *

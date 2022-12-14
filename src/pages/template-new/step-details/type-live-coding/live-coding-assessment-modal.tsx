@@ -1,9 +1,10 @@
 import Modal from "antd/lib/modal/Modal";
 import styles from "./live-coding-assessment-modal.module.css";
 import { AutoComplete, Button, Space } from "antd";
-import Text from "antd/lib/typography/Text";
 import * as React from "react";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
+
+const { Title, Text } = Typography;
 
 type Props = {
     visible: boolean;
