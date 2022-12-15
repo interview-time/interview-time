@@ -27,7 +27,7 @@ const CandidateAdd = () => {
             <Row>
                 <Col span={24} xl={{ span: 14, offset: 5 }} xxl={{ span: 12, offset: 6 }}>
                     <Card>
-                        <Header className={styles.headerTitleContainer} onClick={() => history.goBack()}>
+                        <Header onClick={() => history.goBack()}>
                             <ArrowLeftOutlined />
                             <Title level={4} style={{ marginBottom: 0, marginLeft: 8 }}>
                                 Add Candidate
