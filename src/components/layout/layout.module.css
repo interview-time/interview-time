@@ -44,7 +44,6 @@
 }
 
 .divider {
-    background-color: #E5E7EB;
     margin-top: 24px;
     margin-bottom: 24px;
 }
@@ -53,7 +52,7 @@
     margin-left: 20px;
 }
 
-.menu {
+.menu.menu.menu {
     border: 0;
     display: flex;
     flex-direction: column;
@@ -110,13 +109,13 @@
 }
 
 .whatsNew {
-    color: #6B7280;
+    color: #9CA3AF;
     font-size: 13px;
     margin-left: 24px;
 }
 
 .version {
-    color: #6B7280;
+    color: #9CA3AF;
     font-size: 13px;
     margin-right: 24px;
 }

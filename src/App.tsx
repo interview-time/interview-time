@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
+    routeCandidateAdd,
     routeCandidateProfile,
     routeCandidates,
     routeHome,
@@ -26,7 +27,7 @@ import {
     routeTemplateEdit,
     routeTemplateLibrary,
     routeTemplatePreview,
-    routeTemplates,
+    routeTemplates
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -59,6 +60,7 @@ import { ConfigProvider } from "antd";
 import { createGlobalStyle } from "styled-components";
 import { Colors } from "./assets/styles/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
+import CandidateAdd from "./pages/candidate-add/candidate-add";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -202,6 +204,7 @@ function App() {
                 <PrivateRoute path={routeTeamIntegration()} exact component={TeamIntegration} />
                 <PrivateRoute path={routeCandidates()} exact component={Candidates} />
                 <PrivateRoute path={routeCandidateProfile()} exact component={CandidateProfile} />
+                <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
                 <PrivateRoute path={routeSubscription()} exact component={Subscription} />
                 <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
                 <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
