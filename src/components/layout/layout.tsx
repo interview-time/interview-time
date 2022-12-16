@@ -8,8 +8,6 @@ import {
     routeHome,
     routeInterviewAdd,
     routeInterviews,
-    routeProfile,
-    routeReports,
     routeTeamNew,
     routeTeamProfile,
     routeTemplateBlank,
@@ -24,7 +22,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
-import { CheckCircle2, ChevronDown, Gauge, LayoutTemplate, MessageCircle, Settings, Users } from "lucide-react";
+import { Album, CheckCircle2, ChevronDown, Gauge, LayoutTemplate, MessageCircle, Settings, Users } from "lucide-react";
 import { selectActiveTeam } from "../../store/user/selector";
 import { RootState } from "../../store/state-models";
 import { Team, UserProfile } from "../../store/models";
@@ -132,25 +130,90 @@ const QuickActionsHotkey = styled(Text)`
     align-items: center;
 `;
 
+const MainMenu = styled(Menu)`
+    &&& {
+      border: 0;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: 20px 20px;
+    }
+`;
+
+const MenuItem = styled(Menu.Item)`
+    && {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        border-radius: 6px;
+    }
+`;
+
+const MenuDivider = styled(Divider)`
+    margin-top: 24px;
+    margin-bottom: 24px;
+    color: ${Colors.Neutral_200};
+`;
+
+const LayoutMenu = styled(AntLayout.Sider)`
+    padding-top: 20px;
+    border-right: 1px solid ${Colors.Neutral_200};
+    z-index: 999;
+`;
+
+const LayoutMenuContainer = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+`;
+
+const PageLayout = styled(AntLayout)`
+    height: 100vh;
+`;
+
+const PageContent = styled(AntLayout.Content)`
+    padding: 32px;
+    overflow-y: auto;
+    background-color: var(--color-background);
+`;
+
+const MenuFooterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 12px;
+`
+
+const MenuFooterText = styled(Text)`
+  color: ${Colors.Neutral_400};
+  font-size: 13px;
+`
+
 type Props = {
     children: any;
-    pageHeader?: any;
     profile: UserProfile;
-    contentStyle?: any;
     switchTeam: Function;
     joinTeam: Function;
 };
 
-const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinTeam }: Props) => {
+const Layout = ({ children, profile, switchTeam, joinTeam }: Props) => {
     const location = useLocation();
     const history = useHistory();
 
-    const MENU_KEY_PROFILE = "PROFILE";
-    const MENU_KEY_HOME = "HOME";
-    const MENU_KEY_TEMPLATES = "TEMPLATES";
-    const MENU_KEY_INTERVIEWS = "INTERVIEWS";
-    const MENU_KEY_REPORTS = "REPORTS";
-    const MENU_KEY_CANDIDATES = "CANDIDATES";
+    enum MenuKey {
+        HOME = "HOME",
+        TEMPLATES = "TEMPLATES",
+        INTERVIEWS = "INTERVIEWS",
+        CANDIDATES = "CANDIDATES",
+        JOBS = "JOBS",
+        SETTINGS = "SETTINGS",
+        FEEDBACK = "FEEDBACK",
+        NONE = "",
+    }
 
     const [actionsVisible, setActionsVisible] = React.useState(false);
     const [feedbackVisible, setFeedbackVisible] = React.useState(false);
@@ -181,21 +244,17 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
 
     const getSelectedMenuKey = () => {
         if (location.pathname.includes(routeTemplates()) || location.pathname.includes(routeTemplateLibrary())) {
-            return MENU_KEY_TEMPLATES;
+            return MenuKey.TEMPLATES;
         } else if (location.pathname.includes(routeInterviews())) {
-            return MENU_KEY_INTERVIEWS;
-        } else if (location.pathname.includes(routeReports())) {
-            return MENU_KEY_REPORTS;
+            return MenuKey.INTERVIEWS;
         } else if (location.pathname.includes(routeCandidates())) {
-            return MENU_KEY_CANDIDATES;
-        } else if (location.pathname.includes(routeProfile())) {
-            return MENU_KEY_PROFILE;
-        } else if (location.pathname.includes("/account/team")) {
-            return "settings";
+            return MenuKey.CANDIDATES;
+        } else if (location.pathname.includes("/account/")) {
+            return MenuKey.SETTINGS;
         } else if (location.pathname.includes(routeHome())) {
-            return MENU_KEY_HOME;
+            return MenuKey.HOME;
         } else {
-            return "";
+            return MenuKey.NONE;
         }
     };
 
@@ -300,15 +359,9 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
     };
 
     return (
-        <AntLayout className={styles.globalLayout}>
-            <AntLayout.Sider
-                theme='light'
-                breakpoint='lg'
-                collapsedWidth='0'
-                width={280}
-                className={styles.globalSider}
-            >
-                <div className={styles.globalSiderContainer}>
+        <PageLayout>
+            <LayoutMenu theme='light' breakpoint='lg' collapsedWidth='0' width={280}>
+                <LayoutMenuContainer>
                     <TeamContainer>
                         <TeamSettingsContainer onClick={onTeamProfileClicked}>
                             <LogoSquare alt='InterviewTime' src={LogoSquare96} />
@@ -333,52 +386,48 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                         <QuickActionsHotkey>{getQuickActionsHotkeySymbol()}</QuickActionsHotkey>
                         <QuickActionsHotkey>K</QuickActionsHotkey>
                     </QuickActionsContainer>
-                    <Menu
+                    <MainMenu
                         theme='light'
                         mode='vertical'
                         defaultSelectedKeys={[routeHome()]}
                         selectedKeys={[getSelectedMenuKey()]}
-                        className={styles.menu}
                     >
-                        <Menu.Item key={MENU_KEY_HOME} className={styles.menuItem} icon={<Gauge />}>
+                        <MenuItem key={MenuKey.HOME} icon={<Gauge />}>
                             <Link to={routeHome()}>Dashboard</Link>
-                        </Menu.Item>
-                        <Menu.Item key={MENU_KEY_CANDIDATES} className={styles.menuItem} icon={<Users />}>
+                        </MenuItem>
+                        <MenuItem key={MenuKey.JOBS} icon={<Album />}>
+                            <Link to={routeCandidates()}>Jobs</Link>
+                        </MenuItem>
+                        <MenuItem key={MenuKey.CANDIDATES} icon={<Users />}>
                             <Link to={routeCandidates()}>Candidates</Link>
-                        </Menu.Item>
-                        <Menu.Item key={MENU_KEY_INTERVIEWS} className={styles.menuItem} icon={<CheckCircle2 />}>
+                        </MenuItem>
+                        <MenuItem key={MenuKey.INTERVIEWS} icon={<CheckCircle2 />}>
                             <Link to={routeInterviews()}>Interviews</Link>
-                        </Menu.Item>
-                        <Menu.Item key={MENU_KEY_TEMPLATES} className={styles.menuItem} icon={<LayoutTemplate />}>
+                        </MenuItem>
+                        <MenuItem key={MenuKey.TEMPLATES} icon={<LayoutTemplate />}>
                             <Link to={routeTemplates()}>Templates</Link>
-                        </Menu.Item>
-                        <Divider className={styles.divider} />
-                        <Menu.Item key='settings' className={styles.menuItem} icon={<Settings />}>
+                        </MenuItem>
+                        <MenuDivider />
+                        <MenuItem key={MenuKey.SETTINGS} icon={<Settings />}>
                             <Link to={routeTeamProfile()}>Settings</Link>
-                        </Menu.Item>
-                        <Menu.Item
-                            key='feedback'
-                            className={styles.menuItem}
-                            icon={<MessageCircle />}
-                            onClick={onFeedbackClicked}
-                        >
+                        </MenuItem>
+                        <MenuItem key={MenuKey.FEEDBACK} icon={<MessageCircle />} onClick={onFeedbackClicked}>
                             Feedback
-                        </Menu.Item>
-                    </Menu>
-                    <div className={styles.versionContainer}>
+                        </MenuItem>
+                    </MainMenu>
+                    <MenuFooterContainer>
                         <Button type='link' onClick={onNewsClicked}>
                             <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
-                                <span className={styles.whatsNew}>What's New</span>
+                                <MenuFooterText>What's New</MenuFooterText>
                             </Badge>
                         </Button>
 
-                        <div className={styles.version}>v{process.env.REACT_APP_VERSION}</div>
-                    </div>
-                </div>
-            </AntLayout.Sider>
-            <AntLayout className='site-layout'>
-                {pageHeader}
-                <AntLayout.Content className={`${styles.pageContent} ${contentStyle}`}>
+                        <MenuFooterText>v{process.env.REACT_APP_VERSION}</MenuFooterText>
+                    </MenuFooterContainer>
+                </LayoutMenuContainer>
+            </LayoutMenu>
+            <AntLayout>
+                <PageContent>
                     {/*@ts-ignore*/}
                     <FeedbackModal visible={feedbackVisible} onClose={onFeedbackClose} />
                     <NewsModal visible={newsVisible} onClose={onNewsClose} />
@@ -390,9 +439,9 @@ const Layout = ({ children, pageHeader, contentStyle, profile, switchTeam, joinT
                         onCreateTemplate={onCreateTemplate}
                     />
                     {children}
-                </AntLayout.Content>
+                </PageContent>
             </AntLayout>
-        </AntLayout>
+        </PageLayout>
     );
 };
 

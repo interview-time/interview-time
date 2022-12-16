@@ -23,7 +23,7 @@ const CandidateAdd = () => {
 
     return (
         // @ts-ignore
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <Row>
                 <Col span={24} xl={{ span: 14, offset: 5 }} xxl={{ span: 12, offset: 6 }}>
                     <Card>

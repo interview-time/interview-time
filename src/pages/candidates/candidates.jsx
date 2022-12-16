@@ -128,7 +128,7 @@ const Candidates = ({
     };
 
     return (
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div className={styles.header}>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Candidates

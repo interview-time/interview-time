@@ -23,7 +23,7 @@ const TemplateLibrary = ({ loadLibrary, library, loading }) => {
     };
 
     return (
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div>
                 <div className={styles.header} onClick={onBackClicked}>
                     <ArrowLeftOutlined style={{ marginRight: 12 }} />
