@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Badge, Button, Divider, Dropdown, Layout as AntLayout, Menu, notification, Typography } from "antd";
-import styles from "./layout.module.css";
 import {
     routeCandidateAdd,
     routeCandidates,

@@ -1,4 +1,3 @@
-import styles from "./account-layout.module.css";
 import { Col, Row } from "antd";
 import AccountMenu from "./account-menu";
 import React from "react";
