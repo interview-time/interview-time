@@ -174,7 +174,7 @@ const PageLayout = styled(AntLayout)`
 const PageContent = styled(AntLayout.Content)`
     padding: 32px;
     overflow-y: auto;
-    background-color: var(--color-background);
+    background-color: ${Colors.Neutral_50};
 `;
 
 const MenuFooterContainer = styled.div`
