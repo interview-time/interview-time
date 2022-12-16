@@ -3,8 +3,7 @@ import React from "react";
 import { Dropdown, Grid, Input, Menu, Space, Table, Tag } from "antd";
 import { getTagColor, InterviewAssessment, Status } from "../../../../utils/constants";
 import { defaultTo } from "lodash/util";
-import Text from "antd/lib/typography/Text";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { localeCompare, localeCompareArray } from "../../../../utils/comparators";
 import AssessmentCheckbox from "../../../../components/questions/assessment-checkbox";
 import { CloseOutlined } from "@ant-design/icons";
@@ -20,6 +19,7 @@ import { isEmpty } from "../../../../utils/date";
 import Card from "../../../../components/card/card";
 import QuestionDifficultyTag from "../../../../components/tags/question-difficulty-tag";
 
+const { Title, Text } = Typography;
 const { TextArea } = Input;
 const { useBreakpoint } = Grid;
 

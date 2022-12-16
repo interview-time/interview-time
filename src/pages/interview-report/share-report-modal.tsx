@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CheckIcon, CopyIcon, LinkIcon } from "../../utils/icons";
-import { Button, Input, Modal, Switch } from "antd";
-import Text from "antd/lib/typography/Text";
+import { Button, Input, Modal, Switch, Typography } from "antd";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import copy from "copy-to-clipboard";
 import { connect } from "react-redux";
@@ -10,7 +9,7 @@ import { getHost } from "../../utils/route";
 import styles from "./share-report-modal.module.css";
 import { selectInterview } from "../../store/interviews/selector";
 import { RootState } from "../../store/state-models";
-
+const { Text } = Typography;
 type Props = {
     interviewId: string;
     token?: string;

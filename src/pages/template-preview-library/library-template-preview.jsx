@@ -1,8 +1,7 @@
 import { Button, Divider, Space } from "antd";
 import styles from "./library-template-preview.module.css";
 import defaultIcon from "../../assets/layout.png";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import { IntroSection, TemplateGroupsSection } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
 import { loadLibrary } from "../../store/templates/actions";
 import { connect } from "react-redux";
@@ -13,6 +12,8 @@ import Layout from "../../components/layout/layout";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { routeTemplateBlankFromLibrary } from "../../utils/route";
 import Card from "../../components/card/card";
+
+const { Title, Text } = Typography;
 
 /**
  *

@@ -1,7 +1,6 @@
 import Layout from "../../components/layout/layout";
 import { Button, Card, Col, Form, Input, message, Spin } from "antd";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import styles from "../team-new/team-new.module.css";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
@@ -9,6 +8,8 @@ import { useHistory, useLocation } from "react-router-dom";
 import { routeTeamMembers } from "../../utils/route";
 import { createTeam } from "../../store/user/actions";
 import { defaultTo } from "lodash/util";
+
+const { Title, Text } = Typography;
 
 /**
  *

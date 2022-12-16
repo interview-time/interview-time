@@ -2,15 +2,15 @@ import styles from "./live-coding-assessment-card.module.css";
 import Card from "../../../../components/card/card";
 import React from "react";
 import { TemplateGroup, TemplateQuestion } from "../../../../store/models";
-import Text from "antd/lib/typography/Text";
-import Title from "antd/lib/typography/Title";
-import { Button, ConfigProvider, Table } from "antd";
+import { Button, ConfigProvider, Table, Typography } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { SortableContainer, SortableElement, SortableHandle, SortEnd } from "react-sortable-hoc";
 import { ReorderIcon } from "../../../../utils/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import AssessmentCheckbox, { MAX_ASSESSMENT } from "../../../../components/questions/assessment-checkbox";
 import AssessmentImage from "../../../../assets/illustrations/undraw_up_to_date_re_nqid.svg";
+
+const { Title, Text } = Typography;
 
 type Props = {
     group: Readonly<TemplateGroup>;

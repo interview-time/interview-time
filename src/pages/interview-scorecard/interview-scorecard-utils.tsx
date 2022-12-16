@@ -3,8 +3,10 @@ import { isEmpty } from "../../utils/date";
 import { NoteIcon } from "../../utils/icons";
 import React from "react";
 import { Interview, InterviewQuestion, InterviewType } from "../../store/models";
-import TextArea from "antd/lib/input/TextArea";
+import { Input } from "antd";
 import { ExpandableConfig } from "rc-table/lib/interface";
+
+const { TextArea } = Input;
 
 // @ts-ignore
 export const emptyInterview = (): Interview => ({

@@ -1,8 +1,7 @@
 import { InterviewType, LiveCodingChallenge, Template } from "../../../store/models";
-import { Col, Row } from "antd";
+import { Col, Row, Typography } from "antd";
 import styles from "./template-step-preview.module.css";
 import InfoCircleIcon from "../../../assets/icons/info-circle.svg";
-import Text from "antd/lib/typography/Text";
 import Card from "../../../components/card/card";
 import {
     IntroSection,
@@ -15,6 +14,8 @@ import LiveCodingChallengeCard from "../../../components/scorecard/type-live-cod
 import { ReducerAction, ReducerActionType } from "../template-reducer";
 import TakeHomeChallengeCard from "../../../components/scorecard/type-take-home/challenge-card-template";
 import { InterviewChecklistCard } from "../../../components/scorecard/interview-checklist-card";
+
+const { Text } = Typography;
 
 type Props = {
     template: Readonly<Template>;

@@ -1,13 +1,13 @@
 import { InterviewQuestion, QuestionAssessment } from "../../../store/models";
 import { ColumnsType } from "antd/lib/table";
 import styles from "./assessment-card.module.css";
-import Text from "antd/lib/typography/Text";
 import AssessmentCheckbox from "../../questions/assessment-checkbox";
 import React from "react";
 import Card from "../../card/card";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { Table } from "antd";
 import { expandableNotes } from "../../../pages/interview-scorecard/interview-scorecard-utils";
+const { Title, Text } = Typography;
 
 type Props = {
     questions: InterviewQuestion[];

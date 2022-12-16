@@ -1,14 +1,15 @@
 import { useState } from "react";
 import Card from "../../card/card";
 import styles from "./competence-area.module.css";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import { Button, Progress } from "antd";
 import { filterGroupsWithAssessmentNotes, filterQuestionsWithAssessmentNotes } from "../../../utils/filters";
 import { getGroupAssessment } from "../../../utils/assessment";
-import Text from "antd/lib/typography/Text";
 import QuestionDifficultyTag from "../../tags/question-difficulty-tag";
 import AssessmentCheckbox from "../../questions/assessment-checkbox";
 import { Interview, InterviewQuestion, InterviewStructureGroup } from "../../../store/models";
+
+const { Title, Text } = Typography;
 
 type Props = {
     interview: Readonly<Interview>;

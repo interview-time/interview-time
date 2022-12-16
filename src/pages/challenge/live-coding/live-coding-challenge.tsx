@@ -2,7 +2,7 @@ import { Button, Col, Divider, Result } from "antd";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import Card from "../../../components/card/card";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import styles from "./live-coding-challenge.module.css";
 import { useParams } from "react-router-dom";
 import { RootState } from "../../../store/state-models";
@@ -13,6 +13,8 @@ import GitHubLink from "../../../components/github-link/github-link";
 import { CloudDownloadOutlined } from "@ant-design/icons";
 import ProgrammerImage from "../../../assets/illustrations/undraw_programmer_re_owql.svg";
 import { isEmpty } from "lodash";
+
+const { Title } = Typography;
 
 type Props = {
     challenge?: CandidateChallenge;

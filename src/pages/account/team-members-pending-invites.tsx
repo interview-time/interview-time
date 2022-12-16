@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Dropdown, Menu, Table } from "antd";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import Card from "../../components/card/card";
 import TeamRoleTag from "../../components/tags/team-role-tags";
 import TableHeader from "../../components/table/table-header";
@@ -11,6 +11,8 @@ import { TeamInvite, Team } from "../../store/models";
 import { isInElevatedRole, canCancelInvite } from "../../store/user/permissions";
 import { MoreIcon } from "../../utils/icons";
 import styles from "./team-members.module.css";
+
+const { Title } = Typography;
 
 type Props = {
     userId: string;

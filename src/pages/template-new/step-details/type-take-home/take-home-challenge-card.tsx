@@ -1,18 +1,19 @@
 import { TemplateChallenge } from "../../../../store/models";
 import styles from "./take-home-challenge-card.module.css";
 import Card from "../../../../components/card/card";
-import Title from "antd/lib/typography/Title";
-import Text from "antd/lib/typography/Text";
+import { Typography, Upload } from "antd";
 import React from "react";
 import { Input, UploadProps, Form } from "antd";
-import TextArea from "antd/lib/input/TextArea";
 import { GithubFilled } from "@ant-design/icons";
-import Dragger from "antd/lib/upload/Dragger";
 import UploadCircleIcon from "../../../../assets/icons/upload-circle.svg";
 import { UploadFile } from "antd/lib/upload/interface";
 import { log } from "../../../../utils/log";
 import { INTERVIEW_TAKE_HOME } from "../../../../utils/interview";
 import { uploadChallengeFile } from "../../../../store/challenge/actions";
+
+const { Title, Text } = Typography;
+const { TextArea } = Input;
+const { Dragger } = Upload;
 
 type Props = {
     teamId: string;

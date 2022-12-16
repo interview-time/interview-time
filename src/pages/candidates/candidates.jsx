@@ -6,35 +6,43 @@ import Card from "../../components/card/card";
 import { connect } from "react-redux";
 import { localeCompare } from "../../utils/comparators";
 import TableText from "../../components/table/table-text";
-import Title from "antd/lib/typography/Title";
+import { Typography } from "antd";
 import TableHeader from "../../components/table/table-header";
-import { deleteCandidate, updateCandidate } from "../../store/candidates/actions";
+import { archiveCandidate, restoreArchivedCandidate } from "../../store/candidates/actions";
 import { canAddCandidate } from "../../store/user/permissions";
 import { loadCandidates } from "../../store/candidates/actions";
 import { selectCandidates, filterCandidates, searchCandidates } from "../../store/candidates/selector";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import styles from "./candidates.module.css";
-import { routeCandidates, routeCandidateProfile } from "../../utils/route";
+import { routeCandidateProfile } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import ArchivedTag from "../../components/tags/candidate-archived-tag";
 import { CandidatesFilter } from "../../utils/constants";
 import { MoreIcon } from "../../utils/icons";
-import { cloneDeep } from "lodash/lang";
 import { getFormattedDateShort } from "../../utils/date-fns";
 import Filter from "../../components/filter/filter";
 import CreateCandidate from "../candidate-profile/create-candidate";
+
+const { Title } = Typography;
 
 /**
  *
  * @param {Candidate[]} candidatesData
  * @param loadCandidates
- * @param updateCandidate
- * @param deleteCandidate
+ * @param archiveCandidate
+ * @param restoreArchivedCandidate
  * @param loading
  * @returns {JSX.Element}
  * @constructor
  */
-const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, deleteCandidate, canAddCandidate }) => {
+const Candidates = ({
+    candidatesData,
+    loading,
+    loadCandidates,
+    archiveCandidate,
+    restoreArchivedCandidate,
+    canAddCandidate,
+}) => {
     const history = useHistory();
 
     const [candidates, setCandidates] = useState([]);
@@ -61,53 +69,19 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
         setCandidates(filteredCandidates);
     }, [candidatesData, filter, searchQuery]);
 
-    const archive = candidate => {
-        const updatedCandidate = cloneDeep(candidate);
-        candidate.archived = true;
-        updateCandidate(updatedCandidate);
-    };
-
-    const undoArchive = candidate => {
-        const updatedCandidate = cloneDeep(candidate);
-        candidate.archived = false;
-        updateCandidate(updatedCandidate);
-    };
-
-    const showDeleteDialog = candidate => {
-        Modal.confirm({
-            title: "Delete Candidate",
-            content: `Are you sure you want to delete this candidate and all related interview data?`,
-            okText: "Yes",
-            cancelText: "No",
-            onOk() {
-                history.push(routeCandidates());
-                deleteCandidate(candidate.candidateId);
-            },
-        });
-    };
-
     const createMenu = candidate => (
         <Menu>
             <Menu.Item
                 onClick={e => {
                     e.domEvent.stopPropagation();
                     if (candidate.archived) {
-                        undoArchive(candidate);
+                        restoreArchivedCandidate(candidate.candidateId);
                     } else {
-                        archive(candidate);
+                        archiveCandidate(candidate.candidateId);
                     }
                 }}
             >
-                {candidate.archived ? "Undo Archive" : "Archive"}
-            </Menu.Item>
-            <Menu.Item
-                danger
-                onClick={e => {
-                    e.domEvent.stopPropagation();
-                    showDeleteDialog(candidate);
-                }}
-            >
-                Delete
+                {candidate.archived ? "Restore Archive" : "Archive"}
             </Menu.Item>
         </Menu>
     );
@@ -215,7 +189,7 @@ const Candidates = ({ candidatesData, loading, loadCandidates, updateCandidate, 
     );
 };
 
-const mapDispatch = { loadCandidates, updateCandidate, deleteCandidate };
+const mapDispatch = { loadCandidates, archiveCandidate, restoreArchivedCandidate };
 
 const mapState = state => {
     return {

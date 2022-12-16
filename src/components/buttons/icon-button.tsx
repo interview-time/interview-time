@@ -1,3 +1,4 @@
+import { Tooltip } from "antd";
 import React from "react";
 import styled from "styled-components";
 
@@ -24,22 +25,25 @@ type Props = {
     icon: any;
     onClick?: any;
     disabled?: boolean;
+    tooltip?: string;
     onMouseEnter?: any;
     onMouseLeave?: any;
     onFocus?: any;
 };
 
-const IconButton = ({ icon, disabled, onClick, onMouseEnter, onMouseLeave, onFocus }: Props) => {
+const IconButton = ({ icon, disabled, tooltip, onClick, onMouseEnter, onMouseLeave, onFocus }: Props) => {
     return (
-        <StyledButton
-            onClick={onClick}
-            disabled={disabled}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onFocus={onFocus}
-        >
-            {icon}
-        </StyledButton>
+        <Tooltip title={tooltip}>
+            <StyledButton
+                onClick={onClick}
+                disabled={disabled}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onFocus={onFocus}
+            >
+                {icon}
+            </StyledButton>
+        </Tooltip>
     );
 };
 

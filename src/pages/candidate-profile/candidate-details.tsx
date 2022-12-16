@@ -1,11 +1,22 @@
 import React, { useState } from "react";
-import styles from "./candidate-details.module.css";
 import heroImg from "../../assets/candidate-hero.png";
+import heroArchivedImg from "../../assets/archived.png";
 import { Avatar, Button, Modal, Space, Tag } from "antd";
 import { getInitials } from "../../utils/string";
 import { Candidate } from "../../store/models";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
-import { Linkedin, Github, FileText, Mail, Phone, CalendarDays, Edit3, ChevronLeft } from "lucide-react";
+import {
+    Linkedin,
+    Github,
+    FileText,
+    Mail,
+    Phone,
+    CalendarDays,
+    Edit3,
+    ChevronLeft,
+    Archive,
+    ArchiveRestore,
+} from "lucide-react";
 import CreateCandidate from "./create-candidate";
 import styled from "styled-components";
 import IconButtonCopy from "../../components/buttons/icon-button-copy";
@@ -13,7 +24,7 @@ import IconButtonLink from "../../components/buttons/icon-button-link";
 import IconButton from "../../components/buttons/icon-button";
 import { useHistory } from "react-router-dom";
 
-const DetailsWrapper = styled.div`
+const Wrapper = styled.div`
     border-radius: 8px 4px 4px 8px;
     background: #ffffff;
     margin-bottom: 32px;
@@ -26,6 +37,23 @@ const Header = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
+`;
+
+const Details = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #111827;
+    padding-bottom: 56px;
+`;
+
+const CandidateAvatar = styled(Avatar)`
+    background-color: #e0f9eb;
+    color: #1f2937;
+    margin-top: -45px;
+    font-size: 20px;
+    font-weight: 500;
+    border: 2px solid #ffffff;
 `;
 
 const Actions = styled.div`
@@ -41,6 +69,12 @@ const BackButton = styled.div`
 
 const EditButton = styled.div`
     position: absolute;
+    right: 74px;
+    top: 30px;
+`;
+
+const ArchiveButton = styled.div`
+    position: absolute;
     right: 24px;
     top: 30px;
 `;
@@ -49,7 +83,12 @@ const Name = styled.div`
     font-weight: 600;
     font-size: 24px;
     line-height: 20px;
-    padding-top: 24px;
+    margin-top: 24px;
+`;
+
+const Position = styled.div`
+    margin-top: 16px;
+    line-height: 20px;
 `;
 
 const Info = styled(Space)`
@@ -66,13 +105,30 @@ const Location = styled(Tag)`
     padding: 2px 10px;
 `;
 
+const Archived = styled(Tag)`
+    font-size: 14px;
+    font-weight: 500;
+    color: #b45309;
+    background: #fffbeb;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+    margin-top: 24px;
+`;
+
+const ScheduleButton = styled(Button)`
+    margin-top: 32px;
+`;
+
 type Props = {
     candidate: Candidate;
     onUpdateDetails?: any;
     onScheduleInterview?: any;
+    onArchive?: any;
+    onRestoreArchive?: any;
 };
 
-const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview }: Props) => {
+const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onArchive, onRestoreArchive }: Props) => {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const history = useHistory();
 
@@ -81,25 +137,47 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview }: P
     const backToCandidates = () => history.goBack();
 
     return (
-        <DetailsWrapper>
+        <Wrapper>
             <Header>
-                <img alt={candidate.candidateName} src={heroImg} width='100%' height='96' />
+                <img
+                    alt={candidate.candidateName}
+                    src={candidate.archived ? heroArchivedImg : heroImg}
+                    width='100%'
+                    height='96'
+                />
 
                 <BackButton>
                     <IconButton icon={<ChevronLeft size={20} />} onClick={backToCandidates} />
                 </BackButton>
 
-                <EditButton>
-                    <IconButton icon={<Edit3 size={20} />} onClick={openEditCandidate} />
-                </EditButton>
+                {!candidate.archived && (
+                    <EditButton>
+                        <IconButton icon={<Edit3 size={20} />} onClick={openEditCandidate} tooltip='Edit' />
+                    </EditButton>
+                )}
 
-                <Avatar src={null} className={styles.avatar} size={90}>
+                <ArchiveButton>
+                    {candidate.archived ? (
+                        <IconButton
+                            icon={<ArchiveRestore size={20} />}
+                            onClick={onRestoreArchive}
+                            tooltip='Restore archive'
+                        />
+                    ) : (
+                        <IconButton icon={<Archive size={20} />} onClick={onArchive} tooltip='Archive' />
+                    )}
+                </ArchiveButton>
+
+                <CandidateAvatar src={null} size={90}>
                     {getInitials(candidate.candidateName)}
-                </Avatar>
+                </CandidateAvatar>
             </Header>
-            <div className={styles.details}>
+            <Details>
+                {candidate.archived && <Archived>Archived</Archived>}
+
                 <Name>{candidate.candidateName}</Name>
-                {candidate.position && <div className={styles.position}>{candidate.position}</div>}
+
+                {candidate.position && <Position>{candidate.position}</Position>}
 
                 <Info>
                     {candidate.status && <CandidateStatusTag status={candidate.status} />}
@@ -140,16 +218,16 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview }: P
                 </Actions>
 
                 {onScheduleInterview && (
-                    <Button
+                    <ScheduleButton
                         type='primary'
+                        disabled={candidate.archived}
                         icon={<CalendarDays size={14} style={{ marginRight: 5 }} />}
                         onClick={onScheduleInterview}
-                        className={styles.scheduleInterview}
                     >
                         Schedule interview
-                    </Button>
+                    </ScheduleButton>
                 )}
-            </div>
+            </Details>
 
             {/* @ts-ignore */}
             <Modal
@@ -166,7 +244,7 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview }: P
                     onSave={() => setIsEditOpen(false)}
                 />
             </Modal>
-        </DetailsWrapper>
+        </Wrapper>
     );
 };
 

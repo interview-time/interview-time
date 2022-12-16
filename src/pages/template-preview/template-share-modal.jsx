@@ -1,9 +1,10 @@
 import styles from "./template-share-modal.module.css";
-import { Button, Input, Modal, Space, Switch } from "antd";
-import Text from "antd/es/typography/Text";
+import { Button, Input, Modal, Space, Switch, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { CheckOutlined } from "@ant-design/icons";
+
+const { Text } = Typography;
 
 /**
  *

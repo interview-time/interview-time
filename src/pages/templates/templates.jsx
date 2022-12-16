@@ -3,10 +3,9 @@ import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Layout from "../../components/layout/layout";
 import { loadTemplates } from "../../store/templates/actions";
-import { Col, Modal, Row, Skeleton } from "antd";
+import { Col, Modal, Row, Skeleton, Typography } from "antd";
 import { sortBy } from "lodash/collection";
 import TemplateCard from "../../components/template-card/template-card";
-import Title from "antd/lib/typography/Title";
 import { routeTemplateBlank, routeTemplateLibrary } from "../../utils/route";
 import styles from "./templates.module.css";
 import CardHero from "../../components/card/card-hero";
@@ -14,6 +13,7 @@ import { DuplicateIcon, NewFileIcon, UploadIcon } from "../../utils/icons";
 import { createEvent } from "../../analytics";
 
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
+const { Title } = Typography;
 
 /**
  *

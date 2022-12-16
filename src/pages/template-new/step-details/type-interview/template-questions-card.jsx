@@ -1,7 +1,6 @@
 import styles from "./template-questions-card.module.css";
-import { Button, Dropdown, Input, Menu, Space, Table, Tooltip } from "antd";
+import { Button, Dropdown, Input, Menu, Space, Table, Tooltip, Typography } from "antd";
 import React from "react";
-import Text from "antd/lib/typography/Text";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { CollapseIcon, ExpandIcon, ReorderIcon } from "../../../../utils/icons";
 import { DeleteTwoTone, MoreOutlined, PlusOutlined } from "@ant-design/icons";
@@ -12,6 +11,7 @@ import { isEqual } from "lodash";
 import { log } from "../../../../utils/log";
 
 const { TextArea } = Input;
+const { Text } = Typography;
 
 /**
  *

@@ -1,5 +1,4 @@
-import { Button, Card, Col, Divider, Result, Row } from "antd";
-import Text from "antd/lib/typography/Text";
+import { Button, Card, Col, Divider, Result, Row, Typography } from "antd";
 import { IntroSection, TemplateGroupsSection } from "../interview-scorecard/step-assessment/type-interview/interview-sections";
 import { connect } from "react-redux";
 import React, { useEffect } from "react";
@@ -9,6 +8,8 @@ import Spinner from "../../components/spinner/spinner";
 import { loadSharedTemplate } from "../../store/templates/actions";
 import styles from "./shared-template.module.css";
 import { Logo } from "../../components/logo/logo";
+
+const { Text } = Typography;
 
 const SharedTemplate = ({ template, loading, loadSharedTemplate }) => {
     const history = useHistory();

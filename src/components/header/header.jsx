@@ -1,9 +1,8 @@
 import React from "react";
 import { Typography } from "antd";
 import styles from "./header.module.css";
-import Text from "antd/lib/typography/Text";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const Header = ({ title, subtitle, rightComponent, leftComponent }) => {
     return (

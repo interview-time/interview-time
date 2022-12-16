@@ -1,19 +1,25 @@
 import { Col, Modal } from "antd";
-import { Dictionary } from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import LayoutWide from "../../components/layout-wide/layout-wide";
 import Spinner from "../../components/spinner/spinner";
 import { PlusCircle } from "lucide-react";
-import { ApiRequest, fetchCandidateDetails, updateCandidate } from "../../store/candidates/actions";
+import {
+    ApiRequest,
+    archiveCandidate,
+    fetchCandidateDetails,
+    restoreArchivedCandidate,
+    updateCandidate,
+} from "../../store/candidates/actions";
 import { selectCandidate } from "../../store/candidates/selector";
-import { CandidateDetails, Candidate, Interview } from "../../store/models";
+import { CandidateDetails, Candidate } from "../../store/models";
 import { ApiRequestStatus, IApiResults, RootState } from "../../store/state-models";
 import Details from "./candidate-details";
 import InterviewStage from "./interview-stage";
 import InterviewSchedule from "../interview-schedule/interview-schedule";
 import styled from "styled-components";
+import { routeCandidates } from "../../utils/route";
 
 const PageWrapper = styled(Col)`
     padding-top: 32px;
@@ -25,14 +31,23 @@ const AddInterview = styled(PlusCircle)`
 
 type Props = {
     candidate?: CandidateDetails;
-    interviews: Dictionary<Interview[]> | never[];
     fetchCandidateDetails: any;
     updateCandidate: any;
+    archiveCandidate: any;
+    restoreArchivedCandidate: any;
     apiResults: IApiResults;
 };
 
-const CandidateProfile = ({ candidate, interviews, fetchCandidateDetails, updateCandidate, apiResults }: Props) => {
+const CandidateProfile = ({
+    candidate,
+    fetchCandidateDetails,
+    updateCandidate,
+    archiveCandidate,
+    restoreArchivedCandidate,
+    apiResults,
+}: Props) => {
     const { id } = useParams<Record<string, string | undefined>>();
+    const history = useHistory();
 
     const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
@@ -43,6 +58,15 @@ const CandidateProfile = ({ candidate, interviews, fetchCandidateDetails, update
 
     const sheduleInterview = () => {
         setIsScheduleOpen(true);
+    };
+
+    const archiveCandidateHandler = () => {
+        archiveCandidate(id);
+        history.push(routeCandidates());
+    };
+
+    const restoreArchivedCandidateHandler = () => {
+        restoreArchivedCandidate(id);
     };
 
     if (!candidate) {
@@ -57,6 +81,8 @@ const CandidateProfile = ({ candidate, interviews, fetchCandidateDetails, update
                         candidate={candidate as Candidate}
                         onUpdateDetails={updateCandidate}
                         onScheduleInterview={sheduleInterview}
+                        onArchive={archiveCandidateHandler}
+                        onRestoreArchive={restoreArchivedCandidateHandler}
                     />
                     {apiResults[ApiRequest.GetCandidateDetails].status === ApiRequestStatus.InProgress && <Spinner />}
 
@@ -72,7 +98,12 @@ const CandidateProfile = ({ candidate, interviews, fetchCandidateDetails, update
                                         interviews={stage.interviews}
                                     />
                                 ))}
-                                <AddInterview size={32} color='#8C2BE3' onClick={sheduleInterview} />
+
+                                {!candidate.archived ? (
+                                    <AddInterview size={32} color='#8C2BE3' onClick={sheduleInterview} />
+                                ) : (
+                                    <PlusCircle size={32} color='#9CA3AF' />
+                                )}
                             </>
                         )}
                 </>
@@ -96,6 +127,8 @@ const CandidateProfile = ({ candidate, interviews, fetchCandidateDetails, update
 const mapDispatch = {
     fetchCandidateDetails,
     updateCandidate,
+    archiveCandidate,
+    restoreArchivedCandidate,
 };
 
 const mapState = (state: RootState, ownProps: any) => {

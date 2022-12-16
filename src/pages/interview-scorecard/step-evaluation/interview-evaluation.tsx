@@ -2,7 +2,6 @@ import React from "react";
 import { Typography } from "antd";
 import { InterviewAssessmentButtons } from "../step-assessment/type-interview/interview-sections";
 import styles from "./interview-evaluation.module.css";
-import Title from "antd/lib/typography/Title";
 import Card from "../../../components/card/card";
 import { Interview, InterviewAssessment, TeamMember } from "../../../store/models";
 import { ReducerAction, ReducerActionType } from "../interview-reducer";
@@ -10,7 +9,7 @@ import { useDebounceFn } from "ahooks";
 import { DATA_CHANGE_DEBOUNCE, DATA_CHANGE_DEBOUNCE_MAX } from "../interview-scorecard";
 import ScorecardReportSection from "../../../components/scorecard/scorecard-report-section";
 
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
 type Props = {
     interview: Readonly<Interview>;

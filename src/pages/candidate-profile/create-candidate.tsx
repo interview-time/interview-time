@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import axios from "axios";
-import { AutoComplete, Button, Divider, Form, Input, message, Select, Space, Upload } from "antd";
-import Text from "antd/lib/typography/Text";
+import { AutoComplete, Button, Divider, Form, Input, message, Select, Space, Upload, Typography } from "antd";
 import { ApiRequest, createCandidate, updateCandidate } from "../../store/candidates/actions";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
@@ -18,6 +17,7 @@ import { interviewsPositions } from "../../utils/filters";
 import { Option } from "antd/lib/mentions";
 import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 
+const { Text } = Typography;
 const { Dragger } = Upload;
 
 type Props = {

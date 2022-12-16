@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import styles from "./time-ago.module.css";
 import { formatDistanceToNow } from "date-fns";
 import { parseDateISO } from "../../utils/date-fns";
+
+const { Text } = Typography;
 
 const TimeAgo = ({ timestamp, saving }) => {
     const [lastSaved, setLastSaved] = useState(null);

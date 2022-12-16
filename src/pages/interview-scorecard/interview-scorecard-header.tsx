@@ -73,6 +73,7 @@ const InterviewScorecardHeader = ({
                     />
                     {interviewStarted && (
                         <>
+                            {/*@ts-ignore*/}
                             <Segmented
                                 options={[
                                     {

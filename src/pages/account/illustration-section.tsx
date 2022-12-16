@@ -1,8 +1,9 @@
 import styles from "./illustration-section.module.css";
-import Text from "antd/lib/typography/Text";
+import { Typography } from "antd";
 import { Button } from "antd";
 import React, { CSSProperties } from "react";
 import { ButtonType } from "antd/lib/button";
+const { Text } = Typography;
 
 type Props = {
     title: string;
