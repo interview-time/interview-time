@@ -50,12 +50,9 @@ export const SummaryNotesCard = ({ interview, onNotesChange, onRedFlagsChange }:
                         Red flags
                     </Title>
                     <div className={styles.divider} />
-                    {(!interview.redFlags ||
-                        interview.redFlags.length === 0) && (
-                            <Paragraph className={styles.notesTextArea}>
-                                {interview.notes ? interview.notes : "No red flags"}
-                            </Paragraph>
-                        )}
+                    {(!interview.redFlags || interview.redFlags.length === 0) && (
+                        <Paragraph className={styles.notesTextArea}>No red flags</Paragraph>
+                    )}
                     {interview.redFlags && interview.redFlags.length > 0 && (
                         <div className={styles.redFlagsHolder}>
                             {/* @ts-ignore */}
