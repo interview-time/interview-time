@@ -29,12 +29,15 @@ namespace CafApi.Models
 
         public string Owner { get; set; }
 
+        [DynamoDBIgnore]
+        public string OwnerName { get; set; }
+
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 
         public string Status { get; set; }
 
-        public List<Stage> Pipeline { get; set; }        
+        public List<Stage> Pipeline { get; set; }
     }
 
     public class Stage
@@ -62,6 +65,15 @@ namespace CafApi.Models
     public class StageCandidate
     {
         public string CandidateId { get; set; }
+
+        [DynamoDBIgnore]
+        public string Name { get; set; }
+
+        [DynamoDBIgnore]
+        public string Position { get; set; }
+
+        [DynamoDBIgnore]
+        public string Status { get; set; }
 
         public DateTime MovedToStage { get; set; }
 
