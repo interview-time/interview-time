@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CafApi.Command;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Query;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +47,22 @@ namespace CafApi.Controllers
             {
                 _logger.LogError(ex, ex.Message);
 
-                return Unauthorized();
+                return Unauthorized(ex.Message);
+            }
+        }
+
+        [HttpGet("team/{teamId}/jobs")]
+        public async Task<ActionResult<JobsQueryResult>> Getjobs(string teamId)
+        {
+            try
+            {
+                return await _mediator.Send(new JobsQuery { UserId = UserId, TeamId = teamId });
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized(ex.Message);
             }
         }
     }

@@ -64,5 +64,7 @@ namespace CafApi.Models
         public string CandidateId { get; set; }
 
         public DateTime MovedToStage { get; set; }
+
+        public DateTime OriginallyAdded { get; set; }
     }
 }

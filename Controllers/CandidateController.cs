@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -43,76 +42,6 @@ namespace CafApi.Controllers
             _mediator = mediator;
         }
 
-        [Obsolete]
-        [HttpPost("candidate")]
-        public async Task<ActionResult<Candidate>> CreateCandidateOld([FromBody] CreateCandidateCommand command)
-        {
-            try
-            {
-                command.UserId = UserId;
-
-                return await _mediator.Send(command);
-            }
-            catch (AuthorizationException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-
-                return Unauthorized();
-            }
-        }
-
-        [Obsolete]
-        [HttpPut("candidate")]
-        public async Task<ActionResult> UpdateCandidateOld([FromBody] UpdateCandidateCommand command)
-        {
-            try
-            {
-                command.UserId = UserId;
-
-                await _mediator.Send(command);
-
-                return Ok();
-            }
-            catch (AuthorizationException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-
-                return Unauthorized(ex.Message);
-            }
-            catch (ItemNotFoundException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-
-                return NotFound(ex.Message);
-            }
-        }
-
-        [Obsolete]
-        [HttpDelete("candidate/{candidateId}/team/{teamId}")]
-        public async Task<ActionResult> DeleteCandidateOld(string candidateId, string teamId)
-        {
-            try
-            {
-                var command = new DeleteCandidateCommand
-                {
-                    TeamId = teamId,
-                    UserId = UserId,
-                    CandidateId = candidateId
-                };
-
-                await _mediator.Send(command);
-
-                return Ok();
-            }
-            catch (AuthorizationException ex)
-            {
-                _logger.LogError(ex, ex.Message);
-
-                return Unauthorized(ex.Message);
-            }
-        }
-
-        [Obsolete]
         [HttpGet("candidate/upload-signed-url/{teamId}/{candidateId}/{filename}")]
         public async Task<string> GetUploadSignedUrl(string teamId, string candidateId, string filename)
         {
