@@ -10,6 +10,7 @@ import {
     routeInterviewReport,
     routeInterviews,
     routeInterviewScorecard,
+    routeJobs,
     routeLibraryTemplatePreview,
     routeLiveCodingChallenge,
     routeProfile,
@@ -27,7 +28,7 @@ import {
     routeTemplateEdit,
     routeTemplateLibrary,
     routeTemplatePreview,
-    routeTemplates
+    routeTemplates,
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -61,6 +62,7 @@ import { createGlobalStyle } from "styled-components";
 import { Colors } from "./assets/styles/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
 import CandidateAdd from "./pages/candidate-add/candidate-add";
+import Jobs from "./pages/jobs/jobs";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -137,27 +139,29 @@ const GlobalThemeConfig: ThemeConfig = {
         colorLinkHover: Colors.Primary_300,
         colorTextHeading: Colors.Neutral_800,
         colorTextTertiary: Colors.Neutral_500,
+        colorBorder: Colors.Neutral_200,
+        colorTextPlaceholder: Colors.Neutral_400,
         fontSize: 16,
         fontFamily: "Inter, system-ui",
     },
     components: {
         Input: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Select: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         DatePicker: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Button: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Segmented: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Rate: {
-            controlHeight: 44,
+            controlHeight: 40,
             colorFillContent: Colors.Neutral_200,
         },
         Menu: {
@@ -206,6 +210,7 @@ function App() {
                 <PrivateRoute path={routeCandidateProfile()} exact component={CandidateProfile} />
                 <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
                 <PrivateRoute path={routeSubscription()} exact component={Subscription} />
+                <PrivateRoute path={routeJobs()} exact component={Jobs} />
                 <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
                 <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
                 <Route path={routeLiveCodingChallenge()} exact component={LiveCodingChallenge} />

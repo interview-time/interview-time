@@ -298,3 +298,14 @@ export enum ChallengeStatus {
     SentToCandidate = "SentToCandidate",
     SolutionSubmitted = "SolutionSubmitted",
 }
+
+export interface Job {
+    jobId: string;
+    title: string;
+    location?: string;
+    department: string;
+    createdDate: string;
+    deadline?: string;
+    totalCandidates: number;
+    newlyAddedCandidates: number;
+}
