@@ -138,7 +138,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
     if (!templateLoaded) {
         return (
             // @ts-ignore
-            <Layout contentStyle={styles.rootContainer}>
+            <Layout >
                 <Spinner />
             </Layout>
         );
@@ -146,7 +146,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
 
     return (
         // @ts-ignore
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div className={styles.column}>
                 <Card>
                     <Row gutter={[32, 32]} wrap={false}>

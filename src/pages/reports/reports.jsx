@@ -133,7 +133,7 @@ const Reports = ({ interviews, loading, loadInterviews }) => {
     ];
 
     return (
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Reports

@@ -66,7 +66,7 @@ const LibraryTemplatePreview = ({ library, loadLibrary }) => {
     const isInitialLoading = () => !template.libraryId;
 
     return (
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div>
                 <Card loading={isInitialLoading()}>
                     <div className={styles.headerContainer}>

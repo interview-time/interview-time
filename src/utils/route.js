@@ -6,6 +6,8 @@ export const routeReports = () => "/reports";
 
 export const routeCandidates = () => "/candidates";
 
+export const routeCandidateAdd = () => "/candidates/add";
+
 export const routeCandidateProfile = id => {
     const url = "/candidate/:id";
     return id ? url.replace(":id", id) : url;

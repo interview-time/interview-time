@@ -7,7 +7,6 @@ import { Col, Modal, Row, Skeleton, Typography } from "antd";
 import { sortBy } from "lodash/collection";
 import TemplateCard from "../../components/template-card/template-card";
 import { routeTemplateBlank, routeTemplateLibrary } from "../../utils/route";
-import styles from "./templates.module.css";
 import CardHero from "../../components/card/card-hero";
 import { DuplicateIcon, NewFileIcon, UploadIcon } from "../../utils/icons";
 import { createEvent } from "../../analytics";
@@ -56,7 +55,7 @@ const Templates = ({ templates, loadingTemplates, loadTemplates }) => {
     };
 
     return (
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Templates

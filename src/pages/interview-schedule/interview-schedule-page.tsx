@@ -18,7 +18,7 @@ const InterviewSchedulePage = () => {
 
     return (
         // @ts-ignore
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <Row>
                 <Col span={24} xl={{ span: 18, offset: 3 }} xxl={{ span: 14, offset: 5 }}>
                     <Card style={marginTop12} key={id}>
