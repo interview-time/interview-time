@@ -23,5 +23,7 @@ namespace CafApi.Services.User
         Task<bool> CanIntegrateWithATS(string userId, string teamId);
 
         Task<bool> CanManageJobs(string userId, string teamId);
+
+        Task<bool> CanViewJobs(string userId, string teamId);
     }
 }

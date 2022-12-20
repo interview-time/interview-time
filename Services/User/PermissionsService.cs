@@ -176,6 +176,21 @@ namespace CafApi.Services.User
             return false;
         }
 
+         public async Task<bool> CanViewJobs(string userId, string teamId)
+        {
+            var teamMember = await GetTeamMember(userId, teamId);
+
+            // belongs to the team
+            if (teamMember != null)
+            {
+                var userRoles = GetUserRoles(teamMember);
+
+                return userRoles != null && userRoles.Any(role => role == TeamRole.HR || role == TeamRole.ADMIN);
+            }
+
+            return false;
+        }
+
         private async Task<TeamMember> GetTeamMember(string userId, string teamId)
         {
             return await _context.LoadAsync<TeamMember>(teamId, userId);

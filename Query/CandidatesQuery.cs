@@ -62,8 +62,7 @@ namespace CafApi.Query
     {
         private readonly ICandidateRepository _candidateRepository;
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;
-        private readonly IAmazonDynamoDB _client;
+        private readonly DynamoDBContext _context;        
 
         public CandidatesQueryHandler(ICandidateRepository candidateRepository,
             IPermissionsService permissionsService,
@@ -72,7 +71,6 @@ namespace CafApi.Query
             _candidateRepository = candidateRepository;
             _permissionsService = permissionsService;
             _context = new DynamoDBContext(dynamoDbClient);
-            _client = dynamoDbClient;
         }
 
         public async Task<CandidatesQueryResult> Handle(CandidatesQuery query, CancellationToken cancellationToken)
