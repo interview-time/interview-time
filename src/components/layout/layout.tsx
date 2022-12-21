@@ -252,10 +252,10 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
             return MenuKey.CANDIDATES;
         } else if (location.pathname.includes("/account/")) {
             return MenuKey.SETTINGS;
-        } else if (location.pathname.includes(routeHome())) {
-            return MenuKey.HOME;
         } else if (location.pathname.includes(routeJobs())) {
             return MenuKey.JOBS;
+        } else if (location.pathname.includes(routeHome())) {
+            return MenuKey.HOME;
         } else {
             return MenuKey.NONE;
         }

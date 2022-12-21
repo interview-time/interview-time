@@ -3,7 +3,7 @@ import generatePicker from "antd/lib/date-picker/generatePicker";
 import styled from "styled-components";
 
 const DatePicker = styled(generatePicker(dateFnsGenerateConfig))`
-  min-height: 44px;
+  min-height: 40px;
 `;
 
 export default DatePicker;

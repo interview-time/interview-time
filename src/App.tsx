@@ -11,6 +11,7 @@ import {
     routeInterviews,
     routeInterviewScorecard,
     routeJobs,
+    routeJobsNew,
     routeLibraryTemplatePreview,
     routeLiveCodingChallenge,
     routeProfile,
@@ -63,6 +64,7 @@ import { Colors } from "./assets/styles/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
 import CandidateAdd from "./pages/candidate-add/candidate-add";
 import Jobs from "./pages/jobs/jobs";
+import NewJob from "./pages/job-new/new-job";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -211,6 +213,7 @@ function App() {
                 <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
                 <PrivateRoute path={routeSubscription()} exact component={Subscription} />
                 <PrivateRoute path={routeJobs()} exact component={Jobs} />
+                <PrivateRoute path={routeJobsNew()} exact component={NewJob} />
                 <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
                 <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
                 <Route path={routeLiveCodingChallenge()} exact component={LiveCodingChallenge} />

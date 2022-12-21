@@ -135,7 +135,7 @@ const Candidates = ({
                 </Title>
                 {canAddCandidate && (
                     <Button type='primary' icon={<UserAddOutlined />} onClick={() => setCreateCandidate(true)}>
-                        Add Candidate
+                        Add candidate
                     </Button>
                 )}
             </div>

@@ -8,6 +8,8 @@ import { Filter, Plus, Search, SortDesc } from "lucide-react";
 import React from "react";
 import { useDebounceFn } from "ahooks";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
+import { useHistory } from "react-router-dom";
+import { routeJobsNew } from "../../utils/route";
 
 const { Title } = Typography;
 
@@ -29,6 +31,9 @@ const HeaderSearch = styled(Input)`
 `;
 
 const Jobs = () => {
+
+    const history = useHistory();
+
     const jobsData: Job[] = [];
     for (let i = 0; i < 20; i++) {
         jobsData.push({
@@ -55,6 +60,8 @@ const Jobs = () => {
     );
 
     const onSearchTextChange = (text: string) => onSearchTextChangeDebounce.run(text);
+
+    const onAddJobClicked = () => history.push(routeJobsNew());
 
     const header = (
         <Header>
@@ -91,6 +98,7 @@ const Jobs = () => {
                         <Plus size='1em' />
                     </AntIconSpan>
                 }
+                onClick={onAddJobClicked}
             >
                 Create new job
             </Button>

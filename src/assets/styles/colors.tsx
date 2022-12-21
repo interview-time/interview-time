@@ -11,5 +11,8 @@ export enum Colors {
     Neutral_600 = "#4B5563",
     Neutral_800 = "#1F2937",
     Success_50 = "#F0FDF4",
+    Success_600 = "#16A34A",
     Success_700 = "#15803D",
+    Blue_50 = "#EAF1FE",
+    Blue_600 = "#3172F5",
 }

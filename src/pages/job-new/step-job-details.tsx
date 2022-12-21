@@ -1,0 +1,134 @@
+import { Content, FormDiv, SecondaryText, NextButton } from "./styles";
+import { Button, Form, Input, Select, Typography } from "antd";
+import React from "react";
+import styled from "styled-components";
+import { TeamMember, UserProfile } from "../../store/models";
+import { filterOptionLabel } from "../../utils/filters";
+import DatePicker from "../../components/antd/DatePicker";
+import { datePickerFormat } from "../../utils/date-fns";
+import { defaultTo } from "lodash";
+
+const { Text, Title } = Typography;
+const { TextArea } = Input;
+
+const JobForm = styled(Form)`
+    width: 600px;
+`;
+
+const FormLabel = styled(Text)`
+    font-weight: 500;
+`;
+
+const DeadlineDatePicker = styled(DatePicker)`
+    width: 100%;
+`;
+
+type Props = {
+    profile: UserProfile;
+    teamMembers: TeamMember[];
+};
+
+const StepJobDetails = ({ profile, teamMembers }: Props) => {
+    const teamMemberOptions = [
+        {
+            label: `${profile.name} (you)`,
+            value: profile.userId,
+        },
+        ...teamMembers
+            .filter(member => member.userId !== profile.userId)
+            .map(member => ({
+                label: member.name,
+                value: member.userId,
+            })),
+    ];
+
+    const [form] = Form.useForm();
+
+    const onFormSubmit = (values: any) => {
+        console.log(values);
+    };
+
+    const onNextClicked = () => {
+        form.submit();
+    }
+
+    return (
+        <Content>
+            <Title level={4}>Fill out details</Title>
+            <SecondaryText>Target the right candidates, write down job detail information</SecondaryText>
+            <FormDiv>
+                <JobForm
+                    name='basic'
+                    layout='vertical'
+                    form={form}
+                    onFinish={onFormSubmit}
+                    initialValues={{
+                        owner: profile.userId,
+                        // TODO: add more fields
+                    }}
+                >
+                    <Form.Item
+                        name='owner'
+                        label={<FormLabel>Owner</FormLabel>}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please select job owner",
+                            },
+                        ]}
+                    >
+                        <Select placeholder='Jon Doe' options={teamMemberOptions} filterOption={filterOptionLabel} />
+                    </Form.Item>
+                    <Form.Item
+                        name='title'
+                        label={<FormLabel>Title</FormLabel>}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter job title",
+                            },
+                        ]}
+                    >
+                        <Input placeholder='Sr. Software Engineer' />
+                    </Form.Item>
+                    <Form.Item
+                        name='department'
+                        label={<FormLabel>Department</FormLabel>}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please select company department",
+                            },
+                        ]}
+                    >
+                        <Input placeholder='Engineering' />
+                    </Form.Item>
+                    <Form.Item name='location' label={<FormLabel>Location</FormLabel>}>
+                        <Input placeholder='Remote (Australia)' />
+                    </Form.Item>
+
+                    <Form.Item name='date' label={<FormLabel>Deadline</FormLabel>}>
+                        <DeadlineDatePicker format={datePickerFormat()} />
+                    </Form.Item>
+                    <Form.Item name='tags' label={<FormLabel>Tags</FormLabel>}>
+                        <Select
+                            mode='tags'
+                            placeholder='Remote, Mobile, Urgent, etc.'
+                        />
+                    </Form.Item>
+                    <Form.Item name='description' label={<FormLabel>Description</FormLabel>}>
+                        <TextArea
+                            autoSize={{ minRows: 3, maxRows: 5 }}
+                            placeholder='Responsibilities, experience and skills requirements, salary range, etc.'
+                        />
+                    </Form.Item>
+                </JobForm>
+                <NextButton type='primary' onClick={onNextClicked}>
+                    Next
+                </NextButton>
+            </FormDiv>
+        </Content>
+    );
+};
+
+export default StepJobDetails;

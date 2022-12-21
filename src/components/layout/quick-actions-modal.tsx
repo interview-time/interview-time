@@ -60,19 +60,19 @@ const ActionsModal = ({ open, onClose, onScheduleInterview, onAddCandidate, onCr
                 <IconBackground>
                     <UserPlus size={20} />
                 </IconBackground>
-                <ActionText>Add Candidate</ActionText>
+                <ActionText>Add candidate</ActionText>
             </ActionContainer>
             <ActionContainer onClick={onScheduleInterview}>
                 <IconBackground>
                     <CalendarPlus size={20} />
                 </IconBackground>
-                <ActionText>Schedule Interview</ActionText>
+                <ActionText>Schedule interview</ActionText>
             </ActionContainer>
             <ActionContainer onClick={onCreateTemplate}>
                 <IconBackground>
                     <FilePlus size={20} />
                 </IconBackground>
-                <ActionText>Create Template</ActionText>
+                <ActionText>Create template</ActionText>
             </ActionContainer>
         </Modal>
     );

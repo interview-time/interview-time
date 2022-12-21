@@ -91,6 +91,8 @@ export const routeSubscription = () => "/subscription";
 
 export const routeJobs = () => "/jobs";
 
+export const routeJobsNew = () => "/jobs/new";
+
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
