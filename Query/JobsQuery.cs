@@ -48,7 +48,8 @@ namespace CafApi.Query
         private readonly IPermissionsService _permissionsService;
         private readonly DynamoDBContext _context;
 
-        public JobsQueryHandler(IPermissionsService permissionsService,
+        public JobsQueryHandler(
+            IPermissionsService permissionsService,
             IAmazonDynamoDB dynamoDbClient)
         {
             _permissionsService = permissionsService;

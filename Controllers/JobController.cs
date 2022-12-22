@@ -52,7 +52,7 @@ namespace CafApi.Controllers
         }
 
         [HttpGet("team/{teamId}/jobs")]
-        public async Task<ActionResult<JobsQueryResult>> Getjobs(string teamId)
+        public async Task<ActionResult<JobsQueryResult>> GetJobs(string teamId)
         {
             try
             {
@@ -63,6 +63,27 @@ namespace CafApi.Controllers
                 _logger.LogError(ex, ex.Message);
 
                 return Unauthorized(ex.Message);
+            }
+        }
+
+        [HttpGet("team/{teamId}/job/{jobId}")]
+        public async Task<ActionResult<Job>> GetJobDetails(string teamId, string jobId)
+        {
+            try
+            {
+                return await _mediator.Send(new JobDetailsQuery { UserId = UserId, TeamId = teamId, JobId = jobId });
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return NotFound(ex.Message);
             }
         }
     }
