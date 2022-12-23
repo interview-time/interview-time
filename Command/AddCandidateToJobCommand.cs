@@ -15,13 +15,13 @@ namespace CafApi.Command
 {
     public class AddCandidateToJobCommand : IRequest
     {
-        public string TeamId { get; set; }
+        internal string TeamId { get; set; }
 
-        public string UserId { get; set; }
+        internal string UserId { get; set; }
 
+        internal string JobId { get; set; }
+        
         public string CandidateId { get; set; }
-
-        public string JobId { get; set; }
 
         public string StageId { get; set; }
     }
