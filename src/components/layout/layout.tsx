@@ -7,6 +7,7 @@ import {
     routeHome,
     routeInterviewAdd,
     routeInterviews,
+    routeJobs,
     routeTeamNew,
     routeTeamProfile,
     routeTemplateBlank,
@@ -131,11 +132,11 @@ const QuickActionsHotkey = styled(Text)`
 
 const MainMenu = styled(Menu)`
     &&& {
-      border: 0;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      padding: 20px 20px;
+        border: 0;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        padding: 20px 20px;
     }
 `;
 
@@ -178,28 +179,29 @@ const PageContent = styled(AntLayout.Content)`
 `;
 
 const MenuFooterContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-bottom: 12px;
-`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 12px;
+`;
 
 const MenuFooterText = styled(Text)`
-  color: ${Colors.Neutral_400};
-  font-size: 13px;
-`
+    color: ${Colors.Neutral_400};
+    font-size: 13px;
+`;
 
 type Props = {
-    children: any;
+    header?: React.ReactNode;
+    children: React.ReactNode | React.ReactNode[];
     profile: UserProfile;
     switchTeam: Function;
     joinTeam: Function;
 };
 
-const Layout = ({ children, profile, switchTeam, joinTeam }: Props) => {
+const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
     const location = useLocation();
     const history = useHistory();
 
@@ -252,6 +254,8 @@ const Layout = ({ children, profile, switchTeam, joinTeam }: Props) => {
             return MenuKey.SETTINGS;
         } else if (location.pathname.includes(routeHome())) {
             return MenuKey.HOME;
+        } else if (location.pathname.includes(routeJobs())) {
+            return MenuKey.JOBS;
         } else {
             return MenuKey.NONE;
         }
@@ -395,7 +399,7 @@ const Layout = ({ children, profile, switchTeam, joinTeam }: Props) => {
                             <Link to={routeHome()}>Dashboard</Link>
                         </MenuItem>
                         <MenuItem key={MenuKey.JOBS} icon={<Album />}>
-                            <Link to={routeCandidates()}>Jobs</Link>
+                            <Link to={routeJobs()}>Jobs</Link>
                         </MenuItem>
                         <MenuItem key={MenuKey.CANDIDATES} icon={<Users />}>
                             <Link to={routeCandidates()}>Candidates</Link>
@@ -426,6 +430,7 @@ const Layout = ({ children, profile, switchTeam, joinTeam }: Props) => {
                 </LayoutMenuContainer>
             </LayoutMenu>
             <AntLayout>
+                {header}
                 <PageContent>
                     {/*@ts-ignore*/}
                     <FeedbackModal visible={feedbackVisible} onClose={onFeedbackClose} />

@@ -89,6 +89,8 @@ export const routeTakeHomeChallenge = token => {
 
 export const routeSubscription = () => "/subscription";
 
+export const routeJobs = () => "/jobs";
+
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
