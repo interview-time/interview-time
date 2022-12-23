@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,31 +62,49 @@ namespace CafApi.Query
             var pipelineCandidates = job.Pipeline.Where(p => p.Candidates != null).SelectMany(p => p.Candidates).ToList();
             var candidateIds = pipelineCandidates.Select(c => c.CandidateId).Distinct().ToList();
             var candidates = await _candidateRepository.GetCandidates(query.TeamId, candidateIds);
+            var candidatesToRemove = new List<string>();
 
             foreach (var pipelineCandidate in pipelineCandidates)
             {
                 var candidateDetails = candidates.FirstOrDefault(c => c.CandidateId == pipelineCandidate.CandidateId);
+                if (candidateDetails != null)
+                {
+                    pipelineCandidate.Name = candidateDetails.CandidateName ?? $"{candidateDetails.FirstName} {candidateDetails.LastName}";
+                    pipelineCandidate.Position = candidateDetails.Position;
 
-                pipelineCandidate.Name = candidateDetails.CandidateName ?? $"{candidateDetails.FirstName} {candidateDetails.LastName}";
-                pipelineCandidate.Position = candidateDetails.Position;
+                    var candidateInterviews = await _interviewRepository.GetInterviewsByCandidate(pipelineCandidate.CandidateId);
 
-                var candidateInterviews = await _interviewRepository.GetInterviewsByCandidate(pipelineCandidate.CandidateId);
+                    if (candidateInterviews.Count() > 0 && candidateInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
+                    {
+                        pipelineCandidate.Status = CandidateStageStatus.FEEDBACK_AVAILABLE.ToString();
+                    }
+                    else if (candidateInterviews.Count() > 0 && !candidateInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
+                    {
+                        pipelineCandidate.Status = CandidateStageStatus.AWAITING_FEEDBACK.ToString();
+                    }
+                    else if (candidateInterviews.Count() > 0 && !candidateInterviews.All(i => i.Status == InterviewStatus.NEW.ToString()))
+                    {
+                        pipelineCandidate.Status = CandidateStageStatus.INTERVIEW_SCHEDULED.ToString();
+                    }
+                    else if (candidateInterviews == null || candidateInterviews.Count() == 0)
+                    {
+                        pipelineCandidate.Status = CandidateStageStatus.SHCHEDULE_INTERVIEW.ToString();
+                    }
+                }
+                else
+                {
+                    candidatesToRemove.Add(pipelineCandidate.CandidateId);
+                }
+            }
 
-                if (candidateInterviews.Count() > 0 && candidateInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
+            if (candidatesToRemove.Any())
+            {
+                foreach (var stage in job.Pipeline)
                 {
-                    pipelineCandidate.Status = CandidateStageStatus.FEEDBACK_AVAILABLE.ToString();
-                }
-                else if (candidateInterviews.Count() > 0 && !candidateInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
-                {
-                    pipelineCandidate.Status = CandidateStageStatus.AWAITING_FEEDBACK.ToString();
-                }
-                else if (candidateInterviews.Count() > 0 && !candidateInterviews.All(i => i.Status == InterviewStatus.NEW.ToString()))
-                {
-                    pipelineCandidate.Status = CandidateStageStatus.INTERVIEW_SCHEDULED.ToString();
-                }
-                else if (candidateInterviews == null || candidateInterviews.Count() == 0)
-                {
-                    pipelineCandidate.Status = CandidateStageStatus.SHCHEDULE_INTERVIEW.ToString();
+                    if (stage.Candidates != null)
+                    {
+                        stage.Candidates.RemoveAll(c => candidatesToRemove.Contains(c.CandidateId));
+                    }
                 }
             }
 
