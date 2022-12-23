@@ -1,22 +1,18 @@
-import { Content, FormDiv, SecondaryText, NextButton } from "./styles";
-import { Button, Form, Input, Select, Typography } from "antd";
+import { FormLabel } from "../../assets/styles/global-styles";
+import { Content, FormContainer, SecondaryText, NextButton } from "./styles";
+import { Form, Input, Select, Typography } from "antd";
 import React from "react";
 import styled from "styled-components";
 import { TeamMember, UserProfile } from "../../store/models";
 import { filterOptionLabel } from "../../utils/filters";
 import DatePicker from "../../components/antd/DatePicker";
 import { datePickerFormat } from "../../utils/date-fns";
-import { defaultTo } from "lodash";
 
 const { Text, Title } = Typography;
 const { TextArea } = Input;
 
 const JobForm = styled(Form)`
     width: 600px;
-`;
-
-const FormLabel = styled(Text)`
-    font-weight: 500;
 `;
 
 const DeadlineDatePicker = styled(DatePicker)`
@@ -56,7 +52,7 @@ const StepJobDetails = ({ profile, teamMembers }: Props) => {
         <Content>
             <Title level={4}>Fill out details</Title>
             <SecondaryText>Target the right candidates, write down job detail information</SecondaryText>
-            <FormDiv>
+            <FormContainer>
                 <JobForm
                     name='basic'
                     layout='vertical'
@@ -126,7 +122,7 @@ const StepJobDetails = ({ profile, teamMembers }: Props) => {
                 <NextButton type='primary' onClick={onNextClicked}>
                     Next
                 </NextButton>
-            </FormDiv>
+            </FormContainer>
         </Content>
     );
 };

@@ -1,5 +1,5 @@
 import { Button, Col, Menu, Row } from "antd";
-import StepNewJob from "./step-new-job";
+import StepJobType from "./step-job-type";
 import styled from "styled-components";
 import { Briefcase, ChevronLeft, ClipboardType, Cog } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -12,6 +12,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/state-models";
 import { TeamDetails, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
+import StepJobStages from "./step-job-stages";
+import { routeJobs } from "../../utils/route";
 
 const MenuContainer = styled.div`
     margin-top: 64px;
@@ -73,7 +75,7 @@ const NewJob = ({}: Props) => {
         }
     }, [profile]);
 
-    const onBackClicked = () => history.goBack();
+    const onBackClicked = () => history.push(routeJobs());
 
     const onMenuItemClicked = (key: Step) => setSelectedStep(key);
 
@@ -114,10 +116,11 @@ const NewJob = ({}: Props) => {
                 </MenuContainer>
             </MenuCol>
             <ContentCol xl={{ span: 14 }} md={{ span: 19 }}>
-                {selectedStep === Step.NEW_JOB && <StepNewJob onNext={() => setSelectedStep(Step.DETAILS)} />}
+                {selectedStep === Step.NEW_JOB && <StepJobType onNext={() => setSelectedStep(Step.DETAILS)} />}
                 {selectedStep === Step.DETAILS && (
                     <StepJobDetails profile={profile} teamMembers={teamDetails?.teamMembers || []} />
                 )}
+                {selectedStep === Step.STAGES && <StepJobStages jobStages={[]} />}
             </ContentCol>
             <Col xl={{ span: 5 }} md={{ span: 0 }} />
         </Row>

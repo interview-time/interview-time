@@ -94,6 +94,7 @@ export interface InterviewStage {
     interviewStartDate: string;
     interviews: Interview[];
 }
+
 export interface SharedInterview extends Interview {
     candidateName: string;
     interviewerName: string;
@@ -343,4 +344,19 @@ export interface Job {
     deadline?: string;
     totalCandidates: number;
     newlyAddedCandidates: number;
+    pipeline: JobStage[];
+}
+
+export enum JobStageType {
+    Interview = "Interview",
+    Indicator = "Indicator",
+}
+
+export interface JobStage {
+    stageId: string;
+    colour: string;
+    title: string;
+    type: JobStageType;
+    description?: string;
+    templateId?: string;
 }

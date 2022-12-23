@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
 import { Typography } from "antd";
-import Card from "../../components/card/card";
+import { CardOutlined } from "../../assets/styles/global-styles";
 import { Clipboard, ClipboardCopy } from "lucide-react";
 import { useState } from "react";
-import { Content, FormDiv, NextButton, SecondaryText, SecondaryTextSmall, TextBold } from "./styles";
+import { Content, FormContainer, NextButton, SecondaryText, SecondaryTextSmall, TextBold } from "./styles";
 
 const { Title } = Typography;
 
@@ -18,13 +18,13 @@ type JobCardProps = {
     selected?: boolean;
 };
 
-const JobCard = styled(Card)`
+const JobCard = styled(CardOutlined)`
     width: 240px;
     padding: 16px;
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    border: ${(props: JobCardProps) => (props.selected ? `1px solid ${Colors.Primary_500}` : "none")};
+    border: 1px solid ${(props: JobCardProps) => (props.selected ? Colors.Primary_500 : Colors.Neutral_200)};
 `;
 
 const IconContainer = styled.div`
@@ -55,14 +55,14 @@ type Props = {
     onNext: () => void;
 };
 
-const StepNewJob = ({ onNext }: Props) => {
+const StepJobType = ({ onNext }: Props) => {
     const [mode, setMode] = useState(Mode.BLANK);
 
     return (
         <Content>
             <Title level={4}>Create new job</Title>
             <SecondaryText>Please select how do you want to create a new job</SecondaryText>
-            <FormDiv>
+            <FormContainer>
                 <CardContainer>
                     <JobCard onClick={() => setMode(Mode.BLANK)} selected={mode == Mode.BLANK}>
                         <IconContainerBlue>
@@ -80,9 +80,9 @@ const StepNewJob = ({ onNext }: Props) => {
                     </JobCard>
                 </CardContainer>
                 <NextButton type='primary' onClick={onNext}>Next</NextButton>
-            </FormDiv>
+            </FormContainer>
         </Content>
     );
 };
 
-export default StepNewJob;
+export default StepJobType;

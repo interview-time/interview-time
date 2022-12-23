@@ -44,6 +44,7 @@ const Jobs = () => {
             createdDate: "2022-07-13T11:15:00Z",
             totalCandidates: i * 10,
             newlyAddedCandidates: i,
+            pipeline: []
         });
     }
 

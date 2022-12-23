@@ -24,7 +24,7 @@ export const Content = styled.div`
     align-items: center;
 `;
 
-export const FormDiv = styled.div`
+export const FormContainer = styled.div`
     max-width: 600px;
     background-color: ${Colors.Neutral_50};
     margin-top: 32px;
