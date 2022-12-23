@@ -1,4 +1,5 @@
 import { ApiRequest } from "./candidates/actions";
+import { JobsApiRequest } from "./jobs/actions";
 import {
     CandidateDetails,
     CandidateChallenge,
@@ -10,9 +11,12 @@ import {
     TeamMember,
     Template,
     UserProfile,
+    Job,
 } from "./models";
 
 export interface IApiResults extends Record<ApiRequest, IApiRequestResult> {}
+
+export interface IJobsApiResults extends Record<JobsApiRequest, IApiRequestResult> {}
 
 export enum ApiRequestStatus {
     NotSubmitted,
@@ -34,6 +38,7 @@ export interface RootState {
     challenge: ChallengeState;
     templates: TemplateState;
     integration: IntegrationState;
+    jobs: JobsState;
 }
 
 export interface UserState {
@@ -80,4 +85,9 @@ export interface IntegrationState {
     linkToken?: string;
     loading: boolean;
     error: boolean;
+}
+
+export interface JobsState {
+    jobs: Job[];
+    apiResults: IJobsApiResults;
 }
