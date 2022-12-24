@@ -1,4 +1,4 @@
-import { Job } from "../models";
+import { Job, JobDetails } from "../models";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import axios, { AxiosError } from "axios";
 import { config } from "../common";
@@ -30,7 +30,7 @@ export type SetJobsAction = {
 
 export type SetJobDetailsAction = {
     type: JobActionType.SET_JOB_DETAILS;
-    job: Job;
+    jobDetails: JobDetails;
 };
 
 export type SetRequestSuccessAction = {
@@ -67,9 +67,9 @@ export const setJobs = (jobs: Job[]): SetJobsAction => ({
     jobs: jobs,
 });
 
-export const setJobDetails = (job: Job): SetJobDetailsAction => ({
+export const setJobDetails = (jobDetails: JobDetails): SetJobDetailsAction => ({
     type: JobActionType.SET_JOB_DETAILS,
-    job: job,
+    jobDetails: jobDetails,
 });
 
 export const setRequestSuccess = (requestType: JobsApiRequest): SetRequestSuccessAction => ({

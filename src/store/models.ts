@@ -164,26 +164,30 @@ export interface CandidateDetails extends Candidate {
 export interface Job {
     jobId: string;
     title: string;
-    description: string;
-    location: string;
     department: string;
-    deadline: string;
-    tags: string[];
-    owner: string;
-    ownerName: string;
+    location?: string;
     createdDate: string;
     status: string;
     totalCandidates: number;
     newlyAddedCandidates: number;
-    pipeline: Stage[];
 }
 
-export interface Stage {
+export interface JobDetails extends Job {
+    description?: string;
+    deadline?: string;
+    tags: string[];
+    owner: string;
+    ownerName: string;
+    pipeline: JobStage[];
+}
+
+export interface JobStage {
+    stageId: string;
     title: string;
-    description: string;
+    description?: string;
     colour: string;
     type: string;
-    templateId: string;
+    templateId?: string;
     disabled: boolean;
     candidates?: JobCandidate[];
 }
@@ -195,6 +199,10 @@ export interface JobCandidate {
     status: string;
     movedToStage: string;
     originallyAdded: string;
+}
+export enum JobStageType {
+    Interview = "Interview",
+    Regular = "Regular",
 }
 
 export enum QuestionAssessment {
@@ -333,30 +341,4 @@ export enum ChallengeStatus {
     NotSent = "NotSent",
     SentToCandidate = "SentToCandidate",
     SolutionSubmitted = "SolutionSubmitted",
-}
-
-export interface Job {
-    jobId: string;
-    title: string;
-    location?: string;
-    department: string;
-    createdDate: string;
-    deadline?: string;
-    totalCandidates: number;
-    newlyAddedCandidates: number;
-    pipeline: JobStage[];
-}
-
-export enum JobStageType {
-    Interview = "Interview",
-    Indicator = "Indicator",
-}
-
-export interface JobStage {
-    stageId: string;
-    colour: string;
-    title: string;
-    type: JobStageType;
-    description?: string;
-    templateId?: string;
 }

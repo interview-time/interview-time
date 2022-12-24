@@ -10,6 +10,9 @@ import { useDebounceFn } from "ahooks";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { useHistory } from "react-router-dom";
 import { routeJobsNew } from "../../utils/route";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { ApiRequestStatus, RootState } from "../../store/state-models";
+import { fetchJobs } from "../../store/jobs/actions";
 
 const { Title } = Typography;
 
@@ -30,29 +33,37 @@ const HeaderSearch = styled(Input)`
     border-radius: 6px;
 `;
 
+// TODO add filter and sorting
+// TODO add actions to job card
+
 const Jobs = () => {
-
     const history = useHistory();
+    const dispatch = useDispatch();
 
-    const jobsData: Job[] = [];
-    for (let i = 0; i < 20; i++) {
-        jobsData.push({
-            jobId: "id" + i,
-            title: "Software Engineer " + i,
-            department: "Technical",
-            location: "Mountain View, CA",
-            createdDate: "2022-07-13T11:15:00Z",
-            totalCandidates: i * 10,
-            newlyAddedCandidates: i,
-            pipeline: []
-        });
-    }
+    const jobsApiRequestStatus: ApiRequestStatus = useSelector(
+        (state: RootState) => state.jobs.apiResults.GetJobs.status,
+        shallowEqual
+    );
+    const jobsOriginal: Job[] = useSelector((state: RootState) => state.jobs.jobs, shallowEqual);
+    const [jobs, setJobs] = React.useState<Job[]>([]);
 
-    const [jobs, setJobs] = React.useState(jobsData);
+    const loading = jobsApiRequestStatus === ApiRequestStatus.InProgress;
+
+    React.useEffect(() => {
+        if (jobs.length === 0) {
+            setJobs(jobsOriginal);
+        }
+        // eslint-disable-next-line
+    }, [jobsOriginal]);
+
+    React.useEffect(() => {
+        dispatch(fetchJobs());
+        // eslint-disable-next-line
+    }, []);
 
     const onSearchTextChangeDebounce = useDebounceFn(
         (text: string) => {
-            setJobs(jobsData.filter(job => job.title.toLowerCase().includes(text.toLowerCase())));
+            setJobs(jobsOriginal.filter(job => job.title.toLowerCase().includes(text.toLowerCase())));
         },
         {
             wait: 500,
@@ -106,6 +117,8 @@ const Jobs = () => {
         </Header>
     );
 
+    // TODO empty state
+
     return (
         <Layout header={header}>
             <Title level={3}>Jobs</Title>
@@ -117,6 +130,7 @@ const Jobs = () => {
                     defaultPageSize: 8,
                     hideOnSinglePage: true,
                 }}
+                loading={loading}
                 renderItem={(job: Job) => (
                     <List.Item>
                         <JobCard job={job} />

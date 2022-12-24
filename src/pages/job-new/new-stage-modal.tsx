@@ -65,17 +65,6 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
     const [color, setColor] = React.useState(getDefaultColor());
     const [type, setType] = React.useState(getDefaultType());
 
-    const jobStagesOptions = [
-        {
-            label: `Indicator`,
-            value: JobStageType.Indicator,
-        },
-        {
-            label: `Interview`,
-            value: JobStageType.Interview,
-        },
-    ];
-
     const [form] = Form.useForm();
 
     React.useEffect(() => {
@@ -106,6 +95,7 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
                 title: values.title,
                 type: values.type,
                 colour: color,
+                disabled: false,
             });
         }
     };
@@ -142,7 +132,7 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
         if (e.target.checked) {
             setType(JobStageType.Interview);
         } else {
-            setType(JobStageType.Indicator);
+            setType(JobStageType.Regular);
         }
     };
 
@@ -193,7 +183,7 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
                         >
                             <Select
                                 placeholder='Select template'
-                                options={jobStagesOptions}
+                                options={[]}
                                 filterOption={filterOptionLabel}
                             />
                         </Form.Item>

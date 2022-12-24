@@ -88,15 +88,15 @@ type EditStageModal = {
 };
 
 type Props = {
-    jobStages: JobStage[];
+    stages: JobStage[];
+    onStagesChange: (stages: JobStage[]) => void;
+    onFinish: () => void;
 };
 
-const StepJobStages = ({ jobStages }: Props) => {
+const StepJobStages = ({ stages, onStagesChange, onFinish }: Props) => {
     const [editStageModal, setEditStageModal] = React.useState<EditStageModal>({
         visible: false,
     });
-
-    const [stages, setStages] = React.useState<JobStage[]>(jobStages);
 
     const onSaveStage = (stage: JobStage) => {
         const index = stages.findIndex(s => s.stageId === stage.stageId);
@@ -106,12 +106,12 @@ const StepJobStages = ({ jobStages }: Props) => {
         } else {
             updatedStages[index] = stage;
         }
-        setStages(updatedStages);
+        onStagesChange(updatedStages);
         setEditStageModal({ ...editStageModal, visible: false });
     };
 
     const onRemoveStage = (stage: JobStage) => {
-        setStages(stages.filter(s => s.stageId !== stage.stageId));
+        onStagesChange(stages.filter(s => s.stageId !== stage.stageId));
         setEditStageModal({ ...editStageModal, visible: false });
     };
 
@@ -126,9 +126,7 @@ const StepJobStages = ({ jobStages }: Props) => {
             return;
         }
 
-        setStages(prev => {
-            return arrayMove(prev, source.index, destination.index);
-        });
+        onStagesChange(arrayMove(stages, source.index, destination.index));
     };
 
     const StageListItem = (stage: JobStage, index: number) => (
@@ -194,7 +192,11 @@ const StepJobStages = ({ jobStages }: Props) => {
                         </Button>
                     </AddStageContainer>
 
-                    {stages.length > 0 && <NextButton type='primary'>Finish</NextButton>}
+                    {stages.length > 0 && (
+                        <NextButton type='primary' onClick={onFinish}>
+                            Finish
+                        </NextButton>
+                    )}
                 </FormContainerNoGap>
             </Content>
 

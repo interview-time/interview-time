@@ -1,4 +1,4 @@
-import Card from "../../components/card/card";
+import { CardOutlined } from "../../assets/styles/global-styles";
 import { Job } from "../../store/models";
 import { Button, Col, Row, Space, Typography } from "antd";
 import styled from "styled-components";
@@ -13,10 +13,9 @@ type Props = {
     job: Job;
 };
 
-const StyledCard = styled(Card)`
+const StyledCard = styled(CardOutlined)`
     min-height: 84px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding: 12px 24px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -84,7 +83,9 @@ const JobCard = ({ job }: Props) => {
                 <Col xs={12} lg={6}>
                     <Space size={6}>
                         <Text>{job.totalCandidates} candidates</Text>
-                        <NewCandidatesTag>+{job.newlyAddedCandidates}</NewCandidatesTag>
+                        {job.newlyAddedCandidates > 0 && (
+                            <NewCandidatesTag>+{job.newlyAddedCandidates}</NewCandidatesTag>
+                        )}
                     </Space>
                 </Col>
 

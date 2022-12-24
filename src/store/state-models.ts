@@ -11,7 +11,7 @@ import {
     TeamMember,
     Template,
     UserProfile,
-    Job,
+    Job, JobDetails
 } from "./models";
 
 export interface IApiResults extends Record<ApiRequest, IApiRequestResult> {}
@@ -89,5 +89,6 @@ export interface IntegrationState {
 
 export interface JobsState {
     jobs: Job[];
+    jobsDetail: JobDetails[];
     apiResults: IJobsApiResults;
 }

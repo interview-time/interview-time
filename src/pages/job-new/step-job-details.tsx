@@ -1,14 +1,14 @@
 import { FormLabel } from "../../assets/styles/global-styles";
-import { Content, FormContainer, SecondaryText, NextButton } from "./styles";
-import { Form, Input, Select, Typography } from "antd";
+import { Content, FormContainer, NextButton, SecondaryText } from "./styles";
+import { Form, FormInstance, Input, Select, Typography } from "antd";
 import React from "react";
 import styled from "styled-components";
-import { TeamMember, UserProfile } from "../../store/models";
+import { JobDetails, TeamMember, UserProfile } from "../../store/models";
 import { filterOptionLabel } from "../../utils/filters";
 import DatePicker from "../../components/antd/DatePicker";
 import { datePickerFormat } from "../../utils/date-fns";
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 const { TextArea } = Input;
 
 const JobForm = styled(Form)`
@@ -20,11 +20,14 @@ const DeadlineDatePicker = styled(DatePicker)`
 `;
 
 type Props = {
+    job: JobDetails;
     profile: UserProfile;
     teamMembers: TeamMember[];
+    form: FormInstance;
+    onNext: () => void;
 };
 
-const StepJobDetails = ({ profile, teamMembers }: Props) => {
+const StepJobDetails = ({ job, profile, teamMembers, form, onNext }: Props) => {
     const teamMemberOptions = [
         {
             label: `${profile.name} (you)`,
@@ -38,15 +41,9 @@ const StepJobDetails = ({ profile, teamMembers }: Props) => {
             })),
     ];
 
-    const [form] = Form.useForm();
-
-    const onFormSubmit = (values: any) => {
-        console.log(values);
-    };
-
     const onNextClicked = () => {
         form.submit();
-    }
+    };
 
     return (
         <Content>
@@ -57,10 +54,15 @@ const StepJobDetails = ({ profile, teamMembers }: Props) => {
                     name='basic'
                     layout='vertical'
                     form={form}
-                    onFinish={onFormSubmit}
+                    onFinish={onNext}
                     initialValues={{
                         owner: profile.userId,
-                        // TODO: add more fields
+                        title: job.title,
+                        department: job.department,
+                        location: job.location,
+                        deadline: job.deadline,
+                        tags: job.tags,
+                        description: job.description,
                     }}
                 >
                     <Form.Item
@@ -103,14 +105,11 @@ const StepJobDetails = ({ profile, teamMembers }: Props) => {
                         <Input placeholder='Remote (Australia)' />
                     </Form.Item>
 
-                    <Form.Item name='date' label={<FormLabel>Deadline</FormLabel>}>
+                    <Form.Item name='deadline' label={<FormLabel>Deadline</FormLabel>}>
                         <DeadlineDatePicker format={datePickerFormat()} />
                     </Form.Item>
                     <Form.Item name='tags' label={<FormLabel>Tags</FormLabel>}>
-                        <Select
-                            mode='tags'
-                            placeholder='Remote, Mobile, Urgent, etc.'
-                        />
+                        <Select mode='tags' placeholder='Remote, Mobile, Urgent, etc.' />
                     </Form.Item>
                     <Form.Item name='description' label={<FormLabel>Description</FormLabel>}>
                         <TextArea

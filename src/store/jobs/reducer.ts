@@ -14,6 +14,7 @@ export const defaultApiResults: IJobsApiResults = {
 
 const initialState: JobsState = {
     jobs: [],
+    jobsDetail: [],
     apiResults: defaultApiResults,
 };
 
@@ -27,11 +28,11 @@ const candidatesReducer = (state = initialState, action: JobActions) => {
         }
 
         case JobActionType.SET_JOB_DETAILS: {
-            const otherCandidates = state.jobs.filter(c => c.jobId !== action.job.jobId);
+            const otherJobs = state.jobsDetail.filter(c => c.jobId !== action.jobDetails.jobId);
 
             return {
                 ...state,
-                candidates: [...otherCandidates, action.job],
+                jobsDetail: [...otherJobs, action.jobDetails],
             };
         }
 
