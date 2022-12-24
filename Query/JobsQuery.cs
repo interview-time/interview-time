@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
-using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using MediatR;
 
@@ -46,14 +44,14 @@ namespace CafApi.Query
     public class JobsQueryHandler : IRequestHandler<JobsQuery, JobsQueryResult>
     {
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;
+        private readonly IJobRepository _jobRepository;
 
         public JobsQueryHandler(
             IPermissionsService permissionsService,
-            IAmazonDynamoDB dynamoDbClient)
+            IJobRepository jobRepository)
         {
             _permissionsService = permissionsService;
-            _context = new DynamoDBContext(dynamoDbClient);
+            _jobRepository = jobRepository;
         }
 
         public async Task<JobsQueryResult> Handle(JobsQuery query, CancellationToken cancellationToken)
@@ -63,7 +61,7 @@ namespace CafApi.Query
                 throw new AuthorizationException($"User ({query.UserId}) doesn't have permissions to view jobs.");
             }
 
-            var jobs = await _context.QueryAsync<Job>(query.TeamId, new DynamoDBOperationConfig()).GetRemainingAsync();
+            var jobs = await _jobRepository.GetAllJobs(query.TeamId);
 
             return new JobsQueryResult
             {

@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
 using CafApi.Repository;
@@ -24,20 +22,20 @@ namespace CafApi.Query
     public class JobDetailsQueryHandler : IRequestHandler<JobDetailsQuery, Job>
     {
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;
+        private readonly IJobRepository _jobRepository;
         private readonly IUserRepository _userRepository;
         private readonly ICandidateRepository _candidateRepository;
         private readonly IInterviewRepository _interviewRepository;
 
         public JobDetailsQueryHandler(
             IPermissionsService permissionsService,
-            IAmazonDynamoDB dynamoDbClient,
+            IJobRepository jobRepository,
             IUserRepository userRepository,
             ICandidateRepository candidateRepository,
             IInterviewRepository interviewRepository)
         {
             _permissionsService = permissionsService;
-            _context = new DynamoDBContext(dynamoDbClient);
+            _jobRepository = jobRepository;
             _userRepository = userRepository;
             _candidateRepository = candidateRepository;
             _interviewRepository = interviewRepository;
@@ -50,7 +48,7 @@ namespace CafApi.Query
                 throw new AuthorizationException($"User ({query.UserId}) doesn't have permissions to view this job.");
             }
 
-            var job = await _context.LoadAsync<Job>(query.TeamId, query.JobId);
+            var job = await _jobRepository.GetJob(query.TeamId, query.JobId);
             if (job == null)
             {
                 throw new ItemNotFoundException($"Job ({query.JobId}) doesn't exist");

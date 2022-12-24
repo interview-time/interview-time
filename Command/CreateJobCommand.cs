@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using MediatR;
 
@@ -49,12 +48,12 @@ namespace CafApi.Command
     public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand, Job>
     {
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;
+        private readonly IJobRepository _jobRepository;
 
-        public CreateJobCommandHandler(IPermissionsService permissionsService, IAmazonDynamoDB dynamoDbClient)
+        public CreateJobCommandHandler(IPermissionsService permissionsService, IJobRepository jobRepository)
         {
             _permissionsService = permissionsService;
-            _context = new DynamoDBContext(dynamoDbClient);
+            _jobRepository = jobRepository;
         }
 
         public async Task<Job> Handle(CreateJobCommand command, CancellationToken cancellationToken)
@@ -89,7 +88,7 @@ namespace CafApi.Command
                 }).ToList()
             };
 
-            await _context.SaveAsync(job);
+            await _jobRepository.SaveJob(job);
 
             return job;
         }
