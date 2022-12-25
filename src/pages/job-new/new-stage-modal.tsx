@@ -1,7 +1,7 @@
 import { FormLabel } from "../../assets/styles/global-styles";
 import { SecondaryText, SecondaryTextSmall } from "./styles";
 import { Button, Checkbox, Form, Input, Modal, Select, Space } from "antd";
-import { JobStage, JobStageType } from "../../store/models";
+import { JobStage, JobStageType, Template } from "../../store/models";
 import React from "react";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
@@ -9,6 +9,7 @@ import { ColorResult, TwitterPicker } from "react-color";
 import { v4 as uuidv4 } from "uuid";
 import { filterOptionLabel } from "../../utils/filters";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { log } from "../../utils/log";
 
 const StagesForm = styled(Form)`
     margin-top: 24px;
@@ -51,15 +52,16 @@ const StageTypeTooltip = styled.div`
 
 type Props = {
     stage?: JobStage;
+    templates: Template[];
     open: boolean;
     onClose: () => void;
     onSave: (stage: JobStage) => void;
     onRemove: (stage: JobStage) => void;
 };
 
-const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
+const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Props) => {
     const getDefaultColor = () => stage?.colour || "#0693E3";
-    const getDefaultType = () => stage?.type;
+    const getDefaultType = () => stage?.type || JobStageType.Regular;
 
     const [colorPickerVisible, setColorPickerVisible] = React.useState(false);
     const [color, setColor] = React.useState(getDefaultColor());
@@ -67,16 +69,22 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
 
     const [form] = Form.useForm();
 
+    const templatesOptions = templates.map(template => ({
+        label: template.title,
+        value: template.templateId,
+    }));
+
     React.useEffect(() => {
-        // reset state to initial
         if (open) {
+            // reset state to initial or prefill from existing stage
+            log(stage);
             setColorPickerVisible(false);
             setColor(getDefaultColor());
             setType(getDefaultType());
             form.setFieldsValue({
                 title: stage?.title,
                 type: stage?.type,
-                // TODO: add more fields
+                template: stage?.templateId,
             });
         }
     }, [open, stage]);
@@ -86,16 +94,18 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
             onSave({
                 ...stage,
                 title: values.title,
-                type: values.type,
+                templateId: values.template,
+                type: type,
                 colour: color,
             });
         } else {
             onSave({
                 stageId: uuidv4(),
                 title: values.title,
-                type: values.type,
-                colour: color,
+                templateId: values.template,
                 disabled: false,
+                type: type,
+                colour: color,
             });
         }
     };
@@ -137,7 +147,13 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
     };
 
     return (
-        <Modal title={stage ? "Edit Stage" : "New Stage"} open={open} onCancel={onClose} footer={ModalFooter}>
+        <Modal
+            title={stage ? "Edit Stage" : "New Stage"}
+            open={open}
+            onCancel={onClose}
+            footer={ModalFooter}
+            destroyOnClose
+        >
             <SecondaryText>Enter stage details.</SecondaryText>
             <StagesForm name='basic' layout='vertical' form={form} onFinish={onFormSubmit}>
                 <Form.Item name='color' label={<FormLabel>Color</FormLabel>}>
@@ -160,7 +176,9 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
                 </Form.Item>
 
                 <Space direction='vertical' size={4}>
-                    <Checkbox onChange={onInterviewStageMarkerChange}>This is an interview stage.</Checkbox>
+                    <Checkbox defaultChecked={type === JobStageType.Interview} onChange={onInterviewStageMarkerChange}>
+                        This is an interview stage.
+                    </Checkbox>
                     <StageTypeTooltip>
                         <SecondaryTextSmall>
                             Pipeline stage marked as interview must be linked to an interview template.
@@ -182,8 +200,9 @@ const NewStageModal = ({ stage, open, onClose, onSave, onRemove }: Props) => {
                             ]}
                         >
                             <Select
+                                showSearch
                                 placeholder='Select template'
-                                options={[]}
+                                options={templatesOptions}
                                 filterOption={filterOptionLabel}
                             />
                         </Form.Item>

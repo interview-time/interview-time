@@ -1,4 +1,4 @@
-import { TemplateState } from "../state-models";
+import { RootState, TemplateState } from "../state-models";
 import { Template, TemplateChallenge, TemplateGroup } from "../models";
 
 export const selectTemplate = (state: TemplateState, id: string): Template | undefined =>
@@ -7,3 +7,5 @@ export const selectTemplate = (state: TemplateState, id: string): Template | und
 export const selectAssessmentGroup = (template: Template): TemplateGroup => template.structure.groups[0]!;
 
 export const selectTakeHomeAssignment = (template: Template): TemplateChallenge => template.challenges?.[0]!;
+
+export const selectTemplates = (state: RootState) => state.templates.templates;

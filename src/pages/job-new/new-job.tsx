@@ -10,7 +10,7 @@ import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus, RootState } from "../../store/state-models";
-import { Job, JobDetails, JobStage, TeamMember, UserProfile } from "../../store/models";
+import { Job, JobDetails, JobStage, TeamMember, Template, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
 import { createJob, fetchJobDetails, fetchJobs } from "../../store/jobs/actions";
 import StepJobStages from "./step-job-stages";
@@ -20,6 +20,9 @@ import { log } from "../../utils/log";
 import { selectCreateJobStatus, selectDepartments, selectJobDetails, selectJobs } from "../../store/jobs/selectors";
 import { selectTeamMembers } from "../../store/team/selector";
 import { selectUserProfile } from "../../store/user/selector";
+import { isEmpty } from "lodash";
+import { selectTemplates } from "../../store/templates/selector";
+import { loadTemplates } from "../../store/templates/actions";
 
 const MenuContainer = styled.div`
     margin-top: 64px;
@@ -105,6 +108,7 @@ const NewJob = ({}: Props) => {
     const departments: string[] = useSelector(selectDepartments, shallowEqual); // this doesn't scale when we have a lot of jobs
     const profile: UserProfile = useSelector(selectUserProfile, shallowEqual);
     const teamMembers: TeamMember[] = useSelector(selectTeamMembers, shallowEqual);
+    const templates: Template[] = useSelector(selectTemplates, shallowEqual);
     const createJobStatus: ApiRequestStatus = useSelector(selectCreateJobStatus, shallowEqual);
 
     useEffect(() => {
@@ -142,6 +146,10 @@ const NewJob = ({}: Props) => {
     useEffect(() => {
         if (jobs.length === 0) {
             dispatch(fetchJobs());
+        }
+
+        if (templates.length === 0) {
+            dispatch(loadTemplates());
         }
     }, []);
 
@@ -194,8 +202,13 @@ const NewJob = ({}: Props) => {
 
     const onFinish = () => {
         log("onFinish", job);
-        // TODO add validation
-        dispatch(createJob(job));
+        if (isEmpty(job.title)) {
+            message.error("Job title is empty. Please enter a job title.");
+        } else if (isEmpty(job.department)) {
+            message.error("Job department is empty. Please enter a job department.");
+        } else {
+            dispatch(createJob(job));
+        }
     };
 
     return (
@@ -250,6 +263,7 @@ const NewJob = ({}: Props) => {
                 {selectedStep === Step.STAGES && (
                     <StepJobStages
                         stages={job.pipeline}
+                        templates={templates}
                         createJobStatus={createJobStatus}
                         onStagesChange={onStagesChange}
                         onFinish={onFinish}

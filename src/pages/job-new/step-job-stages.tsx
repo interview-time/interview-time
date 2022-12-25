@@ -2,7 +2,7 @@ import { Content, FormContainer, NextButton, SecondaryText, SecondaryTextSmall, 
 import React from "react";
 import { Button, Typography } from "antd";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
-import { JobStage } from "../../store/models";
+import { JobStage, Template } from "../../store/models";
 import { CardOutlined } from "../../assets/styles/global-styles";
 import { GripHorizontal, Plus } from "lucide-react";
 import styled from "styled-components";
@@ -90,12 +90,13 @@ type EditStageModal = {
 
 type Props = {
     stages: JobStage[];
+    templates: Template[]
     createJobStatus: ApiRequestStatus;
     onStagesChange: (stages: JobStage[]) => void;
     onFinish: () => void;
 };
 
-const StepJobStages = ({ stages, createJobStatus, onStagesChange, onFinish }: Props) => {
+const StepJobStages = ({ stages, templates, createJobStatus, onStagesChange, onFinish }: Props) => {
     const [editStageModal, setEditStageModal] = React.useState<EditStageModal>({
         visible: false,
     });
@@ -208,6 +209,7 @@ const StepJobStages = ({ stages, createJobStatus, onStagesChange, onFinish }: Pr
 
             <NewStageModal
                 open={editStageModal.visible}
+                templates={templates}
                 stage={editStageModal.stage}
                 onClose={() =>
                     setEditStageModal({
