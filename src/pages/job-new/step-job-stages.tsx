@@ -12,6 +12,7 @@ import AntIconSpan from "../../components/buttons/ant-icon-span";
 import NewStageModal from "./new-stage-modal";
 import { cloneDeep } from "lodash";
 import ScrumBoardImage from "../../assets/illustrations/undraw_scrum_board.svg";
+import { ApiRequestStatus } from "../../store/state-models";
 
 const { Title } = Typography;
 
@@ -89,11 +90,12 @@ type EditStageModal = {
 
 type Props = {
     stages: JobStage[];
+    createJobStatus: ApiRequestStatus;
     onStagesChange: (stages: JobStage[]) => void;
     onFinish: () => void;
 };
 
-const StepJobStages = ({ stages, onStagesChange, onFinish }: Props) => {
+const StepJobStages = ({ stages, createJobStatus, onStagesChange, onFinish }: Props) => {
     const [editStageModal, setEditStageModal] = React.useState<EditStageModal>({
         visible: false,
     });
@@ -193,7 +195,11 @@ const StepJobStages = ({ stages, onStagesChange, onFinish }: Props) => {
                     </AddStageContainer>
 
                     {stages.length > 0 && (
-                        <NextButton type='primary' onClick={onFinish}>
+                        <NextButton
+                            type='primary'
+                            onClick={onFinish}
+                            loading={createJobStatus === ApiRequestStatus.InProgress}
+                        >
                             Finish
                         </NextButton>
                     )}

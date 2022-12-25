@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/state-models";
+import { ApiRequestStatus, RootState } from "../../store/state-models";
 import { Job, JobDetails, JobStage, TeamMember, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
 import { createJob, fetchJobDetails, fetchJobs } from "../../store/jobs/actions";
@@ -17,7 +17,9 @@ import StepJobStages from "./step-job-stages";
 import { routeJobs } from "../../utils/route";
 import { v4 as uuidv4 } from "uuid";
 import { log } from "../../utils/log";
-import { selectDepartments, selectJobDetails } from "../../store/jobs/selectors";
+import { selectCreateJobStatus, selectDepartments, selectJobDetails, selectJobs } from "../../store/jobs/selectors";
+import { selectTeamMembers } from "../../store/team/selector";
+import { selectUserProfile } from "../../store/user/selector";
 
 const MenuContainer = styled.div`
     margin-top: 64px;
@@ -95,18 +97,15 @@ const NewJob = ({}: Props) => {
 
     const [detailsForm] = Form.useForm();
 
-    const jobs: Job[] = useSelector((state: RootState) => state.jobs.jobs, shallowEqual);
+    const jobs: Job[] = useSelector(selectJobs, shallowEqual);
     const jobDetails: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state.jobs, selectedJob?.jobId),
+        (state: RootState) => selectJobDetails(state, selectedJob?.jobId),
         shallowEqual
     );
-    // this doesn't scale when we have a lot of jobs
-    const departments: string[] = useSelector((state: RootState) => selectDepartments(state.jobs), shallowEqual);
-    const profile: UserProfile = useSelector((state: RootState) => state.user.profile, shallowEqual);
-    const teamMembers: TeamMember[] = useSelector(
-        (state: RootState) => state.team.details?.teamMembers || [],
-        shallowEqual
-    );
+    const departments: string[] = useSelector(selectDepartments, shallowEqual); // this doesn't scale when we have a lot of jobs
+    const profile: UserProfile = useSelector(selectUserProfile, shallowEqual);
+    const teamMembers: TeamMember[] = useSelector(selectTeamMembers, shallowEqual);
+    const createJobStatus: ApiRequestStatus = useSelector(selectCreateJobStatus, shallowEqual);
 
     useEffect(() => {
         if (profile.currentTeamId && teamMembers.length === 0) {
@@ -115,7 +114,6 @@ const NewJob = ({}: Props) => {
     }, [profile]);
 
     useEffect(() => {
-        console.log(jobDetails);
         if (jobDetails) {
             setSelectedJob(jobDetails);
             setJob({
@@ -130,6 +128,16 @@ const NewJob = ({}: Props) => {
             });
         }
     }, [jobDetails]);
+
+    useEffect(() => {
+        if (createJobStatus === ApiRequestStatus.Success) {
+            message.success(`Job '${job.title}' successfully .`);
+            dispatch(fetchJobs(true));
+            history.push(routeJobs());
+        } else if (createJobStatus === ApiRequestStatus.Failed) {
+            message.error(`Failed to create job '${job.title}'.`);
+        }
+    }, [createJobStatus]);
 
     useEffect(() => {
         if (jobs.length === 0) {
@@ -151,7 +159,6 @@ const NewJob = ({}: Props) => {
                 tags: formValues.tags,
                 description: formValues.description,
             });
-        } else if (selectedStep === Step.STAGES) {
         }
         setSelectedStep(step);
     };
@@ -189,8 +196,6 @@ const NewJob = ({}: Props) => {
         log("onFinish", job);
         // TODO add validation
         dispatch(createJob(job));
-        message.success(`Job '${job.title}' created.`);
-        history.push(routeJobs());
     };
 
     return (
@@ -243,7 +248,12 @@ const NewJob = ({}: Props) => {
                     />
                 )}
                 {selectedStep === Step.STAGES && (
-                    <StepJobStages stages={job.pipeline} onStagesChange={onStagesChange} onFinish={onFinish} />
+                    <StepJobStages
+                        stages={job.pipeline}
+                        createJobStatus={createJobStatus}
+                        onStagesChange={onStagesChange}
+                        onFinish={onFinish}
+                    />
                 )}
             </ContentCol>
             <Col xl={{ span: 5 }} md={{ span: 0 }} />

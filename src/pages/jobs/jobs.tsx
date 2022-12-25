@@ -8,11 +8,14 @@ import { Filter, Plus, Search, SortDesc } from "lucide-react";
 import React from "react";
 import { useDebounceFn } from "ahooks";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
+import NewEntryImage from "../../assets/illustrations/undraw_new_entries.svg";
 import { useHistory } from "react-router-dom";
 import { routeJobsNew } from "../../utils/route";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { ApiRequestStatus, RootState } from "../../store/state-models";
+import { ApiRequestStatus } from "../../store/state-models";
+import { SecondaryText } from "../job-new/styles";
 import { fetchJobs } from "../../store/jobs/actions";
+import { selectGetJobsStatus, selectJobs } from "../../store/jobs/selectors";
 
 const { Title } = Typography;
 
@@ -33,22 +36,31 @@ const HeaderSearch = styled(Input)`
     border-radius: 6px;
 `;
 
+const PlaceholderContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 64px;
+`;
+
+const PlaceholderText = styled(SecondaryText)`
+    max-width: 300px;
+    margin-top: 24px;
+    text-align: center;
+`;
+
 // TODO add filter and sorting
 // TODO add actions to job card
-// TODO update jobs when new job is added
 
 const Jobs = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const jobsApiRequestStatus: ApiRequestStatus = useSelector(
-        (state: RootState) => state.jobs.apiResults.GetJobs.status,
-        shallowEqual
-    );
-    const jobsOriginal: Job[] = useSelector((state: RootState) => state.jobs.jobs, shallowEqual);
+    const jobsOriginal: Job[] = useSelector(selectJobs, shallowEqual);
     const [jobs, setJobs] = React.useState<Job[]>([]);
 
-    const loading = jobsApiRequestStatus === ApiRequestStatus.InProgress;
+    const loading = useSelector(selectGetJobsStatus, shallowEqual) === ApiRequestStatus.InProgress;
 
     React.useEffect(() => {
         setJobs(jobsOriginal);
@@ -74,7 +86,7 @@ const Jobs = () => {
 
     const onAddJobClicked = () => history.push(routeJobsNew());
 
-    const header = (
+    const HeaderComponent = (
         <Header>
             <Space size={16}>
                 <HeaderSearch
@@ -116,26 +128,36 @@ const Jobs = () => {
         </Header>
     );
 
-    // TODO empty state
+    const PlaceholderComponent = (
+        <PlaceholderContainer>
+            <img src={NewEntryImage} width={200} alt='No jobs' />
+            <PlaceholderText>{jobsOriginal.length === 0 ? "You don't have any jobs" : "No jobs found"}</PlaceholderText>
+        </PlaceholderContainer>
+    );
 
     return (
-        <Layout header={header}>
-            <Title level={3}>Jobs</Title>
-            <List
-                grid={{ gutter: 24, column: 1 }}
-                split={false}
-                dataSource={jobs}
-                pagination={{
-                    defaultPageSize: 8,
-                    hideOnSinglePage: true,
-                }}
-                loading={loading}
-                renderItem={(job: Job) => (
-                    <List.Item>
-                        <JobCard job={job} />
-                    </List.Item>
-                )}
-            />
+        <Layout header={HeaderComponent}>
+            {jobs.length === 0 && PlaceholderComponent}
+            {jobs.length > 0 && (
+                <>
+                    <Title level={3}>Jobs</Title>
+                    <List
+                        grid={{ gutter: 24, column: 1 }}
+                        split={false}
+                        dataSource={jobs}
+                        pagination={{
+                            defaultPageSize: 8,
+                            hideOnSinglePage: true,
+                        }}
+                        loading={loading}
+                        renderItem={(job: Job) => (
+                            <List.Item>
+                                <JobCard job={job} />
+                            </List.Item>
+                        )}
+                    />
+                </>
+            )}
         </Layout>
     );
 };
