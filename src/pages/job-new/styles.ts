@@ -8,6 +8,10 @@ export const TextBold = styled(Text)`
     font-weight: 500;
 `;
 
+export const TextExtraBold = styled(Text)`
+    font-weight: 600;
+`;
+
 export const SecondaryText = styled(Text)`
     color: ${Colors.Neutral_500};
 `;

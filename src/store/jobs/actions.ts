@@ -120,7 +120,7 @@ export const fetchJobs =
         }
     };
 
-export const fetchJobDetails = (candidateId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+export const fetchJobDetails = (jobId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
     const { user } = getState();
 
     const token = await getAccessTokenSilently();
@@ -129,7 +129,7 @@ export const fetchJobDetails = (candidateId: string) => async (dispatch: Dispatc
     dispatch(setRequestInProgress(JobsApiRequest.GetJobDetails));
 
     try {
-        const result = await axios.get(`${BASE_URI}/team/${teamId}/job/${candidateId}`, config(token));
+        const result = await axios.get(`${BASE_URI}/team/${teamId}/job/${jobId}`, config(token));
 
         dispatch(setJobDetails(result.data));
         dispatch(setRequestSuccess(JobsApiRequest.GetJobDetails));

@@ -10,13 +10,14 @@ import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/state-models";
-import { Job, JobDetails, JobStage, TeamDetails, UserProfile } from "../../store/models";
+import { Job, JobDetails, JobStage, TeamMember, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
+import { createJob, fetchJobDetails, fetchJobs } from "../../store/jobs/actions";
 import StepJobStages from "./step-job-stages";
 import { routeJobs } from "../../utils/route";
 import { v4 as uuidv4 } from "uuid";
 import { log } from "../../utils/log";
-import { createJob } from "../../store/jobs/actions";
+import { selectDepartments, selectJobDetails } from "../../store/jobs/selectors";
 
 const MenuContainer = styled.div`
     margin-top: 64px;
@@ -76,6 +77,11 @@ enum Step {
     STAGES = "STAGES",
 }
 
+export enum Mode {
+    BLANK,
+    EXISTING,
+}
+
 type Props = {};
 
 const NewJob = ({}: Props) => {
@@ -83,18 +89,53 @@ const NewJob = ({}: Props) => {
     const dispatch = useDispatch();
 
     const [job, setJob] = useState(emptyJob);
+    const [mode, setMode] = useState(Mode.BLANK);
+    const [selectedJob, setSelectedJob] = useState<Job>();
     const [selectedStep, setSelectedStep] = useState(Step.NEW_JOB);
 
     const [detailsForm] = Form.useForm();
 
+    const jobs: Job[] = useSelector((state: RootState) => state.jobs.jobs, shallowEqual);
+    const jobDetails: JobDetails | undefined = useSelector(
+        (state: RootState) => selectJobDetails(state.jobs, selectedJob?.jobId),
+        shallowEqual
+    );
+    // this doesn't scale when we have a lot of jobs
+    const departments: string[] = useSelector((state: RootState) => selectDepartments(state.jobs), shallowEqual);
     const profile: UserProfile = useSelector((state: RootState) => state.user.profile, shallowEqual);
-    const teamDetails: TeamDetails | undefined = useSelector((state: RootState) => state.team.details, shallowEqual);
+    const teamMembers: TeamMember[] = useSelector(
+        (state: RootState) => state.team.details?.teamMembers || [],
+        shallowEqual
+    );
 
     useEffect(() => {
-        if (profile.currentTeamId && !teamDetails) {
+        if (profile.currentTeamId && teamMembers.length === 0) {
             dispatch(loadTeam(profile.currentTeamId));
         }
     }, [profile]);
+
+    useEffect(() => {
+        console.log(jobDetails);
+        if (jobDetails) {
+            setSelectedJob(jobDetails);
+            setJob({
+                ...job,
+                title: jobDetails.title,
+                department: jobDetails.department,
+                location: jobDetails.location,
+                deadline: jobDetails.deadline,
+                tags: jobDetails.tags,
+                description: jobDetails.description,
+                pipeline: [...jobDetails.pipeline],
+            });
+        }
+    }, [jobDetails]);
+
+    useEffect(() => {
+        if (jobs.length === 0) {
+            dispatch(fetchJobs());
+        }
+    }, []);
 
     const onBackClicked = () => history.push(routeJobs());
 
@@ -120,6 +161,28 @@ const NewJob = ({}: Props) => {
             ...job,
             pipeline: stages,
         });
+    };
+
+    const onModeChange = (mode: Mode) => {
+        if (mode === Mode.BLANK) {
+            setSelectedJob(undefined);
+            setJob(emptyJob);
+        }
+        setMode(mode);
+    };
+
+    const onJobSelected = (selectedJob: Job) => {
+        // populate selected job with data that we have
+        setSelectedJob(selectedJob);
+        setJob({
+            ...job,
+            title: selectedJob.title,
+            department: selectedJob.department,
+            location: selectedJob.location,
+        });
+
+        // fetch the rest of the data
+        dispatch(fetchJobDetails(selectedJob.jobId));
     };
 
     const onFinish = () => {
@@ -159,13 +222,23 @@ const NewJob = ({}: Props) => {
                 </MenuContainer>
             </MenuCol>
             <ContentCol xl={{ span: 14 }} md={{ span: 19 }}>
-                {selectedStep === Step.NEW_JOB && <StepJobType onNext={() => changeStep(Step.DETAILS)} />}
+                {selectedStep === Step.NEW_JOB && (
+                    <StepJobType
+                        mode={mode}
+                        selectedJob={selectedJob}
+                        jobs={jobs}
+                        onModeChange={onModeChange}
+                        onJobSelected={onJobSelected}
+                        onNext={() => changeStep(Step.DETAILS)}
+                    />
+                )}
                 {selectedStep === Step.DETAILS && (
                     <StepJobDetails
                         job={job}
-                        form={detailsForm}
                         profile={profile}
-                        teamMembers={teamDetails?.teamMembers || []}
+                        form={detailsForm}
+                        departments={departments}
+                        teamMembers={teamMembers}
                         onNext={() => changeStep(Step.STAGES)}
                     />
                 )}

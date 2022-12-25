@@ -1,6 +1,6 @@
 import { FormLabel } from "../../assets/styles/global-styles";
 import { Content, FormContainer, NextButton, SecondaryText } from "./styles";
-import { Form, FormInstance, Input, Select, Typography } from "antd";
+import { AutoComplete, Form, FormInstance, Input, Select, Typography } from "antd";
 import React from "react";
 import styled from "styled-components";
 import { JobDetails, TeamMember, UserProfile } from "../../store/models";
@@ -22,12 +22,25 @@ const DeadlineDatePicker = styled(DatePicker)`
 type Props = {
     job: JobDetails;
     profile: UserProfile;
+    departments: string[];
     teamMembers: TeamMember[];
     form: FormInstance;
     onNext: () => void;
 };
 
-const StepJobDetails = ({ job, profile, teamMembers, form, onNext }: Props) => {
+const StepJobDetails = ({ job, profile, departments, teamMembers, form, onNext }: Props) => {
+    React.useEffect(() => {
+        form.setFieldsValue({
+            owner: profile.userId,
+            title: job.title,
+            department: job.department,
+            location: job.location,
+            deadline: job.deadline,
+            tags: job.tags,
+            description: job.description,
+        });
+    }, [job]);
+
     const teamMemberOptions = [
         {
             label: `${profile.name} (you)`,
@@ -41,30 +54,20 @@ const StepJobDetails = ({ job, profile, teamMembers, form, onNext }: Props) => {
             })),
     ];
 
-    const onNextClicked = () => {
-        form.submit();
-    };
+    // TODO add some predefined departments
+    const departmentOptions = departments.map(department => ({
+        label: department,
+        value: department,
+    }));
+
+    const onNextClicked = () => form.submit();
 
     return (
         <Content>
             <Title level={4}>Fill out details</Title>
             <SecondaryText>Target the right candidates, write down job detail information</SecondaryText>
             <FormContainer>
-                <JobForm
-                    name='basic'
-                    layout='vertical'
-                    form={form}
-                    onFinish={onNext}
-                    initialValues={{
-                        owner: profile.userId,
-                        title: job.title,
-                        department: job.department,
-                        location: job.location,
-                        deadline: job.deadline,
-                        tags: job.tags,
-                        description: job.description,
-                    }}
-                >
+                <JobForm name='basic' layout='vertical' form={form} onFinish={onNext}>
                     <Form.Item
                         name='owner'
                         label={<FormLabel>Owner</FormLabel>}
@@ -75,7 +78,12 @@ const StepJobDetails = ({ job, profile, teamMembers, form, onNext }: Props) => {
                             },
                         ]}
                     >
-                        <Select placeholder='Jon Doe' options={teamMemberOptions} filterOption={filterOptionLabel} />
+                        <Select
+                            showSearch
+                            placeholder='Jon Doe'
+                            options={teamMemberOptions}
+                            filterOption={filterOptionLabel}
+                        />
                     </Form.Item>
                     <Form.Item
                         name='title'
@@ -99,7 +107,12 @@ const StepJobDetails = ({ job, profile, teamMembers, form, onNext }: Props) => {
                             },
                         ]}
                     >
-                        <Input placeholder='Engineering' />
+                        <AutoComplete
+                            showSearch
+                            placeholder='Engineering'
+                            options={departmentOptions}
+                            filterOption={filterOptionLabel}
+                        />
                     </Form.Item>
                     <Form.Item name='location' label={<FormLabel>Location</FormLabel>}>
                         <Input placeholder='Remote (Australia)' />

@@ -35,6 +35,7 @@ const HeaderSearch = styled(Input)`
 
 // TODO add filter and sorting
 // TODO add actions to job card
+// TODO update jobs when new job is added
 
 const Jobs = () => {
     const history = useHistory();
@@ -50,9 +51,7 @@ const Jobs = () => {
     const loading = jobsApiRequestStatus === ApiRequestStatus.InProgress;
 
     React.useEffect(() => {
-        if (jobs.length === 0) {
-            setJobs(jobsOriginal);
-        }
+        setJobs(jobsOriginal);
         // eslint-disable-next-line
     }, [jobsOriginal]);
 

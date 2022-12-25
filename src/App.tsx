@@ -130,6 +130,11 @@ const GlobalStyle = createGlobalStyle`
   .ant-picker-focused {
     border-color: ${Colors.Primary_500};
   }
+
+  .ant-select-selector .ant-select-selection-search-input {
+    font-size: 16px;
+    font-family: 'Inter', 'system-ui';
+  }
 `;
 
 const GlobalThemeConfig: ThemeConfig = {
