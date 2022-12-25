@@ -59,6 +59,8 @@ type Props = {
     onRemove: (stage: JobStage) => void;
 };
 
+// TODO render templates with template type tags
+
 const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Props) => {
     const getDefaultColor = () => stage?.colour || "#0693E3";
     const getDefaultType = () => stage?.type || JobStageType.Regular;
