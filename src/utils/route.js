@@ -93,6 +93,11 @@ export const routeJobs = () => "/jobs";
 
 export const routeJobsNew = () => "/jobs/new";
 
+export const routeJobsEdit = (id) => {
+    const url = "/jobs/edit/:id";
+    return id ? url.replace(":id", id) : url;
+}
+
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),

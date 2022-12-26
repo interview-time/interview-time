@@ -1,11 +1,14 @@
 import { CardOutlined } from "../../assets/styles/global-styles";
 import { Job } from "../../store/models";
-import { Button, Col, Row, Space, Typography } from "antd";
+import { Button, Col, Dropdown, Row, Space, Typography } from "antd";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
 import { getFormattedDateShort } from "../../utils/date-fns";
 import { MoreHorizontal } from "lucide-react";
 import React from "react";
+import { ItemType } from "antd/es/menu/hooks/useItems";
+import { Link } from "react-router-dom";
+import { routeJobsEdit } from "../../utils/route";
 
 const { Text } = Typography;
 
@@ -66,6 +69,13 @@ const ActionsCol = styled(Col)`
 `;
 
 const JobCard = ({ job }: Props) => {
+    const actionsMenu: ItemType[] = [
+        {
+            key: "1",
+            label: <Link to={routeJobsEdit(job.jobId)}>Edit</Link>,
+        },
+    ];
+
     return (
         <StyledCard>
             <CardRow gutter={[6, 6]}>
@@ -94,7 +104,13 @@ const JobCard = ({ job }: Props) => {
                 </Col>
 
                 <ActionsCol xs={2} lg={2}>
-                    <ActionsButton icon={<MoreHorizontal size={16} />} onClick={e => e.stopPropagation()} />
+                    <Dropdown
+                        menu={{
+                            items: actionsMenu,
+                        }}
+                    >
+                        <ActionsButton icon={<MoreHorizontal size={16} />} onClick={e => e.stopPropagation()} />
+                    </Dropdown>
                 </ActionsCol>
             </CardRow>
         </StyledCard>

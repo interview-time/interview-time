@@ -1,11 +1,11 @@
-import { Button, Col, Form, Menu, message, Row } from "antd";
-import StepJobType from "./step-job-type";
+import { Button, Col, Form, Menu, message, Row, Spin } from "antd";
+import StepJobType, { Mode } from "./step-job-type";
 import styled from "styled-components";
 import { Briefcase, ChevronLeft, ClipboardType, Cog } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { Colors } from "../../assets/styles/colors";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -20,7 +20,7 @@ import { log } from "../../utils/log";
 import { selectCreateJobStatus, selectDepartments, selectJobDetails, selectJobs } from "../../store/jobs/selectors";
 import { selectTeamMembers } from "../../store/team/selector";
 import { selectUserProfile } from "../../store/user/selector";
-import { isEmpty } from "lodash";
+import { cloneDeep, isEmpty } from "lodash";
 import { selectTemplates } from "../../store/templates/selector";
 import { loadTemplates } from "../../store/templates/actions";
 
@@ -82,32 +82,22 @@ enum Step {
     STAGES = "STAGES",
 }
 
-export enum Mode {
-    BLANK,
-    EXISTING,
-}
-
 const NewJob = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const [job, setJob] = useState(emptyJob);
-    const [mode, setMode] = useState(Mode.BLANK);
-    const [selectedJob, setSelectedJob] = useState<Job>();
-    const [selectedStep, setSelectedStep] = useState(Step.NEW_JOB);
+    const { id } = useParams<Record<string, string | undefined>>();
+    const isEditMode = id !== undefined;
 
     const [detailsForm] = Form.useForm();
 
-    const jobs: Job[] = useSelector(selectJobs, shallowEqual);
-    const jobDetails: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state, selectedJob?.jobId),
-        shallowEqual
-    );
+    const [job, setJob] = useState(emptyJob);
+    const [selectedStep, setSelectedStep] = useState(isEditMode ? Step.DETAILS : Step.NEW_JOB);
+
     const departments: string[] = useSelector(selectDepartments, shallowEqual); // this doesn't scale when we have a lot of jobs
     const profile: UserProfile = useSelector(selectUserProfile, shallowEqual);
     const teamMembers: TeamMember[] = useSelector(selectTeamMembers, shallowEqual);
     const templates: Template[] = useSelector(selectTemplates, shallowEqual);
-    const createJobStatus: ApiRequestStatus = useSelector(selectCreateJobStatus, shallowEqual);
 
     useEffect(() => {
         if (profile.currentTeamId && teamMembers.length === 0) {
@@ -117,36 +107,12 @@ const NewJob = () => {
     }, [profile]);
 
     useEffect(() => {
-        if (jobDetails) {
-            setSelectedJob(jobDetails);
-            setJob({
-                ...job,
-                title: jobDetails.title,
-                department: jobDetails.department,
-                location: jobDetails.location,
-                deadline: jobDetails.deadline,
-                tags: jobDetails.tags,
-                description: jobDetails.description,
-                pipeline: [...jobDetails.pipeline],
-            });
-        }
-        // eslint-disable-next-line
-    }, [jobDetails]);
-
-    useEffect(() => {
-        if (createJobStatus === ApiRequestStatus.Success) {
-            message.success(`Job '${job.title}' successfully .`);
-            dispatch(fetchJobs(true));
-            history.push(routeJobs());
-        } else if (createJobStatus === ApiRequestStatus.Failed) {
-            message.error(`Failed to create job '${job.title}'.`);
-        }
-        // eslint-disable-next-line
-    }, [createJobStatus]);
-
-    useEffect(() => {
-        if (jobs.length === 0) {
+        if (!isEditMode && jobs.length === 0) {
             dispatch(fetchJobs());
+        }
+
+        if (isEditMode) {
+            dispatch(fetchJobDetails(id));
         }
 
         if (templates.length === 0) {
@@ -180,6 +146,71 @@ const NewJob = () => {
         });
     };
 
+    const onFinish = () => {
+        log("onFinish", job);
+        if (isEmpty(job.title)) {
+            message.error("Job title is empty. Please enter a job title.");
+        } else if (isEmpty(job.department)) {
+            message.error("Job department is empty. Please enter a job department.");
+        } else if (isEditMode) {
+            message.error("Not implemented yet");
+        } else {
+            dispatch(createJob(job));
+        }
+    };
+
+    // MARK: Edit job flow
+    const editJobDetails: JobDetails | undefined = useSelector(
+        (state: RootState) => selectJobDetails(state, id),
+        shallowEqual
+    );
+
+    useEffect(() => {
+        if (editJobDetails) {
+            setJob(cloneDeep(editJobDetails));
+        }
+        // eslint-disable-next-line
+    }, [editJobDetails]);
+
+    // MARK: New job flow
+
+    const [mode, setMode] = useState(Mode.BLANK);
+    const jobs: Job[] = useSelector(selectJobs, shallowEqual);
+    const [selectedJob, setSelectedJob] = useState<Job>();
+    const selectedJobDetails: JobDetails | undefined = useSelector(
+        (state: RootState) => selectJobDetails(state, selectedJob?.jobId),
+        shallowEqual
+    );
+    const createJobStatus: ApiRequestStatus = useSelector(selectCreateJobStatus, shallowEqual);
+
+    useEffect(() => {
+        if (selectedJobDetails) {
+            setSelectedJob(selectedJobDetails);
+            setJob({
+                ...job,
+                title: selectedJobDetails.title,
+                department: selectedJobDetails.department,
+                location: selectedJobDetails.location,
+                deadline: selectedJobDetails.deadline,
+                tags: selectedJobDetails.tags,
+                description: selectedJobDetails.description,
+                pipeline: [...selectedJobDetails.pipeline],
+            });
+        }
+        // eslint-disable-next-line
+    }, [selectedJobDetails]);
+
+    useEffect(() => {
+        if (createJobStatus === ApiRequestStatus.Success) {
+            message.success(`Job '${job.title}' successfully .`);
+            dispatch(fetchJobs(true));
+            history.push(routeJobs());
+        } else if (createJobStatus === ApiRequestStatus.Failed) {
+            message.error(`Failed to create job '${job.title}'.`);
+        }
+        // eslint-disable-next-line
+    }, [createJobStatus]);
+
     const onModeChange = (mode: Mode) => {
         if (mode === Mode.BLANK) {
             setSelectedJob(undefined);
@@ -202,16 +233,22 @@ const NewJob = () => {
         dispatch(fetchJobDetails(selectedJob.jobId));
     };
 
-    const onFinish = () => {
-        log("onFinish", job);
-        if (isEmpty(job.title)) {
-            message.error("Job title is empty. Please enter a job title.");
-        } else if (isEmpty(job.department)) {
-            message.error("Job department is empty. Please enter a job department.");
-        } else {
-            dispatch(createJob(job));
-        }
-    };
+    const StepNewJobComponent = () => (
+        <StepJobType
+            mode={mode}
+            selectedJob={selectedJob}
+            jobs={jobs}
+            onModeChange={onModeChange}
+            onJobSelected={onJobSelected}
+            onNext={() => changeStep(Step.DETAILS)}
+        />
+    );
+
+    const NewJobMenuItem = () => (
+        <MenuItem key={Step.NEW_JOB} onClick={() => changeStep(Step.NEW_JOB)} icon={<Briefcase />}>
+            Job
+        </MenuItem>
+    );
 
     return (
         <Row gutter={[32, 32]}>
@@ -229,9 +266,7 @@ const NewJob = () => {
                         Back
                     </BackButton>
                     <MainMenu theme='light' mode='vertical' selectedKeys={[selectedStep]}>
-                        <MenuItem key={Step.NEW_JOB} onClick={() => changeStep(Step.NEW_JOB)} icon={<Briefcase />}>
-                            Job
-                        </MenuItem>
+                        {!isEditMode && NewJobMenuItem()}
                         <MenuItem key={Step.DETAILS} onClick={() => changeStep(Step.DETAILS)} icon={<ClipboardType />}>
                             Details
                         </MenuItem>
@@ -242,26 +277,19 @@ const NewJob = () => {
                 </MenuContainer>
             </MenuCol>
             <ContentCol xl={{ span: 14 }} md={{ span: 19 }}>
-                {selectedStep === Step.NEW_JOB && (
-                    <StepJobType
-                        mode={mode}
-                        selectedJob={selectedJob}
-                        jobs={jobs}
-                        onModeChange={onModeChange}
-                        onJobSelected={onJobSelected}
-                        onNext={() => changeStep(Step.DETAILS)}
-                    />
-                )}
-                {selectedStep === Step.DETAILS && (
-                    <StepJobDetails
-                        job={job}
-                        profile={profile}
-                        form={detailsForm}
-                        departments={departments}
-                        teamMembers={teamMembers}
-                        onNext={() => changeStep(Step.STAGES)}
-                    />
-                )}
+                {selectedStep === Step.NEW_JOB && !isEditMode && StepNewJobComponent()}
+                <Spin spinning={isEditMode && !editJobDetails}>
+                    {selectedStep === Step.DETAILS && (
+                        <StepJobDetails
+                            job={job}
+                            profile={profile}
+                            form={detailsForm}
+                            departments={departments}
+                            teamMembers={teamMembers}
+                            onNext={() => changeStep(Step.STAGES)}
+                        />
+                    )}
+                </Spin>
                 {selectedStep === Step.STAGES && (
                     <StepJobStages
                         stages={job.pipeline}

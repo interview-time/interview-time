@@ -15,7 +15,6 @@ import {
 } from "./styles";
 import { filterOptionLabel } from "../../utils/filters";
 import { Job } from "../../store/models";
-import { Mode } from "./new-job";
 import { getFormattedDateShort } from "../../utils/date-fns";
 
 const { Title } = Typography;
@@ -86,6 +85,11 @@ const ExistingJobMetaLabel = styled(SecondaryText)`
     gap: 8px;
     font-weight: 500;
 `;
+
+export enum Mode {
+    BLANK,
+    EXISTING,
+}
 
 type Props = {
     mode: Mode;

@@ -10,7 +10,7 @@ import {
     routeInterviewReport,
     routeInterviews,
     routeInterviewScorecard,
-    routeJobs,
+    routeJobs, routeJobsEdit,
     routeJobsNew,
     routeLibraryTemplatePreview,
     routeLiveCodingChallenge,
@@ -29,7 +29,7 @@ import {
     routeTemplateEdit,
     routeTemplateLibrary,
     routeTemplatePreview,
-    routeTemplates,
+    routeTemplates
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -218,6 +218,7 @@ function App() {
                 <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
                 <PrivateRoute path={routeSubscription()} exact component={Subscription} />
                 <PrivateRoute path={routeJobs()} exact component={Jobs} />
+                <PrivateRoute path={routeJobsEdit()} exact component={NewJob} />
                 <PrivateRoute path={routeJobsNew()} exact component={NewJob} />
                 <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
                 <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />

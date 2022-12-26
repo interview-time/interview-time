@@ -138,26 +138,22 @@ const Jobs = () => {
     return (
         <Layout header={HeaderComponent}>
             {jobs.length === 0 && PlaceholderComponent}
-            {jobs.length > 0 && (
-                <>
-                    <Title level={3}>Jobs</Title>
-                    <List
-                        grid={{ gutter: 24, column: 1 }}
-                        split={false}
-                        dataSource={jobs}
-                        pagination={{
-                            defaultPageSize: 8,
-                            hideOnSinglePage: true,
-                        }}
-                        loading={loading}
-                        renderItem={(job: Job) => (
-                            <List.Item>
-                                <JobCard job={job} />
-                            </List.Item>
-                        )}
-                    />
-                </>
-            )}
+            {jobs.length > 0 && <Title level={3}>Jobs</Title>}
+            <List
+                grid={{ gutter: 24, column: 1 }}
+                split={false}
+                dataSource={jobs}
+                pagination={{
+                    defaultPageSize: 8,
+                    hideOnSinglePage: true,
+                }}
+                loading={loading}
+                renderItem={(job: Job) => (
+                    <List.Item>
+                        <JobCard job={job} />
+                    </List.Item>
+                )}
+            />
         </Layout>
     );
 };
