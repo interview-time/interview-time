@@ -112,14 +112,14 @@ const StepJobType = ({ mode, selectedJob, jobs, onModeChange, onJobSelected, onN
             <SecondaryText>Please select how do you want to create a new job</SecondaryText>
             <FormContainer>
                 <CardContainer>
-                    <JobCard onClick={() => onModeChange(Mode.BLANK)} selected={mode == Mode.BLANK}>
+                    <JobCard onClick={() => onModeChange(Mode.BLANK)} selected={mode === Mode.BLANK}>
                         <IconContainerBlue>
                             <Clipboard color={Colors.Blue_600} />
                         </IconContainerBlue>
                         <TextBold>Blank</TextBold>
                         <SecondaryTextSmall>Start from scratch</SecondaryTextSmall>
                     </JobCard>
-                    <JobCard onClick={() => onModeChange(Mode.EXISTING)} selected={mode == Mode.EXISTING}>
+                    <JobCard onClick={() => onModeChange(Mode.EXISTING)} selected={mode === Mode.EXISTING}>
                         <IconContainerGreen>
                             <ClipboardCopy color={Colors.Success_600} />
                         </IconContainerGreen>

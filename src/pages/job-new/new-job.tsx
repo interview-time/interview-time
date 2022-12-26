@@ -87,9 +87,7 @@ export enum Mode {
     EXISTING,
 }
 
-type Props = {};
-
-const NewJob = ({}: Props) => {
+const NewJob = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -115,6 +113,7 @@ const NewJob = ({}: Props) => {
         if (profile.currentTeamId && teamMembers.length === 0) {
             dispatch(loadTeam(profile.currentTeamId));
         }
+        // eslint-disable-next-line
     }, [profile]);
 
     useEffect(() => {
@@ -131,6 +130,7 @@ const NewJob = ({}: Props) => {
                 pipeline: [...jobDetails.pipeline],
             });
         }
+        // eslint-disable-next-line
     }, [jobDetails]);
 
     useEffect(() => {
@@ -141,6 +141,7 @@ const NewJob = ({}: Props) => {
         } else if (createJobStatus === ApiRequestStatus.Failed) {
             message.error(`Failed to create job '${job.title}'.`);
         }
+        // eslint-disable-next-line
     }, [createJobStatus]);
 
     useEffect(() => {
@@ -151,6 +152,7 @@ const NewJob = ({}: Props) => {
         if (templates.length === 0) {
             dispatch(loadTemplates());
         }
+        // eslint-disable-next-line
     }, []);
 
     const onBackClicked = () => history.push(routeJobs());

@@ -10,6 +10,9 @@ import { v4 as uuidv4 } from "uuid";
 import { filterOptionLabel } from "../../utils/filters";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { log } from "../../utils/log";
+import InterviewTypeTag from "../../components/tags/interview-type-tag";
+
+const { Option } = Select;
 
 const StagesForm = styled(Form)`
     margin-top: 24px;
@@ -59,8 +62,6 @@ type Props = {
     onRemove: (stage: JobStage) => void;
 };
 
-// TODO render templates with template type tags
-
 const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Props) => {
     const getDefaultColor = () => stage?.colour || "#0693E3";
     const getDefaultType = () => stage?.type || JobStageType.Regular;
@@ -70,11 +71,6 @@ const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Pr
     const [type, setType] = React.useState(getDefaultType());
 
     const [form] = Form.useForm();
-
-    const templatesOptions = templates.map(template => ({
-        label: template.title,
-        value: template.templateId,
-    }));
 
     React.useEffect(() => {
         if (open) {
@@ -89,6 +85,7 @@ const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Pr
                 template: stage?.templateId,
             });
         }
+        // eslint-disable-next-line
     }, [open, stage]);
 
     const onFormSubmit = (values: any) => {
@@ -201,12 +198,17 @@ const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Pr
                                 },
                             ]}
                         >
-                            <Select
-                                showSearch
-                                placeholder='Select template'
-                                options={templatesOptions}
-                                filterOption={filterOptionLabel}
-                            />
+                            <Select showSearch placeholder='Select template' filterOption={filterOptionLabel}>
+                                {templates &&
+                                    templates.map(template => (
+                                        <Option value={template.templateId} label={template.title}>
+                                            <div>
+                                                {template.title}
+                                                <InterviewTypeTag interviewType={template.interviewType} />
+                                            </div>
+                                        </Option>
+                                    ))}
+                            </Select>
                         </Form.Item>
                         <SecondaryTextSmall>
                             Interview stage type must be linked to an interview template

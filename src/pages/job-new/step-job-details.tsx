@@ -39,6 +39,7 @@ const StepJobDetails = ({ job, profile, departments, teamMembers, form, onNext }
             tags: job.tags,
             description: job.description,
         });
+        // eslint-disable-next-line
     }, [job]);
 
     const teamMemberOptions = [
