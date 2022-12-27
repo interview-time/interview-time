@@ -132,6 +132,7 @@ namespace CafApi
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITemplateRepository, TemplateRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IJobRepository, JobRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

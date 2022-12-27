@@ -113,5 +113,30 @@ namespace CafApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("team/{teamId}/job/{jobId}/move-candidate")]
+        public async Task<ActionResult> MoveCandidateToNewStage(string teamId, string jobId, [FromBody] MoveCandidateCommand command)
+        {
+            try
+            {
+                command.TeamId = teamId;
+                command.JobId = jobId;
+                command.UserId = UserId;
+
+                await _mediator.Send(command);
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

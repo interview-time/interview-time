@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
 using CafApi.Repository;
@@ -30,16 +28,16 @@ namespace CafApi.Command
     {
         private readonly IPermissionsService _permissionsService;
         private readonly ICandidateRepository _candidateRepository;
-        private readonly DynamoDBContext _context;
+        private readonly IJobRepository _jobRepository;
 
         public AddCandidateToJobCommandHandler(
             IPermissionsService permissionsService,
             ICandidateRepository candidateRepository,
-            IAmazonDynamoDB dynamoDbClient)
+            IJobRepository jobRepository)
         {
             _permissionsService = permissionsService;
             _candidateRepository = candidateRepository;
-            _context = new DynamoDBContext(dynamoDbClient);
+            _jobRepository = jobRepository;
         }
 
         public async Task<Unit> Handle(AddCandidateToJobCommand command, CancellationToken cancellationToken)
@@ -49,7 +47,7 @@ namespace CafApi.Command
                 throw new AuthorizationException($"User ({command.UserId}) doesn't have permissions to update a job.");
             }
 
-            var job = await _context.LoadAsync<Job>(command.TeamId, command.JobId);
+            var job = await _jobRepository.GetJob(command.TeamId, command.JobId);
             if (job == null)
             {
                 throw new ItemNotFoundException($"Job ({command.JobId}) doesn't exist");
@@ -84,7 +82,7 @@ namespace CafApi.Command
                 OriginallyAdded = DateTime.UtcNow,
             });
 
-            await _context.SaveAsync(job);
+            await _jobRepository.SaveJob(job);
 
             return Unit.Value;
         }
