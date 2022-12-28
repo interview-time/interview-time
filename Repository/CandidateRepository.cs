@@ -39,5 +39,18 @@ namespace CafApi.Repository
 
             return candidateBatch.Results;
         }
+
+        public async Task UpdateCandidates(List<Candidate> candidates)
+        {
+            if (candidates == null || !candidates.Any())
+            {
+                return;
+            }
+
+            var candidateBatch = _context.CreateBatchWrite<Candidate>();
+            candidateBatch.AddPutItems(candidates);
+
+            await candidateBatch.ExecuteAsync();
+        }
     }
 }

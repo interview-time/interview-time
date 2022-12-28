@@ -185,5 +185,33 @@ namespace CafApi.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPost("team/{teamId}/job/{jobId}/close")]
+        public async Task<ActionResult> CloseJob(string teamId, string jobId)
+        {
+            try
+            {
+                var command = new CloseJobCommand
+                {
+                    TeamId = teamId,
+                    JobId = jobId,
+                    UserId = UserId
+                };
+
+                await _mediator.Send(command);
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound(ex.Message);
+            }
+        }
     }
 }
