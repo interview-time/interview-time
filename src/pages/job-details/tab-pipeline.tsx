@@ -4,7 +4,7 @@ import { CardOutlined, SecondaryTextSmall, TextBold, TextExtraBold } from "../..
 import { JobCandidate, JobStage } from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { Clock, GripHorizontal, Plus } from "lucide-react";
-import { Avatar, Typography } from "antd";
+import { Avatar } from "antd";
 import { cloneDeep } from "lodash";
 import { arrayMove } from "react-sortable-hoc";
 import React from "react";
