@@ -29,5 +29,10 @@ namespace CafApi.Repository
         {
             await _context.SaveAsync(job);
         }
+
+        public async Task DeleteJob(string teamId, string jobId)
+        {
+            await _context.DeleteAsync<Job>(teamId, jobId);
+        }
     }
 }

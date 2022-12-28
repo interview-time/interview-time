@@ -35,6 +35,9 @@ namespace CafApi.Models
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
 
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
+        public DateTime? ModifiedDate { get; set; }
+
         public string Status { get; set; }
 
         public List<Stage> Pipeline { get; set; }
@@ -60,6 +63,9 @@ namespace CafApi.Models
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime CreatedDate { get; set; }
+
+        [DynamoDBProperty(typeof(DateTimeUtcConverter))]
+        public DateTime? ModifiedDate { get; set; }
     }
 
     public class StageCandidate
