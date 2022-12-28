@@ -1,5 +1,5 @@
-import { FormLabel } from "../../assets/styles/global-styles";
-import { Content, FormContainer, NextButton, SecondaryText } from "./styles";
+import { FormLabel, SecondaryText } from "../../assets/styles/global-styles";
+import { Content, FormContainer, NextButton } from "./styles";
 import { AutoComplete, Form, FormInstance, Input, Select, Typography } from "antd";
 import React from "react";
 import styled from "styled-components";

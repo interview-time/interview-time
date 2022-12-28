@@ -1,9 +1,9 @@
-import { Content, FormContainer, NextButton, SecondaryText, SecondaryTextSmall, TextBold } from "./styles";
+import { Content, FormContainer, NextButton } from "./styles";
 import React from "react";
 import { Button, Typography } from "antd";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { JobStage, Template } from "../../store/models";
-import { CardOutlined } from "../../assets/styles/global-styles";
+import { CardOutlined, SecondaryText, SecondaryTextSmall, TextBold } from "../../assets/styles/global-styles";
 import { GripHorizontal, Plus } from "lucide-react";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";

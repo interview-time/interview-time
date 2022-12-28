@@ -1,17 +1,21 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
 import { Select, Typography } from "antd";
-import { CardOutlined, FormLabel } from "../../assets/styles/global-styles";
+import {
+    CardOutlined,
+    FormLabel,
+    SecondaryText,
+    SecondaryTextSmall, TextBold,
+    TextExtraBold
+} from "../../assets/styles/global-styles";
 import { Calendar, Clipboard, ClipboardCopy, MapPin, Network } from "lucide-react";
 import React from "react";
 import {
     Content,
     FormContainer,
     NextButton,
-    SecondaryText,
-    SecondaryTextSmall,
-    TextBold,
-    TextExtraBold,
+
+
 } from "./styles";
 import { filterOptionLabel } from "../../utils/filters";
 import { Job } from "../../store/models";
