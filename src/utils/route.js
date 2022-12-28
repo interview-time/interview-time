@@ -6,6 +6,8 @@ export const routeReports = () => "/reports";
 
 export const routeCandidates = () => "/candidates";
 
+export const routeCandidateAdd = () => "/candidates/add";
+
 export const routeCandidateProfile = id => {
     const url = "/candidate/:id";
     return id ? url.replace(":id", id) : url;
@@ -86,6 +88,15 @@ export const routeTakeHomeChallenge = token => {
 };
 
 export const routeSubscription = () => "/subscription";
+
+export const routeJobs = () => "/jobs";
+
+export const routeJobsNew = () => "/jobs/new";
+
+export const routeJobsEdit = (id) => {
+    const url = "/jobs/edit/:id";
+    return id ? url.replace(":id", id) : url;
+}
 
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");

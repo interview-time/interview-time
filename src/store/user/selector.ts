@@ -1,4 +1,5 @@
 import { Team, UserProfile } from "../models";
+import { RootState } from "../state-models";
 
 /**
  *
@@ -18,3 +19,5 @@ export const selectProfileName = (profile?: UserProfile): string => {
 
 export const selectActiveTeam = (profile: UserProfile): Team | undefined =>
     profile.teams.find(team => team.teamId === profile.currentTeamId);
+
+export const selectUserProfile = (state: RootState) => state.user.profile

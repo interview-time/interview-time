@@ -128,14 +128,14 @@ const Candidates = ({
     };
 
     return (
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div className={styles.header}>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Candidates
                 </Title>
                 {canAddCandidate && (
                     <Button type='primary' icon={<UserAddOutlined />} onClick={() => setCreateCandidate(true)}>
-                        Add Candidate
+                        Add candidate
                     </Button>
                 )}
             </div>

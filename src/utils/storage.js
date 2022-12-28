@@ -29,7 +29,7 @@ export function setNotesExpanded(enabled) {
 
 /**
  *
- * @param {{token: string, role: string}}team
+ * @param {{token: string, role: string}|null}team
  */
 export function setJoinTeam(team) {
     if (team) {
