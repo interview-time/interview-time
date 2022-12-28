@@ -9,9 +9,6 @@ import { cloneDeep } from "lodash";
 import { arrayMove } from "react-sortable-hoc";
 import React from "react";
 import { getInitials } from "../../utils/string";
-
-const { Text } = Typography;
-
 const Row = styled.div`
     display: flex;
 `;

@@ -14,7 +14,7 @@ import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { ChevronLeft } from "lucide-react";
 import { hashCode } from "../../utils/string";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const RootLayout = styled.div`
     padding: 32px;
