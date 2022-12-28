@@ -138,6 +138,11 @@ const GlobalStyle = createGlobalStyle`
     font-size: 16px;
     font-family: 'Inter', 'system-ui';
   }
+  
+  .ant-tabs-tab-btn {
+    color: ${Colors.Neutral_500};
+  }
+  
 `;
 
 const GlobalThemeConfig: ThemeConfig = {
