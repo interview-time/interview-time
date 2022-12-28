@@ -11,5 +11,7 @@ namespace CafApi.Repository
         Task<Job> GetJob(string teamId, string jobId);
 
         Task SaveJob(Job job);
+
+        Task DeleteJob(string teamId, string jobId);
     }
 }

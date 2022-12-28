@@ -83,6 +83,53 @@ namespace CafApi.Controllers
             }
         }
 
+        [HttpPut("team/{teamId}/job/{jobId}")]
+        public async Task<ActionResult> UpdateJob(string teamId, string jobId, [FromBody] UpdateJobCommand command)
+        {
+            try
+            {
+                command.TeamId = teamId;
+                command.JobId = jobId;
+                command.UserId = UserId;
+
+                await _mediator.Send(command);
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpDelete("team/{teamId}/job/{jobId}")]
+        public async Task<ActionResult> DeleteJob(string teamId, string jobId)
+        {
+            try
+            {
+                var command = new DeleteJobCommand
+                {
+                    TeamId = teamId,
+                    UserId = UserId,
+                    JobId = jobId
+                };
+
+                await _mediator.Send(command);
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Unauthorized(ex.Message);
+            }
+        }
 
         [HttpPost("team/{teamId}/job/{jobId}/add-candidate")]
         public async Task<ActionResult> AddCandidateToJob(string teamId, string jobId, [FromBody] AddCandidateToJobCommand command)
