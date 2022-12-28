@@ -11,6 +11,7 @@ import { Colors } from "../../assets/styles/colors";
 import { CardOutlined, TextExtraBold } from "../../assets/styles/global-styles";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { cloneDeep } from "lodash";
+import { arrayMoveMutable } from "array-move";
 
 const { Text } = Typography;
 
@@ -23,10 +24,6 @@ const Row = styled.div`
     gap: 24px;
 `;
 
-interface ColumnProps {
-    isDraggingOver: boolean;
-}
-
 const StageColumn = styled.div`
     display: flex;
     flex-direction: column;
@@ -34,14 +31,21 @@ const StageColumn = styled.div`
     border-radius: 8px;
     background-color: ${Colors.Neutral_50};
     min-height: 100px;
-    background-color: ${(props: ColumnProps) => (props.isDraggingOver ? Colors.Neutral_100 : Colors.Neutral_50)};
+    background-color: ${Colors.Neutral_50};
 `;
+
+interface CandidateCardsColumnProps {
+    isDraggingOver: boolean;
+}
 
 const CandidateCardsColumn = styled.div`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     min-height: 100px;
+    border-radius: 8px;
+    background-color: ${(props: CandidateCardsColumnProps) =>
+        props.isDraggingOver ? Colors.Neutral_100 : Colors.Neutral_50};
 `;
 
 const ColumnHeader = styled.div`
@@ -72,6 +76,11 @@ const StageColorBox = styled.div`
     background: ${(props: StageColorBoxProps) => props.color};
     border-radius: 6px;
 `;
+
+enum DragType {
+    StageColumn = "StageColumn",
+    CandidateCard = "CandidateCard",
+}
 
 const JobDetailsPage = () => {
     const history = useHistory();
@@ -127,7 +136,7 @@ const JobDetailsPage = () => {
     }, []);
 
     const onDragEnd = (result: DropResult) => {
-        const { destination, source } = result;
+        const { destination, source, type } = result;
 
         if (!destination) {
             return;
@@ -137,12 +146,23 @@ const JobDetailsPage = () => {
             return;
         }
 
+        if (!jobDetails) {
+            return;
+        }
+
         const newJobDetails = cloneDeep(jobDetails);
 
-        const sourceStage = newJobDetails?.pipeline.find(stage => stage.stageId === source.droppableId);
+        if (type === DragType.StageColumn) {
+            arrayMoveMutable(newJobDetails.pipeline, source.index, destination.index);
+            setJobDetails(newJobDetails);
+            console.log(newJobDetails);
+            return;
+        }
+
+        const sourceStage = newJobDetails.pipeline.find(stage => stage.stageId === source.droppableId);
         const sourceStageCandidates = sourceStage?.candidates || [];
 
-        const destinationStage = newJobDetails?.pipeline.find(stage => stage.stageId === destination.droppableId);
+        const destinationStage = newJobDetails.pipeline.find(stage => stage.stageId === destination.droppableId);
         const destinationStageCandidates = destinationStage?.candidates || [];
 
         if (sourceStage && destinationStage) {
@@ -151,14 +171,10 @@ const JobDetailsPage = () => {
             destinationStage.candidates = destinationStageCandidates;
         }
 
-        console.log("source", source);
-        console.log("destination", destination);
-
-        console.log("newJobDetails", newJobDetails);
         setJobDetails(newJobDetails);
     };
 
-    const createCandidateCard = (jobCandidate: JobCandidate, index: number) => {
+    const renderCandidateCard = (jobCandidate: JobCandidate, index: number) => {
         return (
             <Draggable key={jobCandidate.candidateId} draggableId={jobCandidate.candidateId} index={index}>
                 {(provided, snapshot) => (
@@ -175,27 +191,46 @@ const JobDetailsPage = () => {
         );
     };
 
-    const createStageColumn = (stage: JobStage) => (
-        <Droppable droppableId={stage.stageId}>
+    const renderCandidateCardsColumn = (stage: JobStage) => (
+        <Droppable droppableId={stage.stageId} type={DragType.CandidateCard}>
             {(provided, snapshot) => (
-                <StageColumn isDraggingOver={snapshot.isDraggingOver}>
+                <CandidateCardsColumn
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    isDraggingOver={snapshot.isDraggingOver}
+                >
+                    {stage.candidates?.map((candidate, index) => renderCandidateCard(candidate, index))}
+                    {provided.placeholder}
+                </CandidateCardsColumn>
+            )}
+        </Droppable>
+    );
+
+    const renderStageColumn = (stage: JobStage, index: number) => (
+        <Draggable key={stage.stageId} draggableId={stage.stageId} index={index}>
+            {(provided, snapshot) => (
+                <StageColumn ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                     <ColumnHeader>
                         <StageColorBox color={stage.colour} />
                         <TextExtraBold>{stage.title}</TextExtraBold>
                     </ColumnHeader>
-                    <CandidateCardsColumn {...provided.droppableProps} ref={provided.innerRef}>
-                        {(stage.candidates || []).map((candidate, index) => createCandidateCard(candidate, index))}
-                        {provided.placeholder}
-                    </CandidateCardsColumn>
+                    {renderCandidateCardsColumn(stage)}
                 </StageColumn>
             )}
-        </Droppable>
+        </Draggable>
     );
 
     return (
         <RootLayout>
             <DragDropContext onDragEnd={onDragEnd}>
-                <Row>{jobDetails?.pipeline.map((stage: JobStage) => createStageColumn(stage))}</Row>
+                <Droppable droppableId='pipeline-stages' direction='horizontal' type={DragType.StageColumn}>
+                    {provided => (
+                        <Row {...provided.droppableProps} ref={provided.innerRef}>
+                            {jobDetails?.pipeline.map((stage: JobStage, index) => renderStageColumn(stage, index))}
+                            {provided.placeholder}
+                        </Row>
+                    )}
+                </Droppable>
             </DragDropContext>
         </RootLayout>
     );
