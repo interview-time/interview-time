@@ -1,5 +1,4 @@
-import { FormLabel } from "../../assets/styles/global-styles";
-import { SecondaryText, SecondaryTextSmall } from "./styles";
+import { FormLabel, SecondaryText, SecondaryTextSmall } from "../../assets/styles/global-styles";
 import { Button, Checkbox, Form, Input, Modal, Select, Space } from "antd";
 import { JobStage, JobStageType, Template } from "../../store/models";
 import React from "react";

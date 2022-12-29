@@ -17,6 +17,20 @@ export const CardOutlined = styled.div`
     border-radius: 8px;
 `;
 
+// MARK: Typography
+
 export const FormLabel = styled(Text)`
     font-weight: 500;
+`;
+export const TextBold = styled(Text)`
+    font-weight: 500;
+`;
+export const TextExtraBold = styled(Text)`
+    font-weight: 600;
+`;
+export const SecondaryText = styled(Text)`
+    color: ${Colors.Neutral_500};
+`;
+export const SecondaryTextSmall = styled(SecondaryText)`
+    font-size: 14px;
 `;

@@ -93,8 +93,13 @@ export const routeJobs = () => "/jobs";
 
 export const routeJobsNew = () => "/jobs/new";
 
-export const routeJobsEdit = (id) => {
+export const routeJobEdit = (id) => {
     const url = "/jobs/edit/:id";
+    return id ? url.replace(":id", id) : url;
+}
+
+export const routeJobDetails = (id) => {
+    const url = "/jobs/detail/:id";
     return id ? url.replace(":id", id) : url;
 }
 

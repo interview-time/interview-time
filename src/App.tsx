@@ -10,7 +10,9 @@ import {
     routeInterviewReport,
     routeInterviews,
     routeInterviewScorecard,
-    routeJobs, routeJobsEdit,
+    routeJobDetails,
+    routeJobEdit,
+    routeJobs,
     routeJobsNew,
     routeLibraryTemplatePreview,
     routeLiveCodingChallenge,
@@ -29,7 +31,7 @@ import {
     routeTemplateEdit,
     routeTemplateLibrary,
     routeTemplatePreview,
-    routeTemplates
+    routeTemplates,
 } from "./utils/route";
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
@@ -65,6 +67,7 @@ import { ThemeConfig } from "antd/es/config-provider/context";
 import CandidateAdd from "./pages/candidate-add/candidate-add";
 import Jobs from "./pages/jobs/jobs";
 import NewJob from "./pages/job-new/new-job";
+import JobDetailsPage from "./pages/job-details/job-details";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -135,6 +138,11 @@ const GlobalStyle = createGlobalStyle`
     font-size: 16px;
     font-family: 'Inter', 'system-ui';
   }
+  
+  .ant-tabs-tab-btn {
+    color: ${Colors.Neutral_500};
+  }
+  
 `;
 
 const GlobalThemeConfig: ThemeConfig = {
@@ -218,8 +226,9 @@ function App() {
                 <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
                 <PrivateRoute path={routeSubscription()} exact component={Subscription} />
                 <PrivateRoute path={routeJobs()} exact component={Jobs} />
-                <PrivateRoute path={routeJobsEdit()} exact component={NewJob} />
+                <PrivateRoute path={routeJobEdit()} exact component={NewJob} />
                 <PrivateRoute path={routeJobsNew()} exact component={NewJob} />
+                <PrivateRoute path={routeJobDetails()} exact component={JobDetailsPage} />
                 <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
                 <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
                 <Route path={routeLiveCodingChallenge()} exact component={LiveCodingChallenge} />

@@ -10,12 +10,12 @@ import { useDebounceFn } from "ahooks";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import NewEntryImage from "../../assets/illustrations/undraw_new_entries.svg";
 import { useHistory } from "react-router-dom";
-import { routeJobsNew } from "../../utils/route";
+import { routeJobDetails, routeJobsNew } from "../../utils/route";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
-import { SecondaryText } from "../job-new/styles";
 import { fetchJobs } from "../../store/jobs/actions";
 import { selectGetJobsStatus, selectJobs } from "../../store/jobs/selectors";
+import { SecondaryText } from "../../assets/styles/global-styles";
 
 const { Title } = Typography;
 
@@ -86,6 +86,8 @@ const Jobs = () => {
 
     const onAddJobClicked = () => history.push(routeJobsNew());
 
+    const onJobCardClicked = (job: Job) => history.push(routeJobDetails(job.jobId));
+
     const HeaderComponent = (
         <Header>
             <Space size={16}>
@@ -150,7 +152,7 @@ const Jobs = () => {
                 loading={loading}
                 renderItem={(job: Job) => (
                     <List.Item>
-                        <JobCard job={job} />
+                        <JobCard job={job} onClick={onJobCardClicked} />
                     </List.Item>
                 )}
             />

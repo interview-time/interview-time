@@ -8,13 +8,9 @@ import { MoreHorizontal } from "lucide-react";
 import React from "react";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { Link } from "react-router-dom";
-import { routeJobsEdit } from "../../utils/route";
+import { routeJobEdit } from "../../utils/route";
 
 const { Text } = Typography;
-
-type Props = {
-    job: Job;
-};
 
 const StyledCard = styled(CardOutlined)`
     min-height: 84px;
@@ -22,6 +18,7 @@ const StyledCard = styled(CardOutlined)`
     display: flex;
     align-items: center;
     width: 100%;
+    cursor: pointer;
 `;
 
 const CardRow = styled(Row)`
@@ -68,16 +65,21 @@ const ActionsCol = styled(Col)`
     justify-content: flex-end;
 `;
 
-const JobCard = ({ job }: Props) => {
+type Props = {
+    job: Job;
+    onClick: (job: Job) => void;
+};
+
+const JobCard = ({ job, onClick }: Props) => {
     const actionsMenu: ItemType[] = [
         {
             key: "1",
-            label: <Link to={routeJobsEdit(job.jobId)}>Edit</Link>,
+            label: <Link to={routeJobEdit(job.jobId)}>Edit</Link>,
         },
     ];
 
     return (
-        <StyledCard>
+        <StyledCard onClick={() => onClick(job)}>
             <CardRow gutter={[6, 6]}>
                 <Col xs={12} lg={8}>
                     <Space direction='vertical' size={4}>

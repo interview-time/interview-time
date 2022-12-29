@@ -195,7 +195,7 @@ export interface JobStage {
 export interface JobCandidate {
     candidateId: string;
     name: string;
-    position: string;
+    position?: string;
     status: string;
     movedToStage: string;
     originallyAdded: string;

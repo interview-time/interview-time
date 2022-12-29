@@ -1,24 +1,6 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { Button, Typography } from "antd";
-
-const { Text } = Typography;
-
-export const TextBold = styled(Text)`
-    font-weight: 500;
-`;
-
-export const TextExtraBold = styled(Text)`
-    font-weight: 600;
-`;
-
-export const SecondaryText = styled(Text)`
-    color: ${Colors.Neutral_500};
-`;
-
-export const SecondaryTextSmall = styled(SecondaryText)`
-    font-size: 14px;
-`;
+import { Button } from "antd";
 
 export const Content = styled.div`
     margin-top: 64px;
