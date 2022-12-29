@@ -1,7 +1,6 @@
 import { ReactComponent as TemplateInterviewIcon } from "../assets/icons/template-interview.svg";
 import { ReactComponent as TemplateLiveCodingIcon } from "../assets/icons/template-live-coding.svg";
 import { ReactComponent as TemplateTakeHomeTaskIcon } from "../assets/icons/template-take-home-task.svg";
-import { hashCode } from "./string";
 import { InterviewType } from "../store/models";
 import { interviewTypeToColor } from "./interview";
 
