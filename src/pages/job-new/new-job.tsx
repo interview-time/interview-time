@@ -12,12 +12,18 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus, RootState } from "../../store/state-models";
 import { Job, JobDetails, JobStage, TeamMember, Template, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
-import { createJob, fetchJobDetails, fetchJobs } from "../../store/jobs/actions";
+import { createJob, fetchJobDetails, fetchJobs, updateJob } from "../../store/jobs/actions";
 import StepJobStages from "./step-job-stages";
 import { routeJobs } from "../../utils/route";
 import { v4 as uuidv4 } from "uuid";
 import { log } from "../../utils/log";
-import { selectCreateJobStatus, selectDepartments, selectJobDetails, selectJobs } from "../../store/jobs/selectors";
+import {
+    selectCreateJobStatus,
+    selectDepartments,
+    selectJobDetails,
+    selectJobs,
+    selectUpdateJobStatus,
+} from "../../store/jobs/selectors";
 import { selectTeamMembers } from "../../store/team/selector";
 import { selectUserProfile } from "../../store/user/selector";
 import { cloneDeep, isEmpty } from "lodash";
@@ -153,7 +159,7 @@ const NewJob = () => {
         } else if (isEmpty(job.department)) {
             message.error("Job department is empty. Please enter a job department.");
         } else if (isEditMode) {
-            message.error("Not implemented yet");
+            dispatch(updateJob(job));
         } else {
             dispatch(createJob(job));
         }
@@ -164,6 +170,7 @@ const NewJob = () => {
         (state: RootState) => selectJobDetails(state, id),
         shallowEqual
     );
+    const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
 
     useEffect(() => {
         if (editJobDetails) {
@@ -171,6 +178,17 @@ const NewJob = () => {
         }
         // eslint-disable-next-line
     }, [editJobDetails]);
+
+    useEffect(() => {
+        if (updateJobStatus === ApiRequestStatus.Success) {
+            message.success(`Job '${job.title}' updated successfully.`);
+            dispatch(fetchJobs(true));
+            history.push(routeJobs());
+        } else if (createJobStatus === ApiRequestStatus.Failed) {
+            message.error(`Failed to update job '${job.title}'.`);
+        }
+        // eslint-disable-next-line
+    }, [updateJobStatus]);
 
     // MARK: New job flow
 
@@ -202,7 +220,7 @@ const NewJob = () => {
 
     useEffect(() => {
         if (createJobStatus === ApiRequestStatus.Success) {
-            message.success(`Job '${job.title}' successfully .`);
+            message.success(`Job '${job.title}' created successfully.`);
             dispatch(fetchJobs(true));
             history.push(routeJobs());
         } else if (createJobStatus === ApiRequestStatus.Failed) {
@@ -294,7 +312,10 @@ const NewJob = () => {
                     <StepJobStages
                         stages={job.pipeline}
                         templates={templates}
-                        createJobStatus={createJobStatus}
+                        buttonLoading={
+                            createJobStatus === ApiRequestStatus.InProgress ||
+                            updateJobStatus === ApiRequestStatus.InProgress
+                        }
                         onStagesChange={onStagesChange}
                         onFinish={onFinish}
                     />

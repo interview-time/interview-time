@@ -11,3 +11,5 @@ export const selectJobDetails = (state: RootState, jobId: string | undefined) =>
 export const selectGetJobsStatus = (state: RootState) => state.jobs.apiResults.GetJobs.status
 
 export const selectCreateJobStatus = (state: RootState) => state.jobs.apiResults.CreateJob.status
+
+export const selectUpdateJobStatus = (state: RootState) => state.jobs.apiResults.UpdateJob.status

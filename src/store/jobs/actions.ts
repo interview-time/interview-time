@@ -10,6 +10,7 @@ const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 
 export enum JobsApiRequest {
     CreateJob = "CreateJob",
+    UpdateJob = "UpdateJob",
     GetJobs = "GetJobs",
     GetJobDetails = "GetJobDetails",
 }
@@ -160,5 +161,27 @@ export const createJob = (job: Job) => async (dispatch: Dispatch, getState: () =
 
         const axiosErr = error as AxiosError;
         dispatch(setRequestFailed(JobsApiRequest.CreateJob, axiosErr?.message));
+    }
+};
+
+export const updateJob = (job: Job) => async (dispatch: Dispatch, getState: () => RootState) => {
+    const { user } = getState();
+
+    const token = await getAccessTokenSilently();
+    const teamId = user.profile.currentTeamId;
+
+    dispatch(setRequestInProgress(JobsApiRequest.UpdateJob));
+
+    try {
+        const newCandidate = await axios.put(`${BASE_URI}/team/${teamId}/job/${job.jobId}`, job, config(token));
+
+        dispatch(setJobDetails(newCandidate.data));
+        dispatch(setRequestSuccess(JobsApiRequest.UpdateJob));
+        dispatch(setRequestReset(JobsApiRequest.UpdateJob));
+    } catch (error) {
+        logError(error);
+
+        const axiosErr = error as AxiosError;
+        dispatch(setRequestFailed(JobsApiRequest.UpdateJob, axiosErr?.message));
     }
 };
