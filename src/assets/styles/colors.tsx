@@ -16,3 +16,46 @@ export enum Colors {
     Blue_50 = "#EAF1FE",
     Blue_600 = "#3172F5",
 }
+
+export const TagColors = [
+    {
+        text: "#561C18",
+        background: "#FAE3DE",
+    },
+    {
+        text: "#472536",
+        background: "#F1E1E9",
+    },
+    {
+        text: "#3D2551",
+        background: "#E6DEED",
+    },
+    {
+        text: "#1E3245",
+        background: "#D6E4EE",
+    },
+    {
+        text: "#23372A",
+        background: "#DEECDC",
+    },
+    {
+        text: "#3D2D1E",
+        background: "#FAEDCC",
+    },
+    {
+        text: "#452A13",
+        background: "#F5DFCC",
+    },
+    {
+        text: "#402B20",
+        background: "#ECE0DB",
+    },
+    {
+        text: "#32302C",
+        background: "#E3E2E0",
+    },
+    {
+        text: "#32302C",
+        background: "#F0EFEE",
+    },
+];
