@@ -4,7 +4,7 @@ import { fetchJobDetails } from "../../store/jobs/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/state-models";
 import { selectJobDetails } from "../../store/jobs/selectors";
-import { JobCandidate, JobDetails, JobStage } from "../../store/models";
+import { StageCandidate, CandidateStageStatus, JobDetails, JobStage } from "../../store/models";
 import styled from "styled-components";
 import TabPipeline from "./tab-pipeline";
 import { Button, Tabs, Typography } from "antd";
@@ -39,26 +39,39 @@ const HeaderTitle = styled(Title)`
 `;
 
 // TODO mock data
-const candidates: JobCandidate[] = [
+const candidates: StageCandidate[] = [
     {
         candidateId: "1",
         name: "Cameron Williamson",
         position: "Android Developer @ Square",
-        status: "Interview scheduled",
         movedToStage: "2022-07-13T11:15:00Z",
         originallyAdded: "2022-07-13T11:15:00Z",
     },
     {
         candidateId: "2",
         name: "Jon Doe",
-        status: "Interview scheduled",
+        status: CandidateStageStatus.INTERVIEW_SCHEDULED,
         movedToStage: "2022-07-13T11:15:00Z",
         originallyAdded: "2022-07-13T11:15:00Z",
     },
     {
         candidateId: "3",
         name: "Dmytro Danylyk",
-        status: "Interview scheduled",
+        status: CandidateStageStatus.AWAITING_FEEDBACK,
+        movedToStage: "2022-07-13T11:15:00Z",
+        originallyAdded: "2022-07-13T11:15:00Z",
+    },
+    {
+        candidateId: "4",
+        name: "Dmytro Danylyk",
+        status: CandidateStageStatus.SCHEDULE_INTERVIEW,
+        movedToStage: "2022-07-13T11:15:00Z",
+        originallyAdded: "2022-07-13T11:15:00Z",
+    },
+    {
+        candidateId: "5",
+        name: "Dmytro Danylyk",
+        status: CandidateStageStatus.FEEDBACK_AVAILABLE,
         movedToStage: "2022-07-13T11:15:00Z",
         originallyAdded: "2022-07-13T11:15:00Z",
     },

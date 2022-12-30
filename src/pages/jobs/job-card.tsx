@@ -1,4 +1,4 @@
-import { CardOutlined } from "../../assets/styles/global-styles";
+import { CardOutlined, Tag, TagSlim } from "../../assets/styles/global-styles";
 import { Job } from "../../store/models";
 import { Button, Col, Dropdown, Row, Space, Typography } from "antd";
 import styled from "styled-components";
@@ -7,7 +7,7 @@ import { getFormattedDateShort } from "../../utils/date-fns";
 import { MoreHorizontal } from "lucide-react";
 import React from "react";
 import { ItemType } from "antd/es/menu/hooks/useItems";
-import JobDepartmentTag from "../../components/tags/job-department-tag";
+import { getTagColor, getTagTextColor } from "../../utils/colors";
 
 const { Text } = Typography;
 
@@ -36,15 +36,6 @@ const JobTitle = styled(Text)`
 const JobLocation = styled(Text)`
     font-size: 14px;
     color: ${Colors.Neutral_500};
-`;
-
-const NewCandidatesTag = styled(Text)`
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 24px;
-    color: ${Colors.Primary_500};
-    background: ${Colors.Primary_50};
-    padding: 2px 8px;
 `;
 
 const ActionsButton = styled(Button)`
@@ -88,14 +79,16 @@ const JobCard = ({ job, onCardClicked, onEditClicked }: Props) => {
                 </Col>
 
                 <Col xs={12} lg={4}>
-                    <JobDepartmentTag department={job.department} />
+                    <Tag textColor={getTagTextColor(job.department)} backgroundColor={getTagColor(job.department)}>
+                        {job.department}
+                    </Tag>
                 </Col>
 
                 <Col xs={12} lg={6}>
                     <Space size={6}>
                         <Text>{job.totalCandidates} candidates</Text>
                         {job.newlyAddedCandidates > 0 && (
-                            <NewCandidatesTag>+{job.newlyAddedCandidates}</NewCandidatesTag>
+                            <TagSlim textColor={Colors.Primary_500} backgroundColor={Colors.Primary_50}>+{job.newlyAddedCandidates}</TagSlim>
                         )}
                     </Space>
                 </Col>

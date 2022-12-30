@@ -189,17 +189,25 @@ export interface JobStage {
     type: string;
     templateId?: string;
     disabled: boolean;
-    candidates?: JobCandidate[];
+    candidates?: StageCandidate[];
 }
 
-export interface JobCandidate {
+export interface StageCandidate {
     candidateId: string;
     name: string;
     position?: string;
-    status: string;
+    status?: CandidateStageStatus;
     movedToStage: string;
     originallyAdded: string;
 }
+
+export enum CandidateStageStatus {
+    SCHEDULE_INTERVIEW = "SHCHEDULE_INTERVIEW",
+    INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED",
+    AWAITING_FEEDBACK = "AWAITING_FEEDBACK",
+    FEEDBACK_AVAILABLE = "FEEDBACK_AVAILABLE",
+}
+
 export enum JobStageType {
     Interview = "Interview",
     Regular = "Regular",

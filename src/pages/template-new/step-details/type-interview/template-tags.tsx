@@ -3,7 +3,7 @@ import { Select, Tag } from "antd";
 import styles from "./template-tags.module.css";
 import React from "react";
 import { TemplateQuestion } from "../../../../store/models";
-import { getTagColor } from "../../../../utils/color";
+import { getTagColor } from "../../../../utils/colors";
 
 type Props = {
     question: TemplateQuestion;
