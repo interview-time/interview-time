@@ -10,7 +10,7 @@ import { useDebounceFn } from "ahooks";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import NewEntryImage from "../../assets/illustrations/undraw_new_entries.svg";
 import { useHistory } from "react-router-dom";
-import { routeJobDetails, routeJobsNew } from "../../utils/route";
+import { routeJobDetails, routeJobEdit, routeJobsNew } from "../../utils/route";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
 import { fetchJobs } from "../../store/jobs/actions";
@@ -51,7 +51,6 @@ const PlaceholderText = styled(SecondaryText)`
 `;
 
 // TODO add filter and sorting
-// TODO add actions to job card
 
 const Jobs = () => {
     const history = useHistory();
@@ -87,6 +86,8 @@ const Jobs = () => {
     const onAddJobClicked = () => history.push(routeJobsNew());
 
     const onJobCardClicked = (job: Job) => history.push(routeJobDetails(job.jobId));
+
+    const onEditJobClicked = (job: Job) => history.push(routeJobEdit(job.jobId));
 
     const HeaderComponent = (
         <Header>
@@ -152,7 +153,7 @@ const Jobs = () => {
                 loading={loading}
                 renderItem={(job: Job) => (
                     <List.Item>
-                        <JobCard job={job} onClick={onJobCardClicked} />
+                        <JobCard job={job} onCardClicked={onJobCardClicked} onEditClicked={onEditJobClicked} />
                     </List.Item>
                 )}
             />

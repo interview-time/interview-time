@@ -1,7 +1,7 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
 import { Dropdown, Grid, Input, Menu, Space, Table, Tag } from "antd";
-import { getTagColor, InterviewAssessment, Status } from "../../../../utils/constants";
+import { InterviewAssessment, Status } from "../../../../utils/constants";
 import { defaultTo } from "lodash/util";
 import { Typography } from "antd";
 import { localeCompare, localeCompareArray } from "../../../../utils/comparators";
@@ -18,6 +18,7 @@ import {
 import { isEmpty } from "../../../../utils/date";
 import Card from "../../../../components/card/card";
 import QuestionDifficultyTag from "../../../../components/tags/question-difficulty-tag";
+import { getTagColor } from "../../../../utils/color";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;

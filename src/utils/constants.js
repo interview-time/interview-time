@@ -1,7 +1,6 @@
 import { ReactComponent as TemplateInterviewIcon } from "../assets/icons/template-interview.svg";
 import { ReactComponent as TemplateLiveCodingIcon } from "../assets/icons/template-live-coding.svg";
 import { ReactComponent as TemplateTakeHomeTaskIcon } from "../assets/icons/template-take-home-task.svg";
-import { hashCode } from "./string";
 import { InterviewType } from "../store/models";
 import { interviewTypeToColor } from "./interview";
 
@@ -89,25 +88,6 @@ export const getStatusText = status => {
     } else if (status === Status.NEW || status === Status.STARTED) {
         return "Scheduled";
     }
-};
-
-export const colors = [
-    "#D8E7E2",
-    "#D8E7E2",
-    "#D6E4F7",
-    "#FCD6D5",
-    "#DFD4F7",
-    "#F9EED8",
-    "#F5D5E5",
-    "#F9E1D4",
-    "#E6E6E5",
-    "#E6D7D0",
-];
-
-export const getTagColor = label => {
-    const hash = Math.abs(hashCode(label));
-    const hashFirstDigit = Number(String(hash).charAt(0));
-    return colors[hashFirstDigit];
 };
 
 export const POSITIONS = [

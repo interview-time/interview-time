@@ -7,18 +7,21 @@ import { getFormattedDateShort } from "../../utils/date-fns";
 import { MoreHorizontal } from "lucide-react";
 import React from "react";
 import { ItemType } from "antd/es/menu/hooks/useItems";
-import { Link } from "react-router-dom";
-import { routeJobEdit } from "../../utils/route";
+import JobDepartmentTag from "../../components/tags/job-department-tag";
 
 const { Text } = Typography;
 
-const StyledCard = styled(CardOutlined)`
+const JobCardOutlined = styled(CardOutlined)`
     min-height: 84px;
     padding: 12px 24px;
     display: flex;
     align-items: center;
     width: 100%;
     cursor: pointer;
+
+    &:hover {
+        border-color: ${Colors.Primary_500};
+    }
 `;
 
 const CardRow = styled(Row)`
@@ -44,15 +47,6 @@ const NewCandidatesTag = styled(Text)`
     padding: 2px 8px;
 `;
 
-const DepartmentTag = styled(Text)`
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 24px;
-    color: ${Colors.Success_700};
-    background: ${Colors.Success_50};
-    padding: 4px 12px;
-`;
-
 const ActionsButton = styled(Button)`
     && {
         width: 36px;
@@ -67,19 +61,24 @@ const ActionsCol = styled(Col)`
 
 type Props = {
     job: Job;
-    onClick: (job: Job) => void;
+    onCardClicked: (job: Job) => void;
+    onEditClicked: (job: Job) => void;
 };
 
-const JobCard = ({ job, onClick }: Props) => {
+const JobCard = ({ job, onCardClicked, onEditClicked }: Props) => {
     const actionsMenu: ItemType[] = [
         {
-            key: "1",
-            label: <Link to={routeJobEdit(job.jobId)}>Edit</Link>,
+            key: "edit",
+            label: "Edit",
+            onClick: e => {
+                e.domEvent.stopPropagation();
+                onEditClicked(job);
+            },
         },
     ];
 
     return (
-        <StyledCard onClick={() => onClick(job)}>
+        <JobCardOutlined onClick={() => onCardClicked(job)}>
             <CardRow gutter={[6, 6]}>
                 <Col xs={12} lg={8}>
                     <Space direction='vertical' size={4}>
@@ -89,7 +88,7 @@ const JobCard = ({ job, onClick }: Props) => {
                 </Col>
 
                 <Col xs={12} lg={4}>
-                    <DepartmentTag>{job.department}</DepartmentTag>
+                    <JobDepartmentTag department={job.department} />
                 </Col>
 
                 <Col xs={12} lg={6}>
@@ -115,7 +114,7 @@ const JobCard = ({ job, onClick }: Props) => {
                     </Dropdown>
                 </ActionsCol>
             </CardRow>
-        </StyledCard>
+        </JobCardOutlined>
     );
 };
 
