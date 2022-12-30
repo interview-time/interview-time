@@ -1,13 +1,5 @@
 import styled from "styled-components";
-import { AccentColors, Colors } from "../../assets/styles/colors";
-import {
-    CardOutlined,
-    SecondaryTextSmall,
-    Tag,
-    TagSlim,
-    TextBold,
-    TextExtraBold,
-} from "../../assets/styles/global-styles";
+import { Colors } from "../../assets/styles/colors";
 import { CandidateStageStatus, JobStage, StageCandidate } from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { Clock, GripHorizontal, Plus } from "lucide-react";
@@ -18,6 +10,17 @@ import React from "react";
 import { getInitials } from "../../utils/string";
 import { hexToRgb } from "../../utils/colors";
 import { getCandidateStageStatusText } from "../../store/jobs/selectors";
+import {
+    CardOutlined,
+    SecondaryTextSmall,
+    Tag,
+    TagDanger,
+    TagSlim,
+    TagSuccess,
+    TagWarning,
+    TextBold,
+    TextExtraBold,
+} from "../../assets/styles/global-styles";
 
 const Row = styled.div`
     display: flex;
@@ -158,25 +161,15 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
     };
 
     const CandidateStageStatusTag = (status: CandidateStageStatus) => {
-        let textColor: string = Colors.Neutral_600;
-        let backgroundColor: string = Colors.Neutral_100;
-
         if (status === CandidateStageStatus.AWAITING_FEEDBACK) {
-            textColor = AccentColors.Orange_700;
-            backgroundColor = AccentColors.Orange_100;
+            return <TagWarning>{getCandidateStageStatusText(status)}</TagWarning>;
         } else if (status === CandidateStageStatus.FEEDBACK_AVAILABLE) {
-            textColor = AccentColors.Green_700;
-            backgroundColor = AccentColors.Green_100;
+            return <TagSuccess>{getCandidateStageStatusText(status)}</TagSuccess>;
         } else if (status === CandidateStageStatus.SCHEDULE_INTERVIEW) {
-            textColor = AccentColors.Red_700;
-            backgroundColor = AccentColors.Red_100;
+            return <TagDanger>{getCandidateStageStatusText(status)}</TagDanger>;
         }
 
-        return (
-            <Tag textColor={textColor} backgroundColor={backgroundColor}>
-                {getCandidateStageStatusText(status)}
-            </Tag>
-        );
+        return <Tag>{getCandidateStageStatusText(status)}</Tag>;
     };
 
     const renderCandidateCard = (candidate: StageCandidate, index: number) => {

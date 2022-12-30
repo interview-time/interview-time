@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Colors } from "./colors";
+import { AccentColors, Colors } from "./colors";
 import { Typography } from "antd";
 
 const { Text } = Typography;
@@ -55,6 +55,21 @@ export const Tag = styled(Text)`
     background: ${(props: TagProps) => props.backgroundColor || Colors.Neutral_100};
     padding: 4px 12px;
     gap: 4px;
+`;
+
+export const TagSuccess = styled(Tag)`
+    color: ${AccentColors.Green_700};
+    background: ${AccentColors.Green_100};
+`;
+
+export const TagWarning = styled(Tag)`
+    color: ${AccentColors.Orange_700};
+    background: ${AccentColors.Orange_100};
+`;
+
+export const TagDanger = styled(Tag)`
+    color: ${AccentColors.Red_700};
+    background: ${AccentColors.Red_100};
 `;
 
 export const TagSlim = styled(Tag)`
