@@ -6,7 +6,7 @@ export const selectJobs = (state: RootState) => state.jobs.jobs;
 
 export const selectDepartments = (state: RootState) => uniq(state.jobs.jobs.map(job => job.department));
 
-export const selectJobDetails = (state: RootState, jobId: string | undefined) =>
+export const selectJobDetails = (jobId: string | undefined) => (state: RootState) =>
     state.jobs.jobsDetail.find(job => job.jobId === jobId);
 
 export const selectGetJobsStatus = (state: RootState) => state.jobs.apiResults.GetJobs.status;

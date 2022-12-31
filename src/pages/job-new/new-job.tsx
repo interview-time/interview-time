@@ -166,10 +166,7 @@ const NewJob = () => {
     };
 
     // MARK: Edit job flow
-    const editJobDetails: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state, id),
-        shallowEqual
-    );
+    const editJobDetails: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
 
     useEffect(() => {
@@ -195,10 +192,7 @@ const NewJob = () => {
     const [mode, setMode] = useState(Mode.BLANK);
     const jobs: Job[] = useSelector(selectJobs, shallowEqual);
     const [selectedJob, setSelectedJob] = useState<Job>();
-    const selectedJobDetails: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state, selectedJob?.jobId),
-        shallowEqual
-    );
+    const selectedJobDetails: JobDetails | undefined = useSelector(selectJobDetails(selectedJob?.jobId), shallowEqual);
     const createJobStatus: ApiRequestStatus = useSelector(selectCreateJobStatus, shallowEqual);
 
     useEffect(() => {

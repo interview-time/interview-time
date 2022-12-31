@@ -151,9 +151,9 @@ export const createJob = (job: Job) => async (dispatch: Dispatch, getState: () =
     dispatch(setRequestInProgress(JobsApiRequest.CreateJob));
 
     try {
-        const newCandidate = await axios.post(`${BASE_URI}/team/${teamId}/job`, job, config(token));
+        const result = await axios.post(`${BASE_URI}/team/${teamId}/job`, job, config(token));
 
-        dispatch(setJobDetails(newCandidate.data));
+        dispatch(setJobDetails(result.data));
         dispatch(setRequestSuccess(JobsApiRequest.CreateJob));
         dispatch(setRequestReset(JobsApiRequest.CreateJob));
     } catch (error) {
@@ -173,9 +173,9 @@ export const updateJob = (job: JobDetails) => async (dispatch: Dispatch, getStat
     dispatch(setRequestInProgress(JobsApiRequest.UpdateJob));
 
     try {
-        const newCandidate = await axios.put(`${BASE_URI}/team/${teamId}/job/${job.jobId}`, job, config(token));
+        const result = await axios.put(`${BASE_URI}/team/${teamId}/job/${job.jobId}`, job, config(token));
 
-        dispatch(setJobDetails(newCandidate.data));
+        dispatch(setJobDetails(result.data));
         dispatch(setRequestSuccess(JobsApiRequest.UpdateJob));
         dispatch(setRequestReset(JobsApiRequest.UpdateJob));
     } catch (error) {

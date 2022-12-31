@@ -2,7 +2,7 @@ import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { fetchJobDetails, updateJob } from "../../store/jobs/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { ApiRequestStatus, RootState } from "../../store/state-models";
+import { ApiRequestStatus } from "../../store/state-models";
 import { selectJobDetails, selectUpdateJobStatus } from "../../store/jobs/selectors";
 import { CandidateStageStatus, JobDetails, JobStage, StageCandidate } from "../../store/models";
 import styled from "styled-components";
@@ -13,6 +13,7 @@ import Spinner from "../../components/spinner/spinner";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { ChevronLeft } from "lucide-react";
 import { hashCode } from "../../utils/string";
+import { cloneDeep } from "lodash";
 
 const { Title } = Typography;
 
@@ -97,13 +98,10 @@ const JobDetailsPage = () => {
 
     const { id } = useParams<Record<string, string>>();
 
-    const jobDetailsOriginal: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state, id),
-        shallowEqual
-    );
+    const jobDetailsOriginal: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
+    const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
 
     const [jobDetails, setJobDetails] = useState<JobDetails | undefined>();
-    const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
 
     useEffect(() => {
         if (jobDetailsOriginal) {
@@ -113,35 +111,63 @@ const JobDetailsPage = () => {
         // eslint-disable-next-line
     }, [jobDetailsOriginal]);
 
+    // TODO remove when PUT request returns data
+    useEffect(() => {
+        if (updateJobStatus === ApiRequestStatus.Success) {
+            dispatch(fetchJobDetails(id));
+        }
+    }, [updateJobStatus]);
+
     useEffect(() => {
         dispatch(fetchJobDetails(id));
         // eslint-disable-next-line
     }, []);
 
     const onStagesOrderChange = (stages: JobStage[]) => {
-        if (jobDetails) {
-            setJobDetails({
-                ...jobDetails,
-                pipeline: stages,
-            });
-            dispatch(
-                updateJob({
-                    ...jobDetails,
-                    pipeline: stages,
-                })
-            );
+        if (!jobDetails) {
+            return;
         }
+
+        const updatedJob = {
+            ...jobDetails,
+            pipeline: stages,
+        };
+        setJobDetails(updatedJob);
+        dispatch(updateJob(updatedJob));
     };
 
-    const onAddStage = (stage: JobStage) => {
-        if (jobDetails) {
-            dispatch(
-                updateJob({
-                    ...jobDetails,
-                    pipeline: [...jobDetails.pipeline, stage],
-                })
-            );
+    const onSaveStage = (stage: JobStage) => {
+        if (!jobDetails) {
+            return;
         }
+
+        const index = jobDetails.pipeline.findIndex(s => s.stageId === stage.stageId);
+        const updatedStages = cloneDeep(jobDetails.pipeline);
+        if (index === -1) {
+            updatedStages.push(stage);
+        } else {
+            updatedStages[index] = stage;
+        }
+
+        const updatedJob = {
+            ...jobDetails,
+            pipeline: updatedStages,
+        };
+        setJobDetails(updatedJob);
+        dispatch(updateJob(updatedJob));
+    };
+
+    const onRemoveStage = (stage: JobStage) => {
+        if (!jobDetails) {
+            return;
+        }
+
+        const updatedJob = {
+            ...jobDetails,
+            pipeline: jobDetails.pipeline.filter(s => s.stageId !== stage.stageId),
+        };
+        setJobDetails(updatedJob);
+        dispatch(updateJob(updatedJob));
     };
 
     const onBackClicked = () => history.goBack();
@@ -190,7 +216,8 @@ const JobDetailsPage = () => {
                             <TabPipeline
                                 jobStages={jobDetails?.pipeline || []}
                                 onStagesOrderChange={onStagesOrderChange}
-                                onAddStage={onAddStage}
+                                onSaveStage={onSaveStage}
+                                onRemoveStage={onRemoveStage}
                             />
                         ),
                     },
