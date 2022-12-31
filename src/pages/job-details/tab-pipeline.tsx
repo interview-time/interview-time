@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
 import { CandidateStageStatus, JobStage, StageCandidate } from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
-import { Clock, GripHorizontal, Plus } from "lucide-react";
+import { Clock, GripHorizontal, Plus, PlusSquare } from "lucide-react";
 import { Avatar } from "antd";
 import { cloneDeep } from "lodash";
 import { arrayMove } from "react-sortable-hoc";
@@ -10,6 +10,7 @@ import React from "react";
 import { getInitials } from "../../utils/string";
 import { hexToRgb } from "../../utils/colors";
 import { getCandidateStageStatusText } from "../../store/jobs/selectors";
+import NewStageModal from "../job-new/new-stage-modal";
 import {
     CardOutlined,
     SecondaryTextSmall,
@@ -24,6 +25,8 @@ import {
 
 const Row = styled.div`
     display: flex;
+    overflow-x: scroll;
+    overflow-y: scroll;
 `;
 
 type StageColumnProps = {
@@ -34,10 +37,27 @@ const StageColumn = styled.div`
     display: flex;
     flex-direction: column;
     width: 276px;
+    min-width: 276px;
     border-radius: 8px;
     min-height: 100px;
     margin-right: 24px;
     background-color: ${(props: StageColumnProps) => props.color};
+`;
+
+const AddStageColumn = styled(StageColumn)`
+    flex-direction: row;
+    min-height: 40px;
+    height: 40px;
+    align-items: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 8px;
+    color: ${Colors.Neutral_400};
+    cursor: pointer;
+`;
+
+const AddStageText = styled(TextBold)`
+    color: ${Colors.Neutral_400};
 `;
 
 interface CandidateCardsColumnProps {
@@ -123,10 +143,17 @@ enum DragType {
 
 type Props = {
     jobStages: JobStage[];
-    onStagesChange: (stages: JobStage[]) => void;
+    onAddStage: (stage: JobStage) => void;
+    onStagesOrderChange: (stages: JobStage[]) => void;
 };
 
-const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
+const TabPipeline = ({ jobStages, onAddStage, onStagesOrderChange }: Props) => {
+    const [addStageModalVisible, setAddStageModalVisible] = React.useState<boolean>(false);
+
+    const onAddStageClicked = () => {
+        setAddStageModalVisible(true);
+    };
+
     const onDragEnd = (result: DropResult) => {
         const { destination, source, type } = result;
 
@@ -139,7 +166,7 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
         }
 
         if (type === DragType.StageColumn) {
-            onStagesChange(arrayMove(jobStages, source.index, destination.index));
+            onStagesOrderChange(arrayMove(jobStages, source.index, destination.index));
             return;
         }
 
@@ -157,7 +184,7 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
             destinationStage.candidates = destinationStageCandidates;
         }
 
-        onStagesChange(jobStagesNew);
+        onStagesOrderChange(jobStagesNew);
     };
 
     const CandidateStageStatusTag = (status: CandidateStageStatus) => {
@@ -242,16 +269,33 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
     );
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId='pipeline-stages' direction='horizontal' type={DragType.StageColumn}>
-                {provided => (
-                    <Row {...provided.droppableProps} ref={provided.innerRef}>
-                        {jobStages.map((stage: JobStage, index: number) => renderStageColumn(stage, index))}
-                        {provided.placeholder}
-                    </Row>
-                )}
-            </Droppable>
-        </DragDropContext>
+        <>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId='pipeline-stages' direction='horizontal' type={DragType.StageColumn}>
+                    {provided => (
+                        <Row {...provided.droppableProps} ref={provided.innerRef}>
+                            {jobStages.map((stage: JobStage, index: number) => renderStageColumn(stage, index))}
+                            {provided.placeholder}
+                            <AddStageColumn color={Colors.Neutral_50} onClick={onAddStageClicked}>
+                                <PlusSquare /> <AddStageText>Add new stage</AddStageText>
+                            </AddStageColumn>
+                        </Row>
+                    )}
+                </Droppable>
+            </DragDropContext>
+            <NewStageModal
+                open={addStageModalVisible}
+                templates={[]}
+                onClose={() => setAddStageModalVisible(false)}
+                onSave={stage => {
+                    setAddStageModalVisible(false);
+                    onAddStage(stage);
+                }}
+                onRemove={() => {
+                    /** no edit mode **/
+                }}
+            />
+        </>
     );
 };
 

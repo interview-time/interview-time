@@ -89,7 +89,7 @@ type EditStageModal = {
 
 type Props = {
     stages: JobStage[];
-    templates: Template[]
+    templates: Template[];
     buttonLoading: boolean;
     onStagesChange: (stages: JobStage[]) => void;
     onFinish: () => void;
@@ -195,11 +195,7 @@ const StepJobStages = ({ stages, templates, buttonLoading, onStagesChange, onFin
                     </AddStageContainer>
 
                     {stages.length > 0 && (
-                        <NextButton
-                            type='primary'
-                            onClick={onFinish}
-                            loading={buttonLoading}
-                        >
+                        <NextButton type='primary' onClick={onFinish} loading={buttonLoading}>
                             Finish
                         </NextButton>
                     )}

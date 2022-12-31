@@ -164,7 +164,7 @@ export const createJob = (job: Job) => async (dispatch: Dispatch, getState: () =
     }
 };
 
-export const updateJob = (job: Job) => async (dispatch: Dispatch, getState: () => RootState) => {
+export const updateJob = (job: JobDetails) => async (dispatch: Dispatch, getState: () => RootState) => {
     const { user } = getState();
 
     const token = await getAccessTokenSilently();
