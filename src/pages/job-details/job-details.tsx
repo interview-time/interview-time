@@ -1,10 +1,15 @@
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { fetchJobDetails, updateJob } from "../../store/jobs/actions";
+import { addCandidateToJob, fetchJobDetails, updateJob } from "../../store/jobs/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
-import { selectJobDetails, selectUpdateJobStatus } from "../../store/jobs/selectors";
-import { CandidateStageStatus, JobDetails, JobStage, StageCandidate } from "../../store/models";
+import {
+    selectAddCandidateToJobStatus,
+    selectGetJobDetailsStatus,
+    selectJobDetails,
+    selectUpdateJobStatus,
+} from "../../store/jobs/selectors";
+import { CandidateDetails, JobDetails, JobStage } from "../../store/models";
 import styled from "styled-components";
 import TabPipeline from "./tab-pipeline";
 import { Button, Spin, Tabs, Typography } from "antd";
@@ -14,6 +19,8 @@ import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { ChevronLeft } from "lucide-react";
 import { hashCode } from "../../utils/string";
 import { cloneDeep } from "lodash";
+import { selectCandidates } from "../../store/candidates/selector";
+import { loadCandidates } from "../../store/candidates/actions";
 
 const { Title } = Typography;
 
@@ -39,87 +46,42 @@ const HeaderTitle = styled(Title)`
     }
 `;
 
-// TODO mock data
-const candidates: StageCandidate[] = [
-    {
-        candidateId: "1",
-        name: "Cameron Williamson",
-        position: "Android Developer @ Square",
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "2",
-        name: "Jon Doe",
-        status: CandidateStageStatus.INTERVIEW_SCHEDULED,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "3",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.AWAITING_FEEDBACK,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "4",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.SCHEDULE_INTERVIEW,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "5",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.FEEDBACK_AVAILABLE,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "6",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.FEEDBACK_AVAILABLE,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "7",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.FEEDBACK_AVAILABLE,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-];
-
 const JobDetailsPage = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
     const { id } = useParams<Record<string, string>>();
 
+    const candidates: CandidateDetails[] = useSelector(selectCandidates, shallowEqual);
     const jobDetailsOriginal: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
+    const getJobDetailsStatus: ApiRequestStatus = useSelector(selectGetJobDetailsStatus, shallowEqual);
+    const addCandidateToJobStatus: ApiRequestStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
 
     const [jobDetails, setJobDetails] = useState<JobDetails | undefined>();
 
+    const isUploadingIndicatorVisible =
+        updateJobStatus === ApiRequestStatus.InProgress ||
+        addCandidateToJobStatus === ApiRequestStatus.InProgress ||
+        getJobDetailsStatus === ApiRequestStatus.InProgress;
+
     useEffect(() => {
         if (jobDetailsOriginal) {
-            jobDetailsOriginal.pipeline[0].candidates = candidates;
             setJobDetails(jobDetailsOriginal);
         }
-        // eslint-disable-next-line
     }, [jobDetailsOriginal]);
 
-    // TODO remove when PUT request returns data
     useEffect(() => {
-        if (updateJobStatus === ApiRequestStatus.Success) {
+        // TODO remove 'updateJobStatus' when PUT request returns data
+        if (updateJobStatus === ApiRequestStatus.Success || addCandidateToJobStatus === ApiRequestStatus.Success) {
             dispatch(fetchJobDetails(id));
         }
-    }, [updateJobStatus]);
+        // eslint-disable-next-line
+    }, [updateJobStatus, addCandidateToJobStatus]);
 
     useEffect(() => {
         dispatch(fetchJobDetails(id));
+        dispatch(loadCandidates());
         // eslint-disable-next-line
     }, []);
 
@@ -170,6 +132,12 @@ const JobDetailsPage = () => {
         dispatch(updateJob(updatedJob));
     };
 
+    const onAddCandidate = (candidateId: string, stageId: string) => {
+        if (jobDetails) {
+            dispatch(addCandidateToJob(jobDetails.jobId, stageId, candidateId));
+        }
+    };
+
     const onBackClicked = () => history.goBack();
 
     const createHeaderSubtitle = (jobDetails: JobDetails) => {
@@ -199,7 +167,7 @@ const JobDetailsPage = () => {
                     <HeaderTitle level={5}>{jobDetails.title}</HeaderTitle>
                     <SecondaryTextSmall>{createHeaderSubtitle(jobDetails)}</SecondaryTextSmall>
                 </HeaderTitleContainer>
-                <Spin spinning={updateJobStatus === ApiRequestStatus.InProgress} />
+                <Spin spinning={isUploadingIndicatorVisible} />
             </Header>
             <Tabs
                 defaultActiveKey='2'
@@ -215,6 +183,8 @@ const JobDetailsPage = () => {
                         children: (
                             <TabPipeline
                                 jobStages={jobDetails?.pipeline || []}
+                                candidates={candidates}
+                                onAddCandidate={onAddCandidate}
                                 onStagesOrderChange={onStagesOrderChange}
                                 onSaveStage={onSaveStage}
                                 onRemoveStage={onRemoveStage}

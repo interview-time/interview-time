@@ -11,6 +11,7 @@ export const defaultApiResults: IJobsApiResults = {
     [JobsApiRequest.UpdateJob]: defaultApiRequest,
     [JobsApiRequest.GetJobs]: defaultApiRequest,
     [JobsApiRequest.GetJobDetails]: defaultApiRequest,
+    [JobsApiRequest.AddCandidateToJob]: defaultApiRequest,
 };
 
 const initialState: JobsState = {

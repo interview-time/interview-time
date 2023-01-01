@@ -13,6 +13,7 @@ export enum JobsApiRequest {
     UpdateJob = "UpdateJob",
     GetJobs = "GetJobs",
     GetJobDetails = "GetJobDetails",
+    AddCandidateToJob = "AddCandidateToJob",
 }
 
 export enum JobActionType {
@@ -185,3 +186,33 @@ export const updateJob = (job: JobDetails) => async (dispatch: Dispatch, getStat
         dispatch(setRequestFailed(JobsApiRequest.UpdateJob, axiosErr?.message));
     }
 };
+
+export const addCandidateToJob =
+    (jobId: string, stageId: string, candidateId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+        const { user } = getState();
+
+        const token = await getAccessTokenSilently();
+        const teamId = user.profile.currentTeamId;
+        const data = {
+            candidateId: candidateId,
+            stageId: stageId,
+        };
+
+        dispatch(setRequestInProgress(JobsApiRequest.AddCandidateToJob));
+
+        try {
+            await axios.post(
+                `${BASE_URI}/team/${teamId}/job/${jobId}/add-candidate`,
+                data,
+                config(token)
+            );
+
+            dispatch(setRequestSuccess(JobsApiRequest.AddCandidateToJob));
+            dispatch(setRequestReset(JobsApiRequest.AddCandidateToJob));
+        } catch (error) {
+            logError(error);
+
+            const axiosErr = error as AxiosError;
+            dispatch(setRequestFailed(JobsApiRequest.AddCandidateToJob, axiosErr?.message));
+        }
+    };

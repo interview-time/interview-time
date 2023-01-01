@@ -9,7 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { ApiRequestStatus, RootState } from "../../store/state-models";
+import { ApiRequestStatus } from "../../store/state-models";
 import { Job, JobDetails, JobStage, TeamMember, Template, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
 import { createJob, fetchJobDetails, fetchJobs, updateJob } from "../../store/jobs/actions";

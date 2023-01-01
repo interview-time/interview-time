@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { CandidateStageStatus, JobStage, StageCandidate } from "../../store/models";
+import { CandidateDetails, CandidateStageStatus, JobStage, StageCandidate } from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
 import { Avatar, Dropdown } from "antd";
@@ -23,6 +23,7 @@ import {
     TextExtraBold,
 } from "../../assets/styles/global-styles";
 import { ItemType } from "antd/es/menu/hooks/useItems";
+import AddCandidateModal from "./add-candidate-modal";
 
 const Row = styled.div`
     display: flex;
@@ -55,10 +56,18 @@ const AddStageColumn = styled(StageColumn)`
     gap: 8px;
     color: ${Colors.Neutral_400};
     cursor: pointer;
+
+    &:hover {
+        color: ${Colors.Neutral_500};
+    }
 `;
 
 const AddStageText = styled(TextBold)`
     color: ${Colors.Neutral_400};
+
+    &:hover {
+        color: ${Colors.Neutral_500};
+    }
 `;
 
 interface CandidateCardsColumnProps {
@@ -146,20 +155,37 @@ enum DragType {
     CandidateCard = "CandidateCard",
 }
 
-type EditStageModal = {
+type NewStageModalProps = {
     visible: boolean;
     stage?: JobStage;
 };
 
+type AddCandidateModalProps = {
+    visible: boolean;
+    stageId?: string;
+};
+
 type Props = {
     jobStages: JobStage[];
+    candidates: CandidateDetails[];
+    onAddCandidate: (candidateId: string, stageId: string) => void;
     onSaveStage: (stage: JobStage) => void;
     onRemoveStage: (stage: JobStage) => void;
     onStagesOrderChange: (stages: JobStage[]) => void;
 };
 
-const TabPipeline = ({ jobStages, onSaveStage, onRemoveStage, onStagesOrderChange }: Props) => {
-    const [editStageModal, setEditStageModal] = React.useState<EditStageModal>({
+const TabPipeline = ({
+    jobStages,
+    candidates,
+    onAddCandidate,
+    onSaveStage,
+    onRemoveStage,
+    onStagesOrderChange,
+}: Props) => {
+    const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
+        visible: false,
+    });
+    const [newStageModal, setNewStageModal] = React.useState<NewStageModalProps>({
         visible: false,
     });
 
@@ -169,7 +195,7 @@ const TabPipeline = ({ jobStages, onSaveStage, onRemoveStage, onStagesOrderChang
             label: "Edit",
             onClick: e => {
                 e.domEvent.stopPropagation();
-                setEditStageModal({
+                setNewStageModal({
                     visible: true,
                     stage: stage,
                 });
@@ -178,9 +204,16 @@ const TabPipeline = ({ jobStages, onSaveStage, onRemoveStage, onStagesOrderChang
     ];
 
     const onAddStageClicked = () => {
-        setEditStageModal({
+        setNewStageModal({
             visible: true,
             stage: undefined,
+        });
+    };
+
+    const onAddCandidateClicked = (stageId: string) => {
+        setAddCandidateModal({
+            visible: true,
+            stageId: stageId,
         });
     };
 
@@ -286,7 +319,7 @@ const TabPipeline = ({ jobStages, onSaveStage, onRemoveStage, onStagesOrderChang
                                 {stage.candidates?.length || 0}
                             </TagSlim>
                         </ColumnHeaderGrip>
-                        <IconContainer onClick={() => console.log("test")}>
+                        <IconContainer onClick={() => onAddCandidateClicked(stage.stageId)}>
                             <Plus size={20} color={Colors.Neutral_500} />
                         </IconContainer>
                         <IconContainer>
@@ -321,29 +354,47 @@ const TabPipeline = ({ jobStages, onSaveStage, onRemoveStage, onStagesOrderChang
                 </Droppable>
             </DragDropContext>
             <NewStageModal
-                open={editStageModal.visible}
-                stage={editStageModal.stage}
+                open={newStageModal.visible}
+                stage={newStageModal.stage}
                 templates={[]}
                 onClose={() => {
-                    setEditStageModal({
-                        ...editStageModal,
+                    setNewStageModal({
+                        ...newStageModal,
                         visible: false,
                     });
                 }}
                 onSave={stage => {
-                    setEditStageModal({
-                        ...editStageModal,
+                    setNewStageModal({
+                        ...newStageModal,
                         visible: false,
                     });
                     onSaveStage(stage);
                 }}
                 onRemove={stage => {
-                    setEditStageModal({
-                        ...editStageModal,
+                    setNewStageModal({
+                        ...newStageModal,
                         visible: false,
                     });
                     onRemoveStage(stage);
                 }}
+            />
+
+            <AddCandidateModal
+                candidates={candidates}
+                open={addCandidateModal.visible}
+                onSave={(candidateId: string) => {
+                    setAddCandidateModal({
+                        visible: false,
+                    });
+                    if (addCandidateModal.stageId) {
+                        onAddCandidate(candidateId, addCandidateModal.stageId);
+                    }
+                }}
+                onClose={() =>
+                    setAddCandidateModal({
+                        visible: false,
+                    })
+                }
             />
         </>
     );
