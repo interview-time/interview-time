@@ -86,34 +86,38 @@ namespace CafApi.Command
                 job.Pipeline = new List<Stage>();
             }
 
-            foreach (var updatedStage in command.Pipeline)
+            var updatedPipeline = new List<Stage>();
+            foreach (var stage in command.Pipeline)
             {
-                var stage = job.Pipeline.FirstOrDefault(s => updatedStage.StageId != null && s.StageId == updatedStage.StageId);
-                if (stage != null)
+                var existingStage = job.Pipeline.FirstOrDefault(s => s.StageId == stage.StageId);
+
+                if (existingStage == null)
                 {
-                    stage.Title = updatedStage.Title;
-                    stage.Description = updatedStage.Description;
-                    stage.Colour = updatedStage.Colour;
-                    stage.Type = updatedStage.Type;
-                    stage.TemplateId = updatedStage.TemplateId;
-                    stage.ModifiedDate = DateTime.UtcNow;
+                    existingStage = new Stage
+                    {
+                        StageId = Guid.NewGuid().ToString(),
+                        Title = stage.Title,
+                        Description = stage.Description,
+                        Colour = stage.Colour,
+                        Type = stage.Type,
+                        TemplateId = stage.TemplateId,
+                        CreatedDate = DateTime.UtcNow
+                    };
                 }
                 else
                 {
-                    stage = new Stage
-                    {
-                        StageId = Guid.NewGuid().ToString(),
-                        Title = updatedStage.Title,
-                        Description = updatedStage.Description,
-                        Colour = updatedStage.Colour,
-                        Type = updatedStage.Type,
-                        TemplateId = updatedStage.TemplateId,
-                        CreatedDate = DateTime.UtcNow
-                    };
-
-                    job.Pipeline.Add(stage);
+                    existingStage.Title = stage.Title;
+                    existingStage.Description = stage.Description;
+                    existingStage.Colour = stage.Colour;
+                    existingStage.Type = stage.Type;
+                    existingStage.TemplateId = stage.TemplateId;
+                    existingStage.ModifiedDate = DateTime.UtcNow;
                 }
+
+                updatedPipeline.Add(existingStage);
             }
+
+            job.Pipeline = updatedPipeline;
 
             await _jobRepository.SaveJob(job);
 
