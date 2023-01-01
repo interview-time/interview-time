@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { CardOutlined, SecondaryTextSmall, TextBold, TextExtraBold } from "../../assets/styles/global-styles";
-import { JobCandidate, JobStage } from "../../store/models";
+import { CandidateStageStatus, JobStage, StageCandidate } from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { Clock, GripHorizontal, Plus } from "lucide-react";
 import { Avatar } from "antd";
@@ -9,9 +8,27 @@ import { cloneDeep } from "lodash";
 import { arrayMove } from "react-sortable-hoc";
 import React from "react";
 import { getInitials } from "../../utils/string";
+import { hexToRgb } from "../../utils/colors";
+import { getCandidateStageStatusText } from "../../store/jobs/selectors";
+import {
+    CardOutlined,
+    SecondaryTextSmall,
+    Tag,
+    TagDanger,
+    TagSlim,
+    TagSuccess,
+    TagWarning,
+    TextBold,
+    TextExtraBold,
+} from "../../assets/styles/global-styles";
+
 const Row = styled.div`
     display: flex;
 `;
+
+type StageColumnProps = {
+    color: string;
+};
 
 const StageColumn = styled.div`
     display: flex;
@@ -20,11 +37,12 @@ const StageColumn = styled.div`
     border-radius: 8px;
     min-height: 100px;
     margin-right: 24px;
-    background-color: ${Colors.Neutral_50};
+    background-color: ${(props: StageColumnProps) => props.color};
 `;
 
 interface CandidateCardsColumnProps {
     isDraggingOver: boolean;
+    color: string;
 }
 
 const CandidateCardsColumn = styled.div`
@@ -33,8 +51,7 @@ const CandidateCardsColumn = styled.div`
     flex-grow: 1;
     min-height: 100px;
     border-radius: 8px;
-    background-color: ${(props: CandidateCardsColumnProps) =>
-        props.isDraggingOver ? Colors.Neutral_100 : Colors.Neutral_50};
+    background-color: ${(props: CandidateCardsColumnProps) => (props.isDraggingOver ? props.color : "none")};
 `;
 
 const ColumnHeader = styled.div`
@@ -49,7 +66,6 @@ interface CandidateCardProps {
 }
 
 const CandidateCard = styled(CardOutlined)`
-    //height: 108px;
     margin: 8px;
     padding: 16px;
     border-color: ${(props: CandidateCardProps) => (props.isDragging ? Colors.Primary_500 : Colors.Neutral_200)};
@@ -66,7 +82,7 @@ const StageColorBox = styled.div`
     border-radius: 6px;
 `;
 
-const StageTitle = styled(TextExtraBold)`
+const Space = styled.div`
     flex-grow: 1;
 `;
 
@@ -98,29 +114,6 @@ const Divider = styled.div`
 const CardMetaContainer = styled.div`
     display: flex;
     justify-content: space-between;
-`;
-
-const Tag = styled.div`
-    background: ${Colors.Neutral_100};
-    color: ${Colors.Neutral_600};
-    border-radius: 24px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 12px;
-    padding-right: 12px;
-    gap: 4px;
-    height: 24px;
-`;
-
-const TagIcon = styled(Tag)`
-    padding-left: 8px;
-    padding-right: 8px;
-`;
-
-const TagText = styled(SecondaryTextSmall)`
-    color: ${Colors.Neutral_600};
-    font-weight: 500;
 `;
 
 enum DragType {
@@ -167,9 +160,21 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
         onStagesChange(jobStagesNew);
     };
 
-    const renderCandidateCard = (jobCandidate: JobCandidate, index: number) => {
+    const CandidateStageStatusTag = (status: CandidateStageStatus) => {
+        if (status === CandidateStageStatus.AWAITING_FEEDBACK) {
+            return <TagWarning>{getCandidateStageStatusText(status)}</TagWarning>;
+        } else if (status === CandidateStageStatus.FEEDBACK_AVAILABLE) {
+            return <TagSuccess>{getCandidateStageStatusText(status)}</TagSuccess>;
+        } else if (status === CandidateStageStatus.SCHEDULE_INTERVIEW) {
+            return <TagDanger>{getCandidateStageStatusText(status)}</TagDanger>;
+        }
+
+        return <Tag>{getCandidateStageStatusText(status)}</Tag>;
+    };
+
+    const renderCandidateCard = (candidate: StageCandidate, index: number) => {
         return (
-            <Draggable key={jobCandidate.candidateId} draggableId={jobCandidate.candidateId} index={index}>
+            <Draggable key={candidate.candidateId} draggableId={candidate.candidateId} index={index}>
                 {(provided, snapshot) => (
                     <CandidateCard
                         ref={provided.innerRef}
@@ -178,19 +183,17 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
                         isDragging={snapshot.isDragging}
                     >
                         <CandidateNameContainer>
-                            <CandidateAvatar size={26}>{getInitials(jobCandidate.name)}</CandidateAvatar>
-                            <TextBold>{jobCandidate.name}</TextBold>
+                            <CandidateAvatar size={26}>{getInitials(candidate.name)}</CandidateAvatar>
+                            <TextBold>{candidate.name}</TextBold>
                         </CandidateNameContainer>
-                        {jobCandidate.position && <SecondaryTextSmall>{jobCandidate.position}</SecondaryTextSmall>}
+                        {candidate.position && <SecondaryTextSmall>{candidate.position}</SecondaryTextSmall>}
                         <Divider />
                         <CardMetaContainer>
-                            <TagIcon>
+                            <TagSlim>
                                 <Clock size={16} />
-                                <TagText>4d</TagText>
-                            </TagIcon>
-                            <Tag>
-                                <TagText>{jobCandidate.status}</TagText>
-                            </Tag>
+                                4d
+                            </TagSlim>
+                            {candidate.status && CandidateStageStatusTag(candidate.status)}
                         </CardMetaContainer>
                     </CandidateCard>
                 )}
@@ -205,6 +208,7 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                     isDraggingOver={snapshot.isDraggingOver}
+                    color={hexToRgb(stage.colour, 0.05)}
                 >
                     {stage.candidates?.map((candidate, index) => renderCandidateCard(candidate, index))}
                     {provided.placeholder}
@@ -215,11 +219,15 @@ const TabPipeline = ({ jobStages, onStagesChange }: Props) => {
 
     const renderStageColumn = (stage: JobStage, index: number) => (
         <Draggable key={stage.stageId} draggableId={stage.stageId} index={index}>
-            {(provided, snapshot) => (
-                <StageColumn ref={provided.innerRef} {...provided.draggableProps}>
+            {provided => (
+                <StageColumn ref={provided.innerRef} {...provided.draggableProps} color={hexToRgb(stage.colour, 0.05)}>
                     <ColumnHeader>
                         <StageColorBox color={stage.colour} />
-                        <StageTitle>{stage.title}</StageTitle>
+                        <TextExtraBold>{stage.title}</TextExtraBold>
+                        <TagSlim textColor={stage.colour} backgroundColor={hexToRgb(stage.colour, 0.1)}>
+                            {stage.candidates?.length || 0}
+                        </TagSlim>
+                        <Space />
                         <IconContainer>
                             <Plus size={20} color={Colors.Neutral_500} />
                         </IconContainer>

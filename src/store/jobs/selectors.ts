@@ -1,5 +1,6 @@
 import { RootState } from "../state-models";
 import { uniq } from "lodash";
+import { CandidateStageStatus } from "../models";
 
 export const selectJobs = (state: RootState) => state.jobs.jobs;
 
@@ -8,8 +9,20 @@ export const selectDepartments = (state: RootState) => uniq(state.jobs.jobs.map(
 export const selectJobDetails = (state: RootState, jobId: string | undefined) =>
     state.jobs.jobsDetail.find(job => job.jobId === jobId);
 
-export const selectGetJobsStatus = (state: RootState) => state.jobs.apiResults.GetJobs.status
+export const selectGetJobsStatus = (state: RootState) => state.jobs.apiResults.GetJobs.status;
 
-export const selectCreateJobStatus = (state: RootState) => state.jobs.apiResults.CreateJob.status
+export const selectCreateJobStatus = (state: RootState) => state.jobs.apiResults.CreateJob.status;
 
-export const selectUpdateJobStatus = (state: RootState) => state.jobs.apiResults.UpdateJob.status
+export const selectUpdateJobStatus = (state: RootState) => state.jobs.apiResults.UpdateJob.status;
+
+export const getCandidateStageStatusText = (status: CandidateStageStatus) => {
+    if (status === CandidateStageStatus.AWAITING_FEEDBACK) {
+        return "Awaiting Feedback";
+    } else if (status === CandidateStageStatus.FEEDBACK_AVAILABLE) {
+        return "Feedback Available";
+    } else if (status === CandidateStageStatus.INTERVIEW_SCHEDULED) {
+        return "Interview Scheduled";
+    } else if (status === CandidateStageStatus.SCHEDULE_INTERVIEW) {
+        return "Schedule Interview";
+    }
+};

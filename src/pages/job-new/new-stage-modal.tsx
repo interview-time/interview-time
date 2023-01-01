@@ -3,7 +3,7 @@ import { Button, Checkbox, Form, Input, Modal, Select, Space } from "antd";
 import { JobStage, JobStageType, Template } from "../../store/models";
 import React from "react";
 import styled from "styled-components";
-import { Colors } from "../../assets/styles/colors";
+import { AccentColors, Colors } from "../../assets/styles/colors";
 import { ColorResult, TwitterPicker } from "react-color";
 import { v4 as uuidv4 } from "uuid";
 import { filterOptionLabel } from "../../utils/filters";
@@ -51,6 +51,24 @@ const FooterContainer = styled.div`
 const StageTypeTooltip = styled.div`
     padding-left: 24px;
 `;
+
+const StageColors = [
+    AccentColors.Purple_500,
+    AccentColors.Blue_500,
+    AccentColors.Blue_Deep_500,
+    AccentColors.Blue_Bolt_500,
+    AccentColors.Blue_Aqua_500,
+    AccentColors.Teal_500,
+    AccentColors.Green_500,
+    AccentColors.Green_Deep_500,
+    AccentColors.Orange_500,
+    AccentColors.Orange_Deep_500,
+    AccentColors.Red_500,
+    AccentColors.Pink_500,
+    AccentColors.Magenta_500,
+    AccentColors.Grey_500,
+    AccentColors.Black_500,
+]
 
 type Props = {
     stage?: JobStage;
@@ -158,7 +176,9 @@ const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Pr
                     <StageColorSelect onClick={() => setColorPickerVisible(true)}>
                         <StageColorBox color={color} />
                     </StageColorSelect>
-                    {colorPickerVisible && <TwitterPicker onChangeComplete={onColorSelected} />}
+                    {colorPickerVisible && (
+                        <TwitterPicker colors={StageColors} onChangeComplete={onColorSelected} />
+                    )}
                 </Form.Item>
                 <Form.Item
                     name='title'

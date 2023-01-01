@@ -18,7 +18,7 @@ import {
 import { isEmpty } from "../../../../utils/date";
 import Card from "../../../../components/card/card";
 import QuestionDifficultyTag from "../../../../components/tags/question-difficulty-tag";
-import { getTagColor } from "../../../../utils/color";
+import { getTagColor } from "../../../../utils/colors";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;

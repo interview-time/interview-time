@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Colors } from "../../assets/styles/colors";
+import { AccentColors, Colors } from "../../assets/styles/colors";
 import { Select, Typography } from "antd";
 import {
     CardOutlined,
@@ -20,6 +20,7 @@ import {
 import { filterOptionLabel } from "../../utils/filters";
 import { Job } from "../../store/models";
 import { getFormattedDateShort } from "../../utils/date-fns";
+import { hexToRgb } from "../../utils/colors";
 
 const { Title } = Typography;
 
@@ -49,16 +50,15 @@ const IconContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${Colors.Blue_50};
     margin-bottom: 12px;
 `;
 
 const IconContainerBlue = styled(IconContainer)`
-    background-color: ${Colors.Blue_50};
+    background-color:${hexToRgb(AccentColors.Blue_500, 0.1)};
 `;
 
 const IconContainerGreen = styled(IconContainer)`
-    background-color: ${Colors.Success_50};
+    background-color: ${hexToRgb(AccentColors.Green_500, 0.1)};
 `;
 
 const ExistingJobContainer = styled.div`
@@ -122,14 +122,14 @@ const StepJobType = ({ mode, selectedJob, jobs, onModeChange, onJobSelected, onN
                 <CardContainer>
                     <JobCard onClick={() => onModeChange(Mode.BLANK)} selected={mode === Mode.BLANK}>
                         <IconContainerBlue>
-                            <Clipboard color={Colors.Blue_600} />
+                            <Clipboard color={AccentColors.Blue_500} />
                         </IconContainerBlue>
                         <TextBold>Blank</TextBold>
                         <SecondaryTextSmall>Start from scratch</SecondaryTextSmall>
                     </JobCard>
                     <JobCard onClick={() => onModeChange(Mode.EXISTING)} selected={mode === Mode.EXISTING}>
                         <IconContainerGreen>
-                            <ClipboardCopy color={Colors.Success_600} />
+                            <ClipboardCopy color={AccentColors.Green_500} />
                         </IconContainerGreen>
                         <TextBold>Existing</TextBold>
                         <SecondaryTextSmall>Copy information from existing job</SecondaryTextSmall>

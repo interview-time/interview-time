@@ -1,5 +1,6 @@
 // generate index [0-9] based on tag
 import { TagColors } from "../assets/styles/colors";
+import hexRgb from "hex-rgb";
 
 export const getTagColorIndex = (tag: string) => {
     let charCodeSum: number;
@@ -21,3 +22,5 @@ export const getTagColorIndex = (tag: string) => {
 export const getTagTextColor = (tag: string) => TagColors[getTagColorIndex(tag)].text;
 
 export const getTagColor = (tag: string) => TagColors[getTagColorIndex(tag)].background;
+
+export const hexToRgb = (color: string, alpha: number) => hexRgb(color, { alpha: alpha, format: "css" });
