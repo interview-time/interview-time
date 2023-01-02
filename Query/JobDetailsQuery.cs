@@ -64,7 +64,7 @@ namespace CafApi.Query
 
             foreach (var pipelineCandidate in pipelineCandidates)
             {
-                var stage = job.Pipeline.FirstOrDefault(s => s.Candidates.Any(c => c.CandidateId == pipelineCandidate.CandidateId));
+                var stage = job.Pipeline.FirstOrDefault(s => s.Candidates != null && s.Candidates.Any(c => c.CandidateId == pipelineCandidate.CandidateId));
 
                 var candidateDetails = candidates.FirstOrDefault(c => c.CandidateId == pipelineCandidate.CandidateId);
                 if (candidateDetails != null)
