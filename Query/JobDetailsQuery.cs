@@ -64,30 +64,14 @@ namespace CafApi.Query
 
             foreach (var pipelineCandidate in pipelineCandidates)
             {
+                var stage = job.Pipeline.FirstOrDefault(s => s.Candidates.Any(c => c.CandidateId == pipelineCandidate.CandidateId));
+
                 var candidateDetails = candidates.FirstOrDefault(c => c.CandidateId == pipelineCandidate.CandidateId);
                 if (candidateDetails != null)
                 {
                     pipelineCandidate.Name = candidateDetails.CandidateName ?? $"{candidateDetails.FirstName} {candidateDetails.LastName}";
                     pipelineCandidate.Position = candidateDetails.Position;
-
-                    var candidateInterviews = await _interviewRepository.GetInterviewsByCandidate(pipelineCandidate.CandidateId);
-
-                    if (candidateInterviews.Count() > 0 && candidateInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
-                    {
-                        pipelineCandidate.Status = CandidateStageStatus.FEEDBACK_AVAILABLE.ToString();
-                    }
-                    else if (candidateInterviews.Count() > 0 && !candidateInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
-                    {
-                        pipelineCandidate.Status = CandidateStageStatus.AWAITING_FEEDBACK.ToString();
-                    }
-                    else if (candidateInterviews.Count() > 0 && !candidateInterviews.All(i => i.Status == InterviewStatus.NEW.ToString()))
-                    {
-                        pipelineCandidate.Status = CandidateStageStatus.INTERVIEW_SCHEDULED.ToString();
-                    }
-                    else if (candidateInterviews == null || candidateInterviews.Count() == 0)
-                    {
-                        pipelineCandidate.Status = CandidateStageStatus.SHCHEDULE_INTERVIEW.ToString();
-                    }
+                    pipelineCandidate.Status = await GetCandidateStatus(pipelineCandidate.CandidateId, stage.TemplateId);
                 }
                 else
                 {
@@ -107,6 +91,39 @@ namespace CafApi.Query
             }
 
             return job;
+        }
+
+        private async Task<string> GetCandidateStatus(string candidateId, string stageTemplateId)
+        {
+            if (string.IsNullOrWhiteSpace(stageTemplateId))
+            {
+                return null;
+            }
+
+            var candidateInterviews = await _interviewRepository.GetInterviewsByCandidate(candidateId);
+
+            var stageInterviews = candidateInterviews
+                .Where(i => i.TemplateId == stageTemplateId || (i.TemplateIds != null && i.TemplateIds.Contains(stageTemplateId)))
+                .ToList();
+
+            if (stageInterviews.Count() > 0 && stageInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
+            {
+                return CandidateStageStatus.FEEDBACK_AVAILABLE.ToString();
+            }
+            else if (stageInterviews.Count() > 0 && !stageInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
+            {
+                return CandidateStageStatus.AWAITING_FEEDBACK.ToString();
+            }
+            else if (stageInterviews.Count() > 0 && !stageInterviews.All(i => i.Status == InterviewStatus.NEW.ToString()))
+            {
+                return CandidateStageStatus.INTERVIEW_SCHEDULED.ToString();
+            }
+            else if (stageInterviews == null || stageInterviews.Count() == 0)
+            {
+                return CandidateStageStatus.SHCHEDULE_INTERVIEW.ToString();
+            }
+
+            return null;
         }
     }
 }

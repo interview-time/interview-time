@@ -84,7 +84,7 @@ namespace CafApi.Controllers
         }
 
         [HttpPut("team/{teamId}/job/{jobId}")]
-        public async Task<ActionResult> UpdateJob(string teamId, string jobId, [FromBody] UpdateJobCommand command)
+        public async Task<ActionResult<Job>> UpdateJob(string teamId, string jobId, [FromBody] UpdateJobCommand command)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace CafApi.Controllers
 
                 await _mediator.Send(command);
 
-                return Ok();
+                return await _mediator.Send(new JobDetailsQuery { UserId = UserId, TeamId = teamId, JobId = jobId });
             }
             catch (AuthorizationException ex)
             {
@@ -132,7 +132,7 @@ namespace CafApi.Controllers
         }
 
         [HttpPost("team/{teamId}/job/{jobId}/add-candidate")]
-        public async Task<ActionResult> AddCandidateToJob(string teamId, string jobId, [FromBody] AddCandidateToJobCommand command)
+        public async Task<ActionResult<Job>> AddCandidateToJob(string teamId, string jobId, [FromBody] AddCandidateToJobCommand command)
         {
             try
             {
@@ -142,7 +142,7 @@ namespace CafApi.Controllers
 
                 await _mediator.Send(command);
 
-                return Ok();
+                return await _mediator.Send(new JobDetailsQuery { UserId = UserId, TeamId = teamId, JobId = jobId });
             }
             catch (AuthorizationException ex)
             {
@@ -162,7 +162,7 @@ namespace CafApi.Controllers
         }
 
         [HttpPost("team/{teamId}/job/{jobId}/move-candidate")]
-        public async Task<ActionResult> MoveCandidateToNewStage(string teamId, string jobId, [FromBody] MoveCandidateCommand command)
+        public async Task<ActionResult<Job>> MoveCandidateToNewStage(string teamId, string jobId, [FromBody] MoveCandidateCommand command)
         {
             try
             {
@@ -172,7 +172,7 @@ namespace CafApi.Controllers
 
                 await _mediator.Send(command);
 
-                return Ok();
+                return await _mediator.Send(new JobDetailsQuery { UserId = UserId, TeamId = teamId, JobId = jobId });
             }
             catch (AuthorizationException ex)
             {

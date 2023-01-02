@@ -49,11 +49,16 @@ namespace CafApi.Command
     {
         private readonly IPermissionsService _permissionsService;
         private readonly IJobRepository _jobRepository;
+        private readonly IUserRepository _userRepository;
 
-        public CreateJobCommandHandler(IPermissionsService permissionsService, IJobRepository jobRepository)
+        public CreateJobCommandHandler(
+            IPermissionsService permissionsService,
+            IJobRepository jobRepository,
+            IUserRepository userRepository)
         {
             _permissionsService = permissionsService;
             _jobRepository = jobRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<Job> Handle(CreateJobCommand command, CancellationToken cancellationToken)
@@ -89,6 +94,9 @@ namespace CafApi.Command
             };
 
             await _jobRepository.SaveJob(job);
+
+            var owner = await _userRepository.GetProfile(job.Owner);
+            job.OwnerName = owner.Name;
 
             return job;
         }

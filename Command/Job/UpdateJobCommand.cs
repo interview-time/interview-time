@@ -54,7 +54,9 @@ namespace CafApi.Command
         private readonly IPermissionsService _permissionsService;
         private readonly IJobRepository _jobRepository;
 
-        public UpdateJobCommandHandler(IPermissionsService permissionsService, IJobRepository jobRepository)
+        public UpdateJobCommandHandler(
+            IPermissionsService permissionsService,
+            IJobRepository jobRepository)
         {
             _permissionsService = permissionsService;
             _jobRepository = jobRepository;
