@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { CandidateDetails, CandidateStageStatus, JobStage, StageCandidate } from "../../store/models";
+import { CandidateDetails, CandidateStageStatus, JobStage, StageCandidate, Template } from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
 import { Avatar, Dropdown } from "antd";
@@ -24,6 +24,7 @@ import {
 } from "../../assets/styles/global-styles";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import AddCandidateModal from "./add-candidate-modal";
+import { log } from "../../utils/log";
 
 const Row = styled.div`
     display: flex;
@@ -166,21 +167,25 @@ type AddCandidateModalProps = {
 };
 
 type Props = {
+    templates: Template[];
     jobStages: JobStage[];
     candidates: CandidateDetails[];
     onAddCandidate: (candidateId: string, stageId: string) => void;
     onSaveStage: (stage: JobStage) => void;
     onRemoveStage: (stage: JobStage) => void;
-    onStagesOrderChange: (stages: JobStage[]) => void;
+    onUpdateStages: (stages: JobStage[]) => void;
+    onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string) => void;
 };
 
 const TabPipeline = ({
+    templates,
     jobStages,
     candidates,
     onAddCandidate,
     onSaveStage,
     onRemoveStage,
-    onStagesOrderChange,
+    onUpdateStages,
+    onCandidateMoveStages,
 }: Props) => {
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
@@ -229,10 +234,12 @@ const TabPipeline = ({
         }
 
         if (type === DragType.StageColumn) {
-            onStagesOrderChange(arrayMove(jobStages, source.index, destination.index));
+            log("Moving columns");
+            onUpdateStages(arrayMove(jobStages, source.index, destination.index));
             return;
         }
 
+        log("Moving card");
         const jobStagesNew = cloneDeep(jobStages);
 
         const sourceStage = jobStagesNew.find(stage => stage.stageId === source.droppableId);
@@ -241,13 +248,21 @@ const TabPipeline = ({
         const destinationStage = jobStagesNew.find(stage => stage.stageId === destination.droppableId);
         const destinationStageCandidates = destinationStage?.candidates || [];
 
-        if (sourceStage && destinationStage) {
-            const [removed] = sourceStageCandidates.splice(source.index, 1);
-            destinationStageCandidates.splice(destination.index, 0, removed);
-            destinationStage.candidates = destinationStageCandidates;
+        if (!sourceStage || !destinationStage) {
+            return;
         }
 
-        onStagesOrderChange(jobStagesNew);
+        const [removed] = sourceStageCandidates.splice(source.index, 1);
+        destinationStageCandidates.splice(destination.index, 0, removed);
+        destinationStage.candidates = destinationStageCandidates;
+
+        if (sourceStage.stageId === destinationStage.stageId) {
+            log("Moving card in the same column");
+            onUpdateStages(jobStagesNew);
+        } else {
+            log("Moving card to another column");
+            onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId);
+        }
     };
 
     const CandidateStageStatusTag = (status: CandidateStageStatus) => {
@@ -356,7 +371,7 @@ const TabPipeline = ({
             <NewStageModal
                 open={newStageModal.visible}
                 stage={newStageModal.stage}
-                templates={[]}
+                templates={templates}
                 onClose={() => {
                     setNewStageModal({
                         ...newStageModal,

@@ -19,6 +19,8 @@ export const selectUpdateJobStatus = (state: RootState) => state.jobs.apiResults
 
 export const selectAddCandidateToJobStatus = (state: RootState) => state.jobs.apiResults.AddCandidateToJob.status;
 
+export const selectMoveCandidateToStageStatus = (state: RootState) => state.jobs.apiResults.MoveCandidateToStage.status;
+
 export const getCandidateStageStatusText = (status: CandidateStageStatus) => {
     if (status === CandidateStageStatus.AWAITING_FEEDBACK) {
         return "Awaiting Feedback";

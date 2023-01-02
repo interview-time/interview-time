@@ -1,15 +1,15 @@
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { addCandidateToJob, fetchJobDetails, updateJob } from "../../store/jobs/actions";
+import { addCandidateToJob, fetchJobDetails, moveCandidateToStage, updateJob } from "../../store/jobs/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
 import {
     selectAddCandidateToJobStatus,
     selectGetJobDetailsStatus,
-    selectJobDetails,
-    selectUpdateJobStatus,
+    selectJobDetails, selectMoveCandidateToStageStatus,
+    selectUpdateJobStatus
 } from "../../store/jobs/selectors";
-import { CandidateDetails, JobDetails, JobStage } from "../../store/models";
+import { CandidateDetails, JobDetails, JobStage, Template } from "../../store/models";
 import styled from "styled-components";
 import TabPipeline from "./tab-pipeline";
 import { Button, Spin, Tabs, Typography } from "antd";
@@ -21,6 +21,8 @@ import { hashCode } from "../../utils/string";
 import { cloneDeep } from "lodash";
 import { selectCandidates } from "../../store/candidates/selector";
 import { loadCandidates } from "../../store/candidates/actions";
+import { selectTemplates } from "../../store/templates/selector";
+import { loadTemplates } from "../../store/templates/actions";
 
 const { Title } = Typography;
 
@@ -52,17 +54,21 @@ const JobDetailsPage = () => {
 
     const { id } = useParams<Record<string, string>>();
 
+    const templates: Template[] = useSelector(selectTemplates, shallowEqual);
     const candidates: CandidateDetails[] = useSelector(selectCandidates, shallowEqual);
     const jobDetailsOriginal: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
+
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
     const getJobDetailsStatus: ApiRequestStatus = useSelector(selectGetJobDetailsStatus, shallowEqual);
     const addCandidateToJobStatus: ApiRequestStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
+    const moveCandidateToStageStatus: ApiRequestStatus = useSelector(selectMoveCandidateToStageStatus, shallowEqual);
 
     const [jobDetails, setJobDetails] = useState<JobDetails | undefined>();
 
     const isUploadingIndicatorVisible =
         updateJobStatus === ApiRequestStatus.InProgress ||
         addCandidateToJobStatus === ApiRequestStatus.InProgress ||
+        moveCandidateToStageStatus === ApiRequestStatus.InProgress ||
         getJobDetailsStatus === ApiRequestStatus.InProgress;
 
     useEffect(() => {
@@ -72,20 +78,16 @@ const JobDetailsPage = () => {
     }, [jobDetailsOriginal]);
 
     useEffect(() => {
-        // TODO remove 'updateJobStatus' when PUT request returns data
-        if (updateJobStatus === ApiRequestStatus.Success || addCandidateToJobStatus === ApiRequestStatus.Success) {
-            dispatch(fetchJobDetails(id));
-        }
-        // eslint-disable-next-line
-    }, [updateJobStatus, addCandidateToJobStatus]);
-
-    useEffect(() => {
         dispatch(fetchJobDetails(id));
         dispatch(loadCandidates());
+
+        if (templates.length === 0) {
+            dispatch(loadTemplates());
+        }
         // eslint-disable-next-line
     }, []);
 
-    const onStagesOrderChange = (stages: JobStage[]) => {
+    const onUpdateStages = (stages: JobStage[]) => {
         if (!jobDetails) {
             return;
         }
@@ -132,6 +134,19 @@ const JobDetailsPage = () => {
         dispatch(updateJob(updatedJob));
     };
 
+    const onCandidateMoveStages = (stages: JobStage[], candidateId: string, newStageId: string) => {
+        if (!jobDetails) {
+            return;
+        }
+
+        const updatedJob = {
+            ...jobDetails,
+            pipeline: stages,
+        };
+        setJobDetails(updatedJob);
+        dispatch(moveCandidateToStage(jobDetails.jobId, newStageId, candidateId));
+    }
+
     const onAddCandidate = (candidateId: string, stageId: string) => {
         if (jobDetails) {
             dispatch(addCandidateToJob(jobDetails.jobId, stageId, candidateId));
@@ -155,19 +170,16 @@ const JobDetailsPage = () => {
     return (
         <RootLayout>
             <Header>
-                <Button
-                    onClick={onBackClicked}
-                    icon={
-                        <AntIconSpan>
-                            <ChevronLeft size='1em' />
-                        </AntIconSpan>
-                    }
-                />
+                <Spin spinning={isUploadingIndicatorVisible}>
+                    <Button
+                        onClick={onBackClicked}
+                        icon={<AntIconSpan>{!isUploadingIndicatorVisible && <ChevronLeft size='1em' />}</AntIconSpan>}
+                    />
+                </Spin>
                 <HeaderTitleContainer>
                     <HeaderTitle level={5}>{jobDetails.title}</HeaderTitle>
                     <SecondaryTextSmall>{createHeaderSubtitle(jobDetails)}</SecondaryTextSmall>
                 </HeaderTitleContainer>
-                <Spin spinning={isUploadingIndicatorVisible} />
             </Header>
             <Tabs
                 defaultActiveKey='2'
@@ -182,12 +194,14 @@ const JobDetailsPage = () => {
                         key: "2",
                         children: (
                             <TabPipeline
+                                templates={templates}
                                 jobStages={jobDetails?.pipeline || []}
                                 candidates={candidates}
                                 onAddCandidate={onAddCandidate}
-                                onStagesOrderChange={onStagesOrderChange}
+                                onUpdateStages={onUpdateStages}
                                 onSaveStage={onSaveStage}
                                 onRemoveStage={onRemoveStage}
+                                onCandidateMoveStages={onCandidateMoveStages}
                             />
                         ),
                     },
