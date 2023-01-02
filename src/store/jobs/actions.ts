@@ -13,6 +13,7 @@ export enum JobsApiRequest {
     UpdateJob = "UpdateJob",
     GetJobs = "GetJobs",
     GetJobDetails = "GetJobDetails",
+    AddCandidateToJob = "AddCandidateToJob",
 }
 
 export enum JobActionType {
@@ -151,9 +152,9 @@ export const createJob = (job: Job) => async (dispatch: Dispatch, getState: () =
     dispatch(setRequestInProgress(JobsApiRequest.CreateJob));
 
     try {
-        const newCandidate = await axios.post(`${BASE_URI}/team/${teamId}/job`, job, config(token));
+        const result = await axios.post(`${BASE_URI}/team/${teamId}/job`, job, config(token));
 
-        dispatch(setJobDetails(newCandidate.data));
+        dispatch(setJobDetails(result.data));
         dispatch(setRequestSuccess(JobsApiRequest.CreateJob));
         dispatch(setRequestReset(JobsApiRequest.CreateJob));
     } catch (error) {
@@ -164,7 +165,7 @@ export const createJob = (job: Job) => async (dispatch: Dispatch, getState: () =
     }
 };
 
-export const updateJob = (job: Job) => async (dispatch: Dispatch, getState: () => RootState) => {
+export const updateJob = (job: JobDetails) => async (dispatch: Dispatch, getState: () => RootState) => {
     const { user } = getState();
 
     const token = await getAccessTokenSilently();
@@ -173,9 +174,9 @@ export const updateJob = (job: Job) => async (dispatch: Dispatch, getState: () =
     dispatch(setRequestInProgress(JobsApiRequest.UpdateJob));
 
     try {
-        const newCandidate = await axios.put(`${BASE_URI}/team/${teamId}/job/${job.jobId}`, job, config(token));
+        const result = await axios.put(`${BASE_URI}/team/${teamId}/job/${job.jobId}`, job, config(token));
 
-        dispatch(setJobDetails(newCandidate.data));
+        dispatch(setJobDetails(result.data));
         dispatch(setRequestSuccess(JobsApiRequest.UpdateJob));
         dispatch(setRequestReset(JobsApiRequest.UpdateJob));
     } catch (error) {
@@ -185,3 +186,33 @@ export const updateJob = (job: Job) => async (dispatch: Dispatch, getState: () =
         dispatch(setRequestFailed(JobsApiRequest.UpdateJob, axiosErr?.message));
     }
 };
+
+export const addCandidateToJob =
+    (jobId: string, stageId: string, candidateId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+        const { user } = getState();
+
+        const token = await getAccessTokenSilently();
+        const teamId = user.profile.currentTeamId;
+        const data = {
+            candidateId: candidateId,
+            stageId: stageId,
+        };
+
+        dispatch(setRequestInProgress(JobsApiRequest.AddCandidateToJob));
+
+        try {
+            await axios.post(
+                `${BASE_URI}/team/${teamId}/job/${jobId}/add-candidate`,
+                data,
+                config(token)
+            );
+
+            dispatch(setRequestSuccess(JobsApiRequest.AddCandidateToJob));
+            dispatch(setRequestReset(JobsApiRequest.AddCandidateToJob));
+        } catch (error) {
+            logError(error);
+
+            const axiosErr = error as AxiosError;
+            dispatch(setRequestFailed(JobsApiRequest.AddCandidateToJob, axiosErr?.message));
+        }
+    };

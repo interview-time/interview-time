@@ -1,18 +1,26 @@
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { fetchJobDetails } from "../../store/jobs/actions";
+import { addCandidateToJob, fetchJobDetails, updateJob } from "../../store/jobs/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/state-models";
-import { selectJobDetails } from "../../store/jobs/selectors";
-import { StageCandidate, CandidateStageStatus, JobDetails, JobStage } from "../../store/models";
+import { ApiRequestStatus } from "../../store/state-models";
+import {
+    selectAddCandidateToJobStatus,
+    selectGetJobDetailsStatus,
+    selectJobDetails,
+    selectUpdateJobStatus,
+} from "../../store/jobs/selectors";
+import { CandidateDetails, JobDetails, JobStage } from "../../store/models";
 import styled from "styled-components";
 import TabPipeline from "./tab-pipeline";
-import { Button, Tabs, Typography } from "antd";
+import { Button, Spin, Tabs, Typography } from "antd";
 import { SecondaryTextSmall } from "../../assets/styles/global-styles";
 import Spinner from "../../components/spinner/spinner";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { ChevronLeft } from "lucide-react";
 import { hashCode } from "../../utils/string";
+import { cloneDeep } from "lodash";
+import { selectCandidates } from "../../store/candidates/selector";
+import { loadCandidates } from "../../store/candidates/actions";
 
 const { Title } = Typography;
 
@@ -38,77 +46,95 @@ const HeaderTitle = styled(Title)`
     }
 `;
 
-// TODO mock data
-const candidates: StageCandidate[] = [
-    {
-        candidateId: "1",
-        name: "Cameron Williamson",
-        position: "Android Developer @ Square",
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "2",
-        name: "Jon Doe",
-        status: CandidateStageStatus.INTERVIEW_SCHEDULED,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "3",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.AWAITING_FEEDBACK,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "4",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.SCHEDULE_INTERVIEW,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-    {
-        candidateId: "5",
-        name: "Dmytro Danylyk",
-        status: CandidateStageStatus.FEEDBACK_AVAILABLE,
-        movedToStage: "2022-07-13T11:15:00Z",
-        originallyAdded: "2022-07-13T11:15:00Z",
-    },
-];
-
 const JobDetailsPage = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
     const { id } = useParams<Record<string, string>>();
 
-    const jobDetailsOriginal: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state, id),
-        shallowEqual
-    );
+    const candidates: CandidateDetails[] = useSelector(selectCandidates, shallowEqual);
+    const jobDetailsOriginal: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
+    const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
+    const getJobDetailsStatus: ApiRequestStatus = useSelector(selectGetJobDetailsStatus, shallowEqual);
+    const addCandidateToJobStatus: ApiRequestStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
 
     const [jobDetails, setJobDetails] = useState<JobDetails | undefined>();
 
+    const isUploadingIndicatorVisible =
+        updateJobStatus === ApiRequestStatus.InProgress ||
+        addCandidateToJobStatus === ApiRequestStatus.InProgress ||
+        getJobDetailsStatus === ApiRequestStatus.InProgress;
+
     useEffect(() => {
         if (jobDetailsOriginal) {
-            jobDetailsOriginal.pipeline[0].candidates = candidates;
             setJobDetails(jobDetailsOriginal);
         }
-        // eslint-disable-next-line
     }, [jobDetailsOriginal]);
 
     useEffect(() => {
+        // TODO remove 'updateJobStatus' when PUT request returns data
+        if (updateJobStatus === ApiRequestStatus.Success || addCandidateToJobStatus === ApiRequestStatus.Success) {
+            dispatch(fetchJobDetails(id));
+        }
+        // eslint-disable-next-line
+    }, [updateJobStatus, addCandidateToJobStatus]);
+
+    useEffect(() => {
         dispatch(fetchJobDetails(id));
+        dispatch(loadCandidates());
         // eslint-disable-next-line
     }, []);
 
-    const onStagesChange = (stages: JobStage[]) => {
+    const onStagesOrderChange = (stages: JobStage[]) => {
+        if (!jobDetails) {
+            return;
+        }
+
+        const updatedJob = {
+            ...jobDetails,
+            pipeline: stages,
+        };
+        setJobDetails(updatedJob);
+        dispatch(updateJob(updatedJob));
+    };
+
+    const onSaveStage = (stage: JobStage) => {
+        if (!jobDetails) {
+            return;
+        }
+
+        const index = jobDetails.pipeline.findIndex(s => s.stageId === stage.stageId);
+        const updatedStages = cloneDeep(jobDetails.pipeline);
+        if (index === -1) {
+            updatedStages.push(stage);
+        } else {
+            updatedStages[index] = stage;
+        }
+
+        const updatedJob = {
+            ...jobDetails,
+            pipeline: updatedStages,
+        };
+        setJobDetails(updatedJob);
+        dispatch(updateJob(updatedJob));
+    };
+
+    const onRemoveStage = (stage: JobStage) => {
+        if (!jobDetails) {
+            return;
+        }
+
+        const updatedJob = {
+            ...jobDetails,
+            pipeline: jobDetails.pipeline.filter(s => s.stageId !== stage.stageId),
+        };
+        setJobDetails(updatedJob);
+        dispatch(updateJob(updatedJob));
+    };
+
+    const onAddCandidate = (candidateId: string, stageId: string) => {
         if (jobDetails) {
-            setJobDetails({
-                ...jobDetails,
-                pipeline: stages,
-            });
+            dispatch(addCandidateToJob(jobDetails.jobId, stageId, candidateId));
         }
     };
 
@@ -141,19 +167,29 @@ const JobDetailsPage = () => {
                     <HeaderTitle level={5}>{jobDetails.title}</HeaderTitle>
                     <SecondaryTextSmall>{createHeaderSubtitle(jobDetails)}</SecondaryTextSmall>
                 </HeaderTitleContainer>
+                <Spin spinning={isUploadingIndicatorVisible} />
             </Header>
             <Tabs
-                defaultActiveKey="2"
+                defaultActiveKey='2'
                 items={[
                     {
                         label: `Details`,
-                        key: '1',
+                        key: "1",
                         children: `Not implemented yet`,
                     },
                     {
                         label: `Pipeline`,
-                        key: '2',
-                        children: <TabPipeline jobStages={jobDetails?.pipeline || []} onStagesChange={onStagesChange} />,
+                        key: "2",
+                        children: (
+                            <TabPipeline
+                                jobStages={jobDetails?.pipeline || []}
+                                candidates={candidates}
+                                onAddCandidate={onAddCandidate}
+                                onStagesOrderChange={onStagesOrderChange}
+                                onSaveStage={onSaveStage}
+                                onRemoveStage={onRemoveStage}
+                            />
+                        ),
                     },
                 ]}
             />

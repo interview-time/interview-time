@@ -9,7 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { ApiRequestStatus, RootState } from "../../store/state-models";
+import { ApiRequestStatus } from "../../store/state-models";
 import { Job, JobDetails, JobStage, TeamMember, Template, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
 import { createJob, fetchJobDetails, fetchJobs, updateJob } from "../../store/jobs/actions";
@@ -166,10 +166,7 @@ const NewJob = () => {
     };
 
     // MARK: Edit job flow
-    const editJobDetails: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state, id),
-        shallowEqual
-    );
+    const editJobDetails: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
 
     useEffect(() => {
@@ -195,10 +192,7 @@ const NewJob = () => {
     const [mode, setMode] = useState(Mode.BLANK);
     const jobs: Job[] = useSelector(selectJobs, shallowEqual);
     const [selectedJob, setSelectedJob] = useState<Job>();
-    const selectedJobDetails: JobDetails | undefined = useSelector(
-        (state: RootState) => selectJobDetails(state, selectedJob?.jobId),
-        shallowEqual
-    );
+    const selectedJobDetails: JobDetails | undefined = useSelector(selectJobDetails(selectedJob?.jobId), shallowEqual);
     const createJobStatus: ApiRequestStatus = useSelector(selectCreateJobStatus, shallowEqual);
 
     useEffect(() => {
