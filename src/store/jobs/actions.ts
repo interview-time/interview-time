@@ -11,6 +11,7 @@ const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 export enum JobsApiRequest {
     CreateJob = "CreateJob",
     UpdateJob = "UpdateJob",
+    CloseJob = "CloseJob",
     GetJobs = "GetJobs",
     GetJobDetails = "GetJobDetails",
     AddCandidateToJob = "AddCandidateToJob",
@@ -151,6 +152,16 @@ export const updateJob = (job: JobDetails) => async (dispatch: Dispatch, getStat
 
     const request = axios.put(`${BASE_URI}/team/${teamId}/job/${job.jobId}`, job, config(token));
     await genericJobDetailsRequest(dispatch, JobsApiRequest.UpdateJob, request);
+};
+
+export const closeJob = (jobId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+    const { user } = getState();
+
+    const token = await getAccessTokenSilently();
+    const teamId = user.profile.currentTeamId;
+
+    const request = axios.post(`${BASE_URI}/team/${teamId}/job/${jobId}/close`, null, config(token));
+    await genericJobDetailsRequest(dispatch, JobsApiRequest.CloseJob, request);
 };
 
 export const addCandidateToJob =

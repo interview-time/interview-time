@@ -9,6 +9,7 @@ const defaultApiRequest: IApiRequestResult = {
 export const defaultApiResults: IJobsApiResults = {
     [JobsApiRequest.CreateJob]: defaultApiRequest,
     [JobsApiRequest.UpdateJob]: defaultApiRequest,
+    [JobsApiRequest.CloseJob]: defaultApiRequest,
     [JobsApiRequest.GetJobs]: defaultApiRequest,
     [JobsApiRequest.GetJobDetails]: defaultApiRequest,
     [JobsApiRequest.AddCandidateToJob]: defaultApiRequest,

@@ -17,6 +17,8 @@ export const selectCreateJobStatus = (state: RootState) => state.jobs.apiResults
 
 export const selectUpdateJobStatus = (state: RootState) => state.jobs.apiResults.UpdateJob.status;
 
+export const selectCloseJobStatus = (state: RootState) => state.jobs.apiResults.CloseJob.status;
+
 export const selectAddCandidateToJobStatus = (state: RootState) => state.jobs.apiResults.AddCandidateToJob.status;
 
 export const selectMoveCandidateToStageStatus = (state: RootState) => state.jobs.apiResults.MoveCandidateToStage.status;

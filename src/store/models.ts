@@ -167,9 +167,14 @@ export interface Job {
     department: string;
     location?: string;
     createdDate: string;
-    status: string;
+    status: JobStatus;
     totalCandidates: number;
     newlyAddedCandidates: number;
+}
+
+export enum JobStatus {
+    OPEN = "OPEN",
+    CLOSED = "CLOSED",
 }
 
 export interface JobDetails extends Job {

@@ -1,19 +1,26 @@
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { addCandidateToJob, fetchJobDetails, moveCandidateToStage, updateJob } from "../../store/jobs/actions";
+import {
+    addCandidateToJob,
+    closeJob,
+    fetchJobDetails,
+    moveCandidateToStage,
+    updateJob,
+} from "../../store/jobs/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
 import {
     selectAddCandidateToJobStatus,
+    selectCloseJobStatus,
     selectGetJobDetailsStatus,
     selectJobDetails,
     selectMoveCandidateToStageStatus,
     selectUpdateJobStatus,
 } from "../../store/jobs/selectors";
-import { CandidateDetails, JobDetails, JobStage, Template } from "../../store/models";
+import { CandidateDetails, JobDetails, JobStage, JobStatus, Template } from "../../store/models";
 import styled from "styled-components";
 import TabPipeline from "./tab-pipeline";
-import { Button, Spin, Tabs, Typography } from "antd";
+import { Button, Select, Spin, Tabs, Typography } from "antd";
 import { SecondaryTextSmall } from "../../assets/styles/global-styles";
 import Spinner from "../../components/spinner/spinner";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
@@ -25,7 +32,9 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { selectTemplates } from "../../store/templates/selector";
 import { loadTemplates } from "../../store/templates/actions";
 import { routeCandidateProfile } from "../../utils/route";
+import { AccentColors } from "../../assets/styles/colors";
 
+const { Option } = Select;
 const { Title } = Typography;
 
 const RootLayout = styled.div`
@@ -42,6 +51,27 @@ const Header = styled.div`
 const HeaderTitleContainer = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const ActiveIndicator = styled.div`
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: ${AccentColors.Green_Deep_500};
+`;
+
+const ClosedIndicator = styled(ActiveIndicator)`
+    background-color: ${AccentColors.Red_500};
+`;
+
+const JobStagesContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+`;
+
+const FlexSpacer = styled.div`
+    flex: 1;
 `;
 
 const HeaderTitle = styled(Title)`
@@ -61,6 +91,7 @@ const JobDetailsPage = () => {
     const jobDetailsOriginal: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
 
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
+    const closeJobStatus: ApiRequestStatus = useSelector(selectCloseJobStatus, shallowEqual);
     const getJobDetailsStatus: ApiRequestStatus = useSelector(selectGetJobDetailsStatus, shallowEqual);
     const addCandidateToJobStatus: ApiRequestStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
     const moveCandidateToStageStatus: ApiRequestStatus = useSelector(selectMoveCandidateToStageStatus, shallowEqual);
@@ -69,6 +100,7 @@ const JobDetailsPage = () => {
 
     const isUploadingIndicatorVisible =
         updateJobStatus === ApiRequestStatus.InProgress ||
+        closeJobStatus === ApiRequestStatus.InProgress ||
         addCandidateToJobStatus === ApiRequestStatus.InProgress ||
         moveCandidateToStageStatus === ApiRequestStatus.InProgress ||
         getJobDetailsStatus === ApiRequestStatus.InProgress;
@@ -155,6 +187,18 @@ const JobDetailsPage = () => {
         }
     };
 
+    const onJobStatusChange = (status: JobStatus) => {
+        if (jobDetails) {
+            const updatedJob = {
+                ...jobDetails,
+                status: status,
+            };
+            setJobDetails(updatedJob);
+            dispatch(closeJob(jobDetails.jobId));
+        }
+        // TODO reopen job?
+    };
+
     const onCandidateCardClicked = (candidateId: string) => history.push(routeCandidateProfile(candidateId));
 
     const onBackClicked = () => history.goBack();
@@ -184,6 +228,25 @@ const JobDetailsPage = () => {
                     <HeaderTitle level={5}>{jobDetails.title}</HeaderTitle>
                     <SecondaryTextSmall>{createHeaderSubtitle(jobDetails)}</SecondaryTextSmall>
                 </HeaderTitleContainer>
+                <FlexSpacer />
+                <Select
+                    placeholder='Job status'
+                    value={jobDetails.status}
+                    onSelect={(value: JobStatus) => onJobStatusChange(value)}
+                >
+                    {[
+                        <Option key={JobStatus.OPEN} value={JobStatus.OPEN}>
+                            <JobStagesContainer>
+                                <ActiveIndicator /> Open
+                            </JobStagesContainer>
+                        </Option>,
+                        <Option key={JobStatus.CLOSED} value={JobStatus.CLOSED}>
+                            <JobStagesContainer>
+                                <ClosedIndicator /> Closed
+                            </JobStagesContainer>
+                        </Option>,
+                    ]}
+                </Select>
             </Header>
             <Tabs
                 defaultActiveKey='2'

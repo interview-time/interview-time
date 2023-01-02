@@ -10,7 +10,7 @@ import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
-import { Job, JobDetails, JobStage, TeamMember, Template, UserProfile } from "../../store/models";
+import { Job, JobDetails, JobStage, JobStatus, TeamMember, Template, UserProfile } from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
 import { createJob, fetchJobDetails, fetchJobs, updateJob } from "../../store/jobs/actions";
 import StepJobStages from "./step-job-stages";
@@ -76,7 +76,7 @@ const emptyJob: JobDetails = {
     owner: "",
     ownerName: "",
     pipeline: [],
-    status: "",
+    status: JobStatus.OPEN,
     tags: [],
     title: "",
     totalCandidates: 0,
