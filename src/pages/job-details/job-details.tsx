@@ -6,8 +6,9 @@ import { ApiRequestStatus } from "../../store/state-models";
 import {
     selectAddCandidateToJobStatus,
     selectGetJobDetailsStatus,
-    selectJobDetails, selectMoveCandidateToStageStatus,
-    selectUpdateJobStatus
+    selectJobDetails,
+    selectMoveCandidateToStageStatus,
+    selectUpdateJobStatus,
 } from "../../store/jobs/selectors";
 import { CandidateDetails, JobDetails, JobStage, Template } from "../../store/models";
 import styled from "styled-components";
@@ -23,6 +24,7 @@ import { selectCandidates } from "../../store/candidates/selector";
 import { loadCandidates } from "../../store/candidates/actions";
 import { selectTemplates } from "../../store/templates/selector";
 import { loadTemplates } from "../../store/templates/actions";
+import { routeCandidateProfile } from "../../utils/route";
 
 const { Title } = Typography;
 
@@ -145,13 +147,15 @@ const JobDetailsPage = () => {
         };
         setJobDetails(updatedJob);
         dispatch(moveCandidateToStage(jobDetails.jobId, newStageId, candidateId));
-    }
+    };
 
     const onAddCandidate = (candidateId: string, stageId: string) => {
         if (jobDetails) {
             dispatch(addCandidateToJob(jobDetails.jobId, stageId, candidateId));
         }
     };
+
+    const onCandidateCardClicked = (candidateId: string) => history.push(routeCandidateProfile(candidateId));
 
     const onBackClicked = () => history.goBack();
 
@@ -202,6 +206,7 @@ const JobDetailsPage = () => {
                                 onSaveStage={onSaveStage}
                                 onRemoveStage={onRemoveStage}
                                 onCandidateMoveStages={onCandidateMoveStages}
+                                onCandidateCardClicked={onCandidateCardClicked}
                             />
                         ),
                     },

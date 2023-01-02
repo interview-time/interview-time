@@ -59,16 +59,12 @@ const AddStageColumn = styled(StageColumn)`
     cursor: pointer;
 
     &:hover {
-        color: ${Colors.Neutral_500};
+        background-color: ${Colors.Neutral_100};
     }
 `;
 
 const AddStageText = styled(TextBold)`
     color: ${Colors.Neutral_400};
-
-    &:hover {
-        color: ${Colors.Neutral_500};
-    }
 `;
 
 interface CandidateCardsColumnProps {
@@ -104,9 +100,16 @@ interface CandidateCardProps {
 }
 
 const CandidateCard = styled(CardOutlined)`
-    margin: 8px;
-    padding: 16px;
-    border-color: ${(props: CandidateCardProps) => (props.isDragging ? Colors.Primary_500 : Colors.Neutral_200)};
+    && {
+        margin: 8px;
+        padding: 16px;
+        border-color: ${(props: CandidateCardProps) => (props.isDragging ? Colors.Primary_500 : Colors.Neutral_200)};
+        cursor: pointer;
+    }
+
+    &:hover {
+        border-color: ${Colors.Primary_500};
+    }
 `;
 
 type StageColorBoxProps = {
@@ -175,6 +178,7 @@ type Props = {
     onRemoveStage: (stage: JobStage) => void;
     onUpdateStages: (stages: JobStage[]) => void;
     onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string) => void;
+    onCandidateCardClicked: (candidateId: string) => void;
 };
 
 const TabPipeline = ({
@@ -186,6 +190,7 @@ const TabPipeline = ({
     onRemoveStage,
     onUpdateStages,
     onCandidateMoveStages,
+    onCandidateCardClicked,
 }: Props) => {
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
@@ -286,6 +291,9 @@ const TabPipeline = ({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         isDragging={snapshot.isDragging}
+                        onClick={() => {
+                            onCandidateCardClicked(candidate.candidateId);
+                        }}
                     >
                         <CandidateNameContainer>
                             <CandidateAvatar size={26}>{getInitials(candidate.name)}</CandidateAvatar>
