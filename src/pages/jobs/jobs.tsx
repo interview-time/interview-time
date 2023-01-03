@@ -1,6 +1,6 @@
 import Layout from "../../components/layout/layout";
 import JobCard from "./job-card";
-import { Button, Input, List, Space, Typography } from "antd";
+import { Button, Input, List, Space, Spin, Typography } from "antd";
 import { Job } from "../../store/models";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
@@ -50,6 +50,13 @@ const PlaceholderText = styled(SecondaryText)`
     text-align: center;
 `;
 
+const TitleContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+`;
+
 // TODO add filter and sorting
 
 const Jobs = () => {
@@ -67,7 +74,7 @@ const Jobs = () => {
     }, [jobsOriginal]);
 
     React.useEffect(() => {
-        dispatch(fetchJobs());
+        dispatch(fetchJobs(true));
         // eslint-disable-next-line
     }, []);
 
@@ -76,8 +83,8 @@ const Jobs = () => {
             setJobs(jobsOriginal.filter(job => job.title.toLowerCase().includes(text.toLowerCase())));
         },
         {
-            wait: 500,
-            maxWait: 2000,
+            wait: 250,
+            maxWait: 1000,
         }
     );
 
@@ -131,32 +138,49 @@ const Jobs = () => {
         </Header>
     );
 
-    const PlaceholderComponent = (
-        <PlaceholderContainer>
-            <img src={NewEntryImage} width={200} alt='No jobs' />
-            <PlaceholderText>{jobsOriginal.length === 0 ? "You don't have any jobs" : "No jobs found"}</PlaceholderText>
-        </PlaceholderContainer>
-    );
+    const Placeholder = () => {
+        let placeholderText = "No jobs found"; // filter applied
+        if (loading) {
+            placeholderText = "Loading jobs...";
+        } else if (jobsOriginal.length === 0) {
+            placeholderText = "You don't have any jobs";
+        }
+
+        return (
+            <PlaceholderContainer>
+                <img src={NewEntryImage} width={200} alt={placeholderText} />
+                <PlaceholderText>{placeholderText}</PlaceholderText>
+            </PlaceholderContainer>
+        );
+    };
 
     return (
         <Layout header={HeaderComponent}>
-            {jobs.length === 0 && PlaceholderComponent}
-            {jobs.length > 0 && <Title level={3}>Jobs</Title>}
-            <List
-                grid={{ gutter: 24, column: 1 }}
-                split={false}
-                dataSource={jobs}
-                pagination={{
-                    defaultPageSize: 8,
-                    hideOnSinglePage: true,
-                }}
-                loading={loading}
-                renderItem={(job: Job) => (
-                    <List.Item>
-                        <JobCard job={job} onCardClicked={onJobCardClicked} onEditClicked={onEditJobClicked} />
-                    </List.Item>
-                )}
-            />
+            {jobs.length === 0 && Placeholder()}
+            {jobs.length > 0 && (
+                <>
+                    <TitleContainer>
+                        <Title level={4} style={{ marginBottom: 0 }}>
+                            Jobs
+                        </Title>
+                        <Spin spinning={loading} />
+                    </TitleContainer>
+                    <List
+                        grid={{ gutter: 24, column: 1 }}
+                        split={false}
+                        dataSource={jobs}
+                        pagination={{
+                            defaultPageSize: 8,
+                            hideOnSinglePage: true,
+                        }}
+                        renderItem={(job: Job) => (
+                            <List.Item>
+                                <JobCard job={job} onCardClicked={onJobCardClicked} onEditClicked={onEditJobClicked} />
+                            </List.Item>
+                        )}
+                    />
+                </>
+            )}
         </Layout>
     );
 };
