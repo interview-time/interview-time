@@ -229,7 +229,7 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
             const joinedTeam = defaultTo(profile.teams, []).find((team: Team) => team.token === joinTeamToken);
             if (joinedTeam) {
                 openTeamJoinSuccessNotification(joinedTeam);
-                setJoinTeam(null);
+                setJoinTeam(undefined);
             }
         }
         // eslint-disable-next-line

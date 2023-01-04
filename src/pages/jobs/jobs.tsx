@@ -19,6 +19,12 @@ import { FormLabelSmall, SecondaryText, TagNumber } from "../../assets/styles/gl
 import { Option } from "antd/lib/mentions";
 import { filterOptionLabel } from "../../utils/filters";
 import { selectTeamMembers } from "../../store/team/selector";
+import {
+    getJobFilterFromStorage,
+    getJobSortFromStorage,
+    setJobFilterToStorage,
+    setJobSortToStorage
+} from "../../utils/storage";
 
 const { Title } = Typography;
 
@@ -83,14 +89,14 @@ const BorderedButton = styled(Button)`
     border-color: ${(props: FilterButtonProps) => props.borderColor};
 `;
 
-type Filter = {
+export type Filter = {
     search: string;
     status?: JobStatus;
     department?: string;
     ownerId?: string;
 };
 
-type Sort = {
+export type Sort = {
     title?: SortOrder;
     createdDate?: SortOrder;
 };
@@ -114,16 +120,20 @@ const Jobs = () => {
         filterOpen: false,
         sortOpen: false,
     });
-    const [filter, setFilter] = React.useState<Filter>({
-        search: "",
-        status: undefined,
-        department: undefined,
-        ownerId: undefined,
-    });
-    const [sort, setSort] = React.useState<Sort>({
-        title: undefined,
-        createdDate: undefined,
-    });
+    const [filter, setFilter] = React.useState<Filter>(
+        getJobFilterFromStorage() || {
+            search: "",
+            status: undefined,
+            department: undefined,
+            ownerId: undefined,
+        }
+    );
+    const [sort, setSort] = React.useState<Sort>(
+        getJobSortFromStorage() || {
+            title: undefined,
+            createdDate: undefined,
+        }
+    );
 
     const jobsOriginal: Job[] = useSelector(selectJobs, shallowEqual);
     const departments: string[] = useSelector(selectDepartments, shallowEqual);
@@ -141,6 +151,8 @@ const Jobs = () => {
 
     React.useEffect(() => {
         updateJobs();
+        saveSortToStorage();
+        saveFilterToStorage();
         // eslint-disable-next-line
     }, [jobsOriginal, filter, sort]);
 
@@ -177,12 +189,28 @@ const Jobs = () => {
         if (sort.createdDate) {
             jobs = jobs.sort((a, b) =>
                 sort.createdDate === SortOrder.ASCENDING
-                    ? new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime()
-                    : new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+                    ? new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+                    : new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime()
             );
         }
 
         setJobs(jobs);
+    };
+
+    const saveFilterToStorage = () => {
+        if (filter.ownerId || filter.status || filter.department || filter.search.length > 0) {
+            setJobFilterToStorage(filter);
+        } else {
+            setJobFilterToStorage(undefined);
+        }
+    };
+
+    const saveSortToStorage = () => {
+        if (sort.title || sort.createdDate) {
+            setJobSortToStorage(sort);
+        } else {
+            setJobSortToStorage(undefined);
+        }
     };
 
     const onSearchTextChangeDebounce = useDebounceFn(
@@ -348,6 +376,7 @@ const Jobs = () => {
                     <HeaderSearch
                         allowClear
                         placeholder='Search for job'
+                        defaultValue={filter.search}
                         prefix={<Search size={18} color={Colors.Neutral_400} />}
                         onChange={e => onSearchTextChange(e.target.value)}
                     />
