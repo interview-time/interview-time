@@ -4,7 +4,8 @@ import { Button, Input, List, Select, Space, Spin, Typography } from "antd";
 import { Job, JobStatus, TeamMember } from "../../store/models";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { Filter, Plus, Search, SortDesc } from "lucide-react";
+import { Plus, Search, SortDesc } from "lucide-react";
+import { Filter as FilterIcon } from "lucide-react";
 import React from "react";
 import { useDebounceFn } from "ahooks";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
@@ -46,7 +47,7 @@ const Header = styled.div`
     justify-content: space-between;
 `;
 
-const HeaderMeta = styled.div`
+const HeaderMetaContainer = styled.div`
     display: flex;
     gap: 16px;
 `;
@@ -290,7 +291,7 @@ const Jobs = () => {
     const onEditJobClicked = (job: Job) => history.push(routeJobEdit(job.jobId));
 
     const getSortContainer = (
-        <HeaderMeta>
+        <HeaderMetaContainer>
             <Space direction='vertical' size={2}>
                 <FormLabelSmall>Title</FormLabelSmall>
                 <Select
@@ -319,11 +320,11 @@ const Jobs = () => {
                     <Option value={SortOrder.DESCENDING}>Oldest First</Option>
                 </Select>
             </Space>
-        </HeaderMeta>
+        </HeaderMetaContainer>
     );
 
     const getFilterContainer = (
-        <HeaderMeta>
+        <HeaderMetaContainer>
             <Space direction='vertical' size={2}>
                 <FormLabelSmall>Department</FormLabelSmall>
                 <Select
@@ -366,7 +367,7 @@ const Jobs = () => {
                     <Option value={JobStatus.CLOSED}>Closed</Option>
                 </Select>
             </Space>
-        </HeaderMeta>
+        </HeaderMetaContainer>
     );
 
     const getHeaderContainer = (
@@ -383,7 +384,7 @@ const Jobs = () => {
                     <BorderedButton
                         icon={
                             <AntIconSpan>
-                                <Filter size='1em' />
+                                <FilterIcon size='1em' />
                             </AntIconSpan>
                         }
                         onClick={() =>
