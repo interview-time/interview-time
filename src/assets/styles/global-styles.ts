@@ -24,6 +24,9 @@ export const CardOutlined = styled.div`
 export const FormLabel = styled(Text)`
     font-weight: 500;
 `;
+export const FormLabelSmall = styled(FormLabel)`
+    font-size: 14px;
+`;
 export const TextBold = styled(Text)`
     font-weight: 500;
 `;
@@ -74,4 +77,9 @@ export const TagDanger = styled(Tag)`
 
 export const TagSlim = styled(Tag)`
     padding: 4px 8px;
+`;
+
+export const TagNumber = styled(Tag)`
+    padding: 2px 6px;
+    border-radius: 6px;
 `;
