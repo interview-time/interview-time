@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { CandidateDetails, CandidateStageStatus, JobStage, StageCandidate } from "../../store/models";
+import { CandidateDetails, CandidateStageStatus, JobStage, StageCandidate, Template } from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
 import { Avatar, Dropdown } from "antd";
@@ -24,6 +24,7 @@ import {
 } from "../../assets/styles/global-styles";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import AddCandidateModal from "./add-candidate-modal";
+import { log } from "../../utils/log";
 
 const Row = styled.div`
     display: flex;
@@ -58,16 +59,12 @@ const AddStageColumn = styled(StageColumn)`
     cursor: pointer;
 
     &:hover {
-        color: ${Colors.Neutral_500};
+        background-color: ${Colors.Neutral_100};
     }
 `;
 
 const AddStageText = styled(TextBold)`
     color: ${Colors.Neutral_400};
-
-    &:hover {
-        color: ${Colors.Neutral_500};
-    }
 `;
 
 interface CandidateCardsColumnProps {
@@ -103,9 +100,16 @@ interface CandidateCardProps {
 }
 
 const CandidateCard = styled(CardOutlined)`
-    margin: 8px;
-    padding: 16px;
-    border-color: ${(props: CandidateCardProps) => (props.isDragging ? Colors.Primary_500 : Colors.Neutral_200)};
+    && {
+        margin: 8px;
+        padding: 16px;
+        border-color: ${(props: CandidateCardProps) => (props.isDragging ? Colors.Primary_500 : Colors.Neutral_200)};
+        cursor: pointer;
+    }
+
+    &:hover {
+        border-color: ${Colors.Primary_500};
+    }
 `;
 
 type StageColorBoxProps = {
@@ -166,21 +170,27 @@ type AddCandidateModalProps = {
 };
 
 type Props = {
+    templates: Template[];
     jobStages: JobStage[];
     candidates: CandidateDetails[];
     onAddCandidate: (candidateId: string, stageId: string) => void;
     onSaveStage: (stage: JobStage) => void;
     onRemoveStage: (stage: JobStage) => void;
-    onStagesOrderChange: (stages: JobStage[]) => void;
+    onUpdateStages: (stages: JobStage[]) => void;
+    onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string) => void;
+    onCandidateCardClicked: (candidateId: string) => void;
 };
 
 const TabPipeline = ({
+    templates,
     jobStages,
     candidates,
     onAddCandidate,
     onSaveStage,
     onRemoveStage,
-    onStagesOrderChange,
+    onUpdateStages,
+    onCandidateMoveStages,
+    onCandidateCardClicked,
 }: Props) => {
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
@@ -229,10 +239,12 @@ const TabPipeline = ({
         }
 
         if (type === DragType.StageColumn) {
-            onStagesOrderChange(arrayMove(jobStages, source.index, destination.index));
+            log("Moving columns");
+            onUpdateStages(arrayMove(jobStages, source.index, destination.index));
             return;
         }
 
+        log("Moving card");
         const jobStagesNew = cloneDeep(jobStages);
 
         const sourceStage = jobStagesNew.find(stage => stage.stageId === source.droppableId);
@@ -241,13 +253,21 @@ const TabPipeline = ({
         const destinationStage = jobStagesNew.find(stage => stage.stageId === destination.droppableId);
         const destinationStageCandidates = destinationStage?.candidates || [];
 
-        if (sourceStage && destinationStage) {
-            const [removed] = sourceStageCandidates.splice(source.index, 1);
-            destinationStageCandidates.splice(destination.index, 0, removed);
-            destinationStage.candidates = destinationStageCandidates;
+        if (!sourceStage || !destinationStage) {
+            return;
         }
 
-        onStagesOrderChange(jobStagesNew);
+        const [removed] = sourceStageCandidates.splice(source.index, 1);
+        destinationStageCandidates.splice(destination.index, 0, removed);
+        destinationStage.candidates = destinationStageCandidates;
+
+        if (sourceStage.stageId === destinationStage.stageId) {
+            log("Moving card in the same column");
+            onUpdateStages(jobStagesNew);
+        } else {
+            log("Moving card to another column");
+            onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId);
+        }
     };
 
     const CandidateStageStatusTag = (status: CandidateStageStatus) => {
@@ -271,6 +291,9 @@ const TabPipeline = ({
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         isDragging={snapshot.isDragging}
+                        onClick={() => {
+                            onCandidateCardClicked(candidate.candidateId);
+                        }}
                     >
                         <CandidateNameContainer>
                             <CandidateAvatar size={26}>{getInitials(candidate.name)}</CandidateAvatar>
@@ -356,7 +379,7 @@ const TabPipeline = ({
             <NewStageModal
                 open={newStageModal.visible}
                 stage={newStageModal.stage}
-                templates={[]}
+                templates={templates}
                 onClose={() => {
                     setNewStageModal({
                         ...newStageModal,

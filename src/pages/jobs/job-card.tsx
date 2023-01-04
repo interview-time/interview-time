@@ -1,8 +1,8 @@
 import { CardOutlined, Tag, TagSlim } from "../../assets/styles/global-styles";
-import { Job } from "../../store/models";
+import { Job, JobStatus } from "../../store/models";
 import { Button, Col, Dropdown, Row, Space, Typography } from "antd";
 import styled from "styled-components";
-import { Colors } from "../../assets/styles/colors";
+import { AccentColors, Colors } from "../../assets/styles/colors";
 import { getFormattedDateShort } from "../../utils/date-fns";
 import { MoreHorizontal } from "lucide-react";
 import React from "react";
@@ -50,6 +50,19 @@ const ActionsCol = styled(Col)`
     justify-content: flex-end;
 `;
 
+const ClosedIndicator = styled.div`
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: ${AccentColors.Red_500};
+`;
+
+const TitleContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+`;
+
 type Props = {
     job: Job;
     onCardClicked: (job: Job) => void;
@@ -73,7 +86,10 @@ const JobCard = ({ job, onCardClicked, onEditClicked }: Props) => {
             <CardRow gutter={[6, 6]}>
                 <Col xs={12} lg={8}>
                     <Space direction='vertical' size={4}>
-                        <JobTitle>{job.title}</JobTitle>
+                        <TitleContainer>
+                            <JobTitle>{job.title}</JobTitle>
+                            {job.status === JobStatus.CLOSED && <ClosedIndicator />}
+                        </TitleContainer>
                         <JobLocation>{job.location}</JobLocation>
                     </Space>
                 </Col>
@@ -88,7 +104,9 @@ const JobCard = ({ job, onCardClicked, onEditClicked }: Props) => {
                     <Space size={6}>
                         <Text>{job.totalCandidates} candidates</Text>
                         {job.newlyAddedCandidates > 0 && (
-                            <TagSlim textColor={Colors.Primary_500} backgroundColor={Colors.Primary_50}>+{job.newlyAddedCandidates}</TagSlim>
+                            <TagSlim textColor={Colors.Primary_500} backgroundColor={Colors.Primary_50}>
+                                +{job.newlyAddedCandidates}
+                            </TagSlim>
                         )}
                     </Space>
                 </Col>

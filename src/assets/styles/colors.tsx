@@ -24,7 +24,7 @@ export enum AccentColors {
     Green_100 = "#E3FAD6", // Success background
     Green_500 = "#2FA52D",
     Green_700 = "#167625", // Success text
-    Green_Deep_500 = "#2FA52D",
+    Green_Deep_500 = "#1CB854",
     Orange_100 = "#FFF3D5", // Warning background
     Orange_500 = "#FFA02E",
     Orange_700 = "#B75F17", // Warning text
