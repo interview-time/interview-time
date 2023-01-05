@@ -32,6 +32,7 @@ import { Colors } from "../../assets/styles/colors";
 import LogoSquare96 from "../../assets/logo-square-96.png";
 import ActionsModal from "./quick-actions-modal";
 import { useHotkeys } from "react-hotkeys-hook";
+import { TagNumber } from "../../assets/styles/global-styles";
 
 const { Text } = Typography;
 
@@ -116,18 +117,9 @@ const QuickActionsText = styled(Text)`
     flex-grow: 1;
 `;
 
-const QuickActionsHotkey = styled(Text)`
+const QuickActionsHotkey = styled(TagNumber)`
     width: 20px;
-    height: 24px;
-    font-size: 14px;
-    font-weight: 500;
-    color: ${Colors.Neutral_600};
-    background: ${Colors.Neutral_100};
-    border-radius: 6px;
     margin-left: 6px;
-    justify-content: center;
-    display: inline-flex;
-    align-items: center;
 `;
 
 const MainMenu = styled(Menu)`
@@ -237,7 +229,7 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
             const joinedTeam = defaultTo(profile.teams, []).find((team: Team) => team.token === joinTeamToken);
             if (joinedTeam) {
                 openTeamJoinSuccessNotification(joinedTeam);
-                setJoinTeam(null);
+                setJoinTeam(undefined);
             }
         }
         // eslint-disable-next-line

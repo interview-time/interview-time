@@ -4,7 +4,7 @@ import { CandidateStageStatus } from "../models";
 
 export const selectJobs = (state: RootState) => state.jobs.jobs;
 
-export const selectDepartments = (state: RootState) => uniq(state.jobs.jobs.map(job => job.department));
+export const selectDepartments = (state: RootState) => uniq(state.jobs.jobs.map(job => job.department)); // this doesn't scale when we have a lot of jobs
 
 export const selectJobDetails = (jobId: string | undefined) => (state: RootState) =>
     state.jobs.jobsDetail.find(job => job.jobId === jobId);

@@ -100,7 +100,7 @@ const NewJob = () => {
     const [job, setJob] = useState(emptyJob);
     const [selectedStep, setSelectedStep] = useState(isEditMode ? Step.DETAILS : Step.NEW_JOB);
 
-    const departments: string[] = useSelector(selectDepartments, shallowEqual); // this doesn't scale when we have a lot of jobs
+    const departments: string[] = useSelector(selectDepartments, shallowEqual);
     const profile: UserProfile = useSelector(selectUserProfile, shallowEqual);
     const teamMembers: TeamMember[] = useSelector(selectTeamMembers, shallowEqual);
     const templates: Template[] = useSelector(selectTemplates, shallowEqual);
