@@ -1,10 +1,10 @@
 .rootContainer {
-    background-color: var(--color-background);
+    background-color: #F9FAFB;
     height: 100vh;
 }
 
 .logo {
-    height: var(--logo-height);
+    height: 48px;
     margin-left: -8px;
     margin-top: -8px;
 }
