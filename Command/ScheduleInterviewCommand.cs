@@ -77,6 +77,7 @@ namespace CafApi.Command
         private readonly IPermissionsService _permissionsService;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
+        private readonly IJobRepository _jobRepository;
         private readonly string _demoUserId;
         private readonly string _appHostUrl;
         private readonly DynamoDBContext _context;
@@ -87,6 +88,7 @@ namespace CafApi.Command
             IPermissionsService permissionsService,
             IUserRepository userRepository,
             IEmailService emailService,
+            IJobRepository jobRepository,
             IConfiguration configuration,
             IAmazonDynamoDB dynamoDbClient)
         {
@@ -95,6 +97,7 @@ namespace CafApi.Command
             _permissionsService = permissionsService;
             _userRepository = userRepository;
             _emailService = emailService;
+            _jobRepository = jobRepository;
             _demoUserId = configuration["DemoUserId"];
             _appHostUrl = configuration["AppHostUri"];
             _context = new DynamoDBContext(dynamoDbClient);
@@ -107,6 +110,27 @@ namespace CafApi.Command
                 if (!await _permissionsService.IsBelongInTeam(interviewerId, command.TeamId))
                 {
                     throw new AuthorizationException($"Interviewer ({interviewerId}) doesn't belong to the team ({command.TeamId})");
+                }
+            }
+
+            var candidate = await _candidateRepository.GetCandidate(command.TeamId, command.CandidateId);
+            if (candidate == null)
+            {
+                throw new ItemNotFoundException($"Candidate {command.CandidateId} not found");
+            }
+
+            // Get current candidate stage in the hiring pipeline
+            string stageId = null;
+            if (candidate.JobId != null)
+            {
+                var job = await _jobRepository.GetJob(command.TeamId, candidate.JobId);
+                if (job != null)
+                {
+                    var currentStage = job.Pipeline.FirstOrDefault(s => s.Candidates.Any(c => c.CandidateId == command.CandidateId));
+                    if (currentStage != null)
+                    {
+                        stageId = currentStage.StageId;
+                    }
                 }
             }
 
@@ -132,7 +156,9 @@ namespace CafApi.Command
                 ModifiedDate = DateTime.UtcNow,
                 LinkId = Guid.NewGuid().ToString(),
                 IsDemo = command.UserId == _demoUserId, // Demo account
-                Checklist = command.Checklist
+                Checklist = command.Checklist,
+                JobId = candidate.JobId,
+                StageId = stageId
             };
 
             var interviews = new Dictionary<string, Interview>();
@@ -179,7 +205,7 @@ namespace CafApi.Command
             {
                 if (command.SendChallenge)
                 {
-                    await SendTakeHomeChallenge(command.TeamId, command.CandidateId, interviews?.First().Value.TakeHomeChallenge.ShareToken);
+                    await SendTakeHomeChallenge(candidate, interviews?.First().Value.TakeHomeChallenge.ShareToken);
                 }
             }
             else
@@ -200,14 +226,8 @@ namespace CafApi.Command
             }
         }
 
-        private async Task SendTakeHomeChallenge(string teamId, string candidateId, string shareToken)
+        private async Task SendTakeHomeChallenge(Candidate candidate, string shareToken)
         {
-            var candidate = await _candidateRepository.GetCandidate(teamId, candidateId);
-            if (candidate == null)
-            {
-                throw new ItemNotFoundException($"Candidate {candidateId} not found");
-            }
-
             if (string.IsNullOrWhiteSpace(candidate.Email))
             {
                 throw new CandidateException($"Candidate doesn't have email");

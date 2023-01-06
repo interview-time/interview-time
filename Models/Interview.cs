@@ -79,6 +79,10 @@ namespace CafApi.Models
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime ModifiedDate { get; set; }
+
+        public string JobId { get; set; }
+
+        public string StageId { get; set; }
     }
 
     public class LiveCodingChallenge

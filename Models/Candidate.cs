@@ -61,5 +61,7 @@ namespace CafApi.Models
 
         [DynamoDBProperty(typeof(DateTimeUtcConverter))]
         public DateTime? RemoteModifiedDate { get; set; } // ModifiedDate in ATS
+
+        public string JobId { get; set; }
     }
 }

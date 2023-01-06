@@ -47,6 +47,13 @@ namespace CafApi.Command
         public string Type { get; set; }
 
         public string TemplateId { get; set; }
+
+        public List<UpdatedStageCandidate> Candidates { get; set; }
+    }
+
+    public class UpdatedStageCandidate
+    {
+        public string CandidateId { get; set; }
     }
 
     public class UpdateJobCommandHandler : IRequestHandler<UpdateJobCommand, Job>
@@ -114,6 +121,11 @@ namespace CafApi.Command
                     existingStage.Type = stage.Type;
                     existingStage.TemplateId = stage.TemplateId;
                     existingStage.ModifiedDate = DateTime.UtcNow;
+                    existingStage.Candidates = existingStage.Candidates != null
+                        ? existingStage.Candidates
+                            .OrderBy(d => stage.Candidates.FindIndex(c => c.CandidateId == d.CandidateId))
+                            .ToList()
+                        : null;
                 }
 
                 updatedPipeline.Add(existingStage);

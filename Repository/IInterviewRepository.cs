@@ -15,5 +15,7 @@ namespace CafApi.Repository
         Task<List<Interview>> GetInterviewsByCandidate(string candidateId);
 
         Task<Interview> GetSharedScorecard(string token);
+
+        Task<List<Interview>> GetInterviewsByJob(string jobId);
     }
 }

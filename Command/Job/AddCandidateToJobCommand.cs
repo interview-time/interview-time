@@ -18,7 +18,7 @@ namespace CafApi.Command
         internal string UserId { get; set; }
 
         internal string JobId { get; set; }
-        
+
         public string CandidateId { get; set; }
 
         public string StageId { get; set; }
@@ -82,6 +82,9 @@ namespace CafApi.Command
                 OriginallyAdded = DateTime.UtcNow,
             });
 
+            candidate.JobId = command.JobId;
+            
+            await _candidateRepository.SaveCandidate(candidate);
             await _jobRepository.SaveJob(job);
 
             return Unit.Value;
