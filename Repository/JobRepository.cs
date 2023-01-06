@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Models;
 
 namespace CafApi.Repository
@@ -33,6 +34,6 @@ namespace CafApi.Repository
         public async Task DeleteJob(string teamId, string jobId)
         {
             await _context.DeleteAsync<Job>(teamId, jobId);
-        }
+        }     
     }
 }

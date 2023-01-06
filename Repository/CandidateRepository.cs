@@ -52,5 +52,10 @@ namespace CafApi.Repository
 
             await candidateBatch.ExecuteAsync();
         }
+
+        public async Task SaveCandidate(Candidate candidate)
+        {
+            await _context.SaveAsync(candidate);
+        }
     }
 }
