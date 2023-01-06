@@ -133,7 +133,6 @@ const CandidateAvatar = styled(Avatar)`
     color: ${Colors.Primary_500};
     background-color: ${Colors.Primary_50};
     vertical-align: middle;
-    font-size: 14px;
     font-weight: 600;
 `;
 

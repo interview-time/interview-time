@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
     addCandidateToJob,
     closeJob,
+    deleteJob,
     fetchJobDetails,
     moveCandidateToStage,
     updateJob,
@@ -12,6 +13,7 @@ import { ApiRequestStatus } from "../../store/state-models";
 import {
     selectAddCandidateToJobStatus,
     selectCloseJobStatus,
+    selectDeleteJobStatus,
     selectGetJobDetailsStatus,
     selectJobDetails,
     selectMoveCandidateToStageStatus,
@@ -20,7 +22,7 @@ import {
 import { CandidateDetails, JobDetails, JobStage, JobStatus, Template } from "../../store/models";
 import styled from "styled-components";
 import TabPipeline from "./tab-pipeline";
-import { Button, Select, Spin, Tabs, Typography } from "antd";
+import { Button, message, Select, Spin, Tabs, Typography } from "antd";
 import { SecondaryTextSmall } from "../../assets/styles/global-styles";
 import Spinner from "../../components/spinner/spinner";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
@@ -31,8 +33,9 @@ import { selectCandidates } from "../../store/candidates/selector";
 import { loadCandidates } from "../../store/candidates/actions";
 import { selectTemplates } from "../../store/templates/selector";
 import { loadTemplates } from "../../store/templates/actions";
-import { routeCandidateProfile } from "../../utils/route";
+import { routeCandidateProfile, routeJobEdit, routeJobs } from "../../utils/route";
 import { AccentColors } from "../../assets/styles/colors";
+import TabDetails from "./tab-details";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -92,6 +95,7 @@ const JobDetailsPage = () => {
 
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
     const closeJobStatus: ApiRequestStatus = useSelector(selectCloseJobStatus, shallowEqual);
+    const deleteJobStatus: ApiRequestStatus = useSelector(selectDeleteJobStatus, shallowEqual);
     const getJobDetailsStatus: ApiRequestStatus = useSelector(selectGetJobDetailsStatus, shallowEqual);
     const addCandidateToJobStatus: ApiRequestStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
     const moveCandidateToStageStatus: ApiRequestStatus = useSelector(selectMoveCandidateToStageStatus, shallowEqual);
@@ -101,6 +105,7 @@ const JobDetailsPage = () => {
     const isUploadingIndicatorVisible =
         updateJobStatus === ApiRequestStatus.InProgress ||
         closeJobStatus === ApiRequestStatus.InProgress ||
+        deleteJobStatus === ApiRequestStatus.InProgress ||
         addCandidateToJobStatus === ApiRequestStatus.InProgress ||
         moveCandidateToStageStatus === ApiRequestStatus.InProgress ||
         getJobDetailsStatus === ApiRequestStatus.InProgress;
@@ -110,6 +115,18 @@ const JobDetailsPage = () => {
             setJobDetails(jobDetailsOriginal);
         }
     }, [jobDetailsOriginal]);
+
+    useEffect(() => {
+        if (jobDetails) {
+            if (deleteJobStatus === ApiRequestStatus.Success) {
+                message.success(`Job '${jobDetails.title}' removed successfully.`);
+                history.push(routeJobs());
+            } else if (deleteJobStatus === ApiRequestStatus.Failed) {
+                message.error(`Failed to remove job '${jobDetails.title}'.`);
+            }
+        }
+        // eslint-disable-next-line
+    }, [deleteJobStatus]);
 
     useEffect(() => {
         dispatch(fetchJobDetails(id));
@@ -201,6 +218,14 @@ const JobDetailsPage = () => {
 
     const onCandidateCardClicked = (candidateId: string) => history.push(routeCandidateProfile(candidateId));
 
+    const onEditJob = () => history.push(routeJobEdit(jobDetails?.jobId));
+
+    const onRemoveJob = () => {
+        if (jobDetails) {
+            dispatch(deleteJob(jobDetails.jobId));
+        }
+    };
+
     const onBackClicked = () => history.goBack();
 
     const createHeaderSubtitle = (jobDetails: JobDetails) => {
@@ -254,7 +279,7 @@ const JobDetailsPage = () => {
                     {
                         label: `Details`,
                         key: "1",
-                        children: `Not implemented yet`,
+                        children: <TabDetails job={jobDetails} onEditJob={onEditJob} onRemoveJob={onRemoveJob} />,
                     },
                     {
                         label: `Pipeline`,

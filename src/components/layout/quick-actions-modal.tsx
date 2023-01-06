@@ -1,17 +1,9 @@
 import { Modal, Typography } from "antd";
 import styled from "styled-components";
-import { CalendarPlus, FilePlus, UserPlus } from "lucide-react";
+import { Briefcase, CalendarPlus, FilePlus, UserPlus } from "lucide-react";
 import { Colors } from "../../assets/styles/colors";
 
 const { Text } = Typography;
-
-type Props = {
-    open: boolean;
-    onClose: any;
-    onScheduleInterview: ()=> void;
-    onAddCandidate: ()=> void;
-    onCreateTemplate: ()=> void;
-};
 
 const ActionText = styled(Text)`
     color: ${Colors.Neutral_600};
@@ -53,9 +45,24 @@ const ActionContainer = styled.div`
     }
 `;
 
-const ActionsModal = ({ open, onClose, onScheduleInterview, onAddCandidate, onCreateTemplate }: Props) => {
+type Props = {
+    open: boolean;
+    onClose: any;
+    onCreateJob: () => void;
+    onScheduleInterview: () => void;
+    onAddCandidate: () => void;
+    onCreateTemplate: () => void;
+};
+
+const ActionsModal = ({ open, onClose, onCreateJob, onScheduleInterview, onAddCandidate, onCreateTemplate }: Props) => {
     return (
         <Modal title='Quick Actions' open={open} onCancel={onClose} footer={null} bodyStyle={{ marginTop: 24 }}>
+            <ActionContainer onClick={onCreateJob}>
+                <IconBackground>
+                    <Briefcase size={20} />
+                </IconBackground>
+                <ActionText>Create job</ActionText>
+            </ActionContainer>
             <ActionContainer onClick={onAddCandidate}>
                 <IconBackground>
                     <UserPlus size={20} />

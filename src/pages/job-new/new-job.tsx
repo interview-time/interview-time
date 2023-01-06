@@ -14,7 +14,7 @@ import { Job, JobDetails, JobStage, JobStatus, TeamMember, Template, UserProfile
 import { loadTeam } from "../../store/team/actions";
 import { createJob, fetchJobDetails, fetchJobs, updateJob } from "../../store/jobs/actions";
 import StepJobStages from "./step-job-stages";
-import { routeJobs } from "../../utils/route";
+import { canGoBack, routeJobs } from "../../utils/route";
 import { v4 as uuidv4 } from "uuid";
 import { log } from "../../utils/log";
 import {
@@ -179,10 +179,14 @@ const NewJob = () => {
     useEffect(() => {
         if (updateJobStatus === ApiRequestStatus.Success) {
             message.success(`Job '${job.title}' updated successfully.`);
-            dispatch(fetchJobs(true));
-            history.push(routeJobs());
+            if (canGoBack(history)) {
+                history.goBack();
+            } else {
+                history.push(routeJobs());
+            }
         } else if (createJobStatus === ApiRequestStatus.Failed) {
             message.error(`Failed to update job '${job.title}'.`);
+            history.push(routeJobs());
         }
         // eslint-disable-next-line
     }, [updateJobStatus]);

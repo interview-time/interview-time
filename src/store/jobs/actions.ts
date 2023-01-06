@@ -11,6 +11,7 @@ const BASE_URI = `${process.env.REACT_APP_API_URL}`;
 export enum JobsApiRequest {
     CreateJob = "CreateJob",
     UpdateJob = "UpdateJob",
+    DeleteJob = "DeleteJob",
     CloseJob = "CloseJob",
     GetJobs = "GetJobs",
     GetJobDetails = "GetJobDetails",
@@ -162,6 +163,27 @@ export const closeJob = (jobId: string) => async (dispatch: Dispatch, getState: 
 
     const request = axios.post(`${BASE_URI}/team/${teamId}/job/${jobId}/close`, null, config(token));
     await genericJobDetailsRequest(dispatch, JobsApiRequest.CloseJob, request);
+};
+
+export const deleteJob = (jobId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+    const { user, jobs } = getState();
+
+    const token = await getAccessTokenSilently();
+    const teamId = user.profile.currentTeamId;
+
+    dispatch(setRequestInProgress(JobsApiRequest.DeleteJob));
+
+    try {
+        await axios.delete(`${BASE_URI}/team/${teamId}/job/${jobId}`, config(token));
+        dispatch(setJobs(jobs.jobs.filter(job => job.jobId !== jobId)));
+        dispatch(setRequestSuccess(JobsApiRequest.DeleteJob));
+        dispatch(setRequestReset(JobsApiRequest.DeleteJob));
+    } catch (error) {
+        logError(error);
+
+        const axiosErr = error as AxiosError;
+        dispatch(setRequestFailed(JobsApiRequest.DeleteJob, axiosErr?.message));
+    }
 };
 
 export const addCandidateToJob =

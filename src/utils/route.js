@@ -115,3 +115,5 @@ export const getParameterByName = (name, url = window.location.href) => {
 export const getHost = () => window.location.protocol.concat("//").concat(window.location.host);
 
 export const getApiUrl = () => process.env.REACT_APP_API_URL;
+
+export const canGoBack = (history) => history.action !== "POP"
