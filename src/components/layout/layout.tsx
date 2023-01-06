@@ -7,12 +7,12 @@ import {
     routeHome,
     routeInterviewAdd,
     routeInterviews,
-    routeJobs,
+    routeJobs, routeJobsNew,
     routeTeamNew,
     routeTeamProfile,
     routeTemplateBlank,
     routeTemplateLibrary,
-    routeTemplates,
+    routeTemplates
 } from "../../utils/route";
 
 import FeedbackModal from "../../pages/feedback/modal-feedback";
@@ -306,25 +306,17 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
         history.push(routeHome());
     };
 
-    const onCreateTeam = () => {
-        history.push(routeTeamNew());
-    };
+    const onCreateTeam = () => history.push(routeTeamNew());
 
-    const onTeamProfileClicked = () => {
-        history.push(routeTeamProfile());
-    };
+    const onTeamProfileClicked = () => history.push(routeTeamProfile());
 
-    const onScheduleInterview = () => {
-        history.push(routeInterviewAdd());
-    };
+    const onScheduleInterview = () => history.push(routeInterviewAdd());
 
-    const onAddCandidate = () => {
-        history.push(routeCandidateAdd());
-    };
+    const onAddCandidate = () => history.push(routeCandidateAdd());
 
-    const onCreateTemplate = () => {
-        history.push(routeTemplateBlank());
-    };
+    const onCreateTemplate = () => history.push(routeTemplateBlank());
+
+    const onCreateJob = () => history.push(routeJobsNew());
 
     // @ts-ignore
     const teamMenuItems: ItemType[] = defaultTo(profile.teams, [])
@@ -430,6 +422,7 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
                     <ActionsModal
                         open={actionsVisible}
                         onClose={onActionsClose}
+                        onCreateJob={onCreateJob}
                         onAddCandidate={onAddCandidate}
                         onScheduleInterview={onScheduleInterview}
                         onCreateTemplate={onCreateTemplate}

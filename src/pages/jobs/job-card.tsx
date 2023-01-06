@@ -105,7 +105,7 @@ const JobCard = ({ job, onCardClicked, onEditClicked }: Props) => {
                         <Text>{job.totalCandidates} candidates</Text>
                         {job.newlyAddedCandidates > 0 && (
                             <TagSlim textColor={Colors.Primary_500} backgroundColor={Colors.Primary_50}>
-                                +{job.newlyAddedCandidates}
+                                +{job.newlyAddedCandidates} new
                             </TagSlim>
                         )}
                     </Space>
