@@ -52,6 +52,7 @@ const { Text } = Typography;
  */
 const InterviewSchedule = ({
     interviewId,
+    templateId,
     candidateId,
     onScheduled,
     profile,
@@ -186,8 +187,12 @@ const InterviewSchedule = ({
      * @returns {string|null}
      */
     const fromTemplateId = () => {
-        const params = new URLSearchParams(location.search);
-        return params.get("fromTemplate");
+        if (templateId) {
+            return templateId;
+        } else {
+            const params = new URLSearchParams(location.search);
+            return params.get("fromTemplate");
+        }
     };
 
     const onInterviewersChange = values => {

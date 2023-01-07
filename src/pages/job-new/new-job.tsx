@@ -137,7 +137,7 @@ const NewJob = () => {
                 title: formValues.title,
                 department: formValues.department,
                 location: formValues.location,
-                deadline: formValues.date,
+                deadline: formValues.deadline,
                 tags: formValues.tags,
                 description: formValues.description,
             });
