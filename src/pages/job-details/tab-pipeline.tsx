@@ -1,9 +1,16 @@
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { CandidateDetails, CandidateStageStatus, JobStage, StageCandidate, Template } from "../../store/models";
+import {
+    CandidateDetails,
+    CandidateStageStatus,
+    JobStage,
+    JobStageType,
+    StageCandidate,
+    Template,
+} from "../../store/models";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
-import { Avatar, Dropdown } from "antd";
+import { Avatar, Dropdown, Modal } from "antd";
 import { cloneDeep } from "lodash";
 import { arrayMove } from "react-sortable-hoc";
 import React from "react";
@@ -25,6 +32,7 @@ import {
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import AddCandidateModal from "./add-candidate-modal";
 import { log } from "../../utils/log";
+import InterviewSchedule from "../interview-schedule/interview-schedule";
 
 const Row = styled.div`
     display: flex;
@@ -168,6 +176,12 @@ type AddCandidateModalProps = {
     stageId?: string;
 };
 
+type ScheduleInterviewModalProps = {
+    visible: boolean;
+    candidateId?: string;
+    templateId?: string;
+};
+
 type Props = {
     templates: Template[];
     jobStages: JobStage[];
@@ -195,6 +209,9 @@ const TabPipeline = ({
         visible: false,
     });
     const [newStageModal, setNewStageModal] = React.useState<NewStageModalProps>({
+        visible: false,
+    });
+    const [scheduleInterviewModal, setScheduleInterviewModal] = React.useState<ScheduleInterviewModalProps>({
         visible: false,
     });
 
@@ -265,6 +282,13 @@ const TabPipeline = ({
             onUpdateStages(jobStagesNew);
         } else {
             log("Moving card to another column");
+            if (destinationStage.type === JobStageType.Interview) {
+                setScheduleInterviewModal({
+                    visible: true,
+                    candidateId: removed.candidateId,
+                    templateId: destinationStage.templateId,
+                });
+            }
             onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId);
         }
     };
@@ -418,6 +442,37 @@ const TabPipeline = ({
                     })
                 }
             />
+
+            <Modal
+                title='Schedule Interview'
+                open={scheduleInterviewModal.visible}
+                centered={true}
+                onCancel={() => {
+                    setScheduleInterviewModal({
+                        visible: false,
+                        candidateId: undefined,
+                        templateId: undefined,
+                    });
+                }}
+                footer={null}
+                destroyOnClose={true}
+            >
+
+                <InterviewSchedule
+                    // @ts-ignore
+                    candidateId={scheduleInterviewModal.candidateId}
+                    templateId={scheduleInterviewModal.templateId}
+                    templates={templates}
+                    candidates={candidates}
+                    onScheduled={() => {
+                        setScheduleInterviewModal({
+                            visible: false,
+                            candidateId: undefined,
+                            templateId: undefined,
+                        });
+                    }}
+                />
+            </Modal>
         </>
     );
 };
