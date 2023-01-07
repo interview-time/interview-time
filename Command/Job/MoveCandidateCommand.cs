@@ -22,6 +22,8 @@ namespace CafApi.Command
         public string CandidateId { get; set; }
 
         public string NewStageId { get; set; }
+
+        public int Position { get; set; }
     }
 
     public class MoveCandidateCommandHandler : IRequestHandler<MoveCandidateCommand>
@@ -72,8 +74,10 @@ namespace CafApi.Command
                 newStage.Candidates = new List<StageCandidate>();
             }
 
+            var index = command.Position <= newStage.Candidates.Count() ? command.Position : 0;
+
             candidate.MovedToStage = DateTime.UtcNow;
-            newStage.Candidates.Add(candidate);
+            newStage.Candidates.Insert(index, candidate);
 
             await _jobRepository.SaveJob(job);
 
