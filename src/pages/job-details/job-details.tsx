@@ -6,6 +6,7 @@ import {
     deleteJob,
     fetchJobDetails,
     moveCandidateToStage,
+    openJob,
     updateJob,
 } from "../../store/jobs/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -16,8 +17,8 @@ import {
     selectDeleteJobStatus,
     selectGetJobDetailsStatus,
     selectJobDetails,
-    selectMoveCandidateToStageStatus,
-    selectUpdateJobStatus,
+    selectMoveCandidateToStageStatus, selectOpenJobStatus,
+    selectUpdateJobStatus
 } from "../../store/jobs/selectors";
 import { CandidateDetails, JobDetails, JobStage, JobStatus, Template } from "../../store/models";
 import styled from "styled-components";
@@ -95,6 +96,7 @@ const JobDetailsPage = () => {
 
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
     const closeJobStatus: ApiRequestStatus = useSelector(selectCloseJobStatus, shallowEqual);
+    const openJobStatus: ApiRequestStatus = useSelector(selectOpenJobStatus, shallowEqual);
     const deleteJobStatus: ApiRequestStatus = useSelector(selectDeleteJobStatus, shallowEqual);
     const getJobDetailsStatus: ApiRequestStatus = useSelector(selectGetJobDetailsStatus, shallowEqual);
     const addCandidateToJobStatus: ApiRequestStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
@@ -105,6 +107,7 @@ const JobDetailsPage = () => {
     const isUploadingIndicatorVisible =
         updateJobStatus === ApiRequestStatus.InProgress ||
         closeJobStatus === ApiRequestStatus.InProgress ||
+        openJobStatus === ApiRequestStatus.InProgress ||
         deleteJobStatus === ApiRequestStatus.InProgress ||
         addCandidateToJobStatus === ApiRequestStatus.InProgress ||
         moveCandidateToStageStatus === ApiRequestStatus.InProgress ||
@@ -211,9 +214,12 @@ const JobDetailsPage = () => {
                 status: status,
             };
             setJobDetails(updatedJob);
-            dispatch(closeJob(jobDetails.jobId));
+            if (status === JobStatus.OPEN) {
+                dispatch(openJob(jobDetails.jobId));
+            } else if (status === JobStatus.CLOSED) {
+                dispatch(closeJob(jobDetails.jobId));
+            }
         }
-        // TODO reopen job?
     };
 
     const onCandidateCardClicked = (candidateId: string) => history.push(routeCandidateProfile(candidateId));

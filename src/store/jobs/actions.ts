@@ -13,6 +13,7 @@ export enum JobsApiRequest {
     UpdateJob = "UpdateJob",
     DeleteJob = "DeleteJob",
     CloseJob = "CloseJob",
+    OpenJob = "OpenJob",
     GetJobs = "GetJobs",
     GetJobDetails = "GetJobDetails",
     AddCandidateToJob = "AddCandidateToJob",
@@ -163,6 +164,16 @@ export const closeJob = (jobId: string) => async (dispatch: Dispatch, getState: 
 
     const request = axios.post(`${BASE_URI}/team/${teamId}/job/${jobId}/close`, null, config(token));
     await genericJobDetailsRequest(dispatch, JobsApiRequest.CloseJob, request);
+};
+
+export const openJob = (jobId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+    const { user } = getState();
+
+    const token = await getAccessTokenSilently();
+    const teamId = user.profile.currentTeamId;
+
+    const request = axios.post(`${BASE_URI}/team/${teamId}/job/${jobId}/reopen`, null, config(token));
+    await genericJobDetailsRequest(dispatch, JobsApiRequest.OpenJob, request);
 };
 
 export const deleteJob = (jobId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
