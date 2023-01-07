@@ -100,13 +100,36 @@ namespace CafApi.Controllers
                 command.UserId = UserId;
                 command.TeamId = teamId;
 
-                return await _mediator.Send(command);
+                var candidate = await _mediator.Send(command);
+
+                if (command.JobId != null && command.StageId != null)
+                {
+                    await _mediator.Send(new AddCandidateToJobCommand
+                    {
+                        TeamId = teamId,
+                        UserId = UserId,
+                        JobId = command.JobId,
+                        CandidateId = candidate.CandidateId,
+                        StageId = command.StageId
+                    });
+                }
+
+                return candidate;
             }
             catch (AuthorizationException ex)
             {
                 _logger.LogError(ex, ex.Message);
-
-                return Unauthorized();
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound(ex.Message);
+            }
+            catch (ItemAlreadyExistsException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

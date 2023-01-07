@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
+using CafApi.Repository;
 using CafApi.Services.User;
 using MediatR;
 
@@ -36,17 +35,21 @@ namespace CafApi.Command
         public string Location { get; set; }
 
         public List<string> Tags { get; set; }
+
+        public string JobId { get; set; }
+
+        public string StageId { get; set; }
     }
 
     public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateCommand, Candidate>
     {
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;
+        private readonly ICandidateRepository _candidateRepository;
 
-        public CreateCandidateCommandHandler(IPermissionsService permissionsService, IAmazonDynamoDB dynamoDbClient)
+        public CreateCandidateCommandHandler(IPermissionsService permissionsService, ICandidateRepository candidateRepository)
         {
             _permissionsService = permissionsService;
-            _context = new DynamoDBContext(dynamoDbClient);
+            _candidateRepository = candidateRepository;
         }
 
         public async Task<Candidate> Handle(CreateCandidateCommand command, CancellationToken cancellationToken)
@@ -71,10 +74,11 @@ namespace CafApi.Command
                 Owner = command.UserId,
                 Location = command.Location,
                 Tags = command.Tags,
-                CreatedDate = DateTime.UtcNow
+                CreatedDate = DateTime.UtcNow,
+                JobId = command.JobId
             };
 
-            await _context.SaveAsync(candidate);
+            await _candidateRepository.SaveCandidate(candidate);
 
             return candidate;
         }

@@ -213,5 +213,31 @@ namespace CafApi.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPost("team/{teamId}/job/{jobId}/reopen")]
+        public async Task<ActionResult> ReopenJob(string teamId, string jobId)
+        {
+            try
+            {
+                await _mediator.Send(new ReopenJobCommand
+                {
+                    TeamId = teamId,
+                    JobId = jobId,
+                    UserId = UserId
+                });
+
+                return Ok();
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

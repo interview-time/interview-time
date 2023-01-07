@@ -32,6 +32,10 @@ namespace CafApi.Query
 
         public string Department { get; set; }
 
+        public string Owner { get; set; }
+
+        public string OwnerName { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public string Status { get; set; }
@@ -45,13 +49,16 @@ namespace CafApi.Query
     {
         private readonly IPermissionsService _permissionsService;
         private readonly IJobRepository _jobRepository;
+        private readonly IUserRepository _userRepository;
 
         public JobsQueryHandler(
             IPermissionsService permissionsService,
-            IJobRepository jobRepository)
+            IJobRepository jobRepository,
+            IUserRepository userRepository)
         {
             _permissionsService = permissionsService;
             _jobRepository = jobRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<JobsQueryResult> Handle(JobsQuery query, CancellationToken cancellationToken)
@@ -63,6 +70,9 @@ namespace CafApi.Query
 
             var jobs = await _jobRepository.GetAllJobs(query.TeamId);
 
+            var ownerIds = jobs.Where(j => j.Owner != null).Select(j => j.Owner).Distinct().ToList();
+            var owners = await _userRepository.GetUserProfiles(ownerIds);
+
             return new JobsQueryResult
             {
                 Jobs = jobs.Select(j => new JobItem
@@ -70,6 +80,8 @@ namespace CafApi.Query
                     JobId = j.JobId,
                     Title = j.Title,
                     Location = j.Location,
+                    Owner = j.Owner,
+                    OwnerName = owners.FirstOrDefault(o => o.UserId == j.Owner)?.Name,
                     Department = j.Department,
                     CreatedDate = j.CreatedDate,
                     Status = j.Status,
@@ -80,7 +92,7 @@ namespace CafApi.Query
                     NewlyAddedCandidates = j.Pipeline
                         .Where(p => p.Candidates != null)
                         .SelectMany(p => p.Candidates)
-                        .Where(c => c.OriginallyAdded != null && c.OriginallyAdded > DateTime.UtcNow.AddDays(-7))
+                        .Where(c => c.OriginallyAdded > DateTime.UtcNow.AddDays(-7))
                         .Count()
                 }).ToList()
             };
