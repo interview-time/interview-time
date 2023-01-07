@@ -4,8 +4,7 @@ import { Button, Input, List, Select, Space, Spin, Typography } from "antd";
 import { Job, JobStatus, TeamMember } from "../../store/models";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import { Plus, Search, SortDesc } from "lucide-react";
-import { Filter as FilterIcon } from "lucide-react";
+import { Filter as FilterIcon, Plus, Search, SortDesc } from "lucide-react";
 import React from "react";
 import { useDebounceFn } from "ahooks";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
@@ -24,7 +23,7 @@ import {
     getJobFilterFromStorage,
     getJobSortFromStorage,
     setJobFilterToStorage,
-    setJobSortToStorage
+    setJobSortToStorage,
 } from "../../utils/storage";
 
 const { Title } = Typography;
@@ -174,7 +173,7 @@ const Jobs = () => {
         }
 
         if (filter.ownerId) {
-            // TODO add owner filter when backend will return ownerId
+            jobs = jobs.filter(job => job.owner === filter.ownerId);
         }
 
         if (filter.search) {
@@ -345,7 +344,7 @@ const Jobs = () => {
                     allowClear
                     showSearch
                     style={{ minWidth: 200 }}
-                    defaultValue={filter.department}
+                    defaultValue={filter.ownerId}
                     placeholder='Everyone'
                     options={teamMembersOptions}
                     filterOption={filterOptionLabel}

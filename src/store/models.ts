@@ -170,6 +170,8 @@ export interface Job {
     status: JobStatus;
     totalCandidates: number;
     newlyAddedCandidates: number;
+    owner: string;
+    ownerName: string;
 }
 
 export enum JobStatus {
@@ -181,8 +183,6 @@ export interface JobDetails extends Job {
     description?: string;
     deadline?: string;
     tags: string[];
-    owner: string;
-    ownerName: string;
     pipeline: JobStage[];
 }
 
