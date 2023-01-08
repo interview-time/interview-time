@@ -112,10 +112,12 @@ const AddCandidateModal = ({ candidates, jobId, stageId, open, onCandidateCreate
     const [mode, setMode] = useState(Mode.EXISTING);
     const [selectedCandidate, setSelectedCandidate] = useState<CandidateDetails | undefined>(undefined);
 
-    const candidateOptions = candidates.map(candidate => ({
-        label: candidate.candidateName,
-        value: candidate.candidateId,
-    }));
+    const candidateOptions = candidates
+        .filter(candidate => !candidate.jobId && !candidate.archived)
+        .map(candidate => ({
+            label: candidate.candidateName,
+            value: candidate.candidateId,
+        }));
 
     React.useEffect(() => {
         if (open) {
