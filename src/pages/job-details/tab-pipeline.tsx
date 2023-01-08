@@ -190,7 +190,7 @@ type Props = {
     onSaveStage: (stage: JobStage) => void;
     onRemoveStage: (stage: JobStage) => void;
     onUpdateStages: (stages: JobStage[]) => void;
-    onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string) => void;
+    onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string, position: number) => void;
     onCandidateCardClicked: (candidateId: string) => void;
 };
 
@@ -289,7 +289,7 @@ const TabPipeline = ({
                     templateId: destinationStage.templateId,
                 });
             }
-            onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId);
+            onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId, destination.index);
         }
     };
 

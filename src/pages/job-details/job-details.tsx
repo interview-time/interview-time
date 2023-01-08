@@ -188,7 +188,7 @@ const JobDetailsPage = () => {
         dispatch(updateJob(updatedJob));
     };
 
-    const onCandidateMoveStages = (stages: JobStage[], candidateId: string, newStageId: string) => {
+    const onCandidateMoveStages = (stages: JobStage[], candidateId: string, newStageId: string, position: number) => {
         if (!jobDetails) {
             return;
         }
@@ -198,7 +198,7 @@ const JobDetailsPage = () => {
             pipeline: stages,
         };
         setJobDetails(updatedJob);
-        dispatch(moveCandidateToStage(jobDetails.jobId, newStageId, candidateId));
+        dispatch(moveCandidateToStage(jobDetails.jobId, newStageId, candidateId, position));
     };
 
     const onAddCandidate = (candidateId: string, stageId: string) => {

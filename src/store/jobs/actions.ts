@@ -213,7 +213,8 @@ export const addCandidateToJob =
     };
 
 export const moveCandidateToStage =
-    (jobId: string, stageId: string, candidateId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+    (jobId: string, stageId: string, candidateId: string, position: number) =>
+    async (dispatch: Dispatch, getState: () => RootState) => {
         const { user } = getState();
 
         const token = await getAccessTokenSilently();
@@ -221,6 +222,7 @@ export const moveCandidateToStage =
         const data = {
             candidateId: candidateId,
             newStageId: stageId,
+            position: position,
         };
 
         const request = axios.post(`${BASE_URI}/team/${teamId}/job/${jobId}/move-candidate`, data, config(token));
