@@ -30,3 +30,7 @@ export const searchCandidates = (candidates: Candidate[], query: string) => {
             (candidate.position && candidate.position.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
     );
 };
+
+export const selectCreateCandidateStatus = (state: RootState) => state.candidates.apiResults.CreateCandidate;
+
+export const selectUpdateCandidateStatus = (state: RootState) => state.candidates.apiResults.UpdateCandidate;

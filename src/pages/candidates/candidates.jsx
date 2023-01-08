@@ -21,7 +21,7 @@ import { CandidatesFilter } from "../../utils/constants";
 import { MoreIcon } from "../../utils/icons";
 import { getFormattedDateShort } from "../../utils/date-fns";
 import Filter from "../../components/filter/filter";
-import CreateCandidate from "../candidate-profile/create-candidate";
+import CreateCandidateModal from "../candidate-add/create-candidate-modal";
 
 const { Title } = Typography;
 
@@ -128,7 +128,7 @@ const Candidates = ({
     };
 
     return (
-        <Layout >
+        <Layout>
             <div className={styles.header}>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Candidates
@@ -175,16 +175,11 @@ const Candidates = ({
                 />
             </Card>
 
-            <Modal
-                title='Schedule Interview'
-                visible={createCandidate}
-                centered={true}
-                width={600}
+            <CreateCandidateModal
+                open={createCandidate}
                 onCancel={() => setCreateCandidate(false)}
-                footer={null}
-            >
-                <CreateCandidate onSave={() => setCreateCandidate(false)} onCancel={() => setCreateCandidate(false)} />
-            </Modal>
+                onSave={() => setCreateCandidate(false)}
+            />
         </Layout>
     );
 };
