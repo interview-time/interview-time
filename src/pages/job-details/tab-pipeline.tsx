@@ -174,6 +174,7 @@ type NewStageModalProps = {
 type AddCandidateModalProps = {
     visible: boolean;
     stageId?: string;
+    jobId?: string;
 };
 
 type ScheduleInterviewModalProps = {
@@ -183,27 +184,29 @@ type ScheduleInterviewModalProps = {
 };
 
 type Props = {
+    jobId: string;
     templates: Template[];
     jobStages: JobStage[];
     candidates: CandidateDetails[];
-    onAddCandidate: (candidateId: string, stageId: string) => void;
     onSaveStage: (stage: JobStage) => void;
     onRemoveStage: (stage: JobStage) => void;
     onUpdateStages: (stages: JobStage[]) => void;
     onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string, position: number) => void;
     onCandidateCardClicked: (candidateId: string) => void;
+    onCandidateCreated: () => void;
 };
 
 const TabPipeline = ({
+    jobId,
     templates,
     jobStages,
     candidates,
-    onAddCandidate,
     onSaveStage,
     onRemoveStage,
     onUpdateStages,
     onCandidateMoveStages,
     onCandidateCardClicked,
+    onCandidateCreated,
 }: Props) => {
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
@@ -240,6 +243,7 @@ const TabPipeline = ({
         setAddCandidateModal({
             visible: true,
             stageId: stageId,
+            jobId: jobId,
         });
     };
 
@@ -283,11 +287,14 @@ const TabPipeline = ({
         } else {
             log("Moving card to another column");
             if (destinationStage.type === JobStageType.Interview) {
-                setScheduleInterviewModal({
-                    visible: true,
-                    candidateId: removed.candidateId,
-                    templateId: destinationStage.templateId,
-                });
+                // TODO temporary commented out
+                // 1. check if candidate is not archived before scheduling interview
+                // 2. callback when interview is scheduled to refresh job details
+                // setScheduleInterviewModal({
+                //     visible: true,
+                //     candidateId: removed.candidateId,
+                //     templateId: destinationStage.templateId,
+                // });
             }
             onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId, destination.index);
         }
@@ -428,14 +435,9 @@ const TabPipeline = ({
             <AddCandidateModal
                 candidates={candidates}
                 open={addCandidateModal.visible}
-                onSave={(candidateId: string) => {
-                    setAddCandidateModal({
-                        visible: false,
-                    });
-                    if (addCandidateModal.stageId) {
-                        onAddCandidate(candidateId, addCandidateModal.stageId);
-                    }
-                }}
+                stageId={addCandidateModal.stageId}
+                jobId={addCandidateModal.jobId}
+                onCandidateCreated={onCandidateCreated}
                 onClose={() =>
                     setAddCandidateModal({
                         visible: false,
@@ -457,7 +459,6 @@ const TabPipeline = ({
                 footer={null}
                 destroyOnClose={true}
             >
-
                 <InterviewSchedule
                     // @ts-ignore
                     candidateId={scheduleInterviewModal.candidateId}

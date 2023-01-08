@@ -1,7 +1,7 @@
 import styles from "./interview-schedule.module.css";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Checkbox, Divider, Form, Input, message, Select, Space, Tooltip, Modal, Typography } from "antd";
+import { Button, Checkbox, Divider, Form, Input, message, Select, Space, Tooltip, Typography } from "antd";
 import { useHistory, useLocation } from "react-router-dom";
 import { cloneDeep, isEmpty } from "lodash/lang";
 import { findInterview, findTemplate } from "../../utils/converters";
@@ -23,13 +23,13 @@ import {
 import { filterOptionLabel } from "../../utils/filters";
 import Spinner from "../../components/spinner/spinner";
 import { useAuth0 } from "../../react-auth0-spa";
-import CreateCandidate from "../candidate-profile/create-candidate";
 import { log } from "../../utils/log";
 import DatePicker from "../../components/antd/DatePicker";
 import { addHours, parse, roundToNearestMinutes, set } from "date-fns";
 import { InterviewType } from "../../store/models";
 import { INTERVIEW_TAKE_HOME, interviewWithoutDate } from "../../utils/interview";
 import InterviewTypeTag from "../../components/tags/interview-type-tag";
+import CreateCandidateModal from "../candidate-add/create-candidate-modal";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -535,31 +535,23 @@ const InterviewSchedule = ({
         <div>
             <InterviewDetails />
 
-            <Modal
-                title='Candidate Details'
-                centered={true}
-                width={600}
-                visible={createCandidate}
+            <CreateCandidateModal
+                open={createCandidate}
+                onSave={candidateId => {
+                    var newCandidate = candidates.find(c => c.candidateId === candidateId);
+
+                    if (newCandidate) {
+                        interview.candidateId = newCandidate.candidateId;
+                        interview.candidate = newCandidate.candidateName;
+
+                        form.setFieldsValue({
+                            candidateId: newCandidate.candidateId,
+                        });
+                    }
+                    setCreateCandidate(false);
+                }}
                 onCancel={() => setCreateCandidate(false)}
-                footer={null}
-            >
-                <CreateCandidate
-                    onSave={candidateId => {
-                        var newCandidate = candidates.find(c => c.candidateId === candidateId);
-
-                        if (newCandidate) {
-                            interview.candidateId = newCandidate.candidateId;
-                            interview.candidate = newCandidate.candidateName;
-
-                            form.setFieldsValue({
-                                candidateId: newCandidate.candidateId,
-                            });
-                        }
-                        setCreateCandidate(false);
-                    }}
-                    onCancel={() => setCreateCandidate(false)}
-                />
-            </Modal>
+            />
         </div>
     );
 };

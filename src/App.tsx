@@ -64,7 +64,7 @@ import { ConfigProvider } from "antd";
 import { createGlobalStyle } from "styled-components";
 import { Colors } from "./assets/styles/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
-import CandidateAdd from "./pages/candidate-add/candidate-add";
+import CandidateAdd from "./pages/candidate-add/create-candidate-page";
 import Jobs from "./pages/jobs/jobs";
 import NewJob from "./pages/job-new/new-job";
 import JobDetailsPage from "./pages/job-details/job-details";

@@ -1,12 +1,12 @@
 import React from "react";
 import { Col, Row, Typography } from "antd";
 import Layout from "../../components/layout/layout";
-import CreateCandidate from "../candidate-profile/create-candidate";
 import { routeCandidates } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import Card from "../../components/card/card";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import CreateCandidateForm from "./create-candidate-form";
 
 const { Title } = Typography;
 
@@ -21,7 +21,6 @@ const CandidateAdd = () => {
     const history = useHistory();
 
     return (
-        // @ts-ignore
         <Layout >
             <Row>
                 <Col span={24} xl={{ span: 14, offset: 5 }} xxl={{ span: 12, offset: 6 }}>
@@ -32,8 +31,7 @@ const CandidateAdd = () => {
                                 Add Candidate
                             </Title>
                         </Header>
-                        <CreateCandidate
-                            // @ts-ignore
+                        <CreateCandidateForm
                             onSave={() => history.push(routeCandidates())}
                             onCancel={() => history.push(routeCandidates())}
                         />

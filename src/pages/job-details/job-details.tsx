@@ -1,7 +1,6 @@
 import { useHistory, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
-    addCandidateToJob,
     closeJob,
     deleteJob,
     fetchJobDetails,
@@ -201,12 +200,6 @@ const JobDetailsPage = () => {
         dispatch(moveCandidateToStage(jobDetails.jobId, newStageId, candidateId, position));
     };
 
-    const onAddCandidate = (candidateId: string, stageId: string) => {
-        if (jobDetails) {
-            dispatch(addCandidateToJob(jobDetails.jobId, stageId, candidateId));
-        }
-    };
-
     const onJobStatusChange = (status: JobStatus) => {
         if (jobDetails) {
             const updatedJob = {
@@ -219,6 +212,12 @@ const JobDetailsPage = () => {
             } else if (status === JobStatus.CLOSED) {
                 dispatch(closeJob(jobDetails.jobId));
             }
+        }
+    };
+
+    const onCandidateCreated = () => {
+        if (jobDetails) {
+            dispatch(fetchJobDetails(jobDetails.jobId));
         }
     };
 
@@ -292,15 +291,16 @@ const JobDetailsPage = () => {
                         key: "2",
                         children: (
                             <TabPipeline
+                                jobId={jobDetails?.jobId}
                                 templates={templates}
                                 jobStages={jobDetails?.pipeline || []}
                                 candidates={candidates}
-                                onAddCandidate={onAddCandidate}
                                 onUpdateStages={onUpdateStages}
                                 onSaveStage={onSaveStage}
                                 onRemoveStage={onRemoveStage}
                                 onCandidateMoveStages={onCandidateMoveStages}
                                 onCandidateCardClicked={onCandidateCardClicked}
+                                onCandidateCreated={onCandidateCreated}
                             />
                         ),
                     },
