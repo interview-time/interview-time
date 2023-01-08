@@ -237,7 +237,6 @@ const TabPipeline = ({
             visible: true,
             stage: undefined,
         });
-        ``;
     };
 
     const onAddCandidateClicked = (stageId: string) => {
