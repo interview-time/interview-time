@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../../components/layout/layout";
-import { Button, Dropdown, Menu, Modal, Input, Table } from "antd";
+import { Button, Dropdown, Menu, Input, Table } from "antd";
 import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import Card from "../../components/card/card";
 import { connect } from "react-redux";
