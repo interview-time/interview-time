@@ -39,11 +39,13 @@ const Footer = styled.div`
 
 type Props = {
     candidate?: Candidate;
+    jobId?: string;
+    stageId?: string;
     onSave: (candidateId: string) => void;
     onCancel: () => void;
 };
 
-const CreateCandidateForm = ({ candidate, onSave, onCancel }: Props) => {
+const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Props) => {
     const dispatch = useDispatch();
 
     const [moreFieldsVisible, setMoreFieldsVisible] = useState(false);
@@ -133,7 +135,7 @@ const CreateCandidateForm = ({ candidate, onSave, onCancel }: Props) => {
 
     const onFinish = (values: any) => {
         if (candidate) {
-            const updatedCandidate = cloneDeep(candidate);
+            const updatedCandidate: Candidate = cloneDeep(candidate);
             updatedCandidate.candidateName = values.candidateName;
             updatedCandidate.position = values.position;
             updatedCandidate.phone = values.phone;
@@ -142,6 +144,8 @@ const CreateCandidateForm = ({ candidate, onSave, onCancel }: Props) => {
             updatedCandidate.linkedIn = values.linkedIn;
             updatedCandidate.gitHub = values.gitHub;
             updatedCandidate.status = values.status;
+            updatedCandidate.jobId = jobId;
+            updatedCandidate.stageId = stageId;
 
             if (resumeFile) {
                 updatedCandidate.resumeFile = resumeFile;
@@ -153,6 +157,8 @@ const CreateCandidateForm = ({ candidate, onSave, onCancel }: Props) => {
                     ...values,
                     candidateId: candidateId,
                     resumeFile: resumeFile,
+                    jobId: jobId,
+                    stageId: stageId,
                 })
             );
         }
@@ -285,7 +291,7 @@ const CreateCandidateForm = ({ candidate, onSave, onCancel }: Props) => {
                 </MoreFieldsButton>
 
                 <Footer>
-                    <Space size={16}>
+                    <Space size={8}>
                         <Button onClick={onCancel}>Cancel</Button>
                         <Button
                             type='primary'

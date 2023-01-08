@@ -1,4 +1,4 @@
-import { Modal, Select } from "antd";
+import { Button, Modal, Select, Space } from "antd";
 import {
     CardOutlined,
     FormLabel,
@@ -15,6 +15,9 @@ import { Briefcase, Calendar, Contact, MapPin, UserPlus } from "lucide-react";
 import { filterOptionLabel } from "../../utils/filters";
 import { CandidateDetails } from "../../store/models";
 import { getFormattedDateShort } from "../../utils/date-fns";
+import CreateCandidateForm from "../candidate-add/create-candidate-form";
+import { useDispatch } from "react-redux";
+import { addCandidateToJob } from "../../store/jobs/actions";
 
 const CardContainer = styled.div`
     display: flex;
@@ -83,6 +86,12 @@ const ExistingCandidateMetaLabel = styled(SecondaryText)`
     font-weight: 500;
 `;
 
+const Footer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+`;
+
 export enum Mode {
     BLANK,
     EXISTING,
@@ -90,13 +99,17 @@ export enum Mode {
 
 type Props = {
     candidates: CandidateDetails[];
+    jobId?: string;
+    stageId?: string;
     open: boolean;
-    onSave: (candidateId: string) => void;
+    onCandidateCreated: () => void;
     onClose: () => void;
 };
 
-const AddCandidateModal = ({ candidates, open, onSave, onClose }: Props) => {
-    const [mode, setMode] = useState(Mode.BLANK);
+const AddCandidateModal = ({ candidates, jobId, stageId, open, onCandidateCreated, onClose }: Props) => {
+    const dispatch = useDispatch();
+
+    const [mode, setMode] = useState(Mode.EXISTING);
     const [selectedCandidate, setSelectedCandidate] = useState<CandidateDetails | undefined>(undefined);
 
     const candidateOptions = candidates.map(candidate => ({
@@ -107,7 +120,7 @@ const AddCandidateModal = ({ candidates, open, onSave, onClose }: Props) => {
     React.useEffect(() => {
         if (open) {
             // reset state to initial
-            setMode(Mode.BLANK);
+            setMode(Mode.EXISTING);
             setSelectedCandidate(undefined);
         }
     }, [open]);
@@ -116,24 +129,23 @@ const AddCandidateModal = ({ candidates, open, onSave, onClose }: Props) => {
         setSelectedCandidate(candidates.find(candidate => candidate.candidateId === candidateId));
     };
 
-    const onSaveClicked = () => {
-        if (mode === Mode.EXISTING && selectedCandidate) {
-            onSave(selectedCandidate.candidateId);
+    const onAddExistingCandidate = () => {
+        if (mode === Mode.EXISTING && selectedCandidate && jobId && stageId) {
+            dispatch(addCandidateToJob(jobId, stageId, selectedCandidate.candidateId));
         }
-        // TODO add logic for new candidate when request to create candidate with job id will be ready
+        onClose();
     };
 
     return (
         <Modal
             title='Add Candidate'
-            okText='Save'
-            cancelText='Cancel'
-            okButtonProps={{ disabled: mode === Mode.EXISTING && !selectedCandidate }}
-            onOk={onSaveClicked}
             width={600}
             open={open}
             onCancel={onClose}
+            centered
             destroyOnClose
+            bodyStyle={{ maxHeight: "80vh", overflow: "auto" }}
+            footer={null}
         >
             <SecondaryText>Please select how do you want to add candidate to this job.</SecondaryText>
             <CardContainer>
@@ -186,7 +198,26 @@ const AddCandidateModal = ({ candidates, open, onSave, onClose }: Props) => {
                             </ExistingCandidateMetaContainer>
                         </ExistingCandidateCard>
                     )}
+                    <Footer>
+                        <Space size={8}>
+                            <Button onClick={onClose}>Cancel</Button>
+                            <Button type='primary' disabled={!selectedCandidate} onClick={onAddExistingCandidate}>
+                                Save
+                            </Button>
+                        </Space>
+                    </Footer>
                 </ExistingCandidateContainer>
+            )}
+            {mode === Mode.BLANK && (
+                <CreateCandidateForm
+                    stageId={stageId}
+                    jobId={jobId}
+                    onSave={() => {
+                        onCandidateCreated();
+                        onClose();
+                    }}
+                    onCancel={onClose}
+                />
             )}
         </Modal>
     );
