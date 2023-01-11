@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using Amazon.S3;
 using Amazon.S3.Model;
 using CafApi.Common;
@@ -49,7 +47,7 @@ namespace CafApi.Query
         private readonly ICandidateRepository _candidateRepository;
         private readonly IInterviewRepository _interviewRepository;
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;
+        private readonly IJobRepository _jobRepository;
         private readonly IAmazonS3 _s3Client;
 
         public CandidateDetailsQueryHandler(
@@ -58,7 +56,7 @@ namespace CafApi.Query
             ICandidateRepository candidateRepository,
             IInterviewRepository interviewRepository,
             IPermissionsService permissionsService,
-            IAmazonDynamoDB dynamoDbClient,
+            IJobRepository jobRepository,
             IAmazonS3 s3Client)
         {
             _userRepository = userRepository;
@@ -66,7 +64,7 @@ namespace CafApi.Query
             _candidateRepository = candidateRepository;
             _interviewRepository = interviewRepository;
             _permissionsService = permissionsService;
-            _context = new DynamoDBContext(dynamoDbClient);
+            _jobRepository = jobRepository;
 
             _s3Client = s3Client;
         }
@@ -95,6 +93,8 @@ namespace CafApi.Query
 
             var isAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
             List<InterviewStage> stages = null;
+            CurrentStage currentStage = null;
+            string jobTitle = null;
 
             if (!query.IsShallow)
             {
@@ -107,6 +107,16 @@ namespace CafApi.Query
                 }
 
                 stages = await GetStages(interviews);
+
+                if (candidate.JobId != null)
+                {
+                    var job = await _jobRepository.GetJob(candidate.TeamId, candidate.JobId);
+                    if (job != null)
+                    {
+                        jobTitle = job.Title;
+                        currentStage = GetCurrentStage(job, candidate.CandidateId, interviews);
+                    }
+                }
             }
 
             return new CandidateDetailsQueryResult
@@ -128,7 +138,10 @@ namespace CafApi.Query
                 IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
                 Stages = !query.IsShallow ? stages : null,
                 CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate,
-                IsAnonymised = isAnonymised
+                IsAnonymised = isAnonymised,
+                JobId = candidate.JobId,
+                JobTitle = jobTitle,
+                CurrentStage = currentStage
             };
         }
 
@@ -157,7 +170,7 @@ namespace CafApi.Query
             foreach (var interview in interviewsWithoutLink)
             {
                 interview.LinkId = Guid.NewGuid().ToString();
-                await _context.SaveAsync(interview);
+                await _interviewRepository.SaveInterview(interview);
             }
         }
 
@@ -199,6 +212,31 @@ namespace CafApi.Query
                 }).OrderBy(s => s.InterviewStartDate).ToList();
 
             return stages;
+        }
+
+        private CurrentStage GetCurrentStage(Job job, string candidateId, List<Interview> interviews)
+        {
+            CurrentStage currentStage = null;
+
+            var currentJobStage = job.Pipeline
+                .FirstOrDefault(s =>
+                    s.Candidates != null
+                    && s.Candidates.Any(c => c.CandidateId == candidateId));
+
+            if (currentJobStage != null)
+            {
+                currentStage = new CurrentStage
+                {
+                    StageId = currentJobStage.StageId,
+                    Title = currentJobStage.Title,
+                    TemplateId = currentJobStage.TemplateId,
+                    Colour = currentJobStage.Colour,
+                    Type = currentJobStage.Type,
+                    Status = CandidateStageHelper.GetCandidateStatus(interviews, candidateId, currentJobStage.StageId)
+                };
+            }
+
+            return currentStage;
         }
     }
 }
