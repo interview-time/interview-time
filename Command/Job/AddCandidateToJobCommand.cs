@@ -59,9 +59,9 @@ namespace CafApi.Command
             }
 
             var candidate = await _candidateRepository.GetCandidate(command.TeamId, command.CandidateId);
-            if (candidate == null)
+            if (candidate == null || candidate.Archived)
             {
-                throw new ItemNotFoundException($"Candidate {command.CandidateId} not found or you don't have access to it");
+                throw new ItemNotFoundException($"Candidate {command.CandidateId} not found or it's been archived");
             }
 
             var stage = job.Pipeline.FirstOrDefault(p => p.StageId == command.StageId);

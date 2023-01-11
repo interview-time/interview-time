@@ -60,6 +60,7 @@ namespace CafApi.Query
             var pipelineCandidates = job.Pipeline.Where(p => p.Candidates != null).SelectMany(p => p.Candidates).ToList();
             var candidateIds = pipelineCandidates.Select(c => c.CandidateId).Distinct().ToList();
             var candidates = await _candidateRepository.GetCandidates(query.TeamId, candidateIds);
+            var activeCandidates = candidates.Where(c => !c.Archived).ToList();
             var jobInterviews = await _interviewRepository.GetInterviewsByJob(query.JobId);
 
             var candidatesToRemove = new List<string>();
@@ -68,13 +69,13 @@ namespace CafApi.Query
             {
                 var stage = job.Pipeline.FirstOrDefault(s => s.Candidates != null && s.Candidates.Any(c => c.CandidateId == pipelineCandidate.CandidateId));
 
-                var candidateDetails = candidates.FirstOrDefault(c => c.CandidateId == pipelineCandidate.CandidateId);
+                var candidateDetails = activeCandidates.FirstOrDefault(c => c.CandidateId == pipelineCandidate.CandidateId);
                 if (candidateDetails != null)
                 {
                     pipelineCandidate.Name = candidateDetails.CandidateName ?? $"{candidateDetails.FirstName} {candidateDetails.LastName}";
                     pipelineCandidate.Position = candidateDetails.Position;
                     pipelineCandidate.Status = stage.Type == JobStageType.Interview.ToString()
-                        ? GetCandidateStatus(jobInterviews, pipelineCandidate.CandidateId, stage.StageId)
+                        ? CandidateStageHelper.GetCandidateStatus(jobInterviews, pipelineCandidate.CandidateId, stage.StageId)
                         : null;
                 }
                 else
@@ -95,32 +96,6 @@ namespace CafApi.Query
             }
 
             return job;
-        }
-
-        private string GetCandidateStatus(List<Interview> jobInterviews, string candidateId, string stageId)
-        {
-            var stageInterviews = jobInterviews
-                .Where(i => i.CandidateId == candidateId && i.StageId == stageId)
-                .ToList();
-
-            if (stageInterviews.Count() > 0 && stageInterviews.All(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
-            {
-                return CandidateStageStatus.FEEDBACK_AVAILABLE.ToString();
-            }
-            else if (stageInterviews.Count() > 0 && stageInterviews.Any(i => i.Status == InterviewStatus.SUBMITTED.ToString()))
-            {
-                return CandidateStageStatus.AWAITING_FEEDBACK.ToString();
-            }
-            else if (stageInterviews.Count() > 0 && stageInterviews.All(i => i.Status == InterviewStatus.NEW.ToString()))
-            {
-                return CandidateStageStatus.INTERVIEW_SCHEDULED.ToString();
-            }
-            else if (stageInterviews == null || stageInterviews.Count() == 0)
-            {
-                return CandidateStageStatus.SHCHEDULE_INTERVIEW.ToString();
-            }
-
-            return null;
         }
     }
 }

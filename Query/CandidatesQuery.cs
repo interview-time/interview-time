@@ -56,13 +56,34 @@ namespace CafApi.Query
         public List<string> Tags { get; set; }
 
         public DateTime CreatedDate { get; set; }
+
+        public string JobId { get; set; }
+
+        public string JobTitle { get; set; }
+
+        public CurrentStage CurrentStage { get; set; }
+    }
+
+    public class CurrentStage
+    {
+        public string StageId { get; set; }
+
+        public string Title { get; set; }
+
+        public string Colour { get; set; }
+
+        public string Type { get; set; }
+
+        public string TemplateId { get; set; }
+
+        public string Status { get; set; }
     }
 
     public class CandidatesQueryHandler : IRequestHandler<CandidatesQuery, CandidatesQueryResult>
     {
         private readonly ICandidateRepository _candidateRepository;
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;        
+        private readonly DynamoDBContext _context;
 
         public CandidatesQueryHandler(ICandidateRepository candidateRepository,
             IPermissionsService permissionsService,
@@ -136,7 +157,8 @@ namespace CafApi.Query
                     Tags = candidate.Tags,
                     IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
                     CreatedDate = candidate.CreatedDate,
-                    IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId)
+                    IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId),
+                    JobId = candidate.JobId                    
                 }).ToList()
             };
         }

@@ -80,5 +80,10 @@ namespace CafApi.Repository
 
             return interviews;
         }
+
+        public async Task SaveInterview(Interview interview)
+        {
+            await _context.SaveAsync(interview);
+        }
     }
 }
