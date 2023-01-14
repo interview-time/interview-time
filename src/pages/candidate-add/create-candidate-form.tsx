@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { FormLabel } from "../../assets/styles/global-styles";
+import { FormLabel, SecondaryText } from "../../assets/styles/global-styles";
 import { Button, Form, Input, message, Select, Space, Typography, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
@@ -205,6 +205,7 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
 
     return (
         <>
+            <SecondaryText>Enter candidate details.</SecondaryText>
             <CandidateDetailsForm
                 form={form}
                 name='basic'
