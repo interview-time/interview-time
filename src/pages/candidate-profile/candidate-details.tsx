@@ -4,7 +4,6 @@ import heroArchivedImg from "../../assets/archived.png";
 import { Avatar, Button, Space, Tag } from "antd";
 import { getInitials } from "../../utils/string";
 import { Candidate } from "../../store/models";
-import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import {
     Linkedin,
     Github,

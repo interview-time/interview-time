@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { FormLabel, SecondaryText } from "../../assets/styles/global-styles";
+import { FormLabel } from "../../assets/styles/global-styles";
 import { Button, Form, Input, message, Select, Space, Typography, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
