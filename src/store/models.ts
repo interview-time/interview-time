@@ -146,6 +146,7 @@ export interface Candidate {
     resumeUrl?: string;
     resumeFile?: string;
     jobId?: string;
+    jobTitle?: string;
     stageId?: string;
     status: string;
     gitHub?: string;

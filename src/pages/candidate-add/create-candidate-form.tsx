@@ -2,24 +2,23 @@ import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { FormLabel, SecondaryText } from "../../assets/styles/global-styles";
-import { AutoComplete, Button, Form, Input, message, Space, Typography, Upload } from "antd";
+import { Button, Form, Input, message, Select, Space, Typography, Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../../store/common";
 import { log } from "../../utils/log";
-import { cloneDeep, isEmpty, uniq } from "lodash";
-import { Candidate, Interview, UserProfile } from "../../store/models";
+import { cloneDeep } from "lodash";
+import { Candidate, Job, JobStatus, UserProfile } from "../../store/models";
 import { ApiRequestStatus } from "../../store/state-models";
-import { POSITIONS, POSITIONS_OPTIONS } from "../../utils/constants";
-import { interviewsPositions } from "../../utils/filters";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import styled from "styled-components";
-import { selectInterviews } from "../../store/interviews/selector";
 import { selectUserProfile } from "../../store/user/selector";
 import { selectCreateCandidateStatus, selectUpdateCandidateStatus } from "../../store/candidates/selector";
 import { createCandidate, updateCandidate } from "../../store/candidates/actions";
+import { selectJobs } from "../../store/jobs/selectors";
+import { fetchJobs } from "../../store/jobs/actions";
 
 const { Text } = Typography;
 const { Dragger } = Upload;
@@ -51,14 +50,18 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
     const [moreFieldsVisible, setMoreFieldsVisible] = useState(false);
     const [candidateId] = useState<string>(candidate?.candidateId ?? uuidv4());
     const [resumeFile, setResumeFile] = useState<string | null>(candidate?.resumeUrl ?? null);
-    const [positionOptions, setPositionOptions] = useState(POSITIONS_OPTIONS);
 
     const userProfile: UserProfile = useSelector(selectUserProfile, shallowEqual);
-    const interviews: Interview[] = useSelector(selectInterviews, shallowEqual);
     const createCandidateStatus = useSelector(selectCreateCandidateStatus, shallowEqual);
     const updateCandidateStatus = useSelector(selectUpdateCandidateStatus, shallowEqual);
+    const jobs: Job[] = useSelector(selectJobs, shallowEqual);
 
     const [form] = Form.useForm();
+
+    useEffect(() => {
+        dispatch(fetchJobs());
+        // eslint-disable-next-line
+    }, []);
 
     useEffect(() => {
         if (
@@ -77,19 +80,6 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
 
         // eslint-disable-next-line
     }, [candidate]);
-
-    React.useEffect(() => {
-        if (!isEmpty(interviews)) {
-            const positions = interviewsPositions(interviews)
-                .concat(POSITIONS)
-                .map((position: string) => ({
-                    value: position,
-                }));
-
-            setPositionOptions(uniq(positions));
-        }
-        // eslint-disable-next-line
-    }, [interviews]);
 
     const uploadFile = async (options: any) => {
         const { onSuccess, onError, file, onProgress } = options;
@@ -129,9 +119,12 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
             });
     };
 
-    const onPositionChange = (value: string) => {
-        form.setFieldsValue({ position: value });
-    };
+    const jobsOptions = jobs
+        .filter(job => job.status === JobStatus.OPEN)
+        .map(job => ({
+            label: job.title,
+            value: job.jobId,
+        }));
 
     const onFinish = (values: any) => {
         if (candidate) {
@@ -143,8 +136,7 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
             updatedCandidate.email = values.email;
             updatedCandidate.linkedIn = values.linkedIn;
             updatedCandidate.gitHub = values.gitHub;
-            updatedCandidate.status = values.status;
-            updatedCandidate.jobId = jobId;
+            updatedCandidate.jobId = jobId ?? values.jobId;
             updatedCandidate.stageId = stageId;
 
             if (resumeFile) {
@@ -157,7 +149,7 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
                     ...values,
                     candidateId: candidateId,
                     resumeFile: resumeFile,
-                    jobId: jobId,
+                    jobId: jobId ?? values.jobId,
                     stageId: stageId,
                 })
             );
@@ -226,7 +218,7 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
                     location: candidate?.location,
                     linkedIn: candidate?.linkedIn,
                     gitHub: candidate?.gitHub,
-                    status: candidate?.status,
+                    jobId: jobId ?? candidate?.jobId,
                 }}
                 onFinish={onFinish}
             >
@@ -240,31 +232,25 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
                         },
                     ]}
                 >
-                    <Input className='fs-mask' placeholder="Candidate's full name" />
+                    <Input placeholder="Candidate's full name" />
                 </Form.Item>
 
-                <Form.Item name='position' label={<FormLabel>Position</FormLabel>}>
-                    <AutoComplete
-                        allowClear
-                        placeholder='Select the position you are hiring for'
-                        options={positionOptions}
-                        filterOption={(inputValue, option) =>
-                            option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                        }
-                        onChange={onPositionChange}
-                    />
-                </Form.Item>
+                {!jobId && candidate && candidate.jobId && (
+                    <Form.Item name='jobId' label={<FormLabel>Job</FormLabel>}>
+                        <Select disabled={true} allowClear={true} placeholder='Job' options={jobsOptions} />
+                    </Form.Item>
+                )}
 
                 <Form.Item name='email' label={<FormLabel>Email</FormLabel>}>
-                    <Input className='fs-mask' placeholder="Candidate's email" />
+                    <Input placeholder="Candidate's email" />
                 </Form.Item>
 
                 <Form.Item name='phone' label={<FormLabel>Phone</FormLabel>}>
-                    <Input className='fs-mask' placeholder="Candidate's phone" />
+                    <Input placeholder="Candidate's phone" />
                 </Form.Item>
 
                 <Form.Item name='location' label={<FormLabel>Location</FormLabel>}>
-                    <Input className='fs-mask' placeholder="Candidate's location" />
+                    <Input placeholder="Candidate's location" />
                 </Form.Item>
 
                 {moreFieldsVisible && (

@@ -4,7 +4,6 @@ import heroArchivedImg from "../../assets/archived.png";
 import { Avatar, Button, Space, Tag } from "antd";
 import { getInitials } from "../../utils/string";
 import { Candidate } from "../../store/models";
-import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import {
     Linkedin,
     Github,
@@ -86,7 +85,7 @@ const Name = styled.div`
     margin-top: 24px;
 `;
 
-const Position = styled.div`
+const Role = styled.div`
     margin-top: 16px;
     line-height: 20px;
 `;
@@ -176,13 +175,8 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onA
                 {candidate.archived && <Archived>Archived</Archived>}
 
                 <Name>{candidate.candidateName}</Name>
-
-                {candidate.position && <Position>{candidate.position}</Position>}
-
-                <Info>
-                    {candidate.status && <CandidateStatusTag status={candidate.status} />}
-                    {candidate.location && <Location>{candidate.location}</Location>}
-                </Info>
+                <Role>{candidate.jobTitle}</Role>
+                <Info>{candidate.location && <Location>{candidate.location}</Location>}</Info>
 
                 <Actions>
                     <IconButtonLink

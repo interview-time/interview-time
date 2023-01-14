@@ -2,8 +2,7 @@ import { Button, Divider, Modal } from "antd";
 import React, { useEffect } from "react";
 import styles from "./modal-news.module.css";
 import { Typography } from "antd";
-import candidateProfileImg from "../../assets/whats-new/candidate-profile.png";
-import checklistImg from "../../assets/whats-new/checklist.png";
+import pipelineGif from "../../assets/whats-new/pipeline.gif";
 
 import { updateNewsVisitTime } from "../../utils/storage";
 
@@ -12,50 +11,22 @@ const { Title } = Typography;
 export const newsData = [
     {
         version: "v1.221203",
-        versionInt: 221203, // version reversed
-        date: new Date(2022, 12, 3),
+        versionInt: 230114, // version reversed
+        date: new Date(2023, 1, 14),
         content: (
             <div className={styles.carouselItem}>
                 <Title level={5} className={styles.carouselTitle}>
-                    Candidate Profile New Look!
+                    Jobs and candidate pipelines!
                 </Title>
                 <div className={styles.carouselDescription}>
-                    Now you can instantly see where the candidate is in the interviewing pipeline. Candidate information
-                    like CV, email, and location are also easily accessible from the page.
+                    Now you can define jobs and have complete visibility with candidate pipelines.
                 </div>
                 <div className={styles.carouselImageWrapper}>
-                    <img
-                        alt="Take-Home Assignment Interview Type"
-                        src={candidateProfileImg}
-                        className={styles.carouselImage}
-                    />
+                    <img alt='Candidate pipeline' src={pipelineGif} className={styles.carouselImage} />
                 </div>
             </div>
-        )
+        ),
     },
-    {
-        version: "v1.221203",
-        versionInt: 221203, // version reversed
-        date: new Date(2022, 12, 3),
-        content: (
-            <div className={styles.carouselItem}>
-                <Title level={5} className={styles.carouselTitle}>
-                    Interview Checklist
-                </Title>
-                <div className={styles.carouselDescription}>
-                    Interview information moved to collapsible right panel along with a new feature - interview
-                    checklist. You can use it to define quick reminders for you prior to interview.
-                </div>
-                <div className={styles.carouselImageWrapper}>
-                    <img
-                        alt="Take-Home Assignment Interview Type"
-                        src={checklistImg}
-                        className={styles.carouselImage}
-                    />
-                </div>
-            </div>
-        )
-    }
 ];
 
 const NewsModal = ({ visible, onClose }) => {
@@ -93,10 +64,10 @@ const NewsModal = ({ visible, onClose }) => {
                 {newsData[activeItem].content}
                 <Divider className={styles.divider} />
                 <div className={styles.arrowHolder}>
-                    <Button type="text" disabled={activeItem === 0} onClick={onPreviousClicked}>
+                    <Button type='text' disabled={activeItem === 0} onClick={onPreviousClicked}>
                         ← Previous
                     </Button>
-                    <Button type="text" disabled={activeItem === newsData.length - 1} onClick={onNextClicked}>
+                    <Button type='text' disabled={activeItem === newsData.length - 1} onClick={onNextClicked}>
                         Next →
                     </Button>
                 </div>
