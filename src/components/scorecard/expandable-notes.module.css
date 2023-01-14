@@ -13,7 +13,7 @@
 }
 
 .notesIconSmall {
-    color: var(--color-background);
+    color: #F9FAFB;
     font-size: 16px;
     margin-right: 4px;
 }
@@ -44,7 +44,7 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    color: var(--color-background);
+    color: #ffffff;
 }
 
 .notesHolder {

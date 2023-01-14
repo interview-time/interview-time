@@ -7,6 +7,7 @@ import candidates from "./candidates/reducer";
 import team from "./team/reducer";
 import challenge from "./challenge/reducer";
 import integration from "./integration/reducer";
+import jobs from "./jobs/reducer";
 
 // remove 'middleware' when we fix all issues found by immutableStateInvariant https://redux-toolkit.js.org/api/getDefaultMiddleware
 export default configureStore({
@@ -19,5 +20,6 @@ export default configureStore({
         team: team,
         challenge: challenge,
         integration: integration,
+        jobs: jobs,
     },
 });

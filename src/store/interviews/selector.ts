@@ -151,3 +151,5 @@ export const getCandidateName2 = (interview: Interview, candidate?: Candidate) =
 export const getCandidateName = (interview: InterviewData) => {
     return interview.candidate?.candidateName ?? interview.candidateName ?? "Unknown";
 };
+
+export const selectInterviews = (state: RootState) => state.interviews.interviews;

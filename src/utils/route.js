@@ -6,6 +6,8 @@ export const routeReports = () => "/reports";
 
 export const routeCandidates = () => "/candidates";
 
+export const routeCandidateAdd = () => "/candidates/add";
+
 export const routeCandidateProfile = id => {
     const url = "/candidate/:id";
     return id ? url.replace(":id", id) : url;
@@ -87,6 +89,20 @@ export const routeTakeHomeChallenge = token => {
 
 export const routeSubscription = () => "/subscription";
 
+export const routeJobs = () => "/jobs";
+
+export const routeJobsNew = () => "/jobs/new";
+
+export const routeJobEdit = (id) => {
+    const url = "/jobs/edit/:id";
+    return id ? url.replace(":id", id) : url;
+}
+
+export const routeJobDetails = (id) => {
+    const url = "/jobs/detail/:id";
+    return id ? url.replace(":id", id) : url;
+}
+
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -99,3 +115,5 @@ export const getParameterByName = (name, url = window.location.href) => {
 export const getHost = () => window.location.protocol.concat("//").concat(window.location.host);
 
 export const getApiUrl = () => process.env.REACT_APP_API_URL;
+
+export const canGoBack = (history) => history.action !== "POP"

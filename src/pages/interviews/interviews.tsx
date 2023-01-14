@@ -11,7 +11,6 @@ import { loadTeamMembers } from "../../store/user/actions";
 import CardHero from "../../components/card/card-hero";
 import InterviewsTable from "./interviews-table";
 import ReportsTable from "./reports-table";
-import styles from "../interviews/interviews.module.css";
 import {
     InterviewData,
     selectCompletedInterviewData,
@@ -69,7 +68,7 @@ const Interviews = ({
 
     return (
         // @ts-ignore
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <div>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Interviews

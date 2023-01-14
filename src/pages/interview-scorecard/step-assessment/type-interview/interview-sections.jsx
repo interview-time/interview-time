@@ -1,7 +1,7 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
 import { Dropdown, Grid, Input, Menu, Space, Table, Tag } from "antd";
-import { getTagColor, InterviewAssessment, Status } from "../../../../utils/constants";
+import { InterviewAssessment, Status } from "../../../../utils/constants";
 import { defaultTo } from "lodash/util";
 import { Typography } from "antd";
 import { localeCompare, localeCompareArray } from "../../../../utils/comparators";
@@ -18,6 +18,8 @@ import {
 import { isEmpty } from "../../../../utils/date";
 import Card from "../../../../components/card/card";
 import QuestionDifficultyTag from "../../../../components/tags/question-difficulty-tag";
+import { getTagColor } from "../../../../utils/colors";
+import styled from "styled-components";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -72,6 +74,10 @@ export const IntroSection = ({ interview, hashStyle }) => {
         </>
     );
 };
+
+const TagsContainer = styled.div`
+    display: flex;
+`;
 
 /**
  *
@@ -138,7 +144,7 @@ const InterviewQuestionsCard = ({
             shouldCellUpdate: (record, prevRecord) => record.tags !== prevRecord.tags,
             sorter: (a, b) => localeCompareArray(a.tags, b.tags),
             render: tags => (
-                <>
+                <TagsContainer>
                     {defaultTo(tags, []).map(tag => {
                         return (
                             <Tag key={tag} className={styles.tag} color={getTagColor(tag)}>
@@ -146,7 +152,7 @@ const InterviewQuestionsCard = ({
                             </Tag>
                         );
                     })}
-                </>
+                </TagsContainer>
             ),
         },
         {

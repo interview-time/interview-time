@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import {
+    routeCandidateAdd,
     routeCandidateProfile,
     routeCandidates,
     routeHome,
@@ -9,6 +10,10 @@ import {
     routeInterviewReport,
     routeInterviews,
     routeInterviewScorecard,
+    routeJobDetails,
+    routeJobEdit,
+    routeJobs,
+    routeJobsNew,
     routeLibraryTemplatePreview,
     routeLiveCodingChallenge,
     routeProfile,
@@ -59,6 +64,10 @@ import { ConfigProvider } from "antd";
 import { createGlobalStyle } from "styled-components";
 import { Colors } from "./assets/styles/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
+import CandidateAdd from "./pages/candidate-add/create-candidate-page";
+import Jobs from "./pages/jobs/jobs";
+import NewJob from "./pages/job-new/new-job";
+import JobDetailsPage from "./pages/job-details/job-details";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -124,6 +133,16 @@ const GlobalStyle = createGlobalStyle`
   .ant-picker-focused {
     border-color: ${Colors.Primary_500};
   }
+
+  .ant-select-selector .ant-select-selection-search-input {
+    font-size: 16px;
+    font-family: 'Inter', 'system-ui';
+  }
+  
+  .ant-tabs-tab-btn {
+    color: ${Colors.Neutral_500};
+  }
+  
 `;
 
 const GlobalThemeConfig: ThemeConfig = {
@@ -135,27 +154,29 @@ const GlobalThemeConfig: ThemeConfig = {
         colorLinkHover: Colors.Primary_300,
         colorTextHeading: Colors.Neutral_800,
         colorTextTertiary: Colors.Neutral_500,
+        colorBorder: Colors.Neutral_200,
+        colorTextPlaceholder: Colors.Neutral_400,
         fontSize: 16,
         fontFamily: "Inter, system-ui",
     },
     components: {
         Input: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Select: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         DatePicker: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Button: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Segmented: {
-            controlHeight: 44,
+            controlHeight: 40,
         },
         Rate: {
-            controlHeight: 44,
+            controlHeight: 40,
             colorFillContent: Colors.Neutral_200,
         },
         Menu: {
@@ -202,7 +223,12 @@ function App() {
                 <PrivateRoute path={routeTeamIntegration()} exact component={TeamIntegration} />
                 <PrivateRoute path={routeCandidates()} exact component={Candidates} />
                 <PrivateRoute path={routeCandidateProfile()} exact component={CandidateProfile} />
+                <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
                 <PrivateRoute path={routeSubscription()} exact component={Subscription} />
+                <PrivateRoute path={routeJobs()} exact component={Jobs} />
+                <PrivateRoute path={routeJobEdit()} exact component={NewJob} />
+                <PrivateRoute path={routeJobsNew()} exact component={NewJob} />
+                <PrivateRoute path={routeJobDetails()} exact component={JobDetailsPage} />
                 <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
                 <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
                 <Route path={routeLiveCodingChallenge()} exact component={LiveCodingChallenge} />

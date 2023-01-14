@@ -1,4 +1,3 @@
-import styles from "./account-layout.module.css";
 import { Col, Row } from "antd";
 import AccountMenu from "./account-menu";
 import React from "react";
@@ -48,7 +47,7 @@ const AccountLayout = ({ profile, children }: Props) => {
 
     return (
         // @ts-ignore
-        <Layout contentStyle={styles.rootContainer}>
+        <Layout >
             <Row gutter={[24, 24]}>
                 <Col span={6}>
                     <AccountMenu profile={profile} location={location} onProfileClicked={onProfileClicked} />

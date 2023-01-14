@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import heroImg from "../../assets/candidate-hero.png";
 import heroArchivedImg from "../../assets/archived.png";
-import { Avatar, Button, Modal, Space, Tag } from "antd";
+import { Avatar, Button, Space, Tag } from "antd";
 import { getInitials } from "../../utils/string";
 import { Candidate } from "../../store/models";
-import CandidateStatusTag from "../../components/tags/candidate-status-tag";
 import {
     Linkedin,
     Github,
@@ -17,12 +16,12 @@ import {
     Archive,
     ArchiveRestore,
 } from "lucide-react";
-import CreateCandidate from "./create-candidate";
 import styled from "styled-components";
 import IconButtonCopy from "../../components/buttons/icon-button-copy";
 import IconButtonLink from "../../components/buttons/icon-button-link";
 import IconButton from "../../components/buttons/icon-button";
 import { useHistory } from "react-router-dom";
+import CreateCandidateModal from "../candidate-add/create-candidate-modal";
 
 const Wrapper = styled.div`
     border-radius: 8px 4px 4px 8px;
@@ -86,7 +85,7 @@ const Name = styled.div`
     margin-top: 24px;
 `;
 
-const Position = styled.div`
+const Role = styled.div`
     margin-top: 16px;
     line-height: 20px;
 `;
@@ -176,13 +175,8 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onA
                 {candidate.archived && <Archived>Archived</Archived>}
 
                 <Name>{candidate.candidateName}</Name>
-
-                {candidate.position && <Position>{candidate.position}</Position>}
-
-                <Info>
-                    {candidate.status && <CandidateStatusTag status={candidate.status} />}
-                    {candidate.location && <Location>{candidate.location}</Location>}
-                </Info>
+                <Role>{candidate.jobTitle}</Role>
+                <Info>{candidate.location && <Location>{candidate.location}</Location>}</Info>
 
                 <Actions>
                     <IconButtonLink
@@ -229,21 +223,12 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onA
                 )}
             </Details>
 
-            {/* @ts-ignore */}
-            <Modal
-                title='Candidate Details'
-                centered={true}
-                width={600}
-                visible={isEditOpen}
+            <CreateCandidateModal
+                open={isEditOpen}
+                candidate={candidate}
                 onCancel={() => setIsEditOpen(false)}
-                footer={null}
-            >
-                <CreateCandidate
-                    onCancel={() => setIsEditOpen(false)}
-                    candidate={candidate}
-                    onSave={() => setIsEditOpen(false)}
-                />
-            </Modal>
+                onSave={() => setIsEditOpen(false)}
+            />
         </Wrapper>
     );
 };

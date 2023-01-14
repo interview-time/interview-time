@@ -66,7 +66,7 @@ export interface Interview {
     candidateId: string;
     candidateName?: string; // DEPRECATED
     candidateNotes?: string;
-    position?: string;      // DEPRECATED
+    position?: string; // DEPRECATED
     interviewDateTime: string; // "2022-07-13T11:15:00Z"
     interviewEndDateTime: string; // "2022-07-13T12:15:00Z"
     templateIds: string[];
@@ -93,8 +93,8 @@ export interface InterviewStage {
     linkId: string;
     interviewStartDate: string;
     interviews: Interview[];
-
 }
+
 export interface SharedInterview extends Interview {
     candidateName: string;
     interviewerName: string;
@@ -145,6 +145,9 @@ export interface Candidate {
     position?: string;
     resumeUrl?: string;
     resumeFile?: string;
+    jobId?: string;
+    jobTitle?: string;
+    stageId?: string;
     status: string;
     gitHub?: string;
     linkedIn?: string;
@@ -159,6 +162,63 @@ export interface Candidate {
 
 export interface CandidateDetails extends Candidate {
     stages: InterviewStage[];
+}
+
+export interface Job {
+    jobId: string;
+    title: string;
+    department: string;
+    location?: string;
+    createdDate: string;
+    status: JobStatus;
+    totalCandidates: number;
+    newlyAddedCandidates: number;
+    owner: string;
+    ownerName: string;
+}
+
+export enum JobStatus {
+    OPEN = "OPEN",
+    CLOSED = "CLOSED",
+}
+
+export interface JobDetails extends Job {
+    description?: string;
+    deadline?: string;
+    tags: string[];
+    pipeline: JobStage[];
+}
+
+export interface JobStage {
+    stageId: string;
+    title: string;
+    description?: string;
+    colour: string;
+    type: string;
+    templateId?: string;
+    disabled: boolean;
+    candidates?: StageCandidate[];
+}
+
+export interface StageCandidate {
+    candidateId: string;
+    name: string;
+    position?: string;
+    status?: CandidateStageStatus;
+    movedToStage: string;
+    originallyAdded: string;
+}
+
+export enum CandidateStageStatus {
+    SCHEDULE_INTERVIEW = "SHCHEDULE_INTERVIEW",
+    INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED",
+    AWAITING_FEEDBACK = "AWAITING_FEEDBACK",
+    FEEDBACK_AVAILABLE = "FEEDBACK_AVAILABLE",
+}
+
+export enum JobStageType {
+    Interview = "Interview",
+    Regular = "Regular",
 }
 
 export enum QuestionAssessment {

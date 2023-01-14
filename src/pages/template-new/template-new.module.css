@@ -1,7 +1,7 @@
 .rootContainer {
     width: 100%;
     min-height: 100vh;
-    background-color: var(--color-background);
+    background-color: #F9FAFB;
 }
 
 .stepLabel {

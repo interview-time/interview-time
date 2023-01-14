@@ -4,7 +4,7 @@
 }
 
 .premium {
-    background-color: var(--color-primary);
+    background-color: #8C2BE3;
     margin-top: 0;
     padding-top: 32px;
     padding-bottom: 32px;
@@ -62,7 +62,7 @@
 }
 .featuredWrapper {
     border-radius: 8px;
-    background-color: var(--color-background);
+    background-color: #F9FAFB;
     padding: 32px;
 }
 
