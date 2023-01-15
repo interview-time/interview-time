@@ -274,6 +274,7 @@ export interface Template {
     title: string;
     description: string;
     createdDate: string;
+    isDemo?: boolean;
     structure: TemplateStructure;
     interviewType: InterviewType;
     challenges?: TemplateChallenge[];
