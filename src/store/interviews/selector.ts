@@ -153,3 +153,7 @@ export const getCandidateName = (interview: InterviewData) => {
 };
 
 export const selectInterviews = (state: RootState) => state.interviews.interviews;
+
+export const selectAddInterviewStatus = (state: RootState) => state.interviews.apiResults.AddInterview.status;
+
+export const selectUpdateInterviewStatus = (state: RootState) => state.interviews.apiResults.UpdateInterview.status;

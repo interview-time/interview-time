@@ -1,14 +1,10 @@
-import { Button, ConfigProvider, Dropdown, Menu, Modal, Select, Space, Table } from "antd";
-import { Typography } from "antd";
-import Card from "../../components/card/card";
+import { Button, ConfigProvider, Dropdown, Menu, Modal, Select, Space, Table, Typography } from "antd";
+import { ColumnsType } from "antd/lib/table/interface";
+import { sortBy, truncate, uniqBy } from "lodash";
 import React, { useState } from "react";
-import { MoreIcon } from "../../utils/icons";
-import { Status } from "../../utils/constants";
-import { routeInterviewDetails, routeInterviewScorecard } from "../../utils/route";
 import { useHistory } from "react-router-dom";
 import emptyInterview from "../../assets/empty-interview.svg";
-import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
-import styles from "../interviews/interviews.module.css";
+import Card from "../../components/card/card";
 import {
     CandidateColumn,
     DateColumn,
@@ -17,9 +13,12 @@ import {
     StatusColumn,
 } from "../../components/table/table-interviews";
 import { getCandidateName, InterviewData } from "../../store/interviews/selector";
-import { ColumnsType } from "antd/lib/table/interface";
-import { sortBy, truncate, uniqBy } from "lodash";
-import { TeamRole, UserProfile } from "../../store/models";
+import { Interview, TeamRole, UserProfile } from "../../store/models";
+import { Status } from "../../utils/constants";
+import { filterOptionLabel, interviewsPositionOptions } from "../../utils/filters";
+import { MoreIcon } from "../../utils/icons";
+import { routeInterviewScorecard } from "../../utils/route";
+import styles from "../interviews/interviews.module.css";
 
 const { Title, Text } = Typography;
 
@@ -30,6 +29,7 @@ type Props = {
     loading: boolean;
     showFilter?: boolean;
     deleteInterview: any;
+    onEditInterview: (interview: Interview) => void;
 };
 
 type SelectOption = {
@@ -42,7 +42,15 @@ type Filter = {
     position: string | null;
 };
 
-const InterviewsTable = ({ profile, userRole, interviews, loading, deleteInterview, showFilter = true }: Props) => {
+const InterviewsTable = ({
+    profile,
+    userRole,
+    interviews,
+    loading,
+    deleteInterview,
+    showFilter = true,
+    onEditInterview,
+}: Props) => {
     const history = useHistory();
     const [interviewsData, setInterviews] = useState<InterviewData[]>([]);
     const [interviewers, setInterviewers] = useState<SelectOption[]>([]);
@@ -150,13 +158,13 @@ const InterviewsTable = ({ profile, userRole, interviews, loading, deleteIntervi
         });
     };
 
-    const createMenu = (id: string, status: string, candidateName?: string) => (
+    const createMenu = (interview: Interview, status: string, candidateName?: string) => (
         <Menu>
             {status !== Status.SUBMITTED && status !== Status.COMPLETED && (
                 <Menu.Item
                     onClick={e => {
                         e.domEvent.stopPropagation();
-                        history.push(routeInterviewDetails(id));
+                        onEditInterview(interview);
                     }}
                 >
                     Edit
@@ -166,7 +174,7 @@ const InterviewsTable = ({ profile, userRole, interviews, loading, deleteIntervi
                 danger
                 onClick={e => {
                     e.domEvent.stopPropagation();
-                    showDeleteDialog(id, candidateName);
+                    showDeleteDialog("", candidateName);
                 }}
             >
                 Delete
@@ -185,7 +193,7 @@ const InterviewsTable = ({ profile, userRole, interviews, loading, deleteIntervi
             render: (interview: InterviewData) => (
                 // @ts-ignore
                 <Dropdown
-                    overlay={createMenu(interview.interviewId, interview.status, getCandidateName(interview))}
+                    overlay={createMenu(interview as Interview, interview.status, getCandidateName(interview))}
                     placement='bottomLeft'
                 >
                     <Button icon={<MoreIcon />} style={{ width: 36, height: 36 }} onClick={e => e.stopPropagation()} />

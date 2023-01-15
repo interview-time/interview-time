@@ -5,8 +5,6 @@ import {
     routeCandidateProfile,
     routeCandidates,
     routeHome,
-    routeInterviewAdd,
-    routeInterviewDetails,
     routeInterviewReport,
     routeInterviews,
     routeInterviewScorecard,
@@ -36,7 +34,6 @@ import {
 import Default from "./pages/dashboard/dashboard";
 import Interviews from "./pages/interviews/interviews";
 import InterviewScorecard from "./pages/interview-scorecard/interview-scorecard";
-import InterviewSchedulePage from "./pages/interview-schedule/interview-schedule-page";
 import Templates from "./pages/templates/templates";
 import Reports from "./pages/reports/reports";
 import Profile from "./pages/account/profile";
@@ -205,8 +202,6 @@ function App() {
                 <PrivateRoute path={routeHome()} exact component={Default} />
                 <PrivateRoute path={routeInterviews()} exact component={Interviews} />
                 <PrivateRoute path={routeReports()} exact component={Reports} />
-                <PrivateRoute path={routeInterviewAdd()} exact component={InterviewSchedulePage} />
-                <PrivateRoute path={routeInterviewDetails()} exact component={InterviewSchedulePage} />
                 <PrivateRoute path={routeInterviewScorecard()} exact component={InterviewScorecard} />
                 <PrivateRoute path={routeInterviewReport()} exact component={InterviewReport} />
                 <PrivateRoute path={routeTemplates()} exact component={Templates} />

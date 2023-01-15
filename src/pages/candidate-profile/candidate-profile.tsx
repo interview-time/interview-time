@@ -1,25 +1,24 @@
-import { Col, Modal } from "antd";
+import { Col } from "antd";
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import LayoutWide from "../../components/layout-wide/layout-wide";
 import Spinner from "../../components/spinner/spinner";
 import { PlusCircle } from "lucide-react";
 import {
-    ApiRequest,
     archiveCandidate,
     fetchCandidateDetails,
     restoreArchivedCandidate,
     updateCandidate,
 } from "../../store/candidates/actions";
-import { selectCandidate } from "../../store/candidates/selector";
-import { CandidateDetails, Candidate } from "../../store/models";
-import { ApiRequestStatus, IApiResults, RootState } from "../../store/state-models";
+import { selectCandidateDetails, selectGetCandidateDetailsStatus } from "../../store/candidates/selector";
+import { Candidate, CandidateDetails } from "../../store/models";
+import { ApiRequestStatus } from "../../store/state-models";
 import Details from "./candidate-details";
 import InterviewStage from "./interview-stage";
-import InterviewSchedule from "../interview-schedule/interview-schedule";
 import styled from "styled-components";
 import { routeCandidates } from "../../utils/route";
+import ScheduleInterviewModal from "../interview-schedule/schedule-interview-modal";
 
 const PageWrapper = styled(Col)`
     padding-top: 32px;
@@ -29,44 +28,32 @@ const AddInterview = styled(PlusCircle)`
     cursor: pointer;
 `;
 
-type Props = {
-    candidate?: CandidateDetails;
-    fetchCandidateDetails: any;
-    updateCandidate: any;
-    archiveCandidate: any;
-    restoreArchivedCandidate: any;
-    apiResults: IApiResults;
-};
-
-const CandidateProfile = ({
-    candidate,
-    fetchCandidateDetails,
-    updateCandidate,
-    archiveCandidate,
-    restoreArchivedCandidate,
-    apiResults,
-}: Props) => {
-    const { id } = useParams<Record<string, string | undefined>>();
+const CandidateProfile = () => {
+    const { id } = useParams<Record<string, string>>();
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const [isScheduleOpen, setIsScheduleOpen] = useState(false);
 
+    const getCandidateDetailsStatus = useSelector(selectGetCandidateDetailsStatus, shallowEqual);
+    const candidate: CandidateDetails | undefined = useSelector(selectCandidateDetails(id), shallowEqual);
+
     useEffect(() => {
-        fetchCandidateDetails(id);
+        dispatch(fetchCandidateDetails(id));
         // eslint-disable-next-line
     }, []);
 
-    const sheduleInterview = () => {
+    const scheduleInterview = () => {
         setIsScheduleOpen(true);
     };
 
     const archiveCandidateHandler = () => {
-        archiveCandidate(id);
+        dispatch(archiveCandidate(id));
         history.push(routeCandidates());
     };
 
     const restoreArchivedCandidateHandler = () => {
-        restoreArchivedCandidate(id);
+        dispatch(restoreArchivedCandidate(id));
     };
 
     if (!candidate) {
@@ -80,13 +67,13 @@ const CandidateProfile = ({
                     <Details
                         candidate={candidate as Candidate}
                         onUpdateDetails={updateCandidate}
-                        onScheduleInterview={sheduleInterview}
+                        onScheduleInterview={scheduleInterview}
                         onArchive={archiveCandidateHandler}
                         onRestoreArchive={restoreArchivedCandidateHandler}
                     />
-                    {apiResults[ApiRequest.GetCandidateDetails].status === ApiRequestStatus.InProgress && <Spinner />}
+                    {getCandidateDetailsStatus === ApiRequestStatus.InProgress && <Spinner />}
 
-                    {apiResults[ApiRequest.GetCandidateDetails].status !== ApiRequestStatus.InProgress &&
+                    {getCandidateDetailsStatus !== ApiRequestStatus.InProgress &&
                         candidate.stages &&
                         candidate.stages.length > 0 && (
                             <>
@@ -100,7 +87,7 @@ const CandidateProfile = ({
                                 ))}
 
                                 {!candidate.archived ? (
-                                    <AddInterview size={32} color='#8C2BE3' onClick={sheduleInterview} />
+                                    <AddInterview size={32} color='#8C2BE3' onClick={scheduleInterview} />
                                 ) : (
                                     <PlusCircle size={32} color='#9CA3AF' />
                                 )}
@@ -109,33 +96,13 @@ const CandidateProfile = ({
                 </>
             </PageWrapper>
 
-            {/* @ts-ignore */}
-            <Modal
-                title='Schedule Interview'
-                visible={isScheduleOpen}
-                centered={true}
-                onCancel={() => setIsScheduleOpen(false)}
-                footer={null}
-            >
-                {/* @ts-ignore */}
-                <InterviewSchedule candidateId={candidate.candidateId} onScheduled={() => setIsScheduleOpen(false)} />
-            </Modal>
+            <ScheduleInterviewModal
+                open={isScheduleOpen}
+                candidateId={candidate.candidateId}
+                onClose={() => setIsScheduleOpen(false)}
+            />
         </LayoutWide>
     );
 };
 
-const mapDispatch = {
-    fetchCandidateDetails,
-    updateCandidate,
-    archiveCandidate,
-    restoreArchivedCandidate,
-};
-
-const mapState = (state: RootState, ownProps: any) => {
-    return {
-        candidate: selectCandidate(state, ownProps.match.params.id),
-        apiResults: state.candidates.apiResults,
-    };
-};
-
-export default connect(mapState, mapDispatch)(CandidateProfile);
+export default CandidateProfile;

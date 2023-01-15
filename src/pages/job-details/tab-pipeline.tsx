@@ -1,23 +1,12 @@
+import { Avatar, Dropdown } from "antd";
+import { ItemType } from "antd/es/menu/hooks/useItems";
+import { cloneDeep } from "lodash";
+import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
+import React from "react";
+import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
+import { arrayMove } from "react-sortable-hoc";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import {
-    CandidateDetails,
-    CandidateStageStatus,
-    JobStage,
-    JobStageType,
-    StageCandidate,
-    Template,
-} from "../../store/models";
-import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
-import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
-import { Avatar, Dropdown, Modal } from "antd";
-import { cloneDeep } from "lodash";
-import { arrayMove } from "react-sortable-hoc";
-import React from "react";
-import { getInitials } from "../../utils/string";
-import { hexToRgb } from "../../utils/colors";
-import { getCandidateStageStatusText } from "../../store/jobs/selectors";
-import NewStageModal from "../job-new/new-stage-modal";
 import {
     CardOutlined,
     SecondaryTextSmall,
@@ -29,10 +18,21 @@ import {
     TextBold,
     TextExtraBold,
 } from "../../assets/styles/global-styles";
-import { ItemType } from "antd/es/menu/hooks/useItems";
-import AddCandidateModal from "./add-candidate-modal";
+import { getCandidateStageStatusText } from "../../store/jobs/selectors";
+import {
+    CandidateDetails,
+    CandidateStageStatus,
+    JobStage,
+    JobStageType,
+    StageCandidate,
+    Template,
+} from "../../store/models";
+import { hexToRgb } from "../../utils/colors";
 import { log } from "../../utils/log";
-import InterviewSchedule from "../interview-schedule/interview-schedule";
+import { getInitials } from "../../utils/string";
+import ScheduleInterviewModal from "../interview-schedule/schedule-interview-modal";
+import NewStageModal from "../job-new/new-stage-modal";
+import AddCandidateModal from "./add-candidate-modal";
 
 const Row = styled.div`
     display: flex;
@@ -180,7 +180,6 @@ type AddCandidateModalProps = {
 type ScheduleInterviewModalProps = {
     visible: boolean;
     candidateId?: string;
-    templateId?: string;
 };
 
 type Props = {
@@ -194,6 +193,7 @@ type Props = {
     onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string, position: number) => void;
     onCandidateCardClicked: (candidateId: string) => void;
     onCandidateCreated: () => void;
+    onInterviewScheduled: () => void;
 };
 
 const TabPipeline = ({
@@ -207,6 +207,7 @@ const TabPipeline = ({
     onCandidateMoveStages,
     onCandidateCardClicked,
     onCandidateCreated,
+    onInterviewScheduled,
 }: Props) => {
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
@@ -286,17 +287,13 @@ const TabPipeline = ({
             onUpdateStages(jobStagesNew);
         } else {
             log("Moving card to another column");
-            if (destinationStage.type === JobStageType.Interview) {
-                // TODO temporary commented out
-                // 1. check if candidate is not archived before scheduling interview
-                // 2. callback when interview is scheduled to refresh job details
-                // setScheduleInterviewModal({
-                //     visible: true,
-                //     candidateId: removed.candidateId,
-                //     templateId: destinationStage.templateId,
-                // });
-            }
             onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId, destination.index);
+            if (destinationStage.type === JobStageType.Interview) {
+                setScheduleInterviewModal({
+                    visible: true,
+                    candidateId: removed.candidateId,
+                });
+            }
         }
     };
 
@@ -445,35 +442,19 @@ const TabPipeline = ({
                 }
             />
 
-            <Modal
-                title='Schedule Interview'
+            <ScheduleInterviewModal
                 open={scheduleInterviewModal.visible}
-                centered={true}
-                onCancel={() => {
+                candidateId={scheduleInterviewModal.candidateId}
+                alwaysFetchCandidate={true}
+                onClose={interviewChanged => {
                     setScheduleInterviewModal({
                         visible: false,
-                        candidateId: undefined,
-                        templateId: undefined,
                     });
+                    if (interviewChanged) {
+                        onInterviewScheduled();
+                    }
                 }}
-                footer={null}
-                destroyOnClose={true}
-            >
-                <InterviewSchedule
-                    // @ts-ignore
-                    candidateId={scheduleInterviewModal.candidateId}
-                    templateId={scheduleInterviewModal.templateId}
-                    templates={templates}
-                    candidates={candidates}
-                    onScheduled={() => {
-                        setScheduleInterviewModal({
-                            visible: false,
-                            candidateId: undefined,
-                            templateId: undefined,
-                        });
-                    }}
-                />
-            </Modal>
+            />
         </>
     );
 };

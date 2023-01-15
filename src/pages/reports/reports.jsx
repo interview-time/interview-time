@@ -22,6 +22,7 @@ import InterviewScoreTag from "../../components/tags/interview-score-tags";
 import InterviewCompetenceTag from "../../components/tags/interview-competence-tags";
 import { defaultTo } from "lodash/util";
 import { getFormattedDateTime } from "../../utils/date-fns";
+import { ApiRequestStatus } from "../../store/state-models";
 
 const { Search } = Input;
 const { Title } = Typography;
@@ -195,7 +196,7 @@ const mapState = state => {
 
     return {
         interviews: interviews,
-        loading: interviewsState.loading,
+        loading: state.interviews.apiResults.GetInterviews.status === ApiRequestStatus.InProgress,
     };
 };
 

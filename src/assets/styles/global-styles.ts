@@ -27,8 +27,15 @@ export const FormLabel = styled(Text)`
 export const FormLabelSmall = styled(FormLabel)`
     font-size: 14px;
 `;
+export const TextSmall = styled(Text)`
+    font-size: 14px;
+`;
 export const TextBold = styled(Text)`
     font-weight: 500;
+`;
+export const TextBoldSmall = styled(Text)`
+    font-weight: 500;
+    font-size: 14px;
 `;
 export const TextExtraBold = styled(Text)`
     font-weight: 600;
@@ -38,6 +45,11 @@ export const SecondaryText = styled(Text)`
 `;
 export const SecondaryTextSmall = styled(SecondaryText)`
     font-size: 14px;
+`;
+export const ErrorLabelSmall = styled(Text)`
+    font-weight: 500;
+    font-size: 14px;
+    color: ${AccentColors.Red_500};
 `;
 
 // MARK: Tags

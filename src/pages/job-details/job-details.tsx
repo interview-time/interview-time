@@ -215,7 +215,7 @@ const JobDetailsPage = () => {
         }
     };
 
-    const onCandidateCreated = () => {
+    const onJobDetailsUpdated = () => {
         if (jobDetails) {
             dispatch(fetchJobDetails(jobDetails.jobId));
         }
@@ -300,7 +300,8 @@ const JobDetailsPage = () => {
                                 onRemoveStage={onRemoveStage}
                                 onCandidateMoveStages={onCandidateMoveStages}
                                 onCandidateCardClicked={onCandidateCardClicked}
-                                onCandidateCreated={onCandidateCreated}
+                                onCandidateCreated={onJobDetailsUpdated}
+                                onInterviewScheduled={onJobDetailsUpdated}
                             />
                         ),
                     },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Col, ConfigProvider, Row, Space, Table, Typography } from "antd";
 import Layout from "../../components/layout/layout";
 import { useHistory } from "react-router-dom";
@@ -7,7 +7,8 @@ import { loadTemplates } from "../../store/templates/actions";
 import { connect } from "react-redux";
 import { sortBy } from "lodash";
 import TemplateCard from "../../components/template-card/template-card";
-import { routeInterviewAdd, routeInterviewScorecard, routeTeamMembers, routeTemplates } from "../../utils/route";
+import { routeInterviewScorecard, routeTeamMembers, routeTemplates } from "../../utils/route";
+import ScheduleInterviewModal from "../interview-schedule/schedule-interview-modal";
 import styles from "./dashboard.module.css";
 import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../utils/icons";
 import Card from "../../components/card/card";
@@ -18,7 +19,7 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { loadTeamMembers } from "../../store/user/actions";
 import { InterviewData, selectUncompletedInterviewData } from "../../store/interviews/selector";
 import { TeamRole, Template, UserProfile } from "../../store/models";
-import { RootState } from "../../store/state-models";
+import { ApiRequestStatus, RootState } from "../../store/state-models";
 import { selectUserRole } from "../../store/team/selector";
 
 const { Title, Text } = Typography;
@@ -49,6 +50,8 @@ const Dashboard = ({
 }: Props) => {
     const history = useHistory();
 
+    const [interviewVisible, setInterviewVisible] = useState(false);
+
     React.useEffect(() => {
         loadInterviews();
         loadCandidates();
@@ -59,7 +62,7 @@ const Dashboard = ({
 
     const onNewTemplateClicked = () => history.push(routeTemplates());
 
-    const onScheduleInterviewClicked = () => history.push(routeInterviewAdd());
+    const onScheduleInterviewClicked = () => setInterviewVisible(true);
 
     const onInviteTeamMembers = () => history.push(routeTeamMembers());
 
@@ -145,6 +148,10 @@ const Dashboard = ({
                     </Col>
                 ))}
             </Row>
+            <ScheduleInterviewModal
+                open={interviewVisible}
+                onClose={() => setInterviewVisible(false)}
+            />
         </Layout>
     );
 };
@@ -152,7 +159,6 @@ const Dashboard = ({
 const mapDispatch = { loadInterviews, loadCandidates, loadTeamMembers, loadTemplates };
 const mapState = (state: RootState) => {
     const userState = state.user;
-    const interviewsState = state.interviews;
     // @ts-ignore
     const templateState = state.templates;
 
@@ -162,7 +168,7 @@ const mapState = (state: RootState) => {
         interviews: selectUncompletedInterviewData(state).filter(
             interview => interview.userId === userState.profile.userId
         ),
-        interviewsLoading: interviewsState.loading,
+        interviewsLoading: state.interviews.apiResults.GetInterviews.status === ApiRequestStatus.InProgress,
         templates: templates,
         profile: userState.profile,
         userRole: state.team.details ? selectUserRole(state.team.details) : TeamRole.INTERVIEWER,

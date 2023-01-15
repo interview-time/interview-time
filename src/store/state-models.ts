@@ -13,10 +13,13 @@ import {
     UserProfile,
     Job, JobDetails
 } from "./models";
+import { InterviewApiRequest } from "./interviews/actions";
 
 export interface IApiResults extends Record<ApiRequest, IApiRequestResult> {}
 
 export interface IJobsApiResults extends Record<JobsApiRequest, IApiRequestResult> {}
+
+export interface IInterviewsApiResults extends Record<InterviewApiRequest, IApiRequestResult> {}
 
 export enum ApiRequestStatus {
     NotSubmitted,
@@ -55,13 +58,12 @@ export interface TeamState {
 export interface InterviewState {
     interviews: Interview[];
     interviewsShared: SharedInterview[];
-    loading: boolean;
-    uploading: boolean;
-    generatingLink: boolean;
+    apiResults: IInterviewsApiResults;
 }
 
 export interface CandidateState {
     candidates: CandidateDetails[];
+    candidateDetails: CandidateDetails[];
     loading: boolean;
     error: boolean;
     uploadUrl?: string;

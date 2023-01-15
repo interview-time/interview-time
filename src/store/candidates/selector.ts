@@ -3,9 +3,8 @@ import { Candidate } from "../models";
 import { CandidatesFilter } from "../../utils/constants";
 import { orderBy } from "lodash";
 
-export const selectCandidate = (state: RootState, candidateId: string) => {
-    return state.candidates.candidates.find(c => c.candidateId === candidateId);
-};
+export const selectCandidateDetails = (candidateId: string | undefined) => (state: RootState) =>
+    state.candidates.candidateDetails.find(candidate => candidate.candidateId === candidateId);
 
 export const selectCandidates = (state: RootState) => {
     return orderBy(state.candidates.candidates, "createdDate", ["desc"]);
@@ -31,6 +30,8 @@ export const searchCandidates = (candidates: Candidate[], query: string) => {
     );
 };
 
-export const selectCreateCandidateStatus = (state: RootState) => state.candidates.apiResults.CreateCandidate;
+export const selectGetCandidateDetailsStatus = (state: RootState) => state.candidates.apiResults.GetCandidateDetails.status;
 
-export const selectUpdateCandidateStatus = (state: RootState) => state.candidates.apiResults.UpdateCandidate;
+export const selectCreateCandidateStatus = (state: RootState) => state.candidates.apiResults.CreateCandidate.status;
+
+export const selectUpdateCandidateStatus = (state: RootState) => state.candidates.apiResults.UpdateCandidate.status;

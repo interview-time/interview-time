@@ -1,4 +1,4 @@
-import { RootState } from "../../store/state-models";
+import { ApiRequestStatus, RootState } from "../../store/state-models";
 import { connect } from "react-redux";
 import { getSharedScorecard } from "../../store/interviews/actions";
 import { useParams } from "react-router-dom";
@@ -91,7 +91,7 @@ const mapState = (state: RootState, ownProps: any) => {
     return {
         interview: interview,
         interviewers,
-        loading: state.interviews.loading,
+        loading: state.interviews.apiResults.GetInterviews.status === ApiRequestStatus.InProgress,
     };
 };
 

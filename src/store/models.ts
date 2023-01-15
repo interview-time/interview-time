@@ -162,6 +162,8 @@ export interface Candidate {
 
 export interface CandidateDetails extends Candidate {
     stages: InterviewStage[];
+    currentStage?: CurrentStage;
+    jobTitle?: string;
 }
 
 export interface Job {
@@ -198,6 +200,15 @@ export interface JobStage {
     templateId?: string;
     disabled: boolean;
     candidates?: StageCandidate[];
+}
+
+export interface CurrentStage {
+    stageId: string;
+    colour: string;
+    title: string;
+    type: string;
+    templateId?: string;
+    status?: CandidateStageStatus;
 }
 
 export interface StageCandidate {

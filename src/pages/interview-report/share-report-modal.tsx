@@ -8,7 +8,8 @@ import { shareScorecard, unshareScorecard } from "../../store/interviews/actions
 import { getHost } from "../../utils/route";
 import styles from "./share-report-modal.module.css";
 import { selectInterview } from "../../store/interviews/selector";
-import { RootState } from "../../store/state-models";
+import { ApiRequestStatus, RootState } from "../../store/state-models";
+
 const { Text } = Typography;
 type Props = {
     interviewId: string;
@@ -134,7 +135,7 @@ const mapStateToProps = (state: RootState, ownProps: any) => {
     return {
         token: interview?.token,
         isShared: interview?.isShared,
-        generatingLink: state.interviews.generatingLink,
+        generatingLink: state.interviews.apiResults.ShareScorecard.status === ApiRequestStatus.InProgress,
     };
 };
 
