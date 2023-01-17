@@ -198,7 +198,7 @@ export const deleteJob = (jobId: string) => async (dispatch: Dispatch, getState:
 };
 
 export const addCandidateToJob =
-    (jobId: string, stageId: string, candidateId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+    (candidateId: string, jobId: string, stageId?: string) => async (dispatch: Dispatch, getState: () => RootState) => {
         const { user } = getState();
 
         const token = await getAccessTokenSilently();

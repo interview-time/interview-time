@@ -1,26 +1,28 @@
-import React, { useState } from "react";
-import heroImg from "../../assets/candidate-hero.png";
-import heroArchivedImg from "../../assets/archived.png";
 import { Avatar, Button, Space, Tag } from "antd";
-import { getInitials } from "../../utils/string";
-import { Candidate } from "../../store/models";
 import {
-    Linkedin,
-    Github,
-    FileText,
-    Mail,
-    Phone,
-    CalendarDays,
-    Edit3,
-    ChevronLeft,
     Archive,
     ArchiveRestore,
+    Briefcase,
+    CalendarDays,
+    ChevronLeft,
+    Edit3,
+    FileText,
+    Github,
+    Linkedin,
+    Mail,
+    Phone,
 } from "lucide-react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import heroArchivedImg from "../../assets/archived.png";
+import heroImg from "../../assets/candidate-hero.png";
+import AntIconSpan from "../../components/buttons/ant-icon-span";
+import IconButton from "../../components/buttons/icon-button";
 import IconButtonCopy from "../../components/buttons/icon-button-copy";
 import IconButtonLink from "../../components/buttons/icon-button-link";
-import IconButton from "../../components/buttons/icon-button";
-import { useHistory } from "react-router-dom";
+import { Candidate } from "../../store/models";
+import { getInitials } from "../../utils/string";
 import CreateCandidateModal from "../candidate-add/create-candidate-modal";
 
 const Wrapper = styled.div`
@@ -123,11 +125,12 @@ type Props = {
     candidate: Candidate;
     onUpdateDetails?: any;
     onScheduleInterview?: any;
+    onAssignToJobClicked: () => void;
     onArchive?: any;
     onRestoreArchive?: any;
 };
 
-const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onArchive, onRestoreArchive }: Props) => {
+const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onAssignToJobClicked, onArchive, onRestoreArchive }: Props) => {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const history = useHistory();
 
@@ -210,12 +213,29 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onA
                         missingLinkAction={openEditCandidate}
                     />
                 </Actions>
+                {!candidate.jobId && (
+                    <ScheduleButton
+                        type='primary'
+                        icon={
+                            <AntIconSpan>
+                                <Briefcase size='1em' />
+                            </AntIconSpan>
+                        }
+                        onClick={onAssignToJobClicked}
+                    >
+                        Assign to job
+                    </ScheduleButton>
+                )}
 
-                {onScheduleInterview && (
+                {candidate.jobId && onScheduleInterview && (
                     <ScheduleButton
                         type='primary'
                         disabled={candidate.archived}
-                        icon={<CalendarDays size={14} style={{ marginRight: 5 }} />}
+                        icon={
+                            <AntIconSpan>
+                                <CalendarDays size='1em' />
+                            </AntIconSpan>
+                        }
                         onClick={onScheduleInterview}
                     >
                         Schedule interview

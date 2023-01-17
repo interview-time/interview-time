@@ -133,7 +133,7 @@ const AddCandidateModal = ({ candidates, jobId, stageId, open, onCandidateCreate
 
     const onAddExistingCandidate = () => {
         if (mode === Mode.EXISTING && selectedCandidate && jobId && stageId) {
-            dispatch(addCandidateToJob(jobId, stageId, selectedCandidate.candidateId));
+            dispatch(addCandidateToJob(selectedCandidate.candidateId, jobId, stageId));
         }
         onClose();
     };
