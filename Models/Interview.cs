@@ -82,7 +82,11 @@ namespace CafApi.Models
 
         public string JobId { get; set; }
 
+        public string JobTitle { get; set; }
+
         public string StageId { get; set; }
+
+        public string StageTitle { get; set; }
     }
 
     public class LiveCodingChallenge

@@ -121,15 +121,19 @@ namespace CafApi.Command
 
             // Get current candidate stage in the hiring pipeline
             string stageId = null;
+            string stageTitle = null;
+            string jobTitle = null;
             if (candidate.JobId != null)
             {
                 var job = await _jobRepository.GetJob(command.TeamId, candidate.JobId);
                 if (job != null)
                 {
+                    jobTitle = job.Title;
                     var currentStage = job.Pipeline.FirstOrDefault(s => s.Candidates.Any(c => c.CandidateId == command.CandidateId));
                     if (currentStage != null)
                     {
                         stageId = currentStage.StageId;
+                        stageTitle = currentStage.Title;
                     }
                 }
             }
@@ -158,7 +162,9 @@ namespace CafApi.Command
                 IsDemo = command.UserId == _demoUserId, // Demo account
                 Checklist = command.Checklist,
                 JobId = candidate.JobId,
-                StageId = stageId
+                JobTitle = jobTitle,
+                StageId = stageId,
+                StagetTitle = stageTitle
             };
 
             var interviews = new Dictionary<string, Interview>();
