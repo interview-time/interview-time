@@ -55,6 +55,10 @@ const StageColumn = styled.div`
     background-color: ${(props: StageColumnProps) => props.color};
 `;
 
+const StageTitle = styled(TextExtraBold)`
+    line-height: 18px;
+`;
+
 const AddStageColumn = styled(StageColumn)`
     flex-direction: row;
     min-height: 40px;
@@ -125,8 +129,8 @@ type StageColorBoxProps = {
 };
 
 const StageColorBox = styled.div`
-    width: 20px;
-    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     background: ${(props: StageColorBoxProps) => props.color};
     border-radius: 6px;
 `;
@@ -135,6 +139,11 @@ const IconContainer = styled.div`
     display: inline-flex;
     justify-content: center;
     cursor: pointer;
+    border-radius: 6px;
+
+    &:hover {
+        background: ${Colors.Neutral_100};
+    }
 `;
 
 const CandidateAvatar = styled(Avatar)`
@@ -364,7 +373,7 @@ const TabPipeline = ({
                     <ColumnHeader>
                         <ColumnHeaderGrip {...provided.dragHandleProps}>
                             <StageColorBox color={stage.colour} />
-                            <TextExtraBold>{stage.title}</TextExtraBold>
+                            <StageTitle>{stage.title}</StageTitle>
                             <TagSlim textColor={stage.colour} backgroundColor={hexToRgb(stage.colour, 0.1)}>
                                 {stage.candidates?.length || 0}
                             </TagSlim>
