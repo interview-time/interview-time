@@ -14,9 +14,8 @@ namespace CafApi.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly IInterviewService _interviewService;
         private readonly ILibraryService _libraryService;
-        private readonly ILogger<InterviewController> _logger;
+        private readonly ILogger<AdminController> _logger;
 
         private string UserId
         {
@@ -26,12 +25,9 @@ namespace CafApi.Controllers
             }
         }
 
-        public AdminController(ILogger<InterviewController> logger,
-            IInterviewService interviewService,
-            ILibraryService libraryService)
+        public AdminController(ILogger<AdminController> logger, ILibraryService libraryService)
         {
             _logger = logger;
-            _interviewService = interviewService;
             _libraryService = libraryService;
         }
 
@@ -51,26 +47,6 @@ namespace CafApi.Controllers
         public async Task DeleteLibraryTemplate(string libraryId)
         {
             await _libraryService.DeleteLibraryTemplate(UserId, libraryId);
-        }
-
-        [HttpPost("interview/demo")]
-        public async Task<Interview> AddDemoInterview([FromBody] Interview interview)
-        {
-            interview.UserId = "DEMO";
-            return await _interviewService.AddInterview(interview);
-        }
-
-        [HttpPut("interview/demo")]
-        public async Task UpdateDemoInterview([FromBody] Interview interview)
-        {
-            interview.UserId = "DEMO";
-            await _interviewService.UpdateInterview(interview);
-        }
-
-        [HttpDelete("interview/demo/{interviewId}")]
-        public async Task DeleteDemoInterview(string interviewId)
-        {
-            await _interviewService.DeleteInterview("DEMO", interviewId);
-        }
+        }    
     }
 }

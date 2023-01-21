@@ -85,5 +85,17 @@ namespace CafApi.Repository
         {
             await _context.SaveAsync(interview);
         }
+
+        public async Task BatchSaveInterviews(List<Interview> interviews)
+        {
+            if (interviews == null || !interviews.Any())
+            {
+                return;
+            }
+
+            var interviewsBatch = _context.CreateBatchWrite<Interview>();
+            interviewsBatch.AddPutItems(interviews);
+            await interviewsBatch.ExecuteAsync();
+        }
     }
 }

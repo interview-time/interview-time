@@ -60,13 +60,18 @@ namespace CafApi.Command
     {
         private readonly IPermissionsService _permissionsService;
         private readonly IJobRepository _jobRepository;
+        private readonly IInterviewRepository _interviewRepository;
+
+        private List<Interview> _jobInterviews;
 
         public UpdateJobCommandHandler(
             IPermissionsService permissionsService,
-            IJobRepository jobRepository)
+            IJobRepository jobRepository,
+            IInterviewRepository interviewRepository)
         {
             _permissionsService = permissionsService;
             _jobRepository = jobRepository;
+            _interviewRepository = interviewRepository;
         }
 
         public async Task<Job> Handle(UpdateJobCommand command, CancellationToken cancellationToken)
@@ -81,6 +86,8 @@ namespace CafApi.Command
             {
                 throw new ItemNotFoundException($"Job ({command.JobId}) not found");
             }
+
+            await CheckIfJobOrStageTitlesWereUpdated(job, command);
 
             job.Title = command.Title;
             job.Location = command.Location;
@@ -136,6 +143,52 @@ namespace CafApi.Command
             await _jobRepository.SaveJob(job);
 
             return job;
+        }
+
+        // Update job or/and stage titles in the job interviews
+        private async Task CheckIfJobOrStageTitlesWereUpdated(Job job, UpdateJobCommand command)
+        {
+            // update job title if it was updated
+            if (job.Title != command.Title)
+            {
+                var jobInterviews = await GetJobInterviews(job.JobId);
+
+                foreach (var interview in jobInterviews)
+                {
+                    interview.JobTitle = command.Title;
+                }
+            }
+
+            // update stage titles if any of them were updated
+            foreach (var stage in job.Pipeline)
+            {
+                var updatedStage = command.Pipeline.FirstOrDefault(p => p.StageId == stage.StageId);
+                if (updatedStage != null && updatedStage.Title != stage.Title)
+                {
+                    var interviews = await GetJobInterviews(job.JobId);
+                    var stageInterviews = interviews.Where(i => i.StageId == updatedStage.StageId).ToList();
+
+                    foreach (var interview in stageInterviews)
+                    {
+                        interview.StageTitle = updatedStage.Title;
+                    }
+                }
+            }
+
+            if (_jobInterviews != null && _jobInterviews.Any())
+            {
+                await _interviewRepository.BatchSaveInterviews(_jobInterviews);
+            }
+        }
+
+        private async Task<List<Interview>> GetJobInterviews(string jobId)
+        {
+            if (_jobInterviews == null)
+            {
+                _jobInterviews = await _interviewRepository.GetInterviewsByJob(jobId);
+            }
+
+            return _jobInterviews;
         }
     }
 }
