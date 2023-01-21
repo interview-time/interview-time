@@ -164,7 +164,7 @@ namespace CafApi.Command
                 JobId = candidate.JobId,
                 JobTitle = jobTitle,
                 StageId = stageId,
-                StagetTitle = stageTitle
+                StageTitle = stageTitle
             };
 
             var interviews = new Dictionary<string, Interview>();

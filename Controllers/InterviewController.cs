@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using CafApi.Repository;
 using CafApi.Command;
 using MediatR;
+using CafApi.Query;
 
 namespace CafApi.Controllers
 {
@@ -59,11 +60,17 @@ namespace CafApi.Controllers
         }
 
         [HttpGet("{teamId?}")]
-        public async Task<List<Interview>> Get(string teamId = null)
+        public async Task<ActionResult<List<Interview>>> Get(string teamId = null)
         {
-            var interviews = await _interviewService.GetInterviews(UserId, teamId);
+            var query = new InterviewsQuery
+            {
+                TeamId = teamId,
+                UserId = UserId
+            };
 
-            return interviews;
+            var result = await _mediator.Send(query);
+
+            return Ok(result.Interviews);
         }
 
         [HttpPost()]

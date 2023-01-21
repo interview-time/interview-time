@@ -19,5 +19,7 @@ namespace CafApi.Repository
         Task<List<Interview>> GetInterviewsByJob(string jobId);
 
         Task SaveInterview(Interview interview);
+
+        Task BatchSaveInterviews(List<Interview> interviews);
     }
 }
