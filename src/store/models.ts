@@ -58,15 +58,19 @@ export interface Team {
 
 export interface Interview {
     userId: string;
+    /** @deprecated always return null */
     interviewerName: string;
     interviewId: string;
     teamId: string;
     linkId: string;
     token?: string; // shared scorecard token
     candidateId: string;
-    candidateName?: string; // DEPRECATED
+    candidate?: string;
+    /** @deprecated use candidate field instead */
+    candidateName?: string;
     candidateNotes?: string;
-    position?: string; // DEPRECATED
+    /** @deprecated use position field from candidate */
+    position?: string;
     interviewDateTime: string; // "2022-07-13T11:15:00Z"
     interviewEndDateTime: string; // "2022-07-13T12:15:00Z"
     templateIds: string[];
@@ -86,6 +90,11 @@ export interface Interview {
     takeHomeChallenge?: TakeHomeChallenge;
     challengeDetails?: ChallengeDetails;
     sendChallenge?: boolean;
+    jobTitle?: string;
+    stageTitle?: string;
+    parsedCreatedDateTime: Date; // local property
+    parsedStartDateTime: Date; // local property
+    parsedEndDateTime: Date; // local property
 }
 
 export interface InterviewStage {

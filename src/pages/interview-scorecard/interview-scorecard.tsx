@@ -308,7 +308,7 @@ const mapStateToProps = (state: RootState, ownProps: any) => {
         currentTeamId: state.user.profile.currentTeamId,
         originalInterview: interviewData ? toInterview(interviewData) : undefined,
         interviewUploading: state.interviews.apiResults.UpdateInterview.status === ApiRequestStatus.InProgress,
-        candidate: interviewData?.candidate,
+        candidate: interviewData?.candidateDetails,
         interviewers: interviewData?.interviewersMember ?? [],
     };
 };

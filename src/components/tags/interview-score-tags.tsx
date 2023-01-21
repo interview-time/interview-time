@@ -1,7 +1,7 @@
 import React from "react";
 import { Tag } from "antd";
+import { Interview } from "../../store/models";
 import { getOverallPerformanceColor, getOverallPerformancePercent } from "../../utils/assessment";
-import { InterviewData } from "../../store/interviews/selector";
 import styled from "styled-components";
 
 const ScoreTag = styled(Tag)`
@@ -18,7 +18,7 @@ type ScoreTagProps = {
 };
 
 type Props = {
-    interview: InterviewData;
+    interview: Interview;
 };
 
 const InterviewScoreTag = ({ interview }: Props) => (

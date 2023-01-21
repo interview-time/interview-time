@@ -1,6 +1,6 @@
+import { Typography } from "antd";
 import styled from "styled-components";
 import { AccentColors, Colors } from "./colors";
-import { Typography } from "antd";
 
 const { Text } = Typography;
 
@@ -10,6 +10,14 @@ export const Card = styled.div`
     background-color: white;
     box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
     border-radius: 8px;
+`;
+
+export const CardClickable = styled(Card)`
+    cursor: pointer;
+
+    &:hover {
+        box-shadow: 0 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px -2px rgba(16, 24, 40, 0.06);
+    }
 `;
 
 export const CardOutlined = styled.div`

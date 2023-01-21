@@ -1,64 +1,44 @@
+import { Col, ConfigProvider, List, Row, Typography } from "antd";
 import React, { useState } from "react";
-import { Col, ConfigProvider, Row, Space, Table, Typography } from "antd";
-import Layout from "../../components/layout/layout";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { loadInterviews } from "../../store/interviews/actions";
-import { loadTemplates } from "../../store/templates/actions";
-import { connect } from "react-redux";
-import { sortBy } from "lodash";
+import CardHero from "../../components/card/card-hero";
+import EmptyState from "../../components/empty-state/empty-state";
+import Layout from "../../components/layout/layout";
 import TemplateCard from "../../components/template-card/template-card";
+import { loadCandidates } from "../../store/candidates/actions";
+import { loadInterviews } from "../../store/interviews/actions";
+import { selectGetInterviewsStatus, selectUncompletedUserInterviews } from "../../store/interviews/selector";
+import { Interview, Template } from "../../store/models";
+import { ApiRequestStatus } from "../../store/state-models";
+import { loadTemplates } from "../../store/templates/actions";
+import { selectRecentTemplates } from "../../store/templates/selector";
+import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../utils/icons";
 import { routeInterviewScorecard, routeTeamMembers, routeTemplates } from "../../utils/route";
 import ScheduleInterviewModal from "../interview-schedule/schedule-interview-modal";
-import styles from "./dashboard.module.css";
-import { CalendarIcon, NewFileIcon, UserAddIcon } from "../../utils/icons";
-import Card from "../../components/card/card";
-import CardHero from "../../components/card/card-hero";
-import emptyInterview from "../../assets/empty-interview.svg";
-import { CandidateColumn, DateColumn, TemplateColumn, StatusColumn } from "../../components/table/table-interviews";
-import { loadCandidates } from "../../store/candidates/actions";
-import { loadTeamMembers } from "../../store/user/actions";
-import { InterviewData, selectUncompletedInterviewData } from "../../store/interviews/selector";
-import { TeamRole, Template, UserProfile } from "../../store/models";
-import { ApiRequestStatus, RootState } from "../../store/state-models";
-import { selectUserRole } from "../../store/team/selector";
+import InterviewCard from "../interviews/interview-card";
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const iconStyle = { fontSize: 24, color: "#8C2BE3" };
 
-type Props = {
-    profile: UserProfile;
-    userRole: TeamRole;
-    interviews: InterviewData[];
-    templates: Template[];
-    interviewsLoading: boolean;
-    loadInterviews: any;
-    loadCandidates: any;
-    loadTeamMembers: any;
-    loadTemplates: any;
-};
-
-const Dashboard = ({
-    profile,
-    userRole,
-    interviews,
-    templates,
-    interviewsLoading,
-    loadInterviews,
-    loadCandidates,
-    loadTeamMembers,
-    loadTemplates,
-}: Props) => {
+const Dashboard = () => {
+    const dispatch = useDispatch();
     const history = useHistory();
+
+    const uncompletedInterviews: Interview[] = useSelector(selectUncompletedUserInterviews, shallowEqual);
+    const templates: Template[] = useSelector(selectRecentTemplates, shallowEqual);
+
+    const getInterviewsStatus: ApiRequestStatus = useSelector(selectGetInterviewsStatus, shallowEqual);
+    const interviewsLoading = getInterviewsStatus === ApiRequestStatus.InProgress;
 
     const [interviewVisible, setInterviewVisible] = useState(false);
 
     React.useEffect(() => {
-        loadInterviews();
-        loadCandidates();
-        loadTeamMembers(profile.currentTeamId);
-        loadTemplates();
+        dispatch(loadInterviews());
+        dispatch(loadCandidates());
+        dispatch(loadTemplates());
         // eslint-disable-next-line
-    }, []);    
+    }, []);
 
     const onNewTemplateClicked = () => history.push(routeTemplates());
 
@@ -66,13 +46,11 @@ const Dashboard = ({
 
     const onInviteTeamMembers = () => history.push(routeTeamMembers());
 
-    const onRowClicked = (interview: InterviewData) => history.push(routeInterviewScorecard(interview.interviewId));
-
-    const columns = [CandidateColumn(false), TemplateColumn(), DateColumn(), StatusColumn()];
+    const onInterviewClicked = (interview: Interview) => history.push(routeInterviewScorecard(interview.interviewId));
 
     return (
         // @ts-ignore
-        <Layout >
+        <Layout>
             <div>
                 <Title level={4} style={{ marginBottom: 20 }}>
                     Dashboard
@@ -109,31 +87,24 @@ const Dashboard = ({
             <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>
                 Your interviews
             </Title>
-            <Card withPadding={false}>
-                <ConfigProvider
-                    renderEmpty={() => (
-                        <Space direction='vertical' style={{ padding: 24 }}>
-                            <img src={emptyInterview} alt='No interviews' />
-                            <Text style={{ color: "#6B7280" }}>You currently don’t have any interviews.</Text>
-                        </Space>
+            <ConfigProvider renderEmpty={() => <EmptyState message='You currently don’t have any interviews.' />}>
+                <List
+                    style={{ marginTop: 24 }}
+                    grid={{ gutter: 32, column: 1 }}
+                    split={false}
+                    dataSource={uncompletedInterviews.slice(0, 3)}
+                    loading={interviewsLoading}
+                    pagination={{
+                        defaultPageSize: 8,
+                        hideOnSinglePage: true,
+                    }}
+                    renderItem={(interview: Interview) => (
+                        <List.Item>
+                            <InterviewCard interview={interview} onInterviewClicked={onInterviewClicked} />
+                        </List.Item>
                     )}
-                >
-                    <Table
-                        scroll={{
-                            x: "max-content",
-                        }}
-                        rowKey='interviewId'
-                        pagination={false}
-                        columns={columns}
-                        dataSource={interviews}
-                        loading={interviewsLoading}
-                        rowClassName={styles.row}
-                        onRow={record => ({
-                            onClick: () => onRowClicked(record),
-                        })}
-                    />
-                </ConfigProvider>
-            </Card>
+                />
+            </ConfigProvider>
 
             <Title level={5} style={{ marginBottom: 12, marginTop: 32 }}>
                 Recent templates
@@ -148,31 +119,9 @@ const Dashboard = ({
                     </Col>
                 ))}
             </Row>
-            <ScheduleInterviewModal
-                open={interviewVisible}
-                onClose={() => setInterviewVisible(false)}
-            />
+            <ScheduleInterviewModal open={interviewVisible} onClose={() => setInterviewVisible(false)} />
         </Layout>
     );
 };
 
-const mapDispatch = { loadInterviews, loadCandidates, loadTeamMembers, loadTemplates };
-const mapState = (state: RootState) => {
-    const userState = state.user;
-    // @ts-ignore
-    const templateState = state.templates;
-
-    const templates = sortBy(templateState.templates, ["title"]).slice(0, 3);
-
-    return {
-        interviews: selectUncompletedInterviewData(state).filter(
-            interview => interview.userId === userState.profile.userId
-        ),
-        interviewsLoading: state.interviews.apiResults.GetInterviews.status === ApiRequestStatus.InProgress,
-        templates: templates,
-        profile: userState.profile,
-        userRole: state.team.details ? selectUserRole(state.team.details) : TeamRole.INTERVIEWER,
-    };
-};
-
-export default connect(mapState, mapDispatch)(Dashboard);
+export default Dashboard;

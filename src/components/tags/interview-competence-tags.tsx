@@ -3,11 +3,10 @@ import { Col, Popover, Row, Space } from "antd";
 import React from "react";
 import { getGroupAssessment } from "../../utils/assessment";
 import { filterGroupsWithAssessment } from "../../utils/filters";
-import { InterviewData } from "../../store/interviews/selector";
-import { InterviewStructureGroup } from "../../store/models";
+import { Interview, InterviewStructureGroup } from "../../store/models";
 
 type Props = {
-    interview: InterviewData;
+    interview: Interview;
     max: number;
 };
 const InterviewCompetenceTag = ({ interview, max = 99 }: Props) => {
