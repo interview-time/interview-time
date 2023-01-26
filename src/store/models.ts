@@ -90,6 +90,7 @@ export interface Interview {
     takeHomeChallenge?: TakeHomeChallenge;
     challengeDetails?: ChallengeDetails;
     sendChallenge?: boolean;
+    jobId?: string;
     jobTitle?: string;
     stageTitle?: string;
     parsedCreatedDateTime: Date; // local property

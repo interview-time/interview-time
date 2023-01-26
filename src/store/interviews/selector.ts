@@ -3,6 +3,11 @@ import { Status } from "../../utils/constants";
 import { Candidate, CandidateDetails, Interview, InterviewStructureGroup, InterviewType, TeamMember } from "../models";
 import { RootState } from "../state-models";
 
+export interface LinkedInterviews {
+    linkId: string;
+    interviews: Interview[];
+}
+
 export interface InterviewData extends Interview {
     candidateDetails?: Candidate;
     interviewerMember?: TeamMember;
@@ -56,12 +61,38 @@ export const selectInterviewData = (state: RootState, interviewId: string) => {
 
 export const selectUncompletedUserInterviews = (state: RootState): Interview[] => {
     return state.interviews.interviews
-        .filter(interview => interview.status !== Status.SUBMITTED)
-        .filter(interview => interview.userId === state.user.profile.userId)
+        .filter(interview => interview.userId === state.user.profile.userId && interview.status !== Status.SUBMITTED)
         .map(mapParsedDateTime)
         .map(interview => mapCandidateName(interview, state.candidates.candidates))
         .sort((a: Interview, b: Interview) => dateComparator(a, b));
 };
+
+export const selectUncompletedJobInterviews =
+    (jobId: string) =>
+    (state: RootState): LinkedInterviews[] => {
+        const interviews = state.interviews.interviews
+            .filter(interview => interview.jobId === jobId && interview.status !== Status.SUBMITTED)
+            .map(mapParsedDateTime)
+            .map(interview => mapCandidateName(interview, state.candidates.candidates))
+            .sort((a: Interview, b: Interview) => dateComparator(a, b));
+
+        // group by linkId
+        const linkedInterviewsMap = new Map<string, Interview[]>();
+        interviews.forEach(interview => {
+            let linkedInterviews = linkedInterviewsMap.get(interview.linkId);
+            if (linkedInterviews) {
+                linkedInterviews.push(interview);
+            } else {
+                linkedInterviewsMap.set(interview.linkId, [interview]);
+            }
+        });
+
+        const linkedInterviews: LinkedInterviews[] = [];
+        linkedInterviewsMap.forEach((value: Interview[], key: string) => {
+            linkedInterviews.push({ linkId: key, interviews: value });
+        });
+        return linkedInterviews;
+    };
 
 export const selectCompletedInterviews = (state: RootState): Interview[] => {
     return state.interviews.interviews
@@ -94,7 +125,7 @@ const dateComparator = (a: Interview, b: Interview, desc: boolean = false) => {
 
     // @ts-ignore
     return desc ? second - first : first - second;
-}
+};
 
 export const selectInterview = (state: RootState, interviewId: string) => {
     return state.interviews.interviews.find(interview => interview.interviewId === interviewId);
@@ -115,3 +146,5 @@ export const selectGetInterviewsStatus = (state: RootState) => state.interviews.
 export const selectAddInterviewStatus = (state: RootState) => state.interviews.apiResults.AddInterview.status;
 
 export const selectUpdateInterviewStatus = (state: RootState) => state.interviews.apiResults.UpdateInterview.status;
+
+export const selectDeleteInterviewStatus = (state: RootState) => state.interviews.apiResults.DeleteInterview.status;

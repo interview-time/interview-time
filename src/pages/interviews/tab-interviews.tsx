@@ -1,37 +1,41 @@
-import { ConfigProvider, List, Modal } from "antd";
-import React from "react";
+import { ConfigProvider, List } from "antd";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import EmptyState from "../../components/empty-state/empty-state";
 import { Interview } from "../../store/models";
 import { routeInterviewScorecard } from "../../utils/route";
 import InterviewCard from "./interview-card";
+import DeleteInterviewModal from "../interview-schedule/delete-interview-modal";
+
+type DeleteInterviewModalProps = {
+    visible: boolean;
+    interviewId?: string;
+    candidateName?: string;
+};
 
 type Props = {
     interviews: Interview[];
-    onDeleteInterview: (interviewId: string) => void;
     onEditInterview: (interview: Interview) => void;
 };
 
-const TabInterviews = ({ interviews, onDeleteInterview, onEditInterview }: Props) => {
+const TabInterviews = ({ interviews, onEditInterview }: Props) => {
     const history = useHistory();
+
+    const [deleteInterviewModal, setDeleteInterviewModal] = useState<DeleteInterviewModalProps>({
+        interviewId: "",
+        visible: false,
+    });
 
     const onInterviewClicked = (interview: Interview) => {
         history.push(routeInterviewScorecard(interview.interviewId));
     };
 
-    const showDeleteDialog = (id: string, candidateName?: string) => {
-        let message =
-            "Are you sure you want to delete interview " + (candidateName ? `with '${candidateName}' ?` : "?");
-        Modal.confirm({
-            title: "Delete Interview",
-            content: message,
-            okText: "Yes",
-            cancelText: "No",
-            onOk() {
-                onDeleteInterview(id);
-            },
+    const showDeleteDialog = (interview: Interview) =>
+        setDeleteInterviewModal({
+            visible: true,
+            interviewId: interview.interviewId,
+            candidateName: interview.candidate,
         });
-    };
 
     return (
         <ConfigProvider renderEmpty={() => <EmptyState message='You currently don’t have any interviews.' />}>
@@ -50,12 +54,22 @@ const TabInterviews = ({ interviews, onDeleteInterview, onEditInterview }: Props
                             interview={interview}
                             onInterviewClicked={onInterviewClicked}
                             onEditInterviewClicked={onEditInterview}
-                            onDeleteInterviewClicked={interview => {
-                                showDeleteDialog(interview.interviewId, interview.candidate);
-                            }}
+                            onDeleteInterviewClicked={interview => showDeleteDialog(interview)}
                         />
                     </List.Item>
                 )}
+            />
+            <DeleteInterviewModal
+                open={deleteInterviewModal.visible}
+                interviewId={deleteInterviewModal.interviewId}
+                candidateName={deleteInterviewModal.candidateName}
+                onClose={() =>
+                    setDeleteInterviewModal({
+                        visible: false,
+                        candidateName: undefined,
+                        interviewId: undefined,
+                    })
+                }
             />
         </ConfigProvider>
     );

@@ -2,8 +2,9 @@ import { Avatar, Dropdown } from "antd";
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { cloneDeep } from "lodash";
 import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
@@ -18,6 +19,8 @@ import {
     TextBold,
     TextExtraBold,
 } from "../../assets/styles/global-styles";
+import { loadCandidates } from "../../store/candidates/actions";
+import { selectCandidates } from "../../store/candidates/selector";
 import { getCandidateStageStatusText } from "../../store/jobs/selectors";
 import {
     CandidateDetails,
@@ -27,6 +30,8 @@ import {
     StageCandidate,
     Template,
 } from "../../store/models";
+import { loadTemplates } from "../../store/templates/actions";
+import { selectTemplates } from "../../store/templates/selector";
 import { hexToRgb } from "../../utils/colors";
 import { log } from "../../utils/log";
 import { getInitials } from "../../utils/string";
@@ -193,9 +198,7 @@ type ScheduleInterviewModalProps = {
 
 type Props = {
     jobId: string;
-    templates: Template[];
     jobStages: JobStage[];
-    candidates: CandidateDetails[];
     onSaveStage: (stage: JobStage) => void;
     onRemoveStage: (stage: JobStage) => void;
     onUpdateStages: (stages: JobStage[]) => void;
@@ -207,9 +210,7 @@ type Props = {
 
 const TabPipeline = ({
     jobId,
-    templates,
     jobStages,
-    candidates,
     onSaveStage,
     onRemoveStage,
     onUpdateStages,
@@ -218,6 +219,12 @@ const TabPipeline = ({
     onCandidateCreated,
     onInterviewScheduled,
 }: Props) => {
+
+    const dispatch = useDispatch();
+
+    const templates: Template[] = useSelector(selectTemplates, shallowEqual);
+    const candidates: CandidateDetails[] = useSelector(selectCandidates, shallowEqual);
+
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
     });
@@ -227,6 +234,14 @@ const TabPipeline = ({
     const [scheduleInterviewModal, setScheduleInterviewModal] = React.useState<ScheduleInterviewModalProps>({
         visible: false,
     });
+
+    useEffect(() => {
+        dispatch(loadCandidates());
+        if (templates.length === 0) {
+            dispatch(loadTemplates());
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const createActionsMenu = (stage: JobStage): ItemType[] => [
         {

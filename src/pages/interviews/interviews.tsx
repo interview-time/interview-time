@@ -9,7 +9,7 @@ import { Card, SecondaryTextSmall, TextBold } from "../../assets/styles/global-s
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import Layout from "../../components/layout/layout";
 import { loadCandidates } from "../../store/candidates/actions";
-import { deleteInterview, loadInterviews } from "../../store/interviews/actions";
+import { loadInterviews } from "../../store/interviews/actions";
 import {
     selectCompletedInterviews,
     selectGetInterviewsStatus,
@@ -131,10 +131,6 @@ const Interviews = () => {
         // eslint-disable-next-line
     }, []);
 
-    const onDeleteInterview = (interviewId: string) => {
-        dispatch(deleteInterview(interviewId));
-    };
-
     const onScheduleInterview = () => setInterviewModal({ visible: true, interview: undefined });
 
     const onSearchTextChange = (text: string) => setFilter(text);
@@ -222,7 +218,6 @@ const Interviews = () => {
                             <TabInterviews
                                 interviews={applyFilter(uncompletedInterviews)}
                                 onEditInterview={interview => setInterviewModal({ visible: true, interview })}
-                                onDeleteInterview={onDeleteInterview}
                             />
                         ),
                     },

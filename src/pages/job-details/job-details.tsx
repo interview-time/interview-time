@@ -16,11 +16,13 @@ import {
     selectDeleteJobStatus,
     selectGetJobDetailsStatus,
     selectJobDetails,
-    selectMoveCandidateToStageStatus, selectOpenJobStatus,
-    selectUpdateJobStatus
+    selectMoveCandidateToStageStatus,
+    selectOpenJobStatus,
+    selectUpdateJobStatus,
 } from "../../store/jobs/selectors";
-import { CandidateDetails, JobDetails, JobStage, JobStatus, Template } from "../../store/models";
+import { JobDetails, JobStage, JobStatus } from "../../store/models";
 import styled from "styled-components";
+import TabInterviews from "./tab-interviews";
 import TabPipeline from "./tab-pipeline";
 import { Button, message, Select, Spin, Tabs, Typography } from "antd";
 import { SecondaryTextSmall } from "../../assets/styles/global-styles";
@@ -29,13 +31,10 @@ import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { ChevronLeft } from "lucide-react";
 import { hashCode } from "../../utils/string";
 import { cloneDeep } from "lodash";
-import { selectCandidates } from "../../store/candidates/selector";
-import { loadCandidates } from "../../store/candidates/actions";
-import { selectTemplates } from "../../store/templates/selector";
-import { loadTemplates } from "../../store/templates/actions";
 import { routeCandidateProfile, routeJobEdit, routeJobs } from "../../utils/route";
 import { AccentColors } from "../../assets/styles/colors";
 import TabDetails from "./tab-details";
+import { selectGetInterviewsStatus } from "../../store/interviews/selector";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -89,8 +88,6 @@ const JobDetailsPage = () => {
 
     const { id } = useParams<Record<string, string>>();
 
-    const templates: Template[] = useSelector(selectTemplates, shallowEqual);
-    const candidates: CandidateDetails[] = useSelector(selectCandidates, shallowEqual);
     const jobDetailsOriginal: JobDetails | undefined = useSelector(selectJobDetails(id), shallowEqual);
 
     const updateJobStatus: ApiRequestStatus = useSelector(selectUpdateJobStatus, shallowEqual);
@@ -100,17 +97,21 @@ const JobDetailsPage = () => {
     const getJobDetailsStatus: ApiRequestStatus = useSelector(selectGetJobDetailsStatus, shallowEqual);
     const addCandidateToJobStatus: ApiRequestStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
     const moveCandidateToStageStatus: ApiRequestStatus = useSelector(selectMoveCandidateToStageStatus, shallowEqual);
+    const getInterviewsStatus: ApiRequestStatus = useSelector(selectGetInterviewsStatus, shallowEqual);
 
     const [jobDetails, setJobDetails] = useState<JobDetails | undefined>();
 
-    const isUploadingIndicatorVisible =
-        updateJobStatus === ApiRequestStatus.InProgress ||
-        closeJobStatus === ApiRequestStatus.InProgress ||
-        openJobStatus === ApiRequestStatus.InProgress ||
-        deleteJobStatus === ApiRequestStatus.InProgress ||
-        addCandidateToJobStatus === ApiRequestStatus.InProgress ||
-        moveCandidateToStageStatus === ApiRequestStatus.InProgress ||
-        getJobDetailsStatus === ApiRequestStatus.InProgress;
+    const loadingStatusArr = [
+        updateJobStatus,
+        closeJobStatus,
+        openJobStatus,
+        deleteJobStatus,
+        getJobDetailsStatus,
+        addCandidateToJobStatus,
+        moveCandidateToStageStatus,
+        getInterviewsStatus,
+    ];
+    const isLoading = loadingStatusArr.find(s => s === ApiRequestStatus.InProgress) !== undefined;
 
     useEffect(() => {
         if (jobDetailsOriginal) {
@@ -132,11 +133,6 @@ const JobDetailsPage = () => {
 
     useEffect(() => {
         dispatch(fetchJobDetails(id));
-        dispatch(loadCandidates());
-
-        if (templates.length === 0) {
-            dispatch(loadTemplates());
-        }
         // eslint-disable-next-line
     }, []);
 
@@ -248,10 +244,10 @@ const JobDetailsPage = () => {
     return (
         <RootLayout>
             <Header>
-                <Spin spinning={isUploadingIndicatorVisible}>
+                <Spin spinning={isLoading}>
                     <Button
                         onClick={onBackClicked}
-                        icon={<AntIconSpan>{!isUploadingIndicatorVisible && <ChevronLeft size='1em' />}</AntIconSpan>}
+                        icon={<AntIconSpan>{!isLoading && <ChevronLeft size='1em' />}</AntIconSpan>}
                     />
                 </Spin>
                 <HeaderTitleContainer>
@@ -292,9 +288,7 @@ const JobDetailsPage = () => {
                         children: (
                             <TabPipeline
                                 jobId={jobDetails?.jobId}
-                                templates={templates}
                                 jobStages={jobDetails?.pipeline || []}
-                                candidates={candidates}
                                 onUpdateStages={onUpdateStages}
                                 onSaveStage={onSaveStage}
                                 onRemoveStage={onRemoveStage}
@@ -304,6 +298,11 @@ const JobDetailsPage = () => {
                                 onInterviewScheduled={onJobDetailsUpdated}
                             />
                         ),
+                    },
+                    {
+                        label: `Interviews`,
+                        key: "3",
+                        children: <TabInterviews jobDetails={jobDetails} onInterviewRemoved={onJobDetailsUpdated} />,
                     },
                 ]}
             />
