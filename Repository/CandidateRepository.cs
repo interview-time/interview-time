@@ -40,6 +40,11 @@ namespace CafApi.Repository
             return candidateBatch.Results;
         }
 
+        public async Task<List<Candidate>> GetCandidates(string teamId)
+        {
+            return await _context.QueryAsync<Candidate>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
+        }
+
         public async Task UpdateCandidates(List<Candidate> candidates)
         {
             if (candidates == null || !candidates.Any())

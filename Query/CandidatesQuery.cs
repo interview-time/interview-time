@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using CafApi.Common;
 using CafApi.Models;
 using CafApi.Repository;
@@ -61,37 +59,27 @@ namespace CafApi.Query
 
         public string JobTitle { get; set; }
 
-        public CurrentStage CurrentStage { get; set; }
-    }
-
-    public class CurrentStage
-    {
         public string StageId { get; set; }
 
-        public string Title { get; set; }
-
-        public string Colour { get; set; }
-
-        public string Type { get; set; }
-
-        public string TemplateId { get; set; }
-
-        public string Status { get; set; }
+        public string StageTitle { get; set; }
     }
 
     public class CandidatesQueryHandler : IRequestHandler<CandidatesQuery, CandidatesQueryResult>
     {
         private readonly ICandidateRepository _candidateRepository;
         private readonly IPermissionsService _permissionsService;
-        private readonly DynamoDBContext _context;
+        private readonly IInterviewRepository _interviewRepository;
+        private readonly IJobRepository _jobRepository;
 
         public CandidatesQueryHandler(ICandidateRepository candidateRepository,
             IPermissionsService permissionsService,
-            IAmazonDynamoDB dynamoDbClient)
+            IInterviewRepository interviewRepository,
+            IJobRepository jobRepository)
         {
             _candidateRepository = candidateRepository;
             _permissionsService = permissionsService;
-            _context = new DynamoDBContext(dynamoDbClient);
+            _interviewRepository = interviewRepository;
+            _jobRepository = jobRepository;
         }
 
         public async Task<CandidatesQueryResult> Handle(CandidatesQuery query, CancellationToken cancellationToken)
@@ -105,11 +93,10 @@ namespace CafApi.Query
             List<Candidate> candidates = null;
             List<string> anonymisedCandidateIds = new List<string>();
 
+            // Interviewer can only see candidates they interviewed or will interview
             if (teamMember.Roles.Contains(TeamRole.INTERVIEWER))
             {
-                // Interviewer can only see candidates they interviewed or will interview
-                var config = new DynamoDBOperationConfig();
-                var interviews = await _context.QueryAsync<Interview>(query.UserId, config).GetRemainingAsync();
+                var interviews = await _interviewRepository.GetInterviewsByInterviewer(query.UserId);
 
                 var candidateIds = interviews
                     .Where(i => i.TeamId == query.TeamId && !string.IsNullOrWhiteSpace(i.CandidateId))
@@ -128,10 +115,15 @@ namespace CafApi.Query
                    .Distinct()
                    .ToList();
             }
-            else
+            else // Recruiter or Hiring Manager can see all candidates
             {
-                // Recruiter or Hiring Manager can see all candidates
-                candidates = await _context.QueryAsync<Candidate>(query.TeamId, new DynamoDBOperationConfig()).GetRemainingAsync();
+                candidates = await _candidateRepository.GetCandidates(query.TeamId);
+            }
+
+            var jobs = new List<Job>();
+            if (candidates.Any(c => c.JobId != null))
+            {
+                jobs = await _jobRepository.GetAllJobs(query.TeamId);
             }
 
             return new CandidatesQueryResult
@@ -140,7 +132,7 @@ namespace CafApi.Query
                 {
                     CandidateId = candidate.CandidateId,
                     CandidateName = anonymisedCandidateIds.Contains(candidate.CandidateId)
-                        ? AnonymiseName(candidate.CandidateName)
+                        ? StringHelper.AnonymiseName(candidate.CandidateName)
                         : candidate.CandidateName,
                     Email = !anonymisedCandidateIds.Contains(candidate.CandidateId)
                         ? candidate.Email
@@ -158,14 +150,19 @@ namespace CafApi.Query
                     IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
                     CreatedDate = candidate.CreatedDate,
                     IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId),
-                    JobId = candidate.JobId                    
+                    JobId = candidate.JobId,
+                    JobTitle = jobs.FirstOrDefault(j => j.JobId == candidate.JobId)?.Title,
+                    StageId = GetCurrentStage(jobs, candidate.CandidateId, candidate.JobId)?.StageId,
+                    StageTitle = GetCurrentStage(jobs, candidate.CandidateId, candidate.JobId)?.Title,
                 }).ToList()
             };
         }
 
-        private string AnonymiseName(string name)
+        private Stage GetCurrentStage(List<Job> jobs, string candidateId, string jobId)
         {
-            return $"{name.First()}*****{name.Last()}";
+            return jobs.FirstOrDefault(j => j.JobId == jobId)?
+                .Pipeline.FirstOrDefault(s => s.Candidates != null &&
+                    s.Candidates.Any(c => c.CandidateId == candidateId));
         }
     }
 }

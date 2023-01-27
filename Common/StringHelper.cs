@@ -44,5 +44,15 @@ namespace CafApi.Common
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
         }
+
+        public static string AnonymiseName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return name;
+            }
+
+            return $"{name.First()}*****{name.Last()}";
+        }
     }
 }

@@ -27,6 +27,23 @@ namespace CafApi.Query
     public class CandidateDetailsQueryResult : CandidateItem
     {
         public List<InterviewStage> Stages { get; set; }
+
+        public CurrentStage CurrentStage { get; set; }
+    }
+
+    public class CurrentStage
+    {
+        public string StageId { get; set; }
+
+        public string Title { get; set; }
+
+        public string Colour { get; set; }
+
+        public string Type { get; set; }
+
+        public string TemplateId { get; set; }
+
+        public string Status { get; set; }
     }
 
     public class InterviewStage
