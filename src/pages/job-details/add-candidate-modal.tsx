@@ -13,7 +13,7 @@ import { AccentColors, Colors } from "../../assets/styles/colors";
 import { hexToRgb } from "../../utils/colors";
 import { Briefcase, Calendar, Contact, MapPin, UserPlus } from "lucide-react";
 import { filterOptionLabel } from "../../utils/filters";
-import { CandidateDetails } from "../../store/models";
+import { Candidate } from "../../store/models";
 import { getFormattedDateShort } from "../../utils/date-fns";
 import CreateCandidateForm from "../candidate-add/create-candidate-form";
 import { useDispatch } from "react-redux";
@@ -98,7 +98,7 @@ export enum Mode {
 }
 
 type Props = {
-    candidates: CandidateDetails[];
+    candidates: Candidate[];
     jobId?: string;
     stageId?: string;
     open: boolean;
@@ -110,7 +110,7 @@ const AddCandidateModal = ({ candidates, jobId, stageId, open, onCandidateCreate
     const dispatch = useDispatch();
 
     const [mode, setMode] = useState(Mode.EXISTING);
-    const [selectedCandidate, setSelectedCandidate] = useState<CandidateDetails | undefined>(undefined);
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidate | undefined>(undefined);
 
     const candidateOptions = candidates
         .filter(candidate => !candidate.jobId && !candidate.archived)

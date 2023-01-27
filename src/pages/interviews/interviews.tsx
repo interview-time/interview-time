@@ -1,13 +1,14 @@
-import { Button, Input, Spin, Tabs, Typography } from "antd";
+import { Button, Spin, Tabs, Typography } from "antd";
 import { isEmpty } from "lodash";
-import { CalendarCheck, CalendarDays, Plus, Search, Trophy } from "lucide-react";
+import { CalendarCheck, CalendarDays, Plus, Trophy } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { AccentColors, Colors } from "../../assets/styles/colors";
+import { AccentColors } from "../../assets/styles/colors";
 import { Card, SecondaryTextSmall, TextBold } from "../../assets/styles/global-styles";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import Layout from "../../components/layout/layout";
+import { Header, HeaderContainer, HeaderSearch } from "../../components/layout/layout-header";
 import { loadCandidates } from "../../store/candidates/actions";
 import { loadInterviews } from "../../store/interviews/actions";
 import {
@@ -26,29 +27,6 @@ import TabInterviews from "./tab-interviews";
 import TabReports from "./tab-reports";
 
 const { Title } = Typography;
-
-const HeaderContainer = styled.div`
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    width: 100%;
-    padding: 16px 32px;
-    gap: 16px;
-    background-color: ${Colors.White};
-    border-bottom: 1px solid ${Colors.Neutral_200};
-    display: flex;
-    flex-direction: column;
-`;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const HeaderSearch = styled(Input)`
-    width: 280px;
-    border-radius: 6px;
-`;
 
 const TitleContainer = styled.div`
     display: flex;
@@ -152,11 +130,9 @@ const Interviews = () => {
         <HeaderContainer>
             <Header>
                 <HeaderSearch
-                    allowClear
                     placeholder='Search for interview'
                     defaultValue={filter}
-                    prefix={<Search size={18} color={Colors.Neutral_400} />}
-                    onChange={e => onSearchTextChange(e.target.value)}
+                    onSearchTextChange={onSearchTextChange}
                 />
                 <Button
                     type='primary'

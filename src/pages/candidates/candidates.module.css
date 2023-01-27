@@ -1,32 +1,3 @@
-.rootContainer {
-    padding: 40px;
-}
-
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-}
-
 .row {
     cursor: pointer;
-}
-
-.controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-}
-
-.search {
-    background: #ffffff;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    width: 355px;
-}
-
-.searchIcon {
-    padding-right: 8px;
 }

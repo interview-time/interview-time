@@ -25,13 +25,6 @@ export const Status = {
     SUBMITTED: "SUBMITTED",
 };
 
-export const CandidateStatus = {
-    NEW: "NEW",
-    INTERVIEWING: "INTERVIEWING",
-    HIRE: "HIRE",
-    NO_HIRE: "NO_HIRE",
-};
-
 export const Difficulty = {
     EASY: "Easy",
     MEDIUM: "Medium",
@@ -123,9 +116,3 @@ export const SubscriptionPlans = {
     Starter: "STARTER",
     Premium: "PREMIUM",
 };
-
-export const CandidatesFilter = {
-    All: "All",
-    Current: "Current",
-    Archived: "Archived"
-}

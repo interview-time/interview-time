@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { Status } from "../../utils/constants";
-import { Candidate, CandidateDetails, Interview, InterviewStructureGroup, InterviewType, TeamMember } from "../models";
+import { Candidate, Interview, InterviewStructureGroup, InterviewType, TeamMember } from "../models";
 import { RootState } from "../state-models";
 
 export interface LinkedInterviews {
@@ -110,7 +110,7 @@ const mapParsedDateTime = (interview: Interview): Interview => {
 };
 
 // backward compat, old interviews doesn't have 'candidate' field
-const mapCandidateName = (interview: Interview, candidates: CandidateDetails[]): Interview => {
+const mapCandidateName = (interview: Interview, candidates: Candidate[]): Interview => {
     let candidateName = interview.candidate ?? interview.candidateName;
     if (!candidateName) {
         candidateName = candidates.find(candidate => candidate.candidateId === interview.candidateId)?.candidateName;

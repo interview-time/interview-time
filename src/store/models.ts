@@ -158,6 +158,7 @@ export interface Candidate {
     jobId?: string;
     jobTitle?: string;
     stageId?: string;
+    stageTitle?: string;
     status: string;
     gitHub?: string;
     linkedIn?: string;
@@ -173,7 +174,6 @@ export interface Candidate {
 export interface CandidateDetails extends Candidate {
     stages: InterviewStage[];
     currentStage?: CurrentStage;
-    jobTitle?: string;
 }
 
 export interface Job {

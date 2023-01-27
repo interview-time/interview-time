@@ -11,7 +11,7 @@ import {
     TeamMember,
     Template,
     UserProfile,
-    Job, JobDetails
+    Job, JobDetails, Candidate
 } from "./models";
 import { InterviewApiRequest } from "./interviews/actions";
 
@@ -62,7 +62,7 @@ export interface InterviewState {
 }
 
 export interface CandidateState {
-    candidates: CandidateDetails[];
+    candidates: Candidate[];
     candidateDetails: CandidateDetails[];
     loading: boolean;
     error: boolean;

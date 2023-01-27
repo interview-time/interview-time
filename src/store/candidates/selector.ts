@@ -1,7 +1,12 @@
 import { RootState } from "../state-models";
 import { Candidate } from "../models";
-import { CandidatesFilter } from "../../utils/constants";
 import { orderBy } from "lodash";
+
+export enum CandidateStatus {
+    All = "All",
+    Archived = "Archived",
+    Current = "Current",
+}
 
 export const selectCandidateDetails = (candidateId: string | undefined) => (state: RootState) =>
     state.candidates.candidateDetails.find(candidate => candidate.candidateId === candidateId);
@@ -10,25 +15,26 @@ export const selectCandidates = (state: RootState) => {
     return orderBy(state.candidates.candidates, "createdDate", ["desc"]);
 };
 
-export const filterCandidates = (candidates: Candidate[], filter: string | undefined) => {
+export const filterCandidates = (candidates: Candidate[], status: CandidateStatus) => {
     let filteredCandidates: Candidate[] = candidates;
 
-    if (filter === CandidatesFilter.Current) {
+    if (status === CandidateStatus.Current) {
         filteredCandidates = candidates.filter(c => !c.archived);
-    } else if (filter === CandidatesFilter.Archived) {
+    } else if (status === CandidateStatus.Archived) {
         filteredCandidates = candidates.filter(c => c.archived);
     }
 
-    return orderBy(filteredCandidates, "createdDate", ["desc"]);
+    return filteredCandidates;
 };
 
-export const searchCandidates = (candidates: Candidate[], query: string) => {
-    return candidates.filter(
-        candidate =>
-            candidate.candidateName.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
-            (candidate.position && candidate.position.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
+export const sortCandidatesByCreatedDate = (candidates: Candidate[], ascending: boolean = false) =>
+    candidates.sort((a, b) =>
+        ascending
+            ? new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+            : new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime()
     );
-};
+
+export const selectGetCandidatesStatus = (state: RootState) => state.candidates.apiResults.GetCandidateList.status;
 
 export const selectGetCandidateDetailsStatus = (state: RootState) => state.candidates.apiResults.GetCandidateDetails.status;
 

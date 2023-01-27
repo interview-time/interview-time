@@ -1,73 +1,41 @@
-import Layout from "../../components/layout/layout";
-import JobCard from "./job-card";
-import { Button, Input, List, Select, Space, Spin, Typography } from "antd";
-import { Job, JobStatus, TeamMember } from "../../store/models";
-import styled from "styled-components";
-import { Colors } from "../../assets/styles/colors";
-import { Filter as FilterIcon, Plus, Search, SortDesc } from "lucide-react";
+import { Button, ConfigProvider, List, Select, Space, Spin, Typography } from "antd";
+import { Option } from "antd/lib/mentions";
+import { Plus } from "lucide-react";
 import React from "react";
-import { useDebounceFn } from "ahooks";
-import AntIconSpan from "../../components/buttons/ant-icon-span";
-import NewEntryImage from "../../assets/illustrations/undraw_new_entries.svg";
-import { useHistory } from "react-router-dom";
-import { routeJobDetails, routeJobEdit, routeJobsNew } from "../../utils/route";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { ApiRequestStatus } from "../../store/state-models";
+import { useHistory } from "react-router-dom";
+import styled from "styled-components";
+import { FormLabelSmall } from "../../assets/styles/global-styles";
+import AntIconSpan from "../../components/buttons/ant-icon-span";
+import EmptyState from "../../components/empty-state/empty-state";
+import Layout from "../../components/layout/layout";
+import {
+    FilterButton,
+    Header,
+    HeaderContainer,
+    HeaderSearch,
+    SearchButton,
+} from "../../components/layout/layout-header";
 import { fetchJobs } from "../../store/jobs/actions";
 import { selectDepartments, selectGetJobsStatus, selectJobs } from "../../store/jobs/selectors";
-import { FormLabelSmall, SecondaryText, TagNumber } from "../../assets/styles/global-styles";
-import { Option } from "antd/lib/mentions";
-import { filterOptionLabel } from "../../utils/filters";
+import { Job, JobStatus, TeamMember } from "../../store/models";
+import { ApiRequestStatus } from "../../store/state-models";
 import { selectTeamMembers } from "../../store/team/selector";
+import { filterOptionLabel } from "../../utils/filters";
+import { routeJobDetails, routeJobEdit, routeJobsNew } from "../../utils/route";
 import {
     getJobFilterFromStorage,
     getJobSortFromStorage,
     setJobFilterToStorage,
     setJobSortToStorage,
 } from "../../utils/storage";
+import JobCard from "./job-card";
 
 const { Title } = Typography;
-
-const HeaderContainer = styled.div`
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    width: 100%;
-    padding: 16px 32px;
-    gap: 16px;
-    background-color: ${Colors.White};
-    border-bottom: 1px solid ${Colors.Neutral_200};
-    display: flex;
-    flex-direction: column;
-`;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
 
 const HeaderMetaContainer = styled.div`
     display: flex;
     gap: 16px;
-`;
-
-const HeaderSearch = styled(Input)`
-    width: 280px;
-    border-radius: 6px;
-`;
-
-const PlaceholderContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    margin-top: 64px;
-`;
-
-const PlaceholderText = styled(SecondaryText)`
-    max-width: 300px;
-    margin-top: 24px;
-    text-align: center;
 `;
 
 const TitleContainer = styled.div`
@@ -75,18 +43,6 @@ const TitleContainer = styled.div`
     align-items: center;
     gap: 16px;
     margin-bottom: 16px;
-`;
-
-const FilterIndicator = styled(TagNumber)`
-    margin-left: 8px;
-`;
-
-type FilterButtonProps = {
-    borderColor: string;
-};
-
-const BorderedButton = styled(Button)`
-    border-color: ${(props: FilterButtonProps) => props.borderColor};
 `;
 
 export type Filter = {
@@ -213,19 +169,6 @@ const Jobs = () => {
         }
     };
 
-    const onSearchTextChangeDebounce = useDebounceFn(
-        (text: string) => {
-            setFilter({
-                ...filter,
-                search: text,
-            });
-        },
-        {
-            wait: 250,
-            maxWait: 1000,
-        }
-    );
-
     const onTitleSortChange = (sortOrder?: SortOrder) =>
         setSort({
             ...sort,
@@ -281,7 +224,11 @@ const Jobs = () => {
         return count;
     };
 
-    const onSearchTextChange = (text: string) => onSearchTextChangeDebounce.run(text);
+    const onSearchTextChange = (text: string) =>
+        setFilter({
+            ...filter,
+            search: text,
+        });
 
     const onAddJobClicked = () => history.push(routeJobsNew());
 
@@ -374,44 +321,30 @@ const Jobs = () => {
             <Header>
                 <Space size={16}>
                     <HeaderSearch
-                        allowClear
                         placeholder='Search for job'
                         defaultValue={filter.search}
-                        prefix={<Search size={18} color={Colors.Neutral_400} />}
-                        onChange={e => onSearchTextChange(e.target.value)}
+                        onSearchTextChange={onSearchTextChange}
                     />
-                    <BorderedButton
-                        icon={
-                            <AntIconSpan>
-                                <FilterIcon size='1em' />
-                            </AntIconSpan>
-                        }
-                        onClick={() =>
+                    <FilterButton
+                        count={getFilterCount()}
+                        open={headerMeta.filterOpen}
+                        onClick={() => {
                             setHeaderMeta({
                                 filterOpen: !headerMeta.filterOpen,
                                 sortOpen: false,
-                            })
-                        }
-                        borderColor={headerMeta.filterOpen ? Colors.Primary_500 : Colors.Neutral_200}
-                    >
-                        Filter {getFilterCount() !== 0 && <FilterIndicator>{getFilterCount()}</FilterIndicator>}
-                    </BorderedButton>
-                    <BorderedButton
-                        icon={
-                            <AntIconSpan>
-                                <SortDesc size='1em' />
-                            </AntIconSpan>
-                        }
-                        onClick={() =>
+                            });
+                        }}
+                    />
+                    <SearchButton
+                        count={getSortCount()}
+                        open={headerMeta.sortOpen}
+                        onClick={() => {
                             setHeaderMeta({
                                 filterOpen: false,
                                 sortOpen: !headerMeta.sortOpen,
-                            })
-                        }
-                        borderColor={headerMeta.sortOpen ? Colors.Primary_500 : Colors.Neutral_200}
-                    >
-                        Sort {getSortCount() !== 0 && <FilterIndicator>{getSortCount()}</FilterIndicator>}
-                    </BorderedButton>
+                            });
+                        }}
+                    />
                 </Space>
                 <Button
                     type='primary'
@@ -430,49 +363,30 @@ const Jobs = () => {
         </HeaderContainer>
     );
 
-    const getPlaceholder = () => {
-        let placeholderText = "No jobs found"; // filter applied
-        if (loading) {
-            placeholderText = "Loading jobs...";
-        } else if (jobsOriginal.length === 0) {
-            placeholderText = "You don't have any jobs";
-        }
-
-        return (
-            <PlaceholderContainer>
-                <img src={NewEntryImage} width={200} alt={placeholderText} />
-                <PlaceholderText>{placeholderText}</PlaceholderText>
-            </PlaceholderContainer>
-        );
-    };
-
     return (
         <Layout header={getHeaderContainer}>
-            {jobs.length === 0 && getPlaceholder()}
-            {jobs.length > 0 && (
-                <>
-                    <TitleContainer>
-                        <Title level={4} style={{ marginBottom: 0 }}>
-                            Jobs
-                        </Title>
-                        <Spin spinning={loading} />
-                    </TitleContainer>
-                    <List
-                        grid={{ gutter: 24, column: 1 }}
-                        split={false}
-                        dataSource={jobs}
-                        pagination={{
-                            defaultPageSize: 8,
-                            hideOnSinglePage: true,
-                        }}
-                        renderItem={(job: Job) => (
-                            <List.Item>
-                                <JobCard job={job} onCardClicked={onJobCardClicked} onEditClicked={onEditJobClicked} />
-                            </List.Item>
-                        )}
-                    />
-                </>
-            )}
+            <ConfigProvider renderEmpty={() => <EmptyState message='You currently don’t have any jos.' />}>
+                <TitleContainer>
+                    <Title level={4} style={{ marginBottom: 0 }}>
+                        Jobs
+                    </Title>
+                    <Spin spinning={loading} />
+                </TitleContainer>
+                <List
+                    grid={{ gutter: 24, column: 1 }}
+                    split={false}
+                    dataSource={jobs}
+                    pagination={{
+                        defaultPageSize: 8,
+                        hideOnSinglePage: true,
+                    }}
+                    renderItem={(job: Job) => (
+                        <List.Item>
+                            <JobCard job={job} onCardClicked={onJobCardClicked} onEditClicked={onEditJobClicked} />
+                        </List.Item>
+                    )}
+                />
+            </ConfigProvider>
         </Layout>
     );
 };

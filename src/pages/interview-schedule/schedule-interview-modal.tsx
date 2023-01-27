@@ -22,14 +22,16 @@ import DatePicker from "../../components/antd/DatePicker";
 import InterviewTypeTag from "../../components/tags/interview-type-tag";
 import { fetchCandidateDetails, loadCandidates } from "../../store/candidates/actions";
 import {
+    CandidateStatus,
     filterCandidates,
     selectCandidateDetails,
     selectCandidates,
-    selectGetCandidateDetailsStatus,
+    selectGetCandidateDetailsStatus, sortCandidatesByCreatedDate
 } from "../../store/candidates/selector";
 import { addInterview, NewInterview, updateInterview } from "../../store/interviews/actions";
 import { selectAddInterviewStatus, selectUpdateInterviewStatus } from "../../store/interviews/selector";
 import {
+    Candidate,
     CandidateDetails,
     CandidateStageStatus,
     CurrentStage,
@@ -38,7 +40,7 @@ import {
     InterviewType,
     TeamMember,
     Template,
-    UserProfile,
+    UserProfile
 } from "../../store/models";
 import { ApiRequestStatus } from "../../store/state-models";
 import { loadTeam } from "../../store/team/actions";
@@ -46,7 +48,6 @@ import { selectTeamMembers } from "../../store/team/selector";
 import { loadTemplates } from "../../store/templates/actions";
 import { selectTemplates } from "../../store/templates/selector";
 import { selectUserProfile } from "../../store/user/selector";
-import { CandidatesFilter } from "../../utils/constants";
 import {
     datePickerFormat,
     formatDate,
@@ -178,7 +179,7 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
     const profile: UserProfile = useSelector(selectUserProfile, shallowEqual);
     const teamMembers: TeamMember[] = useSelector(selectTeamMembers, shallowEqual);
     const templates: Template[] = useSelector(selectTemplates, shallowEqual);
-    const candidates: CandidateDetails[] = useSelector(selectCandidates, shallowEqual);
+    const candidates: Candidate[] = useSelector(selectCandidates, shallowEqual);
     const selectedCandidate: CandidateDetails | undefined = useSelector(
         selectCandidateDetails(formData.candidateId),
         shallowEqual
@@ -198,7 +199,7 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
     const isInterviewScheduled = selectedCandidate?.currentStage?.status === CandidateStageStatus.INTERVIEW_SCHEDULED;
     const isEditMode = interview !== undefined;
 
-    const candidatesOptions = filterCandidates(candidates, CandidatesFilter.Current)
+    const candidatesOptions = sortCandidatesByCreatedDate(filterCandidates(candidates, CandidateStatus.Current))
         .sort((a, b) => a.candidateName.localeCompare(b.candidateName))
         .map(candidate => ({
             value: candidate.candidateId,

@@ -23,12 +23,12 @@ import { loadCandidates } from "../../store/candidates/actions";
 import { selectCandidates } from "../../store/candidates/selector";
 import { getCandidateStageStatusText } from "../../store/jobs/selectors";
 import {
-    CandidateDetails,
+    Candidate,
     CandidateStageStatus,
     JobStage,
     JobStageType,
     StageCandidate,
-    Template,
+    Template
 } from "../../store/models";
 import { loadTemplates } from "../../store/templates/actions";
 import { selectTemplates } from "../../store/templates/selector";
@@ -223,7 +223,7 @@ const TabPipeline = ({
     const dispatch = useDispatch();
 
     const templates: Template[] = useSelector(selectTemplates, shallowEqual);
-    const candidates: CandidateDetails[] = useSelector(selectCandidates, shallowEqual);
+    const candidates: Candidate[] = useSelector(selectCandidates, shallowEqual);
 
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
