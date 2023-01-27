@@ -59,22 +59,9 @@ namespace CafApi.Query
 
         public string JobTitle { get; set; }
 
-        public CurrentStage CurrentStage { get; set; }
-    }
-
-    public class CurrentStage
-    {
         public string StageId { get; set; }
 
-        public string Title { get; set; }
-
-        public string Colour { get; set; }
-
-        public string Type { get; set; }
-
-        public string TemplateId { get; set; }
-
-        public string Status { get; set; }
+        public string StageTitle { get; set; }
     }
 
     public class CandidatesQueryHandler : IRequestHandler<CandidatesQuery, CandidatesQueryResult>
@@ -165,32 +152,17 @@ namespace CafApi.Query
                     IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId),
                     JobId = candidate.JobId,
                     JobTitle = jobs.FirstOrDefault(j => j.JobId == candidate.JobId)?.Title,
-                    CurrentStage = GetCurrentStage(jobs, candidate.CandidateId, candidate.JobId)
+                    StageId = GetCurrentStage(jobs, candidate.CandidateId, candidate.JobId)?.StageId,
+                    StageTitle = GetCurrentStage(jobs, candidate.CandidateId, candidate.JobId)?.Title,
                 }).ToList()
             };
         }
 
-        private CurrentStage GetCurrentStage(List<Job> jobs, string candidateId, string jobId)
+        private Stage GetCurrentStage(List<Job> jobs, string candidateId, string jobId)
         {
-            CurrentStage currentStage = null;
-
-            var currentJobStage = jobs.FirstOrDefault(j => j.JobId == jobId)?
+            return jobs.FirstOrDefault(j => j.JobId == jobId)?
                 .Pipeline.FirstOrDefault(s => s.Candidates != null &&
                     s.Candidates.Any(c => c.CandidateId == candidateId));
-
-            if (currentJobStage != null)
-            {
-                currentStage = new CurrentStage
-                {
-                    StageId = currentJobStage.StageId,
-                    Title = currentJobStage.Title,
-                    TemplateId = currentJobStage.TemplateId,
-                    Colour = currentJobStage.Colour,
-                    Type = currentJobStage.Type
-                };
-            }
-
-            return currentStage;
         }
     }
 }
