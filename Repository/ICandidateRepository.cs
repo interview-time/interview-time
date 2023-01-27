@@ -10,6 +10,8 @@ namespace CafApi.Repository
 
         Task<List<Candidate>> GetCandidates(string teamId, List<string> candidateIds);
 
+        Task<List<Candidate>> GetCandidates(string teamId);
+
         Task UpdateCandidates(List<Candidate> candidates);
 
         Task SaveCandidate(Candidate candidate);
