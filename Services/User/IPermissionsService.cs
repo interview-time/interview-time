@@ -25,5 +25,7 @@ namespace CafApi.Services.User
         Task<bool> CanManageJobs(string userId, string teamId);
 
         Task<bool> CanViewJobs(string userId, string teamId);
+
+        Task<bool> CanManageInterviews(string userId, string teamId);
     }
 }

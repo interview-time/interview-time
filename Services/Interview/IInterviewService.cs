@@ -6,9 +6,7 @@ namespace CafApi.Services
 {
     public interface IInterviewService
     {
-        Task UpdateInterview(Interview interview);
-
-        Task DeleteInterview(string userId, string interviewId);
+        Task UpdateInterview(Interview interview);        
 
         Task SubmitScorecard(string userId, ScoreCardRequest scoreCard);
 

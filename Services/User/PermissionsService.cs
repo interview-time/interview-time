@@ -58,22 +58,7 @@ namespace CafApi.Services.User
             }
 
             return null;
-        }
-
-        public static bool CanDeleteInterview(List<TeamRole> userRoles, bool isOwner)
-        {
-            if (isOwner)
-            {
-                return true;
-            }
-
-            if (userRoles != null && userRoles.Any(role => role == TeamRole.ADMIN))
-            {
-                return true;
-            }
-
-            return false;
-        }
+        }      
 
         public async Task<bool> CanCancelInvite(string userId, string teamId, bool isOwner)
         {
@@ -176,7 +161,23 @@ namespace CafApi.Services.User
             return false;
         }
 
-         public async Task<bool> CanViewJobs(string userId, string teamId)
+        public async Task<bool> CanViewJobs(string userId, string teamId)
+        {
+            var teamMember = await GetTeamMember(userId, teamId);
+
+            // belongs to the team
+            if (teamMember != null)
+            {
+                var userRoles = GetUserRoles(teamMember);
+
+                return userRoles != null && userRoles.Any(role => role == TeamRole.HR || role == TeamRole.ADMIN);
+            }
+
+            return false;
+        }
+
+        // Schedule, reschedule, update and cancel interview
+        public async Task<bool> CanManageInterviews(string userId, string teamId)
         {
             var teamMember = await GetTeamMember(userId, teamId);
 

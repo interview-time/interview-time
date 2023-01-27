@@ -21,7 +21,6 @@ namespace CafApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("interview")]
     public class InterviewController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -59,7 +58,7 @@ namespace CafApi.Controllers
             _demoUserId = configuration["DemoUserId"];
         }
 
-        [HttpGet("{teamId?}")]
+        [HttpGet("interview/{teamId?}")]
         public async Task<ActionResult<List<Interview>>> Get(string teamId = null)
         {
             var query = new InterviewsQuery
@@ -73,7 +72,7 @@ namespace CafApi.Controllers
             return Ok(result.Interviews);
         }
 
-        [HttpPost()]
+        [HttpPost("interview")]
         public async Task<ActionResult<Interview>> ScheduleInterview([FromBody] ScheduleInterviewCommand command)
         {
             try
@@ -92,7 +91,7 @@ namespace CafApi.Controllers
             }
         }
 
-        [HttpPut()]
+        [HttpPut("interview")]
         public async Task UpdateInterview([FromBody] Interview interview)
         {
             interview.UserId = UserId;
@@ -104,14 +103,34 @@ namespace CafApi.Controllers
             await _interviewService.UpdateInterview(interview);
         }
 
-        [HttpDelete("{interviewId}")]
-        public async Task DeleteInterview(string interviewId)
+        [HttpDelete("team/{teamId}/interview/{interviewId}")]
+        public async Task<ActionResult<Interview>> CancelInterview(string teamId, string interviewId)
         {
-            await _interviewService.DeleteInterview(UserId, interviewId);
+            try
+            {
+                var cancelledInterview = await _mediator.Send(new CancelInterviewCommand
+                {
+                    UserId = UserId,
+                    TeamId = teamId,
+                    InterviewId = interviewId
+                });
+
+                return Ok(cancelledInterview);
+            }
+            catch (AuthorizationException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Unauthorized(ex.Message);
+            }
+            catch (ItemNotFoundException ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
         [Obsolete]
-        [HttpPatch("scorecard")]
+        [HttpPatch("interview/scorecard")]
         public async Task SubmitScoreCard([FromBody] ScoreCardRequest scoreCard)
         {
             await _interviewService.SubmitScorecard(UserId, scoreCard);

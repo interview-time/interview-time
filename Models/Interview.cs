@@ -81,12 +81,14 @@ namespace CafApi.Models
         public DateTime ModifiedDate { get; set; }
 
         public string JobId { get; set; }
-        
+
         public string JobTitle { get; set; }
 
         public string StageId { get; set; }
-        
+
         public string StageTitle { get; set; }
+
+        public bool IsCancelled { get; set; }
     }
 
     public class LiveCodingChallenge
