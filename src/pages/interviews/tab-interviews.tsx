@@ -5,9 +5,9 @@ import EmptyState from "../../components/empty-state/empty-state";
 import { Interview } from "../../store/models";
 import { routeInterviewScorecard } from "../../utils/route";
 import InterviewCard from "./interview-card";
-import DeleteInterviewModal from "../interview-schedule/delete-interview-modal";
+import CancelInterviewModal from "../interview-schedule/cancel-interview-modal";
 
-type DeleteInterviewModalProps = {
+type CancelInterviewModalProps = {
     visible: boolean;
     interviewId?: string;
     candidateName?: string;
@@ -15,13 +15,12 @@ type DeleteInterviewModalProps = {
 
 type Props = {
     interviews: Interview[];
-    onEditInterview: (interview: Interview) => void;
 };
 
-const TabInterviews = ({ interviews, onEditInterview }: Props) => {
+const TabInterviews = ({ interviews }: Props) => {
     const history = useHistory();
 
-    const [deleteInterviewModal, setDeleteInterviewModal] = useState<DeleteInterviewModalProps>({
+    const [cancelInterviewModal, setCancelInterviewModal] = useState<CancelInterviewModalProps>({
         interviewId: "",
         visible: false,
     });
@@ -30,8 +29,8 @@ const TabInterviews = ({ interviews, onEditInterview }: Props) => {
         history.push(routeInterviewScorecard(interview.interviewId));
     };
 
-    const showDeleteDialog = (interview: Interview) =>
-        setDeleteInterviewModal({
+    const showCancelDialog = (interview: Interview) =>
+        setCancelInterviewModal({
             visible: true,
             interviewId: interview.interviewId,
             candidateName: interview.candidate,
@@ -53,18 +52,17 @@ const TabInterviews = ({ interviews, onEditInterview }: Props) => {
                         <InterviewCard
                             interview={interview}
                             onInterviewClicked={onInterviewClicked}
-                            onEditInterviewClicked={onEditInterview}
-                            onDeleteInterviewClicked={interview => showDeleteDialog(interview)}
+                            onCancelInterviewClicked={interview => showCancelDialog(interview)}
                         />
                     </List.Item>
                 )}
             />
-            <DeleteInterviewModal
-                open={deleteInterviewModal.visible}
-                interviewId={deleteInterviewModal.interviewId}
-                candidateName={deleteInterviewModal.candidateName}
+            <CancelInterviewModal
+                open={cancelInterviewModal.visible}
+                interviewId={cancelInterviewModal.interviewId}
+                candidateName={cancelInterviewModal.candidateName}
                 onClose={() =>
-                    setDeleteInterviewModal({
+                    setCancelInterviewModal({
                         visible: false,
                         candidateName: undefined,
                         interviewId: undefined,

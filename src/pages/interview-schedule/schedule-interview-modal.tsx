@@ -26,21 +26,21 @@ import {
     filterCandidates,
     selectCandidateDetails,
     selectCandidates,
-    selectGetCandidateDetailsStatus, sortCandidatesByCreatedDate
+    selectGetCandidateDetailsStatus,
+    sortCandidatesByCreatedDate,
 } from "../../store/candidates/selector";
-import { addInterview, NewInterview, updateInterview } from "../../store/interviews/actions";
+import { addInterview, NewInterview } from "../../store/interviews/actions";
 import { selectAddInterviewStatus, selectUpdateInterviewStatus } from "../../store/interviews/selector";
 import {
     Candidate,
     CandidateDetails,
     CandidateStageStatus,
     CurrentStage,
-    Interview,
     InterviewStatus,
     InterviewType,
     TeamMember,
     Template,
-    UserProfile
+    UserProfile,
 } from "../../store/models";
 import { ApiRequestStatus } from "../../store/state-models";
 import { loadTeam } from "../../store/team/actions";
@@ -156,11 +156,10 @@ type Props = {
     open: boolean;
     alwaysFetchCandidate?: boolean;
     candidateId?: string;
-    interview?: Interview;
     onClose: (interviewChanged?: boolean) => void;
 };
 
-const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, interview, onClose }: Props) => {
+const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, onClose }: Props) => {
     const dispatch = useDispatch();
     const defaultStartDateTime = formatDateISO(roundToNearestMinutes(new Date(), { nearestTo: 15 }));
     const defaultEndDateTime = formatDateISO(roundToNearestMinutes(addHours(new Date(), 1), { nearestTo: 15 }));
@@ -197,7 +196,6 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
         template?.interviewType === InterviewType.TAKE_HOME_TASK;
     const isInterviewWithoutDate = isTakeHomeChallenge(formData.template);
     const isInterviewScheduled = selectedCandidate?.currentStage?.status === CandidateStageStatus.INTERVIEW_SCHEDULED;
-    const isEditMode = interview !== undefined;
 
     const candidatesOptions = sortCandidatesByCreatedDate(filterCandidates(candidates, CandidateStatus.Current))
         .sort((a, b) => a.candidateName.localeCompare(b.candidateName))
@@ -262,23 +260,11 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
 
     useEffect(() => {
         if (selectedCandidate) {
-            if (isEditMode && interview) {
-                let templateId = interview.templateIds?.[0];
-                let template = findTemplate(templateId);
-                updateFormData({
-                    startDate: interview.interviewDateTime,
-                    endDate: interview.interviewEndDateTime,
-                    template: template,
-                    sendChallenge: isTakeHomeChallenge(template),
-                    interviewersIds: interview.interviewers,
-                });
-            } else {
-                let template = findTemplate(selectedCandidate?.currentStage?.templateId);
-                updateFormData({
-                    template: template,
-                    sendChallenge: isTakeHomeChallenge(template),
-                });
-            }
+            let template = findTemplate(selectedCandidate?.currentStage?.templateId);
+            updateFormData({
+                template: template,
+                sendChallenge: isTakeHomeChallenge(template),
+            });
         }
         // eslint-disable-next-line
     }, [selectedCandidate]);
@@ -331,38 +317,6 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
         }
 
         dispatch(addInterview(interview));
-    };
-
-    const onUpdateClicked = () => {
-        let selectedTemplate = formData.template;
-        if (!selectedCandidate || !selectedTemplate || !interview) {
-            return;
-        }
-
-        const updatedInterview: Interview = {
-            ...interview,
-            interviewDateTime: formData.startDate,
-            interviewEndDateTime: formData.endDate,
-            candidateId: selectedCandidate.candidateId,
-            // @ts-ignore
-            candidate: selectedCandidate.candidateName,
-        };
-
-        if (interview.templateIds?.[0] !== selectedTemplate.templateId) {
-            updatedInterview.templateIds = [selectedTemplate.templateId];
-            updatedInterview.interviewType = selectedTemplate.interviewType;
-            // @ts-ignore
-            updatedInterview.structure = selectedTemplate.structure;
-            updatedInterview.checklist = selectedTemplate.checklist;
-
-            if (selectedTemplate.interviewType === InterviewType.LIVE_CODING) {
-                interview.liveCodingChallenges = selectedTemplate.challenges;
-            } else if (selectedTemplate.interviewType === InterviewType.TAKE_HOME_TASK) {
-                interview.takeHomeChallenge = selectedTemplate.challenges![0];
-            }
-        }
-
-        dispatch(updateInterview(updatedInterview));
     };
 
     const onDateChange = (newDate: Date | null) => {
@@ -483,7 +437,6 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
             <Select
                 mode='multiple'
                 placeholder='Select one or more interviewers'
-                disabled={isEditMode}
                 value={formData.interviewersIds}
                 options={interviewersOptions}
                 filterOption={filterOptionLabel}
@@ -535,7 +488,7 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
             );
         }
 
-        if (isInterviewScheduled && !isEditMode) {
+        if (isInterviewScheduled) {
             return (
                 <PlaceholderContainer>
                     <img src={CompleteImage} height={138} alt='Warning' />
@@ -582,7 +535,7 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
 
     return (
         <Modal
-            title={isEditMode ? "Edit Interview" : "Schedule Interview"}
+            title='Schedule Interview'
             open={open}
             afterClose={onAfterClose}
             onCancel={() => onClose(false)}
@@ -615,25 +568,14 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, inter
                 <div />
                 <Space>
                     <Button onClick={() => onClose(false)}>Cancel</Button>
-                    {!isEditMode && (
-                        <Button
-                            type='primary'
-                            disabled={!isScheduleButtonEnabled}
-                            loading={addInterviewStatus === ApiRequestStatus.InProgress}
-                            onClick={onScheduleClicked}
-                        >
-                            Schedule
-                        </Button>
-                    )}
-                    {isEditMode && (
-                        <Button
-                            type='primary'
-                            loading={updateInterviewStatus === ApiRequestStatus.InProgress}
-                            onClick={onUpdateClicked}
-                        >
-                            Update
-                        </Button>
-                    )}
+                    <Button
+                        type='primary'
+                        disabled={!isScheduleButtonEnabled}
+                        loading={addInterviewStatus === ApiRequestStatus.InProgress}
+                        onClick={onScheduleClicked}
+                    >
+                        Schedule
+                    </Button>
                 </Space>
             </Footer>
         </Modal>

@@ -70,11 +70,6 @@ const IconContainerYellow = styled(IconContainer)`
     background-color: ${hexToRgb(AccentColors.Orange_500, 0.1)};
 `;
 
-type EditInterview = {
-    visible: boolean;
-    interview?: Interview;
-};
-
 const Interviews = () => {
     const dispatch = useDispatch();
 
@@ -94,9 +89,7 @@ const Interviews = () => {
         interview => interview.parsedStartDateTime.getMonth() === currentDate.getMonth()
     );
 
-    const [interviewModal, setInterviewModal] = useState<EditInterview>({
-        visible: false,
-    });
+    const [interviewModalVisible, setInterviewModalVisible] = useState(false);
 
     const [filter, setFilter] = useState<string>("");
 
@@ -109,7 +102,7 @@ const Interviews = () => {
         // eslint-disable-next-line
     }, []);
 
-    const onScheduleInterview = () => setInterviewModal({ visible: true, interview: undefined });
+    const onScheduleInterview = () => setInterviewModalVisible(true);
 
     const onSearchTextChange = (text: string) => setFilter(text);
 
@@ -190,31 +183,21 @@ const Interviews = () => {
                     {
                         label: `Current`,
                         key: "1",
-                        children: (
-                            <TabInterviews
-                                interviews={applyFilter(uncompletedInterviews)}
-                                onEditInterview={interview => setInterviewModal({ visible: true, interview })}
-                            />
-                        ),
+                        children: <TabInterviews interviews={applyFilter(uncompletedInterviews)} />,
                     },
                     {
                         label: `Completed`,
                         key: "2",
                         children: (
-                            <TabReports
-                                interviews={applyFilter(completedInterviews)}
-                                teamMembers={teamMembers}
-                            />
+                            <TabReports interviews={applyFilter(completedInterviews)} teamMembers={teamMembers} />
                         ),
                     },
                 ]}
             />
 
             <ScheduleInterviewModal
-                open={interviewModal.visible}
-                interview={interviewModal.interview}
-                candidateId={interviewModal.interview?.candidateId}
-                onClose={() => setInterviewModal({ visible: false })}
+                open={interviewModalVisible}
+                onClose={() => setInterviewModalVisible(false)}
             />
         </Layout>
     );

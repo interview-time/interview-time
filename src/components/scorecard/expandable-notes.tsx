@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Col, Input, Row, Space } from "antd";
-import { Status } from "../../utils/constants";
 import styles from "./expandable-notes.module.css";
 import { LightingFilledIcon, LightingIcon, RedFlagIcon } from "../../utils/icons";
 import { isNotesExpanded, setNotesExpanded } from "../../utils/storage";
@@ -46,7 +45,7 @@ const ExpandableNotes = ({ redFlags, notes, status, onNotesChange, onRedFlagsCha
 
                                 <div className={styles.redFlagsHolder}>
                                     <TextArea
-                                        {...(status === Status.COMPLETED ? { readonly: "true" } : {})}
+                                        {...(status === InterviewStatus.COMPLETED ? { readonly: "true" } : {})}
                                         className={styles.notesTextArea}
                                         placeholder='Enter generic notes here'
                                         bordered={false}

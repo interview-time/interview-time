@@ -1,45 +1,26 @@
-import styles from "./status-tags.module.css";
-import { Tag } from "antd";
 import React from "react";
-import { Status } from "../../utils/constants";
+import { InterviewStatus } from "../../store/models";
+import { TagSuccess, TagWarning, TagDanger, Tag } from "../../assets/styles/global-styles";
 
-/**
- *
- * @param {Date} interviewStartDateTime
- * @param {string} status
- * @param {[string]} statuses
- * @returns {JSX.Element}
- * @constructor
- */
 type Props = {
     interviewStartDateTime: Date;
-    status: string | string[];
+    status: InterviewStatus;
 };
+
 const InterviewStatusTag = ({ interviewStartDateTime, status }: Props) => {
     const interviewStarted = () => new Date() > interviewStartDateTime;
 
-    const createTag = () => {
-        let statusesArr = Array.isArray(status) ? status : [status];
-        let tagClass;
-        let tagText;
-        if (statusesArr.every(status => status === Status.SUBMITTED)) {
-            tagClass = styles.tagGreen;
-            tagText = "Complete";
-        } else if (statusesArr.find(status => status === Status.COMPLETED)) {
-            tagClass = styles.tagOrange;
-            tagText = "Finalizing…";
-        } else if (interviewStarted()) {
-            tagClass = styles.tagOrange;
-            tagText = "In Progress";
-        } else {
-            tagClass = styles.tagRed;
-            tagText = "Upcoming";
-        }
-
-        return <Tag className={tagClass}>{tagText}</Tag>;
-    };
-
-    return createTag();
+    if (status === InterviewStatus.SUBMITTED) {
+        return <TagSuccess>Complete</TagSuccess>;
+    } else if (status === InterviewStatus.COMPLETED) {
+        return <TagWarning>Finalizing…</TagWarning>;
+    } else if (status === InterviewStatus.CANCELLED) {
+        return <TagDanger>Cancelled</TagDanger>;
+    } else if (interviewStarted()) {
+        return <TagWarning>In Progress</TagWarning>;
+    } else {
+        return <Tag>Upcoming</Tag>;
+    }
 };
 
 export default InterviewStatusTag;

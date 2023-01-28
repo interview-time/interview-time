@@ -11,7 +11,7 @@ import { loadTeam } from "../../store/team/actions";
 import { selectTeamMembers } from "../../store/team/selector";
 import { selectUserProfile } from "../../store/user/selector";
 import InterviewCard from "./interview-card";
-import DeleteInterviewModal from "../interview-schedule/delete-interview-modal";
+import CancelInterviewModal from "../interview-schedule/cancel-interview-modal";
 
 const { Text } = Typography;
 
@@ -36,7 +36,7 @@ const TableHeaderText = styled(Text)`
     letter-spacing: 1px;
 `;
 
-type DeleteInterviewModalProps = {
+type CancelInterviewModalProps = {
     visible: boolean;
     interviewId?: string;
     candidateName?: string;
@@ -50,7 +50,7 @@ type Props = {
 const TabInterviews = ({ jobDetails, onInterviewRemoved }: Props) => {
     const dispatch = useDispatch();
 
-    const [deleteInterviewModal, setDeleteInterviewModal] = useState<DeleteInterviewModalProps>({
+    const [cancelInterviewModal, setCancelInterviewModal] = useState<CancelInterviewModalProps>({
         interviewId: "",
         visible: false,
     });
@@ -71,8 +71,8 @@ const TabInterviews = ({ jobDetails, onInterviewRemoved }: Props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [jobDetails]);
 
-    const showDeleteDialog = (interview: Interview) =>
-        setDeleteInterviewModal({
+    const showCancelDialog = (interview: Interview) =>
+        setCancelInterviewModal({
             visible: true,
             interviewId: interview.interviewId,
             candidateName: interview.candidate,
@@ -106,18 +106,18 @@ const TabInterviews = ({ jobDetails, onInterviewRemoved }: Props) => {
                             <InterviewCard
                                 linkedInterviews={linkedInterviews}
                                 teamMembers={teamMembers}
-                                onDeleteInterviewClicked={showDeleteDialog}
+                                onCancelInterviewClicked={showCancelDialog}
                             />
                         </List.Item>
                     )}
                 />
             </ConfigProvider>
-            <DeleteInterviewModal
-                open={deleteInterviewModal.visible}
-                interviewId={deleteInterviewModal.interviewId}
-                candidateName={deleteInterviewModal.candidateName}
+            <CancelInterviewModal
+                open={cancelInterviewModal.visible}
+                interviewId={cancelInterviewModal.interviewId}
+                candidateName={cancelInterviewModal.candidateName}
                 onClose={(interviewRemoved?: boolean) => {
-                    setDeleteInterviewModal({
+                    setCancelInterviewModal({
                         visible: false,
                         candidateName: undefined,
                         interviewId: undefined,

@@ -23,7 +23,6 @@ import {
 } from "../../store/models";
 import ExpandableNotes from "../../components/scorecard/expandable-notes";
 import { defaultTo } from "lodash";
-import { Status } from "../../utils/constants";
 import InterviewEvaluation from "./step-evaluation/interview-evaluation";
 import { personalEvent } from "../../analytics";
 import { useDebounceEffect, useDebounceFn } from "ahooks";
@@ -71,8 +70,8 @@ const InterviewScorecard = ({
     const [panelVisible, setPanelVisible] = useState(true);
 
     const interviewLoaded = interview.interviewId && interview.interviewId.length > 0;
-    const interviewStarted = interview.status === Status.NEW || interview.status === Status.STARTED;
-    const interviewCompleted = interview.status === Status.COMPLETED;
+    const interviewStarted = interview.status === InterviewStatus.NEW || interview.status === InterviewStatus.STARTED;
+    const interviewCompleted = interview.status === InterviewStatus.COMPLETED;
 
     useEffect(() => {
         if (originalInterview && !interviewLoaded) {

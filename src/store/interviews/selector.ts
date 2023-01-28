@@ -1,6 +1,5 @@
 import { cloneDeep } from "lodash";
-import { Status } from "../../utils/constants";
-import { Candidate, Interview, InterviewStructureGroup, InterviewType, TeamMember } from "../models";
+import { Candidate, Interview, InterviewStatus, InterviewStructureGroup, InterviewType, TeamMember } from "../models";
 import { RootState } from "../state-models";
 
 export interface LinkedInterviews {
@@ -61,7 +60,7 @@ export const selectInterviewData = (state: RootState, interviewId: string) => {
 
 export const selectUncompletedUserInterviews = (state: RootState): Interview[] => {
     return state.interviews.interviews
-        .filter(interview => interview.userId === state.user.profile.userId && interview.status !== Status.SUBMITTED)
+        .filter(interview => interview.userId === state.user.profile.userId && interview.status !== InterviewStatus.SUBMITTED)
         .map(mapParsedDateTime)
         .map(interview => mapCandidateName(interview, state.candidates.candidates))
         .sort((a: Interview, b: Interview) => dateComparator(a, b));
@@ -71,7 +70,7 @@ export const selectUncompletedJobInterviews =
     (jobId: string) =>
     (state: RootState): LinkedInterviews[] => {
         const interviews = state.interviews.interviews
-            .filter(interview => interview.jobId === jobId && interview.status !== Status.SUBMITTED)
+            .filter(interview => interview.jobId === jobId && interview.status !== InterviewStatus.SUBMITTED)
             .map(mapParsedDateTime)
             .map(interview => mapCandidateName(interview, state.candidates.candidates))
             .sort((a: Interview, b: Interview) => dateComparator(a, b));
@@ -96,7 +95,7 @@ export const selectUncompletedJobInterviews =
 
 export const selectCompletedInterviews = (state: RootState): Interview[] => {
     return state.interviews.interviews
-        .filter(interview => interview.status === Status.SUBMITTED)
+        .filter(interview => interview.status === InterviewStatus.SUBMITTED)
         .map(mapParsedDateTime)
         .map(interview => mapCandidateName(interview, state.candidates.candidates))
         .sort((a: Interview, b: Interview) => dateComparator(a, b));
@@ -147,4 +146,4 @@ export const selectAddInterviewStatus = (state: RootState) => state.interviews.a
 
 export const selectUpdateInterviewStatus = (state: RootState) => state.interviews.apiResults.UpdateInterview.status;
 
-export const selectDeleteInterviewStatus = (state: RootState) => state.interviews.apiResults.DeleteInterview.status;
+export const selectCancelInterviewStatus = (state: RootState) => state.interviews.apiResults.CancelInterview.status;

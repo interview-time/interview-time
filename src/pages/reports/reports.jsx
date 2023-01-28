@@ -6,7 +6,6 @@ import styles from "./reports.module.css";
 import { Input, Select, Table } from "antd";
 import { connect } from "react-redux";
 import { sortBy } from "lodash/collection";
-import { Status } from "../../utils/constants";
 import { getDecisionText, getOverallPerformancePercent } from "../../utils/assessment";
 import { localeCompare } from "../../utils/comparators";
 import { reverse } from "lodash/array";
@@ -23,6 +22,7 @@ import InterviewCompetenceTag from "../../components/tags/interview-competence-t
 import { defaultTo } from "lodash/util";
 import { getFormattedDateTime } from "../../utils/date-fns";
 import { ApiRequestStatus } from "../../store/state-models";
+import { InterviewStatus } from "../../store/models";
 
 const { Search } = Input;
 const { Title } = Typography;
@@ -189,7 +189,7 @@ const mapState = state => {
     const interviewsState = state.interviews || {};
 
     const interviews = reverse(
-        sortBy(cloneDeep(interviewsState.interviews.filter(interview => interview.status === Status.SUBMITTED)), [
+        sortBy(cloneDeep(interviewsState.interviews.filter(interview => interview.status === InterviewStatus.SUBMITTED)), [
             "interviewDateTime",
         ])
     );

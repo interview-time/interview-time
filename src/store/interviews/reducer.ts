@@ -11,6 +11,7 @@ export const defaultApiResults: IInterviewsApiResults = {
     [InterviewApiRequest.AddInterview]: defaultApiRequest,
     [InterviewApiRequest.UpdateInterview]: defaultApiRequest,
     [InterviewApiRequest.DeleteInterview]: defaultApiRequest,
+    [InterviewApiRequest.CancelInterview]: defaultApiRequest,
     [InterviewApiRequest.ShareScorecard]: defaultApiRequest,
     [InterviewApiRequest.UnshareScorecard]: defaultApiRequest,
     [InterviewApiRequest.GetSharedScorecard]: defaultApiRequest,

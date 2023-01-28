@@ -1,10 +1,9 @@
 import { Col, Row, Typography, Input } from "antd";
 import Card from "../card/card";
 import styles from "./summary-notes.module.css";
-import { Status } from "../../utils/constants";
 import { RedFlagsTags } from "../tags/red-flags-tags";
 import { defaultTo } from "lodash";
-import { Interview } from "../../store/models";
+import { Interview, InterviewStatus } from "../../store/models";
 
 const { TextArea } = Input;
 const { Title, Paragraph } = Typography;
@@ -33,7 +32,7 @@ export const SummaryNotesCard = ({ interview, onNotesChange, onRedFlagsChange }:
                     )}
                     {notesEditable && (
                         <TextArea
-                            {...(interview.status === Status.SUBMITTED ? { readonly: "true" } : {})}
+                            {...(interview.status === InterviewStatus.SUBMITTED ? { readonly: "true" } : {})}
                             className={styles.notesTextArea}
                             placeholder='No summary was left, you can still add notes now'
                             bordered={false}

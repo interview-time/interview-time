@@ -8,8 +8,7 @@ import { CardClickable, FormLabelSmall, SecondaryText, TextBold } from "../../as
 import InitialsAvatar from "../../components/avatar/initials-avatar";
 import DemoTag from "../../components/demo/demo-tag";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
-import { Interview } from "../../store/models";
-import { Status } from "../../utils/constants";
+import { Interview, InterviewStatus } from "../../store/models";
 import { formatDate, getFormattedTimeRange } from "../../utils/date-fns";
 import { interviewWithoutDate, NO_DATE_LABEL } from "../../utils/interview";
 
@@ -53,6 +52,12 @@ const CardRow = styled(Row)`
     width: 100%;
 `;
 
+const FlexEndCol = styled(Col)`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
 const DateJobContainer = styled.div`
     display: flex;
     align-items: center;
@@ -87,40 +92,45 @@ const DayText = styled(Text)`
 type Props = {
     interview: Interview;
     onInterviewClicked: (interview: Interview) => void;
-    onEditInterviewClicked?: (interview: Interview) => void;
-    onDeleteInterviewClicked?: (interview: Interview) => void;
+    onCancelInterviewClicked?: (interview: Interview) => void;
 };
 
-const InterviewCard = ({ interview, onInterviewClicked, onEditInterviewClicked, onDeleteInterviewClicked }: Props) => {
-    const actionsMenu = (interview: Interview): ItemType[] => {
-        const items: ItemType[] = [];
-        if (interview.status !== Status.SUBMITTED && interview.status !== Status.COMPLETED) {
-            items.push({
-                key: "edit",
-                label: "Edit",
-                onClick: e => {
-                    e.domEvent.stopPropagation();
-                    onEditInterviewClicked?.(interview);
-                },
-            });
-        }
-        items.push({
-            key: "delete",
-            label: "Delete",
+const InterviewCard = ({ interview, onInterviewClicked, onCancelInterviewClicked }: Props) => {
+    const isInterviewCancellable =
+        interview.status !== InterviewStatus.CANCELLED &&
+        interview.status !== InterviewStatus.SUBMITTED &&
+        onCancelInterviewClicked;
+
+    const actionsMenu = (interview: Interview): ItemType[] => [
+        {
+            key: "cancel",
+            label: "Cancel interview",
             danger: true,
             onClick: e => {
                 e.domEvent.stopPropagation();
-                onDeleteInterviewClicked?.(interview);
+                onCancelInterviewClicked?.(interview);
             },
-        });
-        return items;
+        },
+    ];
+
+    const getCardColor = () => {
+        if (interview.status === InterviewStatus.CANCELLED) {
+            return AccentColors.Red_500;
+        } else if (new Date() > interview.parsedStartDateTime) {
+            return AccentColors.Orange_500;
+        } else {
+            return Colors.Neutral_200;
+        }
     };
 
-    const getCardColor = () =>
-        new Date() > interview.parsedStartDateTime ? AccentColors.Orange_500 : Colors.Neutral_200;
-
     return (
-        <InterviewCardOutlined onClick={() => onInterviewClicked(interview)}>
+        <InterviewCardOutlined
+            onClick={() => {
+                if (interview.status !== InterviewStatus.CANCELLED) {
+                    onInterviewClicked(interview);
+                }
+            }}
+        >
             <CardStartContainer color={getCardColor()} />
             <CardRow gutter={[6, 6]}>
                 <Col xs={12} lg={8}>
@@ -155,27 +165,27 @@ const InterviewCard = ({ interview, onInterviewClicked, onEditInterviewClicked, 
                 <Col xs={12} lg={5}>
                     <SecondaryText>{interview.stageTitle || "-"}</SecondaryText>
                 </Col>
-                <Col xs={12} lg={5}>
+                <FlexEndCol xs={12} lg={5}>
                     <InterviewStatusTag
                         interviewStartDateTime={interview.parsedStartDateTime}
                         status={interview.status}
                     />
-                </Col>
+                    {isInterviewCancellable && (
+                        <CardEndContainer>
+                            <Dropdown
+                                menu={{
+                                    items: actionsMenu(interview),
+                                }}
+                                placement='bottomLeft'
+                            >
+                                <IconContainer>
+                                    <MoreVertical size={20} />
+                                </IconContainer>
+                            </Dropdown>
+                        </CardEndContainer>
+                    )}
+                </FlexEndCol>
             </CardRow>
-            {onEditInterviewClicked && onDeleteInterviewClicked && (
-                <CardEndContainer>
-                    <Dropdown
-                        menu={{
-                            items: actionsMenu(interview),
-                        }}
-                        placement='bottomLeft'
-                    >
-                        <IconContainer>
-                            <MoreVertical size={20} />
-                        </IconContainer>
-                    </Dropdown>
-                </CardEndContainer>
-            )}
         </InterviewCardOutlined>
     );
 };

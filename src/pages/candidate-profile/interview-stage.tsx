@@ -1,5 +1,5 @@
 import React from "react";
-import { Interview } from "../../store/models";
+import { Interview, InterviewStatus } from "../../store/models";
 import styled from "styled-components";
 import { getFormattedDateShort, parseDateISO } from "../../utils/date-fns";
 import InitialsAvatar from "../../components/avatar/initials-avatar";
@@ -7,7 +7,6 @@ import InterviewDecisionTag from "../../components/tags/interview-decision-tags"
 import { CalendarDays, ChevronRight, CheckCircle } from "lucide-react";
 import InterviewScoreTag from "../../components/tags/interview-score-tags";
 import { InterviewData } from "../../store/interviews/selector";
-import { Status } from "../../utils/constants";
 import { useHistory } from "react-router-dom";
 import { routeInterviewReport } from "../../utils/route";
 import { addHours } from "date-fns";
@@ -121,7 +120,7 @@ const InterviewStage = ({ stage, interviewDate, interviews }: Props) => {
     const history = useHistory();
 
     const reportAvailable = (interview: Interview) => {
-        return interview.status === Status.COMPLETED || interview.status === Status.SUBMITTED;
+        return interview.status === InterviewStatus.COMPLETED || interview.status === InterviewStatus.SUBMITTED;
     };
 
     const onInterviewerClicked = (interview: Interview) => {

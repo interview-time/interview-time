@@ -8,8 +8,7 @@ import { Card, SecondaryText, TextBold } from "../../assets/styles/global-styles
 import InitialsAvatar from "../../components/avatar/initials-avatar";
 import InterviewStatusTag from "../../components/tags/interview-status-tags";
 import { LinkedInterviews } from "../../store/interviews/selector";
-import { Interview, TeamMember } from "../../store/models";
-import { Status } from "../../utils/constants";
+import { Interview, InterviewStatus, TeamMember } from "../../store/models";
 import { formatDate, getFormattedTimeRange } from "../../utils/date-fns";
 import { interviewWithoutDate, NO_DATE_LABEL } from "../../utils/interview";
 
@@ -92,33 +91,41 @@ const DayText = styled(Text)`
 type Props = {
     linkedInterviews: LinkedInterviews;
     teamMembers: TeamMember[];
-    onDeleteInterviewClicked?: (interview: Interview) => void;
+    onCancelInterviewClicked?: (interview: Interview) => void;
 };
 
-const InterviewCard = ({ linkedInterviews, teamMembers, onDeleteInterviewClicked }: Props) => {
+const InterviewCard = ({ linkedInterviews, teamMembers, onCancelInterviewClicked }: Props) => {
     const interview = linkedInterviews.interviews[0];
     const interviewers = interview.interviewers.map(
         interviewerId => teamMembers.find(teamMember => teamMember.userId === interviewerId)?.name || "Unknown"
     );
 
-    const actionsMenu = (interview: Interview): ItemType[] => {
-        const items: ItemType[] = [];
-        if (interview.status !== Status.SUBMITTED && interview.status !== Status.COMPLETED) {
-            items.push({
-                key: "delete",
-                label: "Delete",
-                danger: true,
-                onClick: e => {
-                    e.domEvent.stopPropagation();
-                    onDeleteInterviewClicked?.(interview);
-                },
-            });
-        }
-        return items;
-    };
+    const isInterviewCancellable =
+        interview.status !== InterviewStatus.CANCELLED &&
+        interview.status !== InterviewStatus.SUBMITTED &&
+        onCancelInterviewClicked;
 
-    const getCardColor = () =>
-        new Date() > interview.parsedStartDateTime ? AccentColors.Orange_500 : Colors.Neutral_200;
+    const actionsMenu = (interview: Interview): ItemType[] => [
+        {
+            key: "cancel",
+            label: "Cancel interview",
+            danger: true,
+            onClick: e => {
+                e.domEvent.stopPropagation();
+                onCancelInterviewClicked?.(interview);
+            },
+        },
+    ];
+
+    const getCardColor = () => {
+        if (interview.status === InterviewStatus.CANCELLED) {
+            return AccentColors.Red_500;
+        } else if (new Date() > interview.parsedStartDateTime) {
+            return AccentColors.Orange_500;
+        } else {
+            return Colors.Neutral_200;
+        }
+    };
 
     return (
         <InterviewCardOutlined>
@@ -161,7 +168,7 @@ const InterviewCard = ({ linkedInterviews, teamMembers, onDeleteInterviewClicked
                         interviewStartDateTime={interview.parsedStartDateTime}
                         status={interview.status}
                     />
-                    {onDeleteInterviewClicked && (
+                    {isInterviewCancellable && (
                         <CardEndContainer>
                             <Dropdown
                                 menu={{

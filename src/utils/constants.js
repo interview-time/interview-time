@@ -18,13 +18,6 @@ export const DisplayRoles = {
     ADMIN: "Admin",
 };
 
-export const Status = {
-    NEW: "NEW",
-    STARTED: "STARTED",
-    COMPLETED: "COMPLETED",
-    SUBMITTED: "SUBMITTED",
-};
-
 export const Difficulty = {
     EASY: "Easy",
     MEDIUM: "Medium",
@@ -64,22 +57,6 @@ export const getTemplateCategoryIcon = interviewType => {
             return <TemplateTakeHomeTaskIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
         default:
             return <TemplateInterviewIcon color={interviewTypeToColor(interviewType)} width={64} height={64} />;
-    }
-};
-
-export const getStatusColor = status => {
-    if (status === Status.COMPLETED) {
-        return "success";
-    } else if (status === Status.NEW || status === Status.STARTED) {
-        return "processing";
-    }
-};
-
-export const getStatusText = status => {
-    if (status === Status.COMPLETED) {
-        return "Completed";
-    } else if (status === Status.NEW || status === Status.STARTED) {
-        return "Scheduled";
     }
 };
 

@@ -274,6 +274,7 @@ export enum InterviewStatus {
     STARTED = "STARTED",
     COMPLETED = "COMPLETED",
     SUBMITTED = "SUBMITTED",
+    CANCELLED = "CANCELLED",
 }
 
 export enum InterviewType {

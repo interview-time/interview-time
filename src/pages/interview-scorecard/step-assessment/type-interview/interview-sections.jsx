@@ -1,7 +1,7 @@
 import styles from "./interview-sections.module.css";
 import React from "react";
 import { Dropdown, Grid, Input, Menu, Space, Table, Tag } from "antd";
-import { InterviewAssessment, Status } from "../../../../utils/constants";
+import { InterviewAssessment } from "../../../../utils/constants";
 import { defaultTo } from "lodash/util";
 import { Typography } from "antd";
 import { localeCompare, localeCompareArray } from "../../../../utils/comparators";
@@ -20,6 +20,7 @@ import Card from "../../../../components/card/card";
 import QuestionDifficultyTag from "../../../../components/tags/question-difficulty-tag";
 import { getTagColor } from "../../../../utils/colors";
 import styled from "styled-components";
+import { InterviewStatus } from "../../../../store/models";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -375,7 +376,7 @@ export const InterviewGroupsSection = ({
     onRemoveGroupClicked,
     hashStyle,
 }) => {
-    const isCompletedStatus = () => interview.status === Status.COMPLETED;
+    const isCompletedStatus = () => interview.status === InterviewStatus.COMPLETED;
 
     return (
         <>

@@ -20,6 +20,7 @@ export enum InterviewApiRequest {
     AddInterview = "AddInterview",
     UpdateInterview = "UpdateInterview",
     DeleteInterview = "DeleteInterview",
+    CancelInterview = "CancelInterview",
     ShareScorecard = "ShareScorecard",
     UnshareScorecard = "UnshareScorecard",
     GetSharedScorecard = "GetSharedScorecard",
@@ -261,6 +262,29 @@ export const updateInterview = (interview: Interview) => async (dispatch: Dispat
 
         const axiosErr = error as AxiosError;
         dispatch(setRequestFailed(InterviewApiRequest.UpdateInterview, axiosErr?.message));
+    }
+};
+
+export const cancelInterview = (interviewId: string) => async (dispatch: Dispatch, getState: () => RootState) => {
+    const { user } = getState();
+
+    const teamId = user.profile.currentTeamId;
+    const token = await getAccessTokenSilently();
+    dispatch(setRequestInProgress(InterviewApiRequest.CancelInterview));
+
+    try {
+        const result = await axios.delete(`${BASE_URL}/team/${teamId}/interview/${interviewId}`, config(token));
+        if (result.data) {
+            dispatch(setUpdatedInterview(result.data));
+        }
+
+        dispatch(setRequestSuccess(InterviewApiRequest.CancelInterview));
+        dispatch(setRequestReset(InterviewApiRequest.CancelInterview));
+    } catch (error) {
+        logError(error);
+
+        const axiosErr = error as AxiosError;
+        dispatch(setRequestFailed(InterviewApiRequest.CancelInterview, axiosErr?.message));
     }
 };
 

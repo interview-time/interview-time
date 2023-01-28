@@ -1,8 +1,8 @@
 import { Modal, Typography } from "antd";
-import { deleteInterview } from "../../store/interviews/actions";
+import { cancelInterview } from "../../store/interviews/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
-import { selectDeleteInterviewStatus } from "../../store/interviews/selector";
+import { selectCancelInterviewStatus } from "../../store/interviews/selector";
 import { useEffect } from "react";
 
 const { Text } = Typography;
@@ -14,31 +14,31 @@ type Props = {
     onClose: (interviewRemoved?: boolean) => void;
 };
 
-const DeleteInterviewModal = ({ open, interviewId, candidateName, onClose }: Props) => {
+const CancelInterviewModal = ({ open, interviewId, candidateName, onClose }: Props) => {
     const dispatch = useDispatch();
 
-    const deleteInterviewsStatus: ApiRequestStatus = useSelector(selectDeleteInterviewStatus, shallowEqual);
-    const isLoading = deleteInterviewsStatus === ApiRequestStatus.InProgress;
+    const cancelInterviewsStatus: ApiRequestStatus = useSelector(selectCancelInterviewStatus, shallowEqual);
+    const isLoading = cancelInterviewsStatus === ApiRequestStatus.InProgress;
 
     useEffect(() => {
-        if (deleteInterviewsStatus === ApiRequestStatus.Success) {
+        if (cancelInterviewsStatus === ApiRequestStatus.Success) {
             onClose(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [deleteInterviewsStatus]);
+    }, [cancelInterviewsStatus]);
 
-    const onDelete = () => {
+    const onCancel = () => {
         if (interviewId) {
-            dispatch(deleteInterview(interviewId));
+            dispatch(cancelInterview(interviewId));
         }
     };
 
     return (
         <Modal
             open={open}
-            title='Delete Interview'
+            title='Cancel Interview'
             okText='Yes'
-            onOk={onDelete}
+            onOk={onCancel}
             okButtonProps={{
                 loading: isLoading,
                 disabled: isLoading,
@@ -54,4 +54,4 @@ const DeleteInterviewModal = ({ open, interviewId, candidateName, onClose }: Pro
     );
 };
 
-export default DeleteInterviewModal;
+export default CancelInterviewModal;
