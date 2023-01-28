@@ -139,7 +139,7 @@ const mapState = (state: RootState, ownProps: any) => {
     return {
         currentTeamId: state.user.profile.currentTeamId,
         interview: interviewData ? toInterview(interviewData) : undefined,
-        candidate: interviewData?.candidate,
+        candidate: interviewData?.candidateDetails,
         interviewers: interviewData?.interviewersMember ?? [],
     };
 };

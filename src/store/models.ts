@@ -58,15 +58,19 @@ export interface Team {
 
 export interface Interview {
     userId: string;
+    /** @deprecated always return null */
     interviewerName: string;
     interviewId: string;
     teamId: string;
     linkId: string;
     token?: string; // shared scorecard token
     candidateId: string;
-    candidateName?: string; // DEPRECATED
+    candidate?: string;
+    /** @deprecated use candidate field instead */
+    candidateName?: string;
     candidateNotes?: string;
-    position?: string; // DEPRECATED
+    /** @deprecated use position field from candidate */
+    position?: string;
     interviewDateTime: string; // "2022-07-13T11:15:00Z"
     interviewEndDateTime: string; // "2022-07-13T12:15:00Z"
     templateIds: string[];
@@ -86,6 +90,12 @@ export interface Interview {
     takeHomeChallenge?: TakeHomeChallenge;
     challengeDetails?: ChallengeDetails;
     sendChallenge?: boolean;
+    jobId?: string;
+    jobTitle?: string;
+    stageTitle?: string;
+    parsedCreatedDateTime: Date; // local property
+    parsedStartDateTime: Date; // local property
+    parsedEndDateTime: Date; // local property
 }
 
 export interface InterviewStage {
@@ -148,6 +158,7 @@ export interface Candidate {
     jobId?: string;
     jobTitle?: string;
     stageId?: string;
+    stageTitle?: string;
     status: string;
     gitHub?: string;
     linkedIn?: string;
@@ -162,6 +173,7 @@ export interface Candidate {
 
 export interface CandidateDetails extends Candidate {
     stages: InterviewStage[];
+    currentStage?: CurrentStage;
 }
 
 export interface Job {
@@ -198,6 +210,15 @@ export interface JobStage {
     templateId?: string;
     disabled: boolean;
     candidates?: StageCandidate[];
+}
+
+export interface CurrentStage {
+    stageId: string;
+    colour: string;
+    title: string;
+    type: string;
+    templateId?: string;
+    status?: CandidateStageStatus;
 }
 
 export interface StageCandidate {
@@ -253,6 +274,7 @@ export enum InterviewStatus {
     STARTED = "STARTED",
     COMPLETED = "COMPLETED",
     SUBMITTED = "SUBMITTED",
+    CANCELLED = "CANCELLED",
 }
 
 export enum InterviewType {
@@ -274,6 +296,7 @@ export interface Template {
     title: string;
     description: string;
     createdDate: string;
+    isDemo?: boolean;
     structure: TemplateStructure;
     interviewType: InterviewType;
     challenges?: TemplateChallenge[];

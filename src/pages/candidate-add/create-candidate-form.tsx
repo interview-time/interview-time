@@ -65,8 +65,8 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
 
     useEffect(() => {
         if (
-            createCandidateStatus.status === ApiRequestStatus.Success ||
-            updateCandidateStatus.status === ApiRequestStatus.Success
+            createCandidateStatus === ApiRequestStatus.Success ||
+            updateCandidateStatus === ApiRequestStatus.Success
         ) {
             onSave(candidateId);
             form.resetFields();
@@ -283,8 +283,8 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
                             type='primary'
                             htmlType='submit'
                             loading={
-                                createCandidateStatus.status === ApiRequestStatus.InProgress ||
-                                updateCandidateStatus.status === ApiRequestStatus.InProgress
+                                createCandidateStatus === ApiRequestStatus.InProgress ||
+                                updateCandidateStatus === ApiRequestStatus.InProgress
                             }
                         >
                             Save

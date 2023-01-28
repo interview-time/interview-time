@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Badge, Button, Divider, Dropdown, Layout as AntLayout, Menu, notification, Typography } from "antd";
 import {
     routeCandidateAdd,
     routeCandidates,
     routeHome,
-    routeInterviewAdd,
     routeInterviews,
     routeJobs, routeJobsNew,
     routeTeamNew,
@@ -17,14 +16,13 @@ import {
 
 import FeedbackModal from "../../pages/feedback/modal-feedback";
 import { joinTeam, switchTeam } from "../../store/user/actions";
-import { connect } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash";
 import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../../utils/storage";
 import NewsModal from "../../pages/news/modal-news";
 import { Album, CheckCircle2, ChevronDown, Gauge, LayoutTemplate, MessageCircle, Settings, Users } from "lucide-react";
-import { selectActiveTeam } from "../../store/user/selector";
-import { RootState } from "../../store/state-models";
+import { selectActiveTeam, selectUserProfile } from "../../store/user/selector";
 import { Team, UserProfile } from "../../store/models";
 import styled from "styled-components";
 import { ItemType } from "antd/es/menu/hooks/useItems";
@@ -33,6 +31,7 @@ import LogoSquare96 from "../../assets/logo-square-96.png";
 import ActionsModal from "./quick-actions-modal";
 import { useHotkeys } from "react-hotkeys-hook";
 import { TagNumber } from "../../assets/styles/global-styles";
+import ScheduleInterviewModal from "../../pages/interview-schedule/schedule-interview-modal";
 
 const { Text } = Typography;
 
@@ -188,14 +187,13 @@ const MenuFooterText = styled(Text)`
 type Props = {
     header?: React.ReactNode;
     children: React.ReactNode | React.ReactNode[];
-    profile: UserProfile;
-    switchTeam: Function;
-    joinTeam: Function;
+
 };
 
-const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
+const Layout = ({ header, children }: Props) => {
     const location = useLocation();
     const history = useHistory();
+    const dispatch = useDispatch();
 
     enum MenuKey {
         HOME = "HOME",
@@ -208,22 +206,25 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
         NONE = "",
     }
 
-    const [actionsVisible, setActionsVisible] = React.useState(false);
-    const [feedbackVisible, setFeedbackVisible] = React.useState(false);
-    const [newsVisible, setNewsVisible] = React.useState(isUpdateAvailable());
+    const profile: UserProfile = useSelector(selectUserProfile, shallowEqual);
+
+    const [interviewVisible, setInterviewVisible] = useState(false);
+    const [actionsVisible, setActionsVisible] = useState(false);
+    const [feedbackVisible, setFeedbackVisible] = useState(false);
+    const [newsVisible, setNewsVisible] = useState(isUpdateAvailable());
 
     useHotkeys("ctrl+k,Meta+k", () => setActionsVisible(true), []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         let team = getJoinTeam();
         if (team) {
             openTeamJoinProgressNotification();
-            joinTeam(team);
+            dispatch(joinTeam(team));
         }
         // eslint-disable-next-line
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         let joinTeamToken = getJoinTeam()?.token;
         if (joinTeamToken) {
             const joinedTeam = defaultTo(profile.teams, []).find((team: Team) => team.token === joinTeamToken);
@@ -302,7 +303,7 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
             teamName: team.teamName,
             teamId: team.teamId,
         };
-        switchTeam(selected.teamId);
+        dispatch(switchTeam(selected.teamId));
         history.push(routeHome());
     };
 
@@ -310,7 +311,10 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
 
     const onTeamProfileClicked = () => history.push(routeTeamProfile());
 
-    const onScheduleInterview = () => history.push(routeInterviewAdd());
+    const onScheduleInterview = () => {
+        setActionsVisible(false);
+        setInterviewVisible(true);
+    }
 
     const onAddCandidate = () => history.push(routeCandidateAdd());
 
@@ -427,6 +431,10 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
                         onScheduleInterview={onScheduleInterview}
                         onCreateTemplate={onCreateTemplate}
                     />
+                    <ScheduleInterviewModal
+                        open={interviewVisible}
+                        onClose={() => setInterviewVisible(false)}
+                    />
                     {children}
                 </PageContent>
             </AntLayout>
@@ -434,14 +442,4 @@ const Layout = ({ header, children, profile, switchTeam, joinTeam }: Props) => {
     );
 };
 
-const mapDispatch = { switchTeam, joinTeam };
-
-const mapState = (state: RootState) => {
-    const userState = state.user || {};
-
-    return {
-        profile: userState.profile,
-    };
-};
-
-export default connect(mapState, mapDispatch)(Layout);
+export default Layout;

@@ -1,22 +1,25 @@
-import { RootState } from "../state-models";
-import { Candidate, Interview, InterviewStructureGroup, InterviewType, TeamMember, Template } from "../models";
-import { Status } from "../../utils/constants";
 import { cloneDeep } from "lodash";
+import { Candidate, Interview, InterviewStatus, InterviewStructureGroup, InterviewType, TeamMember } from "../models";
+import { RootState } from "../state-models";
+
+export interface LinkedInterviews {
+    linkId: string;
+    interviews: Interview[];
+}
 
 export interface InterviewData extends Interview {
-    candidate?: Candidate;
+    candidateDetails?: Candidate;
     interviewerMember?: TeamMember;
     interviewersMember: TeamMember[];
     startDateTime: Date;
     endDateTime: Date;
     createdDateTime: Date;
     linkedInterviews: InterviewData[];
-    templateName?: string;
 }
 
 export const toInterview = (interviewData: InterviewData): Interview => {
     const interview = cloneDeep(interviewData);
-    delete interview.candidate;
+    delete interview.candidateDetails;
     delete interview.interviewerMember;
     // @ts-ignore
     delete interview.interviewersMember;
@@ -25,12 +28,7 @@ export const toInterview = (interviewData: InterviewData): Interview => {
     return interview;
 };
 
-const toInterviewData = (
-    interview: Interview,
-    candidates: Candidate[],
-    teamMembers: TeamMember[],
-    templates: Template[]
-) => {
+const toInterviewData = (interview: Interview, candidates: Candidate[], teamMembers: TeamMember[]) => {
     const interviewers = interview.interviewers ?? [interview.userId]; // backward compat
     const candidate = candidates.find(candidate => candidate.candidateId === interview.candidateId);
     if (candidate && !candidate.position) {
@@ -39,7 +37,7 @@ const toInterviewData = (
     return {
         ...interview,
         interviewers: interviewers,
-        candidate: candidate,
+        candidateDetails: candidate,
         interviewType: interview.interviewType ?? InterviewType.INTERVIEW, // backward compat
         interviewerMember: teamMembers.find(teamMember => teamMember.userId === interview.userId),
         interviewersMember: teamMembers.filter(teamMember => interviewers.includes(teamMember.userId)),
@@ -47,91 +45,85 @@ const toInterviewData = (
         endDateTime: new Date(interview.interviewEndDateTime),
         createdDateTime: new Date(interview.createdDate),
         linkedInterviews: [],
-        templateName: interview.templateIds
-            ? templates.find(t => t.templateId === interview.templateIds[0])?.title
-            : undefined,
     };
 };
 
 export const selectInterviewData = (state: RootState, interviewId: string) => {
     const candidates = state.candidates.candidates ?? [];
     const teamMembers = state.user.teamMembers ?? [];
-    const templates = state.templates.templates ?? [];
 
     const interview = selectInterview(state, interviewId);
     if (interview) {
-        return toInterviewData(interview, candidates, teamMembers, templates);
+        return toInterviewData(interview, candidates, teamMembers);
     }
 };
 
-export const selectInterviewsData = (state: RootState): InterviewData[] => {
-    const interviews = state.interviews.interviews ?? [];
-    const candidates = state.candidates.candidates ?? [];
-    const teamMembers = state.user.teamMembers ?? [];
-    const templates = state.templates.templates ?? [];
-
-    return interviews.map((interview: Interview) => toInterviewData(interview, candidates, teamMembers, templates));
+export const selectUncompletedUserInterviews = (state: RootState): Interview[] => {
+    return state.interviews.interviews
+        .filter(interview => interview.userId === state.user.profile.userId && interview.status !== InterviewStatus.SUBMITTED)
+        .map(mapParsedDateTime)
+        .map(interview => mapCandidateName(interview, state.candidates.candidates))
+        .sort((a: Interview, b: Interview) => dateComparator(a, b));
 };
 
-export const selectSortedByDateInterviews = (interviews: InterviewData[], desc: boolean = false): InterviewData[] => {
-    return interviews.sort((a: InterviewData, b: InterviewData) => {
-        const first: Date = a.startDateTime.getFullYear() > 1 ? a.startDateTime : a.createdDateTime;
-        const second: Date = b.startDateTime.getFullYear() > 1 ? b.startDateTime : b.createdDateTime;
+export const selectUncompletedJobInterviews =
+    (jobId: string) =>
+    (state: RootState): LinkedInterviews[] => {
+        const interviews = state.interviews.interviews
+            .filter(interview => interview.jobId === jobId && interview.status !== InterviewStatus.SUBMITTED)
+            .map(mapParsedDateTime)
+            .map(interview => mapCandidateName(interview, state.candidates.candidates))
+            .sort((a: Interview, b: Interview) => dateComparator(a, b));
 
-        // @ts-ignore
-        return desc ? second - first : first - second;
-    });
-};
-
-/**
- *
- * @return flat interview list.
- */
-export const selectCompletedInterviewData = (state: RootState): InterviewData[] => {
-    const interviews = selectInterviewsData(state).filter(
-        (interview: InterviewData) => interview.status === Status.SUBMITTED
-    );
-
-    return selectSortedByDateInterviews(interviews, true);
-};
-
-/**
- * This function returns all interviews that are not submitted. Interviews are grouped by `linkId`, where root
- * interview always belongs to current user and co-interviews are present in `linkedInterviews` array.
- *
- * @return interview list with `linkedInterviews`.
- */
-export const selectUncompletedInterviewData = (state: RootState): InterviewData[] => {
-    const groupedInterviews: InterviewData[] = [];
-
-    selectInterviewsData(state)
-        .filter((interview: InterviewData) => interview.status !== Status.SUBMITTED)
-        .sort((a: InterviewData, b: InterviewData) =>
-            // sort interviews by `userId`, so that co interviewers will appear in `linkedInterviews`
-            a.userId === state.user.profile.userId ? -1 : b.userId === state.user.profile.userId ? 1 : 0
-        )
-        .forEach(interview => {
-            if (interview.linkId) {
-                let existingGroup = groupedInterviews.find(group => group.linkId === interview.linkId);
-                if (existingGroup) {
-                    existingGroup.linkedInterviews.push(interview);
-                } else {
-                    groupedInterviews.push(interview);
-                }
+        // group by linkId
+        const linkedInterviewsMap = new Map<string, Interview[]>();
+        interviews.forEach(interview => {
+            let linkedInterviews = linkedInterviewsMap.get(interview.linkId);
+            if (linkedInterviews) {
+                linkedInterviews.push(interview);
             } else {
-                groupedInterviews.push(interview);
+                linkedInterviewsMap.set(interview.linkId, [interview]);
             }
         });
 
-    return selectSortedByDateInterviews(groupedInterviews);
+        const linkedInterviews: LinkedInterviews[] = [];
+        linkedInterviewsMap.forEach((value: Interview[], key: string) => {
+            linkedInterviews.push({ linkId: key, interviews: value });
+        });
+        return linkedInterviews;
+    };
+
+export const selectCompletedInterviews = (state: RootState): Interview[] => {
+    return state.interviews.interviews
+        .filter(interview => interview.status === InterviewStatus.SUBMITTED)
+        .map(mapParsedDateTime)
+        .map(interview => mapCandidateName(interview, state.candidates.candidates))
+        .sort((a: Interview, b: Interview) => dateComparator(a, b));
 };
 
-export const selectCandidateInterviewData = (state: RootState, candidateId: string) => {
-    const interviews = selectInterviewsData(state).filter(
-        (interview: InterviewData) => interview.candidateId === candidateId
-    );
+const mapParsedDateTime = (interview: Interview): Interview => {
+    interview.parsedCreatedDateTime = new Date(interview.createdDate);
+    interview.parsedStartDateTime = new Date(interview.interviewDateTime);
+    interview.parsedEndDateTime = new Date(interview.interviewEndDateTime);
+    return interview;
+};
 
-    return selectSortedByDateInterviews(interviews, true);
+// backward compat, old interviews doesn't have 'candidate' field
+const mapCandidateName = (interview: Interview, candidates: Candidate[]): Interview => {
+    let candidateName = interview.candidate ?? interview.candidateName;
+    if (!candidateName) {
+        candidateName = candidates.find(candidate => candidate.candidateId === interview.candidateId)?.candidateName;
+    }
+    interview.candidate = candidateName;
+    return interview;
+};
+
+const dateComparator = (a: Interview, b: Interview, desc: boolean = false) => {
+    const first: Date = a.parsedStartDateTime.getFullYear() > 1 ? a.parsedStartDateTime : a.parsedCreatedDateTime;
+    const second: Date = b.parsedStartDateTime.getFullYear() > 1 ? b.parsedStartDateTime : b.parsedCreatedDateTime;
+
+    // @ts-ignore
+    return desc ? second - first : first - second;
 };
 
 export const selectInterview = (state: RootState, interviewId: string) => {
@@ -148,8 +140,10 @@ export const getCandidateName2 = (interview: Interview, candidate?: Candidate) =
     return candidate?.candidateName ?? interview.candidateName ?? "Unknown";
 };
 
-export const getCandidateName = (interview: InterviewData) => {
-    return interview.candidate?.candidateName ?? interview.candidateName ?? "Unknown";
-};
+export const selectGetInterviewsStatus = (state: RootState) => state.interviews.apiResults.GetInterviews.status;
 
-export const selectInterviews = (state: RootState) => state.interviews.interviews;
+export const selectAddInterviewStatus = (state: RootState) => state.interviews.apiResults.AddInterview.status;
+
+export const selectUpdateInterviewStatus = (state: RootState) => state.interviews.apiResults.UpdateInterview.status;
+
+export const selectCancelInterviewStatus = (state: RootState) => state.interviews.apiResults.CancelInterview.status;

@@ -13,13 +13,6 @@ export const routeCandidateProfile = id => {
     return id ? url.replace(":id", id) : url;
 };
 
-export const routeInterviewDetails = id => {
-    const url = "/interviews/details/:id";
-    return id ? url.replace(":id", id) : url;
-};
-
-export const routeInterviewAdd = () => `/interviews/add`;
-
 export const routeInterviewAddFromTemplate = id => `/interviews/add?fromTemplate=${id}`;
 
 export const routeInterviewAddFromLibrary = id => `/interviews/add?fromLibrary=${id}`;

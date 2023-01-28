@@ -1,23 +1,13 @@
+import { Avatar, Dropdown } from "antd";
+import { ItemType } from "antd/es/menu/hooks/useItems";
+import { cloneDeep } from "lodash";
+import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
+import React, { useEffect } from "react";
+import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { arrayMove } from "react-sortable-hoc";
 import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
-import {
-    CandidateDetails,
-    CandidateStageStatus,
-    JobStage,
-    JobStageType,
-    StageCandidate,
-    Template,
-} from "../../store/models";
-import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
-import { Clock, MoreHorizontal, Plus, PlusSquare } from "lucide-react";
-import { Avatar, Dropdown, Modal } from "antd";
-import { cloneDeep } from "lodash";
-import { arrayMove } from "react-sortable-hoc";
-import React from "react";
-import { getInitials } from "../../utils/string";
-import { hexToRgb } from "../../utils/colors";
-import { getCandidateStageStatusText } from "../../store/jobs/selectors";
-import NewStageModal from "../job-new/new-stage-modal";
 import {
     CardOutlined,
     SecondaryTextSmall,
@@ -29,10 +19,25 @@ import {
     TextBold,
     TextExtraBold,
 } from "../../assets/styles/global-styles";
-import { ItemType } from "antd/es/menu/hooks/useItems";
-import AddCandidateModal from "./add-candidate-modal";
+import { loadCandidates } from "../../store/candidates/actions";
+import { selectCandidates } from "../../store/candidates/selector";
+import { getCandidateStageStatusText } from "../../store/jobs/selectors";
+import {
+    Candidate,
+    CandidateStageStatus,
+    JobStage,
+    JobStageType,
+    StageCandidate,
+    Template
+} from "../../store/models";
+import { loadTemplates } from "../../store/templates/actions";
+import { selectTemplates } from "../../store/templates/selector";
+import { hexToRgb } from "../../utils/colors";
 import { log } from "../../utils/log";
-import InterviewSchedule from "../interview-schedule/interview-schedule";
+import { getInitials } from "../../utils/string";
+import ScheduleInterviewModal from "../interview-schedule/schedule-interview-modal";
+import NewStageModal from "../job-new/new-stage-modal";
+import AddCandidateModal from "./add-candidate-modal";
 
 const Row = styled.div`
     display: flex;
@@ -53,6 +58,10 @@ const StageColumn = styled.div`
     min-height: 100px;
     margin-right: 24px;
     background-color: ${(props: StageColumnProps) => props.color};
+`;
+
+const StageTitle = styled(TextExtraBold)`
+    line-height: 18px;
 `;
 
 const AddStageColumn = styled(StageColumn)`
@@ -125,8 +134,8 @@ type StageColorBoxProps = {
 };
 
 const StageColorBox = styled.div`
-    width: 20px;
-    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     background: ${(props: StageColorBoxProps) => props.color};
     border-radius: 6px;
 `;
@@ -135,6 +144,11 @@ const IconContainer = styled.div`
     display: inline-flex;
     justify-content: center;
     cursor: pointer;
+    border-radius: 6px;
+
+    &:hover {
+        background: ${Colors.Neutral_100};
+    }
 `;
 
 const CandidateAvatar = styled(Avatar)`
@@ -180,34 +194,37 @@ type AddCandidateModalProps = {
 type ScheduleInterviewModalProps = {
     visible: boolean;
     candidateId?: string;
-    templateId?: string;
 };
 
 type Props = {
     jobId: string;
-    templates: Template[];
     jobStages: JobStage[];
-    candidates: CandidateDetails[];
     onSaveStage: (stage: JobStage) => void;
     onRemoveStage: (stage: JobStage) => void;
     onUpdateStages: (stages: JobStage[]) => void;
     onCandidateMoveStages: (stages: JobStage[], candidateId: string, newStageId: string, position: number) => void;
     onCandidateCardClicked: (candidateId: string) => void;
     onCandidateCreated: () => void;
+    onInterviewScheduled: () => void;
 };
 
 const TabPipeline = ({
     jobId,
-    templates,
     jobStages,
-    candidates,
     onSaveStage,
     onRemoveStage,
     onUpdateStages,
     onCandidateMoveStages,
     onCandidateCardClicked,
     onCandidateCreated,
+    onInterviewScheduled,
 }: Props) => {
+
+    const dispatch = useDispatch();
+
+    const templates: Template[] = useSelector(selectTemplates, shallowEqual);
+    const candidates: Candidate[] = useSelector(selectCandidates, shallowEqual);
+
     const [addCandidateModal, setAddCandidateModal] = React.useState<AddCandidateModalProps>({
         visible: false,
     });
@@ -217,6 +234,14 @@ const TabPipeline = ({
     const [scheduleInterviewModal, setScheduleInterviewModal] = React.useState<ScheduleInterviewModalProps>({
         visible: false,
     });
+
+    useEffect(() => {
+        dispatch(loadCandidates());
+        if (templates.length === 0) {
+            dispatch(loadTemplates());
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const createActionsMenu = (stage: JobStage): ItemType[] => [
         {
@@ -286,17 +311,13 @@ const TabPipeline = ({
             onUpdateStages(jobStagesNew);
         } else {
             log("Moving card to another column");
-            if (destinationStage.type === JobStageType.Interview) {
-                // TODO temporary commented out
-                // 1. check if candidate is not archived before scheduling interview
-                // 2. callback when interview is scheduled to refresh job details
-                // setScheduleInterviewModal({
-                //     visible: true,
-                //     candidateId: removed.candidateId,
-                //     templateId: destinationStage.templateId,
-                // });
-            }
             onCandidateMoveStages(jobStagesNew, removed.candidateId, destinationStage.stageId, destination.index);
+            if (destinationStage.type === JobStageType.Interview) {
+                setScheduleInterviewModal({
+                    visible: true,
+                    candidateId: removed.candidateId,
+                });
+            }
         }
     };
 
@@ -367,7 +388,7 @@ const TabPipeline = ({
                     <ColumnHeader>
                         <ColumnHeaderGrip {...provided.dragHandleProps}>
                             <StageColorBox color={stage.colour} />
-                            <TextExtraBold>{stage.title}</TextExtraBold>
+                            <StageTitle>{stage.title}</StageTitle>
                             <TagSlim textColor={stage.colour} backgroundColor={hexToRgb(stage.colour, 0.1)}>
                                 {stage.candidates?.length || 0}
                             </TagSlim>
@@ -445,35 +466,19 @@ const TabPipeline = ({
                 }
             />
 
-            <Modal
-                title='Schedule Interview'
+            <ScheduleInterviewModal
                 open={scheduleInterviewModal.visible}
-                centered={true}
-                onCancel={() => {
+                candidateId={scheduleInterviewModal.candidateId}
+                alwaysFetchCandidate={true}
+                onClose={interviewChanged => {
                     setScheduleInterviewModal({
                         visible: false,
-                        candidateId: undefined,
-                        templateId: undefined,
                     });
+                    if (interviewChanged) {
+                        onInterviewScheduled();
+                    }
                 }}
-                footer={null}
-                destroyOnClose={true}
-            >
-                <InterviewSchedule
-                    // @ts-ignore
-                    candidateId={scheduleInterviewModal.candidateId}
-                    templateId={scheduleInterviewModal.templateId}
-                    templates={templates}
-                    candidates={candidates}
-                    onScheduled={() => {
-                        setScheduleInterviewModal({
-                            visible: false,
-                            candidateId: undefined,
-                            templateId: undefined,
-                        });
-                    }}
-                />
-            </Modal>
+            />
         </>
     );
 };

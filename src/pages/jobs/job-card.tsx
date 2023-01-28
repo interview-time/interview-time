@@ -1,4 +1,4 @@
-import { CardOutlined, Tag, TagSlim } from "../../assets/styles/global-styles";
+import { CardClickable, Tag, TagSlim } from "../../assets/styles/global-styles";
 import { Job, JobStatus } from "../../store/models";
 import { Button, Col, Dropdown, Row, Space, Typography } from "antd";
 import styled from "styled-components";
@@ -11,17 +11,12 @@ import { getTagColor, getTagTextColor } from "../../utils/colors";
 
 const { Text } = Typography;
 
-const JobCardOutlined = styled(CardOutlined)`
+const JobCardOutlined = styled(CardClickable)`
     min-height: 84px;
     padding: 12px 24px;
     display: flex;
     align-items: center;
     width: 100%;
-    cursor: pointer;
-
-    &:hover {
-        border-color: ${Colors.Primary_500};
-    }
 `;
 
 const CardRow = styled(Row)`

@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Dropdown, Menu, message, Row, Typography } from "antd";
+import { Col, Divider, Dropdown, Menu, message, Row, Typography } from "antd";
 import styles from "./template-preview.module.css";
 import {
     IntroSection,
@@ -18,7 +18,7 @@ import {
 } from "@ant-design/icons";
 import Spinner from "../../components/spinner/spinner";
 import confirm from "antd/lib/modal/confirm";
-import { routeInterviewAddFromTemplate, routeTemplateEdit, routeTemplates } from "../../utils/route";
+import { routeTemplateEdit, routeTemplates } from "../../utils/route";
 import { cloneDeep } from "lodash";
 import TemplateShareModal from "./template-share-modal";
 import Card from "../../components/card/card";
@@ -82,10 +82,6 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
         addTemplate(copy);
         history.push(routeTemplates());
         message.success(`Template '${copy.title}' created.`);
-    };
-
-    const onScheduleInterviewClicked = () => {
-        history.push(routeInterviewAddFromTemplate(template.templateId));
     };
 
     const onDeleteClicked = () => {
@@ -169,11 +165,7 @@ const TemplatePreview = ({ originalTemplate, loadTemplates, addTemplate, deleteT
 
                     <Divider />
 
-                    <div className={styles.divSpaceBetween}>
-                        <Button type="primary" onClick={onScheduleInterviewClicked}>
-                            Schedule interview
-                        </Button>
-
+                    <div className={styles.editButtonContainer}>
                         <Dropdown.Button overlay={menu} onClick={onEditClicked} style={{ width: 'auto'}}>
                             <EditOutlined /> Edit
                         </Dropdown.Button>

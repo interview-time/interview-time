@@ -1,8 +1,8 @@
 import { connect } from "react-redux";
-import { deleteInterview, loadInterviews, updateInterview, updateScorecard } from "../../store/interviews/actions";
+import { deleteInterview, loadInterviews, updateInterview } from "../../store/interviews/actions";
 import { loadTeamMembers, switchTeam } from "../../store/user/actions";
 import { loadCandidates } from "../../store/candidates/actions";
-import { RootState } from "../../store/state-models";
+import { ApiRequestStatus, RootState } from "../../store/state-models";
 import React, { useEffect, useReducer, useState } from "react";
 import { interviewReducer, ReducerAction, ReducerActionType } from "./interview-reducer";
 import { emptyInterview } from "./interview-scorecard-utils";
@@ -23,7 +23,6 @@ import {
 } from "../../store/models";
 import ExpandableNotes from "../../components/scorecard/expandable-notes";
 import { defaultTo } from "lodash";
-import { Status } from "../../utils/constants";
 import InterviewEvaluation from "./step-evaluation/interview-evaluation";
 import { personalEvent } from "../../analytics";
 import { useDebounceEffect, useDebounceFn } from "ahooks";
@@ -47,7 +46,7 @@ type Props = {
     loadInterviews: Function;
     loadCandidates: Function;
     loadTeamMembers: Function;
-    updateScorecard: Function;
+    updateInterview: Function;
     switchTeam: Function;
 };
 
@@ -61,7 +60,7 @@ const InterviewScorecard = ({
     loadInterviews,
     loadCandidates,
     loadTeamMembers,
-    updateScorecard,
+    updateInterview,
     switchTeam,
 }: Props) => {
 
@@ -71,8 +70,8 @@ const InterviewScorecard = ({
     const [panelVisible, setPanelVisible] = useState(true);
 
     const interviewLoaded = interview.interviewId && interview.interviewId.length > 0;
-    const interviewStarted = interview.status === Status.NEW || interview.status === Status.STARTED;
-    const interviewCompleted = interview.status === Status.COMPLETED;
+    const interviewStarted = interview.status === InterviewStatus.NEW || interview.status === InterviewStatus.STARTED;
+    const interviewCompleted = interview.status === InterviewStatus.COMPLETED;
 
     useEffect(() => {
         if (originalInterview && !interviewLoaded) {
@@ -98,7 +97,7 @@ const InterviewScorecard = ({
     useDebounceEffect(
         () => {
             if (interviewLoaded) {
-                updateScorecard(interview);
+                updateInterview(interview);
             }
         },
         [interview],
@@ -137,7 +136,7 @@ const InterviewScorecard = ({
                 okText: "Yes",
                 cancelText: "No",
                 onOk() {
-                    updateScorecard({
+                    updateInterview({
                         ...interview,
                         status: InterviewStatus.SUBMITTED,
                     });
@@ -292,7 +291,6 @@ const InterviewScorecard = ({
 const mapDispatch = {
     deleteInterview,
     loadInterviews,
-    updateScorecard,
     updateInterview,
     loadTeamMembers,
     loadCandidates,
@@ -308,8 +306,8 @@ const mapStateToProps = (state: RootState, ownProps: any) => {
         teamIdParam: searchParams.get("teamId"),
         currentTeamId: state.user.profile.currentTeamId,
         originalInterview: interviewData ? toInterview(interviewData) : undefined,
-        interviewUploading: state.interviews.uploading,
-        candidate: interviewData?.candidate,
+        interviewUploading: state.interviews.apiResults.UpdateInterview.status === ApiRequestStatus.InProgress,
+        candidate: interviewData?.candidateDetails,
         interviewers: interviewData?.interviewersMember ?? [],
     };
 };

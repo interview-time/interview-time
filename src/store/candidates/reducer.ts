@@ -17,6 +17,7 @@ export const defaultApiResults: IApiResults = {
 
 const initialState: CandidateState = {
     candidates: [],
+    candidateDetails: [],
     uploadUrl: undefined,
     loading: false,
     error: false,
@@ -33,11 +34,13 @@ const candidatesReducer = (state = initialState, action: CandidateActions) => {
         }
 
         case CandidateActionType.SET_CANDIDATE_DETAILS: {
-            const otherCandidates = state.candidates.filter(c => c.candidateId !== action.candidateDetails.candidateId);
+            const otherCandidates = state.candidateDetails.filter(
+                c => c.candidateId !== action.candidateDetails.candidateId
+            );
 
             return {
                 ...state,
-                candidates: [...otherCandidates, action.candidateDetails],
+                candidateDetails: [...otherCandidates, action.candidateDetails],
             };
         }
 

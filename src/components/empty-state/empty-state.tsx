@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import React from "react";
+import { ReactComponent as EmptyImage } from "../../assets/illustrations/undraw_empty.svg";
 import styles from "./empty-state.module.css";
 
 type Props = {
@@ -8,10 +9,17 @@ type Props = {
     buttonText?: string;
     buttonLoading?: boolean;
     onButtonClicked?: React.MouseEventHandler;
-    illustration: JSX.Element;
+    illustration?: JSX.Element;
 };
 
-const EmptyState = ({ message, secondMessage, buttonText, buttonLoading, onButtonClicked, illustration }: Props) => {
+const EmptyState = ({
+    message,
+    secondMessage,
+    buttonText,
+    buttonLoading,
+    onButtonClicked,
+    illustration = <EmptyImage height={140} />,
+}: Props) => {
     return (
         <div className={styles.wrapper}>
             {illustration}
