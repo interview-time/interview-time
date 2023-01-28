@@ -4,6 +4,7 @@ namespace CafApi.Models
     {
         NEW,
         COMPLETED,
-        SUBMITTED
+        SUBMITTED,
+        CANCELLED
     }
 }

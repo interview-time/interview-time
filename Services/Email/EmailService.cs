@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using CafApi.Common;
+using CafApi.Services.Email;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SendGrid;
@@ -26,6 +27,36 @@ namespace CafApi.Services
             _appHostUri = _configuration["AppHostUri"];
         }
 
+        public async Task SendInterviewCancelledNotificationToInterviewer(InterviewCancelledToInterviewerModel model)
+        {
+            try
+            {
+                var to = new EmailAddress(model.InterviewerEmail);
+
+                dynamic templateData = new
+                {
+                    candidateName = model.CandidateName,
+                    interviwerName = model.InterviewerName,
+                    interviewDate = model.InterviewStartTime.ToTimezoneTime(model.Timezone).ToString("dd MMM yyyy h:mm tt"),
+                    interviewsUrl = $"{_appHostUri}/interviews"
+                };
+
+                var templateId = _configuration["EmailTemplates:InterviewCancelledToInterviewer"];
+                SendGridMessage message = MailHelper.CreateSingleTemplateEmail(_fromAddress, to, templateId, templateData);
+
+                var response = await _client.SendEmailAsync(message).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorReason = await response.Body.ReadAsStringAsync();
+                    _logger.LogError($"Error sending email SendInterviewCancelledNotificationToInterviewer: {errorReason}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error sending email SendInterviewCancelledNotificationToInterviewer", ex);
+            }
+        }
+
         public async Task SendChallengeCompletedNotification(string interviewerEmail, string interviewerName, string interviewUrl)
         {
             try
@@ -35,7 +66,7 @@ namespace CafApi.Services
                 dynamic templateData = new
                 {
                     interviewerName = interviewerName,
-                    interviewUrl = interviewUrl                    
+                    interviewUrl = interviewUrl
                 };
 
                 var templateId = _configuration["EmailTemplates:ChallengeCompletedNotification"];

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -72,9 +73,12 @@ namespace CafApi.Query
                             interview.CandidateName = interview.Candidate;
                         }
 
+                        // if interview is cancelled show it only for 7 days since the cancellation date
                         return new InterviewsQueryResult
                         {
                             Interviews = interviews
+                                .Where(i => i.Status != InterviewStatus.CANCELLED.ToString() || i.ModifiedDate > DateTime.UtcNow.AddDays(-7))
+                                .ToList()
                         };
                     }
                 }

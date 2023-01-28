@@ -63,25 +63,7 @@ namespace CafApi.Services
             }
 
             await _context.SaveAsync(interview);
-        }
-
-        public async Task DeleteInterview(string userId, string interviewId)
-        {
-            var interview = await _interviewRepository.GetInterview(interviewId);
-            if (interview != null)
-            {
-                var isBelongInTeam = await _permissionsService.IsBelongInTeam(userId, interview.TeamId);
-                if (isBelongInTeam)
-                {
-                    var userRoles = await _permissionsService.GetUserRoles(userId, interview.TeamId);
-
-                    if (PermissionsService.CanDeleteInterview(userRoles, interview.UserId == userId))
-                    {
-                        await _context.DeleteAsync<Interview>(interview.UserId, interview.InterviewId);
-                    }
-                }
-            }
-        }
+        }      
 
         public async Task SubmitScorecard(string userId, ScoreCardRequest scoreCard)
         {
