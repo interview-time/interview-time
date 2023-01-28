@@ -23,7 +23,12 @@ Sentry.init({
 // https://posthog.com/docs/integrate/client/js
 //
 if (!window.location.href.includes('localhost')) {
-    posthog.init('phc_vXedHxzazcCCBwwyv0P6B08m30J2iUQCTw549Nh0bQW', { api_host: 'https://app.posthog.com' })
+    posthog.init('phc_vXedHxzazcCCBwwyv0P6B08m30J2iUQCTw549Nh0bQW', { 
+        api_host: 'https://app.posthog.com',
+        session_recording: {
+            maskAllInputs: false
+        }
+    })
 }
 
 ReactDOM.render(
