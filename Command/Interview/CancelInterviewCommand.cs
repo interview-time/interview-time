@@ -55,7 +55,7 @@ namespace CafApi.Command
                 throw new ItemNotFoundException($"Interview {command.InterviewId} not found");
             }
 
-            interview.IsCancelled = true;
+            interview.Status = InterviewStatus.CANCELLED.ToString();
             interview.ModifiedDate = DateTime.UtcNow;
 
             await _interviewRepository.SaveInterview(interview);

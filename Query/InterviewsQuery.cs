@@ -77,7 +77,7 @@ namespace CafApi.Query
                         return new InterviewsQueryResult
                         {
                             Interviews = interviews
-                                .Where(i => !i.IsCancelled || i.ModifiedDate > DateTime.UtcNow.AddDays(-7))
+                                .Where(i => i.Status != InterviewStatus.CANCELLED.ToString() || i.ModifiedDate > DateTime.UtcNow.AddDays(-7))
                                 .ToList()
                         };
                     }

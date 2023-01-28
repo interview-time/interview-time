@@ -86,9 +86,7 @@ namespace CafApi.Models
 
         public string StageId { get; set; }
 
-        public string StageTitle { get; set; }
-
-        public bool IsCancelled { get; set; }
+        public string StageTitle { get; set; }        
     }
 
     public class LiveCodingChallenge
