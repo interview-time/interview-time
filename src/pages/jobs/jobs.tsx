@@ -365,7 +365,7 @@ const Jobs = () => {
 
     return (
         <Layout header={getHeaderContainer}>
-            <ConfigProvider renderEmpty={() => <EmptyState message='You currently don’t have any jos.' />}>
+            <ConfigProvider renderEmpty={() => <EmptyState message='You currently don’t have any jobs.' />}>
                 <TitleContainer>
                     <Title level={4} style={{ marginBottom: 0 }}>
                         Jobs
