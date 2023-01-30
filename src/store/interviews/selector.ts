@@ -98,7 +98,7 @@ export const selectCompletedInterviews = (state: RootState): Interview[] => {
         .filter(interview => interview.status === InterviewStatus.SUBMITTED)
         .map(mapParsedDateTime)
         .map(interview => mapCandidateName(interview, state.candidates.candidates))
-        .sort((a: Interview, b: Interview) => dateComparator(a, b));
+        .sort((a: Interview, b: Interview) => dateComparator(a, b, true));
 };
 
 const mapParsedDateTime = (interview: Interview): Interview => {
