@@ -10,7 +10,6 @@ import styled from "styled-components";
 import { Colors } from "../../assets/styles/colors";
 import {
     CardOutlined,
-    SecondaryTextSmall,
     Tag,
     TagDanger,
     TagSlim,
@@ -350,7 +349,6 @@ const TabPipeline = ({
                             <CandidateAvatar size={26}>{getInitials(candidate.name)}</CandidateAvatar>
                             <TextBold>{candidate.name}</TextBold>
                         </CandidateNameContainer>
-                        {candidate.position && <SecondaryTextSmall>{candidate.position}</SecondaryTextSmall>}
                         <Divider />
                         <CardMetaContainer>
                             <TagSlim>
