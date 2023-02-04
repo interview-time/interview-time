@@ -98,6 +98,14 @@ export const selectCompletedInterviews = (state: RootState): Interview[] => {
         .filter(interview => interview.status === InterviewStatus.SUBMITTED)
         .map(mapParsedDateTime)
         .map(interview => mapCandidateName(interview, state.candidates.candidates))
+        .sort((a: Interview, b: Interview) => dateComparator(a, b, true));
+};
+
+export const selectCompletedJobInterviews = (jobId: string) => (state: RootState): Interview[] => {
+    return state.interviews.interviews
+        .filter(interview => interview.status === InterviewStatus.SUBMITTED && interview.jobId === jobId)
+        .map(mapParsedDateTime)
+        .map(interview => mapCandidateName(interview, state.candidates.candidates))
         .sort((a: Interview, b: Interview) => dateComparator(a, b));
 };
 

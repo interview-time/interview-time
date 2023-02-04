@@ -35,6 +35,7 @@ import { routeCandidateProfile, routeJobEdit, routeJobs } from "../../utils/rout
 import { AccentColors } from "../../assets/styles/colors";
 import TabDetails from "./tab-details";
 import { selectGetInterviewsStatus } from "../../store/interviews/selector";
+import TabJobReports from "./tab-job-reports";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -303,6 +304,11 @@ const JobDetailsPage = () => {
                         label: `Interviews`,
                         key: "3",
                         children: <TabInterviews jobDetails={jobDetails} onInterviewRemoved={onJobDetailsUpdated} />,
+                    },
+                    {
+                        label: `Reports`,
+                        key: "4",
+                        children: <TabJobReports jobDetails={jobDetails} />,
                     },
                 ]}
             />
