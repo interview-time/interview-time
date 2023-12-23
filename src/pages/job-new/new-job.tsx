@@ -4,13 +4,22 @@ import styled from "styled-components";
 import { Briefcase, ChevronLeft, ClipboardType, Cog } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
-import { Colors } from "../../assets/styles/colors";
+import { AccentColors, Colors } from "../../assets/styles/colors";
 import { useHistory, useParams } from "react-router-dom";
 import StepJobDetails from "./step-job-details";
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { ApiRequestStatus } from "../../store/state-models";
-import { Job, JobDetails, JobStage, JobStatus, TeamMember, Template, UserProfile } from "../../store/models";
+import {
+    Job,
+    JobDetails,
+    JobStage,
+    JobStageType,
+    JobStatus,
+    TeamMember,
+    Template,
+    UserProfile
+} from "../../store/models";
 import { loadTeam } from "../../store/team/actions";
 import { createJob, fetchJobDetails, fetchJobs, updateJob } from "../../store/jobs/actions";
 import StepJobStages from "./step-job-stages";
@@ -75,7 +84,43 @@ const emptyJob: JobDetails = {
     newlyAddedCandidates: 0,
     owner: "",
     ownerName: "",
-    pipeline: [],
+    pipeline: [
+        {
+            stageId: uuidv4(),
+            title: "Screening",
+            disabled: false,
+            type: JobStageType.Regular,
+            colour: AccentColors.Blue_500,
+        },
+        {
+            stageId: uuidv4(),
+            title: "Take Home Task",
+            disabled: false,
+            type: JobStageType.Regular,
+            colour: AccentColors.Orange_500,
+        },
+        {
+            stageId: uuidv4(),
+            title: "Tech Interview",
+            disabled: false,
+            type: JobStageType.Regular,
+            colour: AccentColors.Purple_500,
+        },
+        {
+            stageId: uuidv4(),
+            title: "Hired",
+            disabled: false,
+            type: JobStageType.Regular,
+            colour: AccentColors.Green_500,
+        },
+        {
+            stageId: uuidv4(),
+            title: "Rejected",
+            disabled: false,
+            type: JobStageType.Regular,
+            colour: AccentColors.Red_500,
+        }
+    ],
     status: JobStatus.OPEN,
     tags: [],
     title: "",

@@ -80,7 +80,7 @@ type Props = {
 };
 
 const NewStageModal = ({ stage, templates, open, onClose, onSave, onRemove }: Props) => {
-    const getDefaultColor = () => stage?.colour || "#0693E3";
+    const getDefaultColor = () => stage?.colour || AccentColors.Blue_500;
     const getDefaultType = () => stage?.type || JobStageType.Regular;
 
     const [colorPickerVisible, setColorPickerVisible] = React.useState(false);
