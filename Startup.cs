@@ -62,9 +62,8 @@ namespace CafApi
                                              builder.WithOrigins(
                                                  "http://localhost:3000",
                                                  "https://*.netlify.app",
-                                                 "https://app.interviewer.space",
-                                                 "https://app-staging.interviewtime.io",
-                                                 "https://app.interviewtime.io")
+                                                 "https://app.interviewtime.co/",
+                                                 "https://app-staging.interviewtime.co")
                                                 .SetIsOriginAllowedToAllowWildcardSubdomains()
                                                 .AllowAnyHeader()
                                                 .AllowAnyMethod()
