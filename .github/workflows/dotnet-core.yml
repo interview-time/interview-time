@@ -57,20 +57,20 @@ jobs:
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: interviewer-api
-        environment_name: InterviewerApi-env-1
+        application_name: interview-time-api
+        environment_name: interview-time-api-prod
         version_label: "${{ steps.timestamp.outputs.date }}"
-        region: ap-southeast-2
+        region: us-west-2
         deployment_package: package.zip
 
-    - name: Deploy to Elastic Beanstalk - STAGING
-      if: github.ref == 'refs/heads/develop'
-      uses: einaregilsson/beanstalk-deploy@v14
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: interviewer-api
-        environment_name: interviewer-api-staging
-        version_label: "${{ steps.timestamp.outputs.date }}"
-        region: ap-southeast-2
-        deployment_package: package.zip
+    # - name: Deploy to Elastic Beanstalk - STAGING
+    #   if: github.ref == 'refs/heads/develop'
+    #   uses: einaregilsson/beanstalk-deploy@v14
+    #   with:
+    #     aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     application_name: interviewer-api
+    #     environment_name: interviewer-api-staging
+    #     version_label: "${{ steps.timestamp.outputs.date }}"
+    #     region: us-west-2
+    #     deployment_package: package.zip
