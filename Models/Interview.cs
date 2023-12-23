@@ -9,7 +9,7 @@ namespace CafApi.Models
     public class Interview
     {
         [DynamoDBHashKey]
-        public string UserId { get; set; }
+        public string TeamId { get; set; }
 
         [DynamoDBRangeKey]
         public string InterviewId { get; set; }
@@ -53,7 +53,7 @@ namespace CafApi.Models
 
         public bool IsDemo { get; set; }
 
-        public string TeamId { get; set; }
+        public string UserId { get; set; }
 
         [DynamoDBIgnore]
         public string CreatedBy { get; set; }
@@ -86,7 +86,7 @@ namespace CafApi.Models
 
         public string StageId { get; set; }
 
-        public string StageTitle { get; set; }        
+        public string StageTitle { get; set; }
     }
 
     public class LiveCodingChallenge

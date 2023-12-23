@@ -42,12 +42,7 @@ namespace CafApi.Query
                     var team = await _context.LoadAsync<Team>(query.TeamId);
                     if (team != null) // Team admin gets to see all the interviews
                     {
-                        var search = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
-                        {
-                            IndexName = "TeamId-Index",
-                            Filter = new QueryFilter(nameof(Interview.TeamId), QueryOperator.Equal, query.TeamId)
-                        });
-                        var interviews = await search.GetRemainingAsync();
+                        var interviews = await _context.QueryAsync<Interview>(query.TeamId, new DynamoDBOperationConfig()).GetRemainingAsync();
 
                         // Admin, Hiring Manager and HR can see all interviews conducted by any member of the team
                         if (teamMember.Roles.Any(r => r.Equals(TeamRole.INTERVIEWER.ToString())))

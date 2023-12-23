@@ -35,7 +35,7 @@ namespace CafApi.Services
         {
             var search = _context.FromQueryAsync<Library>(new QueryOperationConfig()
             {
-                IndexName = "LibraryId-Index",
+                IndexName = "LibraryId-index",
                 Filter = new QueryFilter(nameof(Library.LibraryId), QueryOperator.Equal, libraryId)
             });
             var templates = await search.GetRemainingAsync();

@@ -53,13 +53,7 @@ namespace CafApi.Services
 
         public async Task<List<Template>> GetTeamTemplates(string userId, string teamId)
         {
-            var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
-            {
-                IndexName = "TeamId-index",
-                Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
-            });
-
-            var templates = await search.GetRemainingAsync();
+            var templates = await _context.QueryAsync<Template>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
 
             var challenegIds = templates
                 .Where(t => t.ChallengeIds != null && t.ChallengeIds.Any())
@@ -105,7 +99,7 @@ namespace CafApi.Services
         {
             var search = _context.FromQueryAsync<Template>(new QueryOperationConfig()
             {
-                IndexName = "Token-Index",
+                IndexName = "Token-index",
                 Filter = new QueryFilter(nameof(Template.Token), QueryOperator.Equal, token)
             });
             var templates = await search.GetRemainingAsync();

@@ -45,8 +45,8 @@ namespace CafApi
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.Authority = Configuration["Auth0:Authority"];
-                options.Audience = Configuration["Auth0:Audience"];
+                options.Authority = Configuration["Identity:Authority"];
+                options.Audience = Configuration["Identity:Audience"];
                 options.RequireHttpsMetadata = false;
             });
             services.AddAuthorization(options =>
@@ -86,7 +86,7 @@ namespace CafApi
             services.AddDefaultAWSOptions(
                 new AWSOptions
                 {
-                    Region = RegionEndpoint.GetBySystemName("ap-southeast-2")
+                    Region = RegionEndpoint.GetBySystemName("us-west-2")
                 }
             );
 

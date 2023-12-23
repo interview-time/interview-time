@@ -31,12 +31,12 @@ namespace CafApi.Services
             _teamRepository = teamRepository;
             _emailService = emailService;
             _permissionsService = permissionsService;
-        }      
+        }
 
         public async Task<TeamMember> GetTeamMember(string userId, string teamId)
         {
             return await _context.LoadAsync<TeamMember>(teamId, userId);
-        }        
+        }
 
         public async Task Update(string userId, string teamId, string name)
         {
@@ -56,12 +56,7 @@ namespace CafApi.Services
             if (team != null && team.OwnerId == userId)
             {
                 // get team interviews
-                var searchInterviews = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
-                {
-                    IndexName = "TeamId-Index",
-                    Filter = new QueryFilter(nameof(Interview.TeamId), QueryOperator.Equal, teamId)
-                });
-                var interviews = await searchInterviews.GetRemainingAsync();
+                var interviews = await _context.QueryAsync<Interview>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
 
                 // Delete team interviews
                 if (interviews != null && interviews.Any())
@@ -72,12 +67,7 @@ namespace CafApi.Services
                 }
 
                 // get team templates
-                var searchTemaples = _context.FromQueryAsync<Template>(new QueryOperationConfig()
-                {
-                    IndexName = "TeamId-index",
-                    Filter = new QueryFilter(nameof(Template.TeamId), QueryOperator.Equal, teamId)
-                });
-                var templates = await searchTemaples.GetRemainingAsync();
+                var templates = await _context.QueryAsync<Template>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
 
                 // Delete team templates
                 if (templates != null && templates.Any())
@@ -333,6 +323,6 @@ namespace CafApi.Services
         private async Task<List<TeamMember>> GetTeamMembers(string teamId)
         {
             return await _context.QueryAsync<TeamMember>(teamId, new DynamoDBOperationConfig()).GetRemainingAsync();
-        }       
+        }
     }
 }

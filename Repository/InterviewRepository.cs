@@ -38,7 +38,7 @@ namespace CafApi.Repository
         {
             var config = new DynamoDBOperationConfig
             {
-                IndexName = "TemplateId-Index"
+                IndexName = "TemplateId-index"
             };
 
             return await _context.QueryAsync<Interview>(templateId, config).GetRemainingAsync();

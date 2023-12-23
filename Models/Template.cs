@@ -9,7 +9,7 @@ namespace CafApi.Models
     public class Template
     {
         [DynamoDBHashKey]
-        public string UserId { get; set; }
+        public string TeamId { get; set; }
 
         [DynamoDBRangeKey]
         public string TemplateId { get; set; }
@@ -38,7 +38,7 @@ namespace CafApi.Models
 
         public string Token { get; set; }
 
-        public string TeamId { get; set; }
+        public string UserId { get; set; }
 
         public List<string> ChallengeIds { get; set; }
 
