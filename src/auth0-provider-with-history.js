@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { Auth0Provider } from "./react-auth0-spa";
-import config from "./auth_config.json";
 import { log } from "./utils/log";
 
 const Auth0ProviderWithHistory = ({ children }) => {
     const history = useHistory();
 
-    const onRedirectCallback = (appState) => {
+    const onRedirectCallback = appState => {
         log(appState);
         let newPath = sessionStorage.getItem("forwardUrl");
         if (newPath) {
@@ -18,14 +17,11 @@ const Auth0ProviderWithHistory = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        log(config);
-    });
     return (
         <Auth0Provider
-            domain={config.domain}
-            client_id={config.clientId}
-            audience={config.audience}
+            domain={process.env.REACT_APP_AUTH0_DOMAIN}
+            client_id={process.env.REACT_APP_AUTH0_CLIENT_ID}
+            audience={process.env.REACT_APP_AUTH0_AUDIENCE}
             redirect_uri={window.location.origin}
             onRedirectCallback={onRedirectCallback}
         >
