@@ -12,6 +12,6 @@
         [default]
         aws_access_key_id=YOUR-ACCESS-KEY
         aws_secret_access_key=YOUR-SECRET
+        region=YOUR-AWS-REGION
         ```
-    - You can create a new user in AWS or use the existing one named `caf`. Once you have a user create credentials in the Security credentials tab.
-    - Replace the placeholders in the `credentials` file with your key and secret.
+    - Replace the placeholders in the `credentials` file with your key, secret and region.

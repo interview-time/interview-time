@@ -1,8 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>CafApi</RootNamespace>
+    <RootNamespace>InterviewTimeAPI</RootNamespace>
+    <UserSecretsId>8f8c18fb-d821-4bf7-961b-77aae09d5823</UserSecretsId>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.7.2.4" />
     <PackageReference Include="FluentValidation" Version="10.3.6" />
@@ -20,4 +23,5 @@
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.65" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.1" />
   </ItemGroup>
+
 </Project>
