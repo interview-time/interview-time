@@ -1,0 +1,34 @@
+import React, { useEffect, useState } from "react";
+import { Typography } from "antd";
+import styles from "./time-ago.module.css";
+import { formatDistanceToNow } from "date-fns";
+import { parseDateISO } from "../../utils/date-fns";
+
+const { Text } = Typography;
+
+const TimeAgo = ({ timestamp, saving }) => {
+    const [lastSaved, setLastSaved] = useState(null);
+
+    useEffect(() => {
+        let interval = null;
+        interval = setInterval(() => {
+            if (timestamp) {
+                setLastSaved(formatDistanceToNow(parseDateISO(timestamp), { addSuffix: true }));
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [timestamp]);
+
+    return saving ? (
+        <Text type='secondary' className={styles.text}>
+            Saving...
+        </Text>
+    ) : (
+        <Text type='secondary' className={styles.text}>
+            {lastSaved ? `Last saved ${lastSaved}` : ""}
+        </Text>
+    );
+};
+
+export default TimeAgo;

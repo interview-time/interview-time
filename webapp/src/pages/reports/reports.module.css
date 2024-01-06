@@ -1,0 +1,51 @@
+.rootContainer {
+    padding: 40px;
+}
+
+.divRight {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    margin-bottom: 12px;
+}
+
+.pageContent {
+    margin-top: var(--header-height-with-padding);
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+.headerSearch {
+    width: 300px;
+}
+
+.infoAlert {
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.row {
+    cursor: pointer;
+}
+
+.select {
+    min-width: 230px;
+    margin-left: 16px;
+}
+
+.header {
+    text-align: center;
+    padding: 24px;
+}
+
+.subTitle {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}

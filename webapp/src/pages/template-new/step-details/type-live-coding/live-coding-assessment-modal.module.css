@@ -1,0 +1,23 @@
+.modalFooter {
+    display: flex;
+    margin-top: 24px;
+}
+
+.dangerButtonHolder {
+    flex-grow: 1;
+}
+
+.header {
+    margin-bottom: 36px;
+}
+
+.assessmentAutocomplete {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.taskInput {
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 32px;
+}

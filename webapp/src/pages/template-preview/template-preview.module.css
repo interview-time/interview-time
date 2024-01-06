@@ -1,0 +1,40 @@
+.rootContainer {
+    padding: 40px;
+}
+
+.rowEnd {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.header {
+    display: flex;
+}
+
+.headerTitleContainer {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.editButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+}
+
+.introCardCol {
+    display: flex;
+    align-items: stretch;
+}
+
+.introCard {
+    width: 100%;
+}
+

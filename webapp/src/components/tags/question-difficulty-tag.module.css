@@ -1,0 +1,48 @@
+.dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dotEasy {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: #22C55E;
+}
+
+.dotMedium {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: #FFC300;
+}
+
+.dotHard {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: #ff4d4f;
+}
+
+.menuItem {
+    padding-left: 8px;
+}
+
+
+.menuHeader {
+    padding: 16px 12px;
+}
+
+.dotHolder {
+    min-width: 48px;
+    min-height: 48px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

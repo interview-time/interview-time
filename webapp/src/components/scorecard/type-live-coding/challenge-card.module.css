@@ -1,0 +1,103 @@
+.cardSpace {
+    margin-top: 32px;
+}
+
+.groupTitle {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.assessmentName {
+    flex-grow: 1;
+    padding-left: 32px;
+}
+
+.taskCard {
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    margin-top: 12px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.challengeIconsHolder {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.taskCard:hover {
+    background-color: #fbfbfb;
+}
+.taskCardSelected {
+    border: 1px solid #8C2BE3;
+    border-radius: 2px;
+    margin-top: 12px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.taskCardSelectedReadonly {
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    margin-top: 24px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.taskNameContainer {
+    display: flex;
+}
+
+.taskName {
+    flex-grow: 1;
+    font-weight: 500;
+}
+
+.taskDetailsButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.linkDescription {
+    font-size: 16px;
+}
+
+.challengeText {
+    font-size: 14px;
+    margin-left: 8px;
+    font-family: ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.challengeLink {
+    color: #1F2937;
+    cursor: pointer;
+}
+
+.challengeLink:hover {
+    color: #8C2BE3;
+}
+
+.copyButton {
+    margin-left: 16px;
+}
+
+.generateLinkButton {
+    margin-top: 16px;
+}
+
+.divider {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}

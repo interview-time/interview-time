@@ -1,0 +1,24 @@
+.chartTitle {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 24px;
+}
+
+.infoButton {
+    color: #6b7280;
+}
+
+.infoAlertButton {
+    color: red;
+}
+
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.divider {
+    width: 100%;
+    border-bottom: 1px solid #f0f0f0;
+}

@@ -1,0 +1,32 @@
+.iconHolder {
+    border: 1px solid #E5E7EB;
+    box-sizing: border-box;
+    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    display: flex;
+}
+
+.textHolder {
+    margin-left: 24px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.label {
+    font-size: 14px;
+    color: #6B7280;
+}

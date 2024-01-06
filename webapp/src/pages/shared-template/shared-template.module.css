@@ -1,0 +1,39 @@
+.rootContainer {
+    background-color: #F9FAFB;
+    height: 100%;
+}
+
+.row {
+    margin-top: 12px;
+}
+
+.rowEnd {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.header {
+    display: flex;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 16px;
+}
+
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    height: 48px;
+}
+
+.emptyState {
+    text-align: center;
+    padding-top: 24px;
+}
+
+.notFound {
+    margin-top: 24px;
+}

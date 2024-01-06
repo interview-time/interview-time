@@ -1,0 +1,12 @@
+.button {
+    margin: 6px;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+.buttonSecondary {
+    border-color: #8C2BE3;
+    color: #8C2BE3;
+}

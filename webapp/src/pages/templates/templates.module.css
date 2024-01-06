@@ -1,0 +1,31 @@
+.rootContainer {
+    padding: 40px;
+}
+
+.pageContent {
+    margin-top: var(--header-height-with-padding);
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+.header {
+    text-align: center;
+    padding: 24px;
+}
+
+.search {
+    width: 400px;
+}
+
+.subTitle {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.addTemplateCard {
+    padding: 16px;
+    height: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

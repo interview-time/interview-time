@@ -1,0 +1,21 @@
+.feature {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin-bottom: 32px;
+}
+
+.icon {
+    margin-bottom: 5px;
+}
+
+.title {
+    color: #541A88;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 5px;
+}
+
+.icon {
+    margin-bottom: 24px;
+}

@@ -1,0 +1,37 @@
+.card {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
+    border-radius: 8px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.clickable:hover {
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.2), 0 1px 2px rgba(16, 24, 40, 0.2);
+}
+
+.padding {
+    padding: 24px;
+}
+
+.noPadding {
+    padding: 0;
+}
+
+.title {
+    padding: 24px;
+}
+
+.titleOnly {
+    margin-bottom: 0;
+}
+
+.subtitle {
+    color: #63737a;
+}
+
+.featured {
+    border-top: 6px solid #8C2BE3;
+}

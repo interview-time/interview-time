@@ -1,0 +1,24 @@
+.cardSpace {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    margin-top: 24px;
+}
+
+.orText {
+    text-align: center;
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.uploadText {
+    font-weight: 500;
+    color: #8C2BE3;
+}
+
+.uploadIcon {
+    margin-bottom: 16px;
+}

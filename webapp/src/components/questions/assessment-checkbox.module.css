@@ -1,0 +1,20 @@
+.assessmentHolder {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.withCross {
+    min-width: 160px;
+}
+
+.withoutCross {
+    min-width: 100px;
+}
+
+.crossHolder {
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
+    cursor: pointer;
+}

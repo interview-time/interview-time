@@ -1,0 +1,28 @@
+.column {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+    padding-bottom: 32px;
+    padding-top: 32px;
+}
+
+.previewCard {
+    background: #F4EAFC;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.previewText {
+    color: #541A88;
+    font-weight: 500;
+    margin-left: 12px;
+}
+
+.introCardCol {
+    display: flex;
+    align-items: stretch;
+}
+
+.introCard {
+    width: 100%;
+}

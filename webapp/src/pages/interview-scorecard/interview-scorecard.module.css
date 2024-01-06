@@ -1,0 +1,222 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: white;
+    min-height: 64px;
+    padding-left: 24px;
+    padding-right: 24px;
+    z-index: 10;
+    width: calc(100% - 200px); /* side menu width is 200px */
+    position: fixed;
+    top: 0;
+}
+
+.divider2 {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.assessmentRow {
+    padding: 40px;
+}
+
+.headerTitleContainer {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.headerTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-left: 8px;
+}
+
+.multiLineText {
+    white-space: pre-wrap;
+}
+
+.rootContainer {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #F9FAFB;
+}
+
+.interviewSectionContainer {
+    margin-top: 32px;
+    min-height: 100vh;
+}
+
+.summary {
+    margin-top: 64px;
+}
+
+.questionArea {
+    margin-top: 64px;
+}
+
+.space {
+    width: 100%;
+}
+
+.divSpaceBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.divHorizontalCenter {
+    display: flex;
+    align-items: center;
+}
+
+.divVerticalCenter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.questionHolder {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 2;
+}
+
+.dotSmall {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.toc {
+    position: fixed;
+    top: 48px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 24px;
+}
+
+.anchorLink {
+    color: #8c8c8c;
+    font-size: 13px;
+}
+
+.hash {
+    scroll-margin-top: var(--header-height-with-padding);
+}
+
+.stepDescription {
+    white-space: nowrap;
+}
+
+.stepInterview {
+    max-width: 50%;
+}
+
+.stepFeedback {
+    width: 50%;
+}
+
+.scoreHolder {
+    display: flex;
+    flex-direction: column;
+}
+
+.scoreText {
+    font-weight: bold;
+    font-size: 52px;
+    margin-bottom: 0;
+}
+
+.scoreLabel {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.guidingLine {
+    height: 30px;
+    border-left: 2px dashed #d1d5db;
+}
+
+.divider {
+    width: 100%;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.competenceAreaRow {
+    padding: 16px 24px;
+}
+
+.questionAreaRow {
+    padding: 8px 24px 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+.decisionCard {
+    border-top: 6px solid #8c2be3;
+    width: 100%;
+}
+
+.questionNotes {
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.notesTextArea {
+    resize: none;
+    padding: 24px;
+}
+
+.decisionLabel {
+    font-size: 14px;
+}
+
+.tag {
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 24px;
+}
+
+.decisionTextHolder {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 24px;
+}
+
+.reportInterviewInfoHolder {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    width: 100%;
+}
+
+.reportInterviewCenter {
+    justify-self: center;
+}
+
+.reportInterviewRight {
+    justify-self: right;
+}
+
+.panelTitle {
+    padding-top: 24px;
+    padding-left: 24px;
+}
+
+.panelContent {
+    padding-left: 24px;
+    padding-bottom: 24px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    row-gap: 32px;
+}

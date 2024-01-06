@@ -1,0 +1,16 @@
+.rootContainer {
+    background-color: #F9FAFB;
+    height: 100vh;
+}
+
+.logo {
+    height: 48px;
+    margin-left: -8px;
+    margin-top: -8px;
+}
+
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

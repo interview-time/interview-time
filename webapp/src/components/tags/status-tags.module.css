@@ -1,0 +1,39 @@
+.tagOrange {
+    font-size: 14px;
+    font-weight: 500;
+    color: #B45309;
+    background: #FFFBEB;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+}
+
+.tagRed {
+    font-size: 14px;
+    font-weight: 500;
+    color: #B91C1C;
+    background: #FEF2F2;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+}
+
+.tagGreen {
+    font-size: 14px;
+    font-weight: 500;
+    color: #15803D;
+    background: #F0FDF4;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+}
+
+.tagGray {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: #F3F4F6;
+    border-radius: 24px;
+    border-style: hidden;
+    padding: 2px 10px;
+}

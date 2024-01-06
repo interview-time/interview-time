@@ -1,0 +1,54 @@
+.rootContainer {
+    padding: 40px;
+}
+
+.row {
+    cursor: pointer;
+}
+
+.label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.iconHolder {
+    border: 1px solid #e5e7eb;
+    box-sizing: border-box;
+    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header {
+    text-align: center;
+    padding: 24px;
+}
+
+.subTitle {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.filterSection {
+    display: flex;
+    justify-content: space-between;
+}
+
+.divRight {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    margin-bottom: 12px;
+}
+
+.select {
+    min-width: 230px;
+    margin-left: 16px;
+}
+
+.headerSearch {
+    width: 300px;
+}
