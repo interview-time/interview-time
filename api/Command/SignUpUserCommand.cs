@@ -105,8 +105,6 @@ namespace CafApi.Command
 
         private async Task PopulateDemoData(string userId, string teamId, string timezone)
         {
-            var jobId = Guid.NewGuid().ToString();
-
             // Templates
             var screeningTemplate = TemplatesDemoData.GetScreeningTemplate(userId, teamId);
             await _context.SaveAsync(screeningTemplate);
@@ -119,46 +117,37 @@ namespace CafApi.Command
 
 
             // Candidates
-            var benCandidate = DemoData.GetBenCandidate(userId, teamId, jobId);
+            var benCandidate = DemoData.GetBenCandidate(userId, teamId);
             await _context.SaveAsync(benCandidate);
 
-            var johnCandidate = DemoData.GetJohnCandidate(userId, teamId, jobId);
+            var johnCandidate = DemoData.GetJohnCandidate(userId, teamId);
             await _context.SaveAsync(johnCandidate);
 
-            var samiCandidate = DemoData.GetSamiCandidate(userId, teamId, jobId);
-            await _context.SaveAsync(samiCandidate);
-
-
-            // Job
-            var screeningStage = DemoData.GetscreeningStage(screeningTemplate.TemplateId);
-            var techStage = DemoData.GetTechStage(nodeTemplate.TemplateId, new List<string> { benCandidate.CandidateId, johnCandidate.CandidateId, });
-            var culturalStage = DemoData.GetCulturalStage(culturalTemplate.TemplateId, samiCandidate.CandidateId);
-
-            var job = DemoData.GetDefaultJob(jobId, userId, teamId, new List<Stage> { screeningStage, techStage, culturalStage });
-            await _context.SaveAsync(job);
+            var samiCandidate = DemoData.GetSamiCandidate(userId, teamId);
+            await _context.SaveAsync(samiCandidate);           
 
 
             // Interviews - Ben
-            var screeningInterviewBen = InterviewsDemoData.GetCompltedScreeningInterview(job, screeningStage, userId, teamId, benCandidate.CandidateId, screeningTemplate.TemplateId, timezone);
+            var screeningInterviewBen = InterviewsDemoData.GetCompltedScreeningInterview(userId, teamId, benCandidate.CandidateId, screeningTemplate.TemplateId, timezone);
             await _context.SaveAsync(screeningInterviewBen);
 
 
             // Interviews - Sami
-            var screeningInterviewSami = InterviewsDemoData.GetCompltedScreeningInterview(job, screeningStage, userId, teamId, samiCandidate.CandidateId, screeningTemplate.TemplateId, timezone);
+            var screeningInterviewSami = InterviewsDemoData.GetCompltedScreeningInterview( userId, teamId, samiCandidate.CandidateId, screeningTemplate.TemplateId, timezone);
             await _context.SaveAsync(screeningInterviewSami);
 
-            var techInterviewSami = InterviewsDemoData.GetCompltedNodeInterview(job, techStage, userId, teamId, samiCandidate.CandidateId, nodeTemplate.TemplateId, timezone);
+            var techInterviewSami = InterviewsDemoData.GetCompltedNodeInterview( userId, teamId, samiCandidate.CandidateId, nodeTemplate.TemplateId, timezone);
             await _context.SaveAsync(techInterviewSami);
 
-            var culturalInterviewSami = InterviewsDemoData.GetInterviewFromTemplate(job, culturalStage, userId, teamId, samiCandidate.CandidateId, culturalTemplate, timezone);
+            var culturalInterviewSami = InterviewsDemoData.GetInterviewFromTemplate( userId, teamId, samiCandidate.CandidateId, culturalTemplate, timezone);
             await _context.SaveAsync(culturalInterviewSami);
 
 
             // Interview - John
-            var screeningInterviewJohn = InterviewsDemoData.GetCompltedScreeningInterview(job, screeningStage, userId, teamId, johnCandidate.CandidateId, screeningTemplate.TemplateId, timezone);
+            var screeningInterviewJohn = InterviewsDemoData.GetCompltedScreeningInterview(userId, teamId, johnCandidate.CandidateId, screeningTemplate.TemplateId, timezone);
             await _context.SaveAsync(screeningInterviewJohn);
 
-            var futureJohnInterview = InterviewsDemoData.GetInterviewFromTemplate(job, techStage, userId, teamId, johnCandidate.CandidateId, nodeTemplate, timezone);
+            var futureJohnInterview = InterviewsDemoData.GetInterviewFromTemplate( userId, teamId, johnCandidate.CandidateId, nodeTemplate, timezone);
             await _context.SaveAsync(futureJohnInterview);
         }
 

@@ -14,12 +14,6 @@ namespace CafApi.ViewModel
 
         public string Token { get; set; }
 
-        public List<string> Roles { get; set; }
-
-        public int Seats { get; set; }
-
-        public string Plan { get; set; }
-
-        public int AvailableSeats { get; set; }
+        public List<string> Roles { get; set; }   
     }
 }

@@ -5,6 +5,6 @@ namespace CafApi.Models
         ADMIN,
         INTERVIEWER,
         HIRING_MANAGER,
-        HR
+        RECRUITER
     }
 }

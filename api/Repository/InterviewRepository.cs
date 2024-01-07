@@ -72,19 +72,7 @@ namespace CafApi.Repository
             var interview = queryResult.FirstOrDefault(i => i.IsShared);
 
             return interview;
-        }
-
-        public async Task<List<Interview>> GetInterviewsByJob(string jobId)
-        {
-            var searchByJob = _context.FromQueryAsync<Interview>(new QueryOperationConfig()
-            {
-                IndexName = "JobId-index",
-                Filter = new QueryFilter(nameof(Interview.JobId), QueryOperator.Equal, jobId)
-            });
-            var interviews = await searchByJob.GetRemainingAsync();
-
-            return interviews;
-        }
+        }    
 
         public async Task SaveInterview(Interview interview)
         {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -33,23 +32,6 @@ namespace CafApi.Query
         public string Token { get; set; }
 
         public List<string> Roles { get; set; }
-
-        public int Seats { get; set; }
-
-        public string Plan { get; set; }
-
-        public int AvailableSeats { get; set; }
-
-        public Integration Integration { get; set; }
-    }
-
-    public class Integration
-    {
-        public string Status { get; set; }
-
-        public string ATS { get; set; }
-
-        public DateTime? LastSync { get; set; }
     }
 
     public class TeamDetailsQueryHandler : IRequestHandler<TeamDetailsQuery, TeamDetailsQueryResult>
@@ -88,7 +70,6 @@ namespace CafApi.Query
             List<(Profile Profile, TeamMember TeamMember)> members = await _teamService.GetTeamMembers(query.UserId, query.TeamId);
             var invites = await _teamService.GetPendingInvites(query.UserId, query.TeamId);
             var invitedByList = await _userRepository.GetUserProfiles(invites.Select(i => i.InvitedBy).Distinct().ToList());
-            var availableSeats = await _teamService.GetAvailableSeats(query.TeamId);
 
             return new TeamDetailsQueryResult
             {
@@ -111,16 +92,7 @@ namespace CafApi.Query
                     InvitedDate = i.CreatedDate
                 }).ToList(),
                 Token = team.Token,
-                Roles = members.FirstOrDefault(m => m.TeamMember.UserId == query.UserId).TeamMember?.Roles,
-                Seats = team.Seats == 0 ? 2 : team.Seats,
-                Plan = team.Plan ?? SubscriptionPlan.STARTER.ToString(),
-                AvailableSeats = availableSeats,
-                Integration = new Integration
-                {
-                    Status = team.Integration?.Status ?? IntegrationStatus.None.ToString(),
-                    LastSync = team.Integration?.LastSync,
-                    ATS = team.Integration?.ATS
-                }
+                Roles = members.FirstOrDefault(m => m.TeamMember.UserId == query.UserId).TeamMember?.Roles
             };
         }
     }

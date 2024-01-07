@@ -15,7 +15,6 @@ using CafApi.ViewModel;
 using CafApi.Services.User;
 using CafApi.Repository;
 using MediatR;
-using CafApi.Services.Integration;
 using MailChimp.Net.Interfaces;
 using MailChimp.Net;
 using System.Linq;
@@ -91,10 +90,6 @@ namespace CafApi
             services.AddSingleton<IAmazonS3>(new AmazonS3Client(s3Config));
             services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
 
-            services.Configure<MergeOptions>(Configuration.GetSection(MergeOptions.Section));
-
-            services.AddHttpClient<IMergeHttpClient, MergeHttpClient>();
-
             services.AddScoped<ITemplateService, TemplateService>();
             services.AddScoped<IInterviewService, InterviewService>();
             services.AddScoped<ITeamService, TeamService>();
@@ -110,7 +105,6 @@ namespace CafApi
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITemplateRepository, TemplateRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<IJobRepository, JobRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -77,7 +77,6 @@ namespace CafApi.Command
         private readonly IPermissionsService _permissionsService;
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
-        private readonly IJobRepository _jobRepository;
         private readonly string _demoUserId;
         private readonly string _appHostUrl;
         private readonly DynamoDBContext _context;
@@ -88,7 +87,6 @@ namespace CafApi.Command
             IPermissionsService permissionsService,
             IUserRepository userRepository,
             IEmailService emailService,
-            IJobRepository jobRepository,
             IConfiguration configuration,
             IAmazonDynamoDB dynamoDbClient)
         {
@@ -97,7 +95,6 @@ namespace CafApi.Command
             _permissionsService = permissionsService;
             _userRepository = userRepository;
             _emailService = emailService;
-            _jobRepository = jobRepository;
             _demoUserId = configuration["DemoUserId"];
             _appHostUrl = configuration["AppHostUri"];
             _context = new DynamoDBContext(dynamoDbClient);
@@ -117,25 +114,6 @@ namespace CafApi.Command
             if (candidate == null)
             {
                 throw new ItemNotFoundException($"Candidate {command.CandidateId} not found");
-            }
-
-            // Get current candidate stage in the hiring pipeline
-            string stageId = null;
-            string stageTitle = null;
-            string jobTitle = null;
-            if (candidate.JobId != null)
-            {
-                var job = await _jobRepository.GetJob(command.TeamId, candidate.JobId);
-                if (job != null)
-                {
-                    jobTitle = job.Title;
-                    var currentStage = job.Pipeline.FirstOrDefault(s => s.Candidates.Any(c => c.CandidateId == command.CandidateId));
-                    if (currentStage != null)
-                    {
-                        stageId = currentStage.StageId;
-                        stageTitle = currentStage.Title;
-                    }
-                }
             }
 
             var mainInterview = new Interview
@@ -161,10 +139,6 @@ namespace CafApi.Command
                 LinkId = Guid.NewGuid().ToString(),
                 IsDemo = command.UserId == _demoUserId, // Demo account
                 Checklist = command.Checklist,
-                JobId = candidate.JobId,
-                JobTitle = jobTitle,
-                StageId = stageId,
-                StageTitle = stageTitle
             };
 
             var interviews = new Dictionary<string, Interview>();

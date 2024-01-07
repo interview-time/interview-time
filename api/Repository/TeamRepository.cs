@@ -28,8 +28,6 @@ namespace CafApi.Repository
                 TeamId = Guid.NewGuid().ToString(),
                 OwnerId = userId,
                 Name = name,
-                Seats = 2,
-                Plan = SubscriptionPlan.STARTER.ToString(),
                 Token = StringHelper.GenerateToken(),
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,

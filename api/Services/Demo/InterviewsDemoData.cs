@@ -8,7 +8,7 @@ namespace CafApi.Services.Demo
 {
     public static class InterviewsDemoData
     {
-        public static Interview GetCompltedScreeningInterview(Job job, Stage stage, string userId, string teamId, string candidateId, string templateId, string timezone)
+        public static Interview GetCompltedScreeningInterview(string userId, string teamId, string candidateId, string templateId, string timezone)
         {
             var pastDate = DateTime.UtcNow.AddDays(-7);
 
@@ -34,10 +34,6 @@ namespace CafApi.Services.Demo
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
                 Decision = (int)Decision.Yes,
-                JobId = job.JobId,
-                JobTitle = job.Title,
-                StageId = stage.StageId,
-                StageTitle = stage.Title,
                 Checklist = new List<ChecklistItem>
                 {
                     new ChecklistItem
@@ -151,7 +147,7 @@ namespace CafApi.Services.Demo
             };
         }
 
-        public static Interview GetCompltedNodeInterview(Job job, Stage stage, string userId, string teamId, string candidateId, string templateId, string timezone)
+        public static Interview GetCompltedNodeInterview(string userId, string teamId, string candidateId, string templateId, string timezone)
         {
             var pastDate = DateTime.UtcNow.AddDays(-2);
 
@@ -175,10 +171,6 @@ namespace CafApi.Services.Demo
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
                 Decision = 1,
-                JobId = job.JobId,
-                JobTitle = job.Title,
-                StageId = stage.StageId,
-                StageTitle = stage.Title,
                 Checklist = new List<ChecklistItem>
                 {
                     new ChecklistItem
@@ -380,7 +372,7 @@ namespace CafApi.Services.Demo
             };
         }
 
-        public static Interview GetInterviewFromTemplate(Job job, Stage stage, string userId, string teamId, string candidateId, Template template, string timezone)
+        public static Interview GetInterviewFromTemplate(string userId, string teamId, string candidateId, Template template, string timezone)
         {
             var random = new Random();
             var now = DateTime.UtcNow.AddDays(random.Next(5, 10));
@@ -405,10 +397,6 @@ namespace CafApi.Services.Demo
                 Checklist = template.Checklist,
                 CreatedDate = DateTime.UtcNow,
                 ModifiedDate = DateTime.UtcNow,
-                JobId = job.JobId,
-                JobTitle = job.Title,
-                StageId = stage.StageId,
-                StageTitle = stage.Title,
                 Structure = new InterviewStructure
                 {
                     Header = template.Structure.Header,

@@ -6,7 +6,7 @@ namespace CafApi.Services
 {
     public interface ITeamService
     {
-        Task<TeamMember> GetTeamMember(string userId, string teamId);        
+        Task<TeamMember> GetTeamMember(string userId, string teamId);
 
         Task Update(string userId, string teamId, string name);
 
@@ -14,7 +14,7 @@ namespace CafApi.Services
 
         Task<List<(Team, TeamMember)>> GetUserTeams(string userId);
 
-        Task<List<(Profile, TeamMember)>> GetTeamMembers(string userId, string teamId);        
+        Task<List<(Profile, TeamMember)>> GetTeamMembers(string userId, string teamId);
 
         Task<List<Invite>> GetPendingInvites(string userId, string teamId);
 
@@ -28,10 +28,6 @@ namespace CafApi.Services
 
         Task RemoveTeamMember(string adminId, string memberId, string teamId);
 
-        Task UpdateMemberRole(string adminId, string memberId, string teamId, string newRole);  
-
-        Task<int> GetAvailableSeats(string teamId); 
-
-        Task UpdateSubscription(string teamId, SubscriptionPlan plan, int seats, string stripeCustomerId);     
+        Task UpdateMemberRole(string adminId, string memberId, string teamId, string newRole);
     }
 }

@@ -1,124 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using CafApi.Common;
 using CafApi.Models;
 
 namespace CafApi.Services.Demo
 {
     public static class DemoData
     {
-        public static Stage GetscreeningStage(string templateId, string candidateId = null)
-        {
-            return new Stage
-            {
-                StageId = Guid.NewGuid().ToString(),
-                Title = "Screening",
-                Description = "",
-                Colour = "#0693E3",
-                TemplateId = templateId,
-                Type = JobStageType.Interview.ToString(),
-                CreatedDate = DateTime.UtcNow,
-                Candidates = candidateId != null ? new List<StageCandidate>
-                {
-                    new StageCandidate
-                    {
-                        CandidateId = candidateId,
-                        MovedToStage = DateTime.UtcNow,
-                        OriginallyAdded= DateTime.UtcNow
-                    }
-                } : null
-            };
-        }
-
-        public static Stage GetTechStage(string templateId, List<string> candidateIds)
-        {
-            return new Stage
-            {
-                StageId = Guid.NewGuid().ToString(),
-                Title = "Tech Interview",
-                Description = "",
-                Colour = "#08c7e0",
-                Type = JobStageType.Interview.ToString(),
-                TemplateId = templateId,
-                CreatedDate = DateTime.UtcNow,
-                Candidates = candidateIds.Select(cId =>
-                            new StageCandidate
-                            {
-                                CandidateId = cId,
-                                MovedToStage = DateTime.UtcNow,
-                                OriginallyAdded = DateTime.UtcNow
-                            })
-                            .ToList()
-            };
-        }
-
-        public static Stage GetCulturalStage(string templateId, string candidateId = null)
-        {
-            return new Stage
-            {
-                StageId = Guid.NewGuid().ToString(),
-                Title = "Cultural Interview",
-                Description = "",
-                Colour = "#fe01fc",
-                TemplateId = templateId,
-                Type = JobStageType.Interview.ToString(),
-                CreatedDate = DateTime.UtcNow,
-                Candidates = candidateId != null ? new List<StageCandidate>
-                {
-                    new StageCandidate
-                    {
-                        CandidateId = candidateId,
-                        MovedToStage = DateTime.UtcNow,
-                        OriginallyAdded= DateTime.UtcNow
-                    }
-                } : null
-            };
-        }
-
-        public static Job GetDefaultJob(string jobId, string userId, string teamId, List<Stage> stages)
-        {
-            var lastStages = new List<Stage>
-                {
-                    new Stage
-                    {
-                        StageId = Guid.NewGuid().ToString(),
-                        Title = "Rejected",
-                        Description = "",
-                        Colour = "#f42d2d",
-                        Type = JobStageType.Regular.ToString(),
-                        CreatedDate = DateTime.UtcNow
-                    },
-                    new Stage
-                    {
-                        StageId = Guid.NewGuid().ToString(),
-                        Title = "Hired",
-                        Description = "",
-                        Colour = "#1cb854",
-                        Type = JobStageType.Regular.ToString(),
-                        CreatedDate = DateTime.UtcNow
-                    }
-                };
-
-            stages.AddRange(lastStages);
-
-            return new Job
-            {
-                TeamId = teamId,
-                JobId = jobId,
-                Title = "Software Engineer",
-                Location = "Remote",
-                Department = "Engineering",
-                Tags = new List<string> { "remote", "urgent", "javascript" },
-                Description = "",
-                Owner = userId,
-                CreatedDate = DateTime.UtcNow,
-                Status = JobStatus.OPEN.ToString(),
-                Pipeline = stages
-            };
-        }
-
-        public static Candidate GetBenCandidate(string userId, string teamId, string jobId)
+        public static Candidate GetBenCandidate(string userId, string teamId)
         {
             return new Candidate
             {
@@ -135,12 +22,11 @@ namespace CafApi.Services.Demo
                 GitHub = "https://github.com/",
                 IsDemo = true,
                 Status = CandidateStatus.NEW.ToString(),
-                CreatedDate = DateTime.UtcNow,
-                JobId = jobId
+                CreatedDate = DateTime.UtcNow
             };
         }
 
-        public static Candidate GetJohnCandidate(string userId, string teamId, string jobId)
+        public static Candidate GetJohnCandidate(string userId, string teamId)
         {
             return new Candidate
             {
@@ -157,12 +43,11 @@ namespace CafApi.Services.Demo
                 GitHub = "https://github.com/",
                 IsDemo = true,
                 Status = CandidateStatus.NEW.ToString(),
-                CreatedDate = DateTime.UtcNow,
-                JobId = jobId
+                CreatedDate = DateTime.UtcNow
             };
         }
 
-        public static Candidate GetSamiCandidate(string userId, string teamId, string jobId)
+        public static Candidate GetSamiCandidate(string userId, string teamId)
         {
             return new Candidate
             {
@@ -179,8 +64,7 @@ namespace CafApi.Services.Demo
                 GitHub = "https://github.com/",
                 IsDemo = true,
                 Status = CandidateStatus.NEW.ToString(),
-                CreatedDate = DateTime.UtcNow,
-                JobId = jobId
+                CreatedDate = DateTime.UtcNow
             };
         }
     }

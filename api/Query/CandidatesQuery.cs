@@ -45,8 +45,6 @@ namespace CafApi.Query
 
         public bool Archived { get; set; }
 
-        public bool IsFromATS { get; set; }
-
         public bool IsAnonymised { get; set; }
 
         public string Location { get; set; }
@@ -54,32 +52,21 @@ namespace CafApi.Query
         public List<string> Tags { get; set; }
 
         public DateTime CreatedDate { get; set; }
-
-        public string JobId { get; set; }
-
-        public string JobTitle { get; set; }
-
-        public string StageId { get; set; }
-
-        public string StageTitle { get; set; }
     }
 
     public class CandidatesQueryHandler : IRequestHandler<CandidatesQuery, CandidatesQueryResult>
     {
         private readonly ICandidateRepository _candidateRepository;
         private readonly IPermissionsService _permissionsService;
-        private readonly IInterviewRepository _interviewRepository;
-        private readonly IJobRepository _jobRepository;
+        private readonly IInterviewRepository _interviewRepository;        
 
         public CandidatesQueryHandler(ICandidateRepository candidateRepository,
             IPermissionsService permissionsService,
-            IInterviewRepository interviewRepository,
-            IJobRepository jobRepository)
+            IInterviewRepository interviewRepository)
         {
             _candidateRepository = candidateRepository;
             _permissionsService = permissionsService;
-            _interviewRepository = interviewRepository;
-            _jobRepository = jobRepository;
+            _interviewRepository = interviewRepository;            
         }
 
         public async Task<CandidatesQueryResult> Handle(CandidatesQuery query, CancellationToken cancellationToken)
@@ -118,13 +105,7 @@ namespace CafApi.Query
             else // Recruiter or Hiring Manager can see all candidates
             {
                 candidates = await _candidateRepository.GetCandidates(query.TeamId);
-            }
-
-            var jobs = new List<Job>();
-            if (candidates.Any(c => c.JobId != null))
-            {
-                jobs = await _jobRepository.GetAllJobs(query.TeamId);
-            }
+            }          
 
             return new CandidatesQueryResult
             {
@@ -146,23 +127,11 @@ namespace CafApi.Query
                     Location = candidate.Location,
                     Status = candidate.Status,
                     Archived = candidate.Archived,
-                    Tags = candidate.Tags,
-                    IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
+                    Tags = candidate.Tags,                    
                     CreatedDate = candidate.CreatedDate,
-                    IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId),
-                    JobId = candidate.JobId,
-                    JobTitle = jobs.FirstOrDefault(j => j.JobId == candidate.JobId)?.Title,
-                    StageId = GetCurrentStage(jobs, candidate.CandidateId, candidate.JobId)?.StageId,
-                    StageTitle = GetCurrentStage(jobs, candidate.CandidateId, candidate.JobId)?.Title,
+                    IsAnonymised = anonymisedCandidateIds.Contains(candidate.CandidateId)                    
                 }).ToList()
             };
-        }
-
-        private Stage GetCurrentStage(List<Job> jobs, string candidateId, string jobId)
-        {
-            return jobs.FirstOrDefault(j => j.JobId == jobId)?
-                .Pipeline.FirstOrDefault(s => s.Candidates != null &&
-                    s.Candidates.Any(c => c.CandidateId == candidateId));
-        }
+        }     
     }
 }

@@ -58,7 +58,7 @@ namespace CafApi.Services.User
             }
 
             return null;
-        }      
+        }
 
         public async Task<bool> CanCancelInvite(string userId, string teamId, bool isOwner)
         {
@@ -131,51 +131,6 @@ namespace CafApi.Services.User
             return false;
         }
 
-        public async Task<bool> CanIntegrateWithATS(string userId, string teamId)
-        {
-            var teamMember = await GetTeamMember(userId, teamId);
-
-            // belongs to the team
-            if (teamMember != null)
-            {
-                var userRoles = GetUserRoles(teamMember);
-
-                return userRoles != null && userRoles.Any(role => role == TeamRole.ADMIN);
-            }
-
-            return false;
-        }
-
-        public async Task<bool> CanManageJobs(string userId, string teamId)
-        {
-            var teamMember = await GetTeamMember(userId, teamId);
-
-            // belongs to the team
-            if (teamMember != null)
-            {
-                var userRoles = GetUserRoles(teamMember);
-
-                return userRoles != null && userRoles.Any(role => role == TeamRole.HR || role == TeamRole.ADMIN);
-            }
-
-            return false;
-        }
-
-        public async Task<bool> CanViewJobs(string userId, string teamId)
-        {
-            var teamMember = await GetTeamMember(userId, teamId);
-
-            // belongs to the team
-            if (teamMember != null)
-            {
-                var userRoles = GetUserRoles(teamMember);
-
-                return userRoles != null && userRoles.Any(role => role == TeamRole.HR || role == TeamRole.ADMIN);
-            }
-
-            return false;
-        }
-
         // Schedule, reschedule, update and cancel interview
         public async Task<bool> CanManageInterviews(string userId, string teamId)
         {
@@ -186,7 +141,7 @@ namespace CafApi.Services.User
             {
                 var userRoles = GetUserRoles(teamMember);
 
-                return userRoles != null && userRoles.Any(role => role == TeamRole.HR || role == TeamRole.ADMIN);
+                return userRoles != null && userRoles.Any(role => role == TeamRole.RECRUITER || role == TeamRole.ADMIN);
             }
 
             return false;

@@ -35,10 +35,6 @@ namespace CafApi.Command
         public string Location { get; set; }
 
         public List<string> Tags { get; set; }
-
-        public string JobId { get; set; }
-
-        public string StageId { get; set; }
     }
 
     public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateCommand, Candidate>
@@ -74,8 +70,7 @@ namespace CafApi.Command
                 Owner = command.UserId,
                 Location = command.Location,
                 Tags = command.Tags,
-                CreatedDate = DateTime.UtcNow,
-                JobId = command.JobId
+                CreatedDate = DateTime.UtcNow,         
             };
 
             await _candidateRepository.SaveCandidate(candidate);

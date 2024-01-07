@@ -26,9 +26,6 @@ namespace CafApi.Query
 
     public class CandidateDetailsQueryResult : CandidateItem
     {
-        public List<InterviewStage> Stages { get; set; }
-
-        public CurrentStage CurrentStage { get; set; }
     }
 
     public class CurrentStage
@@ -63,8 +60,7 @@ namespace CafApi.Query
         private readonly ITemplateRepository _templateRepository;
         private readonly ICandidateRepository _candidateRepository;
         private readonly IInterviewRepository _interviewRepository;
-        private readonly IPermissionsService _permissionsService;
-        private readonly IJobRepository _jobRepository;
+        private readonly IPermissionsService _permissionsService;        
         private readonly IAmazonS3 _s3Client;
 
         public CandidateDetailsQueryHandler(
@@ -72,16 +68,14 @@ namespace CafApi.Query
             ITemplateRepository templateRepository,
             ICandidateRepository candidateRepository,
             IInterviewRepository interviewRepository,
-            IPermissionsService permissionsService,
-            IJobRepository jobRepository,
+            IPermissionsService permissionsService,            
             IAmazonS3 s3Client)
         {
             _userRepository = userRepository;
             _templateRepository = templateRepository;
             _candidateRepository = candidateRepository;
             _interviewRepository = interviewRepository;
-            _permissionsService = permissionsService;
-            _jobRepository = jobRepository;
+            _permissionsService = permissionsService;            
 
             _s3Client = s3Client;
         }
@@ -109,10 +103,7 @@ namespace CafApi.Query
             }
 
             var isAnonymised = interviews.Any(i => i.UserId == query.UserId && i.TakeHomeChallenge != null && i.TakeHomeChallenge.IsAnonymised);
-            List<InterviewStage> stages = null;
-            CurrentStage currentStage = null;
-            string jobTitle = null;
-
+           
             if (!query.IsShallow)
             {
                 await AssignInterviewerName(interviews);
@@ -121,19 +112,7 @@ namespace CafApi.Query
                 if (interviews.Any(i => i.LinkId == null))
                 {
                     await AssignLinkId(interviews);
-                }
-
-                stages = await GetStages(interviews);
-
-                if (candidate.JobId != null)
-                {
-                    var job = await _jobRepository.GetJob(candidate.TeamId, candidate.JobId);
-                    if (job != null)
-                    {
-                        jobTitle = job.Title;
-                        currentStage = GetCurrentStage(job, candidate.CandidateId, interviews);
-                    }
-                }
+                }              
             }
 
             return new CandidateDetailsQueryResult
@@ -151,14 +130,9 @@ namespace CafApi.Query
                 Status = candidate.Status,
                 Location = candidate.Location,
                 Tags = candidate.Tags,
-                Archived = candidate.Archived,
-                IsFromATS = !string.IsNullOrWhiteSpace(candidate.MergeId),
-                Stages = !query.IsShallow ? stages : null,
-                CreatedDate = candidate.RemoteCreatedDate ?? candidate.CreatedDate,
-                IsAnonymised = isAnonymised,
-                JobId = candidate.JobId,
-                JobTitle = jobTitle,
-                CurrentStage = currentStage
+                Archived = candidate.Archived,                                
+                CreatedDate = candidate.CreatedDate,
+                IsAnonymised = isAnonymised,                  
             };
         }
 
@@ -229,31 +203,6 @@ namespace CafApi.Query
                 }).OrderBy(s => s.InterviewStartDate).ToList();
 
             return stages;
-        }
-
-        private CurrentStage GetCurrentStage(Job job, string candidateId, List<Interview> interviews)
-        {
-            CurrentStage currentStage = null;
-
-            var currentJobStage = job.Pipeline
-                .FirstOrDefault(s =>
-                    s.Candidates != null
-                    && s.Candidates.Any(c => c.CandidateId == candidateId));
-
-            if (currentJobStage != null)
-            {
-                currentStage = new CurrentStage
-                {
-                    StageId = currentJobStage.StageId,
-                    Title = currentJobStage.Title,
-                    TemplateId = currentJobStage.TemplateId,
-                    Colour = currentJobStage.Colour,
-                    Type = currentJobStage.Type,
-                    Status = CandidateStageHelper.GetCandidateStatus(interviews, candidateId, currentJobStage.StageId)
-                };
-            }
-
-            return currentStage;
         }
     }
 }

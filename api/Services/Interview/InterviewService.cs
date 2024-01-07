@@ -1,33 +1,26 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
 using CafApi.Common;
 using CafApi.Models;
 using CafApi.Repository;
-using CafApi.Services.User;
 using CafApi.ViewModel;
 
 namespace CafApi.Services
 {
     public class InterviewService : IInterviewService
     {
-        private readonly IPermissionsService _permissionsService;
         private readonly IChallengeRepository _challengeRepository;
         private readonly IInterviewRepository _interviewRepository;
         private readonly DynamoDBContext _context;
 
-        public InterviewService(IAmazonDynamoDB dynamoDbClient,
-            IPermissionsService permissionsService,
+        public InterviewService(IAmazonDynamoDB dynamoDbClient,            
             IChallengeRepository challengeRepository,
             IInterviewRepository interviewRepository)
         {
-            _context = new DynamoDBContext(dynamoDbClient);
-            _permissionsService = permissionsService;
+            _context = new DynamoDBContext(dynamoDbClient);            
             _challengeRepository = challengeRepository;
             _interviewRepository = interviewRepository;
         }      
@@ -127,35 +120,6 @@ namespace CafApi.Services
 
                 await _context.SaveAsync(interview);
             }
-        }
-
-        public async Task GetEngagementStats()
-        {
-            var search = _context.ScanAsync<Interview>(
-                new List<ScanCondition>
-                {
-                    new ScanCondition(nameof(Interview.Status), ScanOperator.Equal, InterviewStatus.SUBMITTED.ToString()),
-                    new ScanCondition(nameof(Interview.UserId), ScanOperator.NotEqual, "google-oauth2|100613539099514601346")
-                });
-
-            var interviews = await search.GetRemainingAsync();
-
-            var grouped = from interview in interviews
-                          group interview by new { interview.CreatedDate.Month, interview.CreatedDate.Year } into Period
-                          orderby Period.Key.Month descending
-                          select new
-                          {
-                              Period = Period.Key,
-                              TotalInterviews = Period.Count(),
-                              AveragePerUser = Period.GroupBy(p => p.UserId).Average(p => p.Count())
-                          };
-
-            var periods = grouped.ToList();
-
-            foreach (var period in periods)
-            {
-                Console.WriteLine($"\t{period.Period.Year} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(period.Period.Month)}: {period.TotalInterviews} {period.AveragePerUser}");
-            }
-        }
+        }       
     }
 }

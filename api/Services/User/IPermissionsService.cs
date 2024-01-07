@@ -20,12 +20,6 @@ namespace CafApi.Services.User
 
         Task<bool> CanUpdateOrDeleteOrArchiveCandidate(string userId, string teamId);
 
-        Task<bool> CanIntegrateWithATS(string userId, string teamId);
-
-        Task<bool> CanManageJobs(string userId, string teamId);
-
-        Task<bool> CanViewJobs(string userId, string teamId);
-
         Task<bool> CanManageInterviews(string userId, string teamId);
     }
 }

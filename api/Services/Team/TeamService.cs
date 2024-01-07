@@ -171,37 +171,33 @@ namespace CafApi.Services
 
         public async Task Invite(string userId, string inviteeEmail, string teamId, string role)
         {
-            var availableSeats = await GetAvailableSeats(teamId);
-            if (availableSeats > 0)
+            var belongsToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
+            if (belongsToTeam)
             {
-                var belongsToTeam = await _permissionsService.IsBelongInTeam(userId, teamId);
-                if (belongsToTeam)
+                var invites = await GetPendingInvites(userId, teamId);
+                var invite = invites.FirstOrDefault(i => i.InviteeEmail == inviteeEmail);
+
+                if (invite == null)
                 {
-                    var invites = await GetPendingInvites(userId, teamId);
-                    var invite = invites.FirstOrDefault(i => i.InviteeEmail == inviteeEmail);
-
-                    if (invite == null)
+                    invite = new Invite
                     {
-                        invite = new Invite
-                        {
-                            Token = StringHelper.GenerateToken(),
-                            InviteId = Guid.NewGuid().ToString(),
-                            InviteeEmail = inviteeEmail,
-                            TeamId = teamId,
-                            Role = role,
-                            InvitedBy = userId,
-                            CreatedDate = DateTime.UtcNow,
-                            ModifiedDate = DateTime.UtcNow,
-                        };
+                        Token = StringHelper.GenerateToken(),
+                        InviteId = Guid.NewGuid().ToString(),
+                        InviteeEmail = inviteeEmail,
+                        TeamId = teamId,
+                        Role = role,
+                        InvitedBy = userId,
+                        CreatedDate = DateTime.UtcNow,
+                        ModifiedDate = DateTime.UtcNow,
+                    };
 
-                        await _context.SaveAsync(invite);
-                    }
-
-                    var inviter = await _userRepository.GetProfile(userId);
-                    var team = await _teamRepository.GetTeam(teamId);
-
-                    await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);
+                    await _context.SaveAsync(invite);
                 }
+
+                var inviter = await _userRepository.GetProfile(userId);
+                var team = await _teamRepository.GetTeam(teamId);
+
+                await _emailService.SendInviteEmail(inviteeEmail, inviter.Name, team.Name, invite.Token);
             }
         }
 
@@ -220,18 +216,6 @@ namespace CafApi.Services
                     throw new AuthorizationException($"User {userId} cannot cancel invite {inviteId}");
                 }
             }
-        }
-
-        public async Task<int> GetAvailableSeats(string teamId)
-        {
-            var team = await _teamRepository.GetTeam(teamId);
-            var teamMembers = await GetTeamMembers(teamId);
-            var pendingInvites = await GetPendingInvites(teamId);
-
-            var totalUsedSeats = teamMembers.Count + pendingInvites.Count(p => !p.IsAccepted);
-            var seats = team.Seats == 0 ? 2 : team.Seats;
-
-            return (seats - totalUsedSeats);
         }
 
         public async Task<string> AcceptInvite(string userId, string inviteToken)
@@ -286,22 +270,6 @@ namespace CafApi.Services
                     await _context.SaveAsync(member);
                 }
             }
-        }
-
-        public async Task UpdateSubscription(string teamId, SubscriptionPlan plan, int seats, string stripeCustomerId)
-        {
-            var team = await _teamRepository.GetTeam(teamId);
-            if (team == null)
-            {
-                throw new ArgumentException($"Team {teamId} not found");
-            }
-
-            team.Plan = plan.ToString();
-            team.Seats = team.Seats + seats;
-            team.StripeCustomerId = stripeCustomerId;
-            team.ModifiedDate = DateTime.UtcNow;
-
-            await _context.SaveAsync(team);
         }
 
         private async Task<List<Invite>> GetPendingInvites(string teamId)
