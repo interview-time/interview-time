@@ -2,7 +2,6 @@ import { Button, ConfigProvider, Dropdown, Select, Space, Spin, Table, Typograph
 import { ItemType } from "antd/es/menu/hooks/useItems";
 import { Option } from "antd/lib/mentions";
 import { ColumnsType } from "antd/lib/table/interface";
-import { orderBy } from "lodash";
 import { MoreHorizontal, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -103,14 +102,6 @@ const Candidates = () => {
         { label: CandidateStatus.Current, value: CandidateStatus.Current },
         { label: CandidateStatus.Archived, value: CandidateStatus.Archived },
     ];
-    const jobsOptions = orderBy(
-        filterCandidates(candidatesOriginal, CandidateStatus.Current).map(candidate => ({
-            label: candidate.jobTitle,
-            value: candidate.jobId,
-        })),
-        "label",
-        ["asc"]
-    );
 
     useEffect(() => {
         updateCandidates();
@@ -130,12 +121,6 @@ const Candidates = () => {
         if (filter.search) {
             candidates = candidates.filter(candidate =>
                 candidate.candidateName.toLowerCase().includes(filter.search.toLowerCase())
-            );
-        }
-
-        if (filter.jobTitle) {
-            candidates = candidates.filter(candidate =>
-                candidate.jobTitle?.toLowerCase()?.includes(filter.jobTitle!.toLowerCase())
             );
         }
 
@@ -165,12 +150,6 @@ const Candidates = () => {
         setFilter({
             ...filter,
             candidateStatus: status,
-        });
-
-    const onJobFilterChange = (jobTitle?: string) =>
-        setFilter({
-            ...filter,
-            jobTitle: jobTitle,
         });
 
     const onNameSortChange = (sortOrder?: SortOrder) =>
@@ -215,19 +194,6 @@ const Candidates = () => {
 
     const getFilterContainer = (
         <HeaderMetaContainer>
-            <Space direction='vertical' size={2}>
-                <FormLabelSmall>Job</FormLabelSmall>
-                <Select
-                    allowClear
-                    style={{ minWidth: 200 }}
-                    defaultValue={filter.jobTitle}
-                    placeholder='Job'
-                    options={jobsOptions}
-                    filterOption={filterOptionLabel}
-                    onSelect={onJobFilterChange}
-                    onClear={() => onJobFilterChange(undefined)}
-                />
-            </Space>
             <Space direction='vertical' size={2}>
                 <FormLabelSmall>Status</FormLabelSmall>
                 <Select
@@ -352,14 +318,9 @@ const Candidates = () => {
             ),
         },
         {
-            title: <TableHeader>JOB</TableHeader>,
-            key: "createdDate",
-            render: (candidate: Candidate) => <FormLabelSmall>{candidate.jobTitle ?? "-"}</FormLabelSmall>,
-        },
-        {
-            title: <TableHeader>STAGE</TableHeader>,
-            key: "createdDate",
-            render: (candidate: Candidate) => <>{candidate.stageTitle && <Tag>{candidate?.stageTitle}</Tag>}</>,
+            title: <TableHeader>POSITION</TableHeader>,
+            key: "position",
+            render: (candidate: Candidate) => <FormLabelSmall>{candidate.position ?? "-"}</FormLabelSmall>,
         },
         {
             title: <TableHeader>CREATED DATE</TableHeader>,

@@ -9,7 +9,7 @@ import { getAccessTokenSilently } from "../../react-auth0-spa";
 import { config } from "../../store/common";
 import { log } from "../../utils/log";
 import { cloneDeep } from "lodash";
-import { Candidate, Job, JobStatus, UserProfile } from "../../store/models";
+import { Candidate, UserProfile } from "../../store/models";
 import { ApiRequestStatus } from "../../store/state-models";
 import AntIconSpan from "../../components/buttons/ant-icon-span";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -17,8 +17,6 @@ import styled from "styled-components";
 import { selectUserProfile } from "../../store/user/selector";
 import { selectCreateCandidateStatus, selectUpdateCandidateStatus } from "../../store/candidates/selector";
 import { createCandidate, updateCandidate } from "../../store/candidates/actions";
-import { selectJobs } from "../../store/jobs/selectors";
-import { fetchJobs } from "../../store/jobs/actions";
 
 const { Text } = Typography;
 const { Dragger } = Upload;
@@ -38,13 +36,11 @@ const Footer = styled.div`
 
 type Props = {
     candidate?: Candidate;
-    jobId?: string;
-    stageId?: string;
     onSave: (candidateId: string) => void;
     onCancel: () => void;
 };
 
-const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Props) => {
+const CreateCandidateForm = ({ candidate, onSave, onCancel }: Props) => {
     const dispatch = useDispatch();
 
     const [moreFieldsVisible, setMoreFieldsVisible] = useState(false);
@@ -54,20 +50,11 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
     const userProfile: UserProfile = useSelector(selectUserProfile, shallowEqual);
     const createCandidateStatus = useSelector(selectCreateCandidateStatus, shallowEqual);
     const updateCandidateStatus = useSelector(selectUpdateCandidateStatus, shallowEqual);
-    const jobs: Job[] = useSelector(selectJobs, shallowEqual);
 
     const [form] = Form.useForm();
 
     useEffect(() => {
-        dispatch(fetchJobs());
-        // eslint-disable-next-line
-    }, []);
-
-    useEffect(() => {
-        if (
-            createCandidateStatus === ApiRequestStatus.Success ||
-            updateCandidateStatus === ApiRequestStatus.Success
-        ) {
+        if (createCandidateStatus === ApiRequestStatus.Success || updateCandidateStatus === ApiRequestStatus.Success) {
             onSave(candidateId);
             form.resetFields();
             setResumeFile(null);
@@ -119,13 +106,6 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
             });
     };
 
-    const jobsOptions = jobs
-        .filter(job => job.status === JobStatus.OPEN)
-        .map(job => ({
-            label: job.title,
-            value: job.jobId,
-        }));
-
     const onFinish = (values: any) => {
         if (candidate) {
             const updatedCandidate: Candidate = cloneDeep(candidate);
@@ -136,8 +116,6 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
             updatedCandidate.email = values.email;
             updatedCandidate.linkedIn = values.linkedIn;
             updatedCandidate.gitHub = values.gitHub;
-            updatedCandidate.jobId = jobId ?? values.jobId;
-            updatedCandidate.stageId = stageId;
 
             if (resumeFile) {
                 updatedCandidate.resumeFile = resumeFile;
@@ -149,8 +127,6 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
                     ...values,
                     candidateId: candidateId,
                     resumeFile: resumeFile,
-                    jobId: jobId ?? values.jobId,
-                    stageId: stageId,
                 })
             );
         }
@@ -218,7 +194,6 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
                     location: candidate?.location,
                     linkedIn: candidate?.linkedIn,
                     gitHub: candidate?.gitHub,
-                    jobId: jobId ?? candidate?.jobId,
                 }}
                 onFinish={onFinish}
             >
@@ -234,12 +209,6 @@ const CreateCandidateForm = ({ candidate, jobId, stageId, onSave, onCancel }: Pr
                 >
                     <Input placeholder="Candidate's full name" />
                 </Form.Item>
-
-                {!jobId && candidate && candidate.jobId && (
-                    <Form.Item name='jobId' label={<FormLabel>Job</FormLabel>}>
-                        <Select disabled={true} allowClear={true} placeholder='Job' options={jobsOptions} />
-                    </Form.Item>
-                )}
 
                 <Form.Item name='email' label={<FormLabel>Email</FormLabel>}>
                     <Input placeholder="Candidate's email" />

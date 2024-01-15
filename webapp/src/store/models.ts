@@ -2,24 +2,9 @@ export interface TeamDetails {
     teamId: string;
     teamName: string;
     token: string;
-    plan: string;
-    seats: number;
-    availableSeats: number;
     pendingInvites: TeamInvite[];
     roles: string[];
     teamMembers: TeamMember[];
-    integration: Integration;
-}
-
-export interface Integration {
-    status: string;
-    ats?: string;
-    lastSync: string;
-}
-
-export enum IntegrationStatus {
-    None = "None",
-    Completed = "Completed",
 }
 
 export interface TeamMember {
@@ -90,19 +75,9 @@ export interface Interview {
     takeHomeChallenge?: TakeHomeChallenge;
     challengeDetails?: ChallengeDetails;
     sendChallenge?: boolean;
-    jobId?: string;
-    jobTitle?: string;
-    stageTitle?: string;
     parsedCreatedDateTime: Date; // local property
     parsedStartDateTime: Date; // local property
     parsedEndDateTime: Date; // local property
-}
-
-export interface InterviewStage {
-    stageName: string;
-    linkId: string;
-    interviewStartDate: string;
-    interviews: Interview[];
 }
 
 export interface SharedInterview extends Interview {
@@ -155,10 +130,6 @@ export interface Candidate {
     position?: string;
     resumeUrl?: string;
     resumeFile?: string;
-    jobId?: string;
-    jobTitle?: string;
-    stageId?: string;
-    stageTitle?: string;
     status: string;
     gitHub?: string;
     linkedIn?: string;
@@ -171,76 +142,7 @@ export interface Candidate {
     tags: string[];
 }
 
-export interface CandidateDetails extends Candidate {
-    stages: InterviewStage[];
-    currentStage?: CurrentStage;
-}
-
-export interface Job {
-    jobId: string;
-    title: string;
-    department: string;
-    location?: string;
-    createdDate: string;
-    status: JobStatus;
-    totalCandidates: number;
-    newlyAddedCandidates: number;
-    owner: string;
-    ownerName: string;
-}
-
-export enum JobStatus {
-    OPEN = "OPEN",
-    CLOSED = "CLOSED",
-}
-
-export interface JobDetails extends Job {
-    description?: string;
-    deadline?: string;
-    tags: string[];
-    pipeline: JobStage[];
-}
-
-export interface JobStage {
-    stageId: string;
-    title: string;
-    description?: string;
-    colour: string;
-    type: string;
-    templateId?: string;
-    disabled: boolean;
-    candidates?: StageCandidate[];
-}
-
-export interface CurrentStage {
-    stageId: string;
-    colour: string;
-    title: string;
-    type: string;
-    templateId?: string;
-    status?: CandidateStageStatus;
-}
-
-export interface StageCandidate {
-    candidateId: string;
-    name: string;
-    position?: string;
-    status?: CandidateStageStatus;
-    movedToStage: string;
-    originallyAdded: string;
-}
-
-export enum CandidateStageStatus {
-    SCHEDULE_INTERVIEW = "SHCHEDULE_INTERVIEW",
-    INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED",
-    AWAITING_FEEDBACK = "AWAITING_FEEDBACK",
-    FEEDBACK_AVAILABLE = "FEEDBACK_AVAILABLE",
-}
-
-export enum JobStageType {
-    Interview = "Interview",
-    Regular = "Regular",
-}
+export interface CandidateDetails extends Candidate {}
 
 export enum QuestionAssessment {
     /**
@@ -263,7 +165,7 @@ export enum QuestionDifficulty {
 }
 
 export enum TeamRole {
-    HR = "HR",
+    RECRUITER = "RECRUITER",
     HIRING_MANAGER = "HIRING_MANAGER",
     INTERVIEWER = "INTERVIEWER",
     ADMIN = "ADMIN",

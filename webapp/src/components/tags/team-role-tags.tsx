@@ -8,7 +8,7 @@ type Props = {
 };
 const TeamRoleTag = ({ role }: Props) => {
     const getText = () => {
-        if (role === Roles.HR) {
+        if (role === Roles.RECRUITER) {
             return "Recruiter";
         } else if (role === Roles.HIRING_MANAGER) {
             return "Hiring Manager";

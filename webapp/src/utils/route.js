@@ -58,10 +58,6 @@ export const routeTeamProfile = () => "/account/team/profile";
 
 export const routeTeamMembers = () => "/account/team/members";
 
-export const routeTeamBilling = () => "/account/team/billing";
-
-export const routeTeamIntegration = () => "/account/team/integration";
-
 export const routeSharedTemplate = () => "/template/shared/:token";
 
 export const routeTeamNew = (hideMenu = false) => (hideMenu ? "/team/new?hideMenu=true" : "/team/new/");
@@ -80,22 +76,6 @@ export const routeTakeHomeChallenge = token => {
     return token ? url.replace(":token", token) : url;
 };
 
-export const routeSubscription = () => "/subscription";
-
-export const routeJobs = () => "/jobs";
-
-export const routeJobsNew = () => "/jobs/new";
-
-export const routeJobEdit = (id) => {
-    const url = "/jobs/edit/:id";
-    return id ? url.replace(":id", id) : url;
-}
-
-export const routeJobDetails = (id) => {
-    const url = "/jobs/detail/:id";
-    return id ? url.replace(":id", id) : url;
-}
-
 export const getParameterByName = (name, url = window.location.href) => {
     name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -109,4 +89,4 @@ export const getHost = () => window.location.protocol.concat("//").concat(window
 
 export const getApiUrl = () => process.env.REACT_APP_API_URL;
 
-export const canGoBack = (history) => history.action !== "POP"
+export const canGoBack = history => history.action !== "POP";

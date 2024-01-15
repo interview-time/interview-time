@@ -125,12 +125,11 @@ type Props = {
     candidate: Candidate;
     onUpdateDetails?: any;
     onScheduleInterview?: any;
-    onAssignToJobClicked: () => void;
     onArchive?: any;
     onRestoreArchive?: any;
 };
 
-const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onAssignToJobClicked, onArchive, onRestoreArchive }: Props) => {
+const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onArchive, onRestoreArchive }: Props) => {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const history = useHistory();
 
@@ -178,7 +177,7 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onA
                 {candidate.archived && <Archived>Archived</Archived>}
 
                 <Name>{candidate.candidateName}</Name>
-                <Role>{candidate.jobTitle}</Role>
+                <Role>{candidate.position}</Role>
                 <Info>{candidate.location && <Location>{candidate.location}</Location>}</Info>
 
                 <Actions>
@@ -212,22 +211,9 @@ const CandidateDetails = ({ candidate, onUpdateDetails, onScheduleInterview, onA
                         missingLinkText='Add phone'
                         missingLinkAction={openEditCandidate}
                     />
-                </Actions>
-                {!candidate.jobId && (
-                    <ScheduleButton
-                        type='primary'
-                        icon={
-                            <AntIconSpan>
-                                <Briefcase size='1em' />
-                            </AntIconSpan>
-                        }
-                        onClick={onAssignToJobClicked}
-                    >
-                        Assign to job
-                    </ScheduleButton>
-                )}
+                </Actions>          
 
-                {candidate.jobId && onScheduleInterview && (
+                {onScheduleInterview && (
                     <ScheduleButton
                         type='primary'
                         disabled={candidate.archived}

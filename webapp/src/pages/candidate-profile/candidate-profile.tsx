@@ -13,15 +13,11 @@ import {
     updateCandidate,
 } from "../../store/candidates/actions";
 import { selectCandidateDetails, selectGetCandidateDetailsStatus } from "../../store/candidates/selector";
-import { addCandidateToJob } from "../../store/jobs/actions";
-import { selectAddCandidateToJobStatus } from "../../store/jobs/selectors";
-import { Candidate, CandidateDetails, Job } from "../../store/models";
+import { Candidate, CandidateDetails } from "../../store/models";
 import { ApiRequestStatus } from "../../store/state-models";
 import { routeCandidates } from "../../utils/route";
 import ScheduleInterviewModal from "../interview-schedule/schedule-interview-modal";
-import AssignJobModal from "./assign-job-modal";
 import Details from "./candidate-details";
-import InterviewStage from "./interview-stage";
 
 const PageWrapper = styled(Col)`
     padding-top: 32px;
@@ -37,23 +33,14 @@ const CandidateProfile = () => {
     const dispatch = useDispatch();
 
     const [isScheduleOpen, setIsScheduleOpen] = useState(false);
-    const [isAssignJobOpen, setIsAssignJobOpen] = useState(false);
 
     const getCandidateDetailsStatus = useSelector(selectGetCandidateDetailsStatus, shallowEqual);
-    const addCandidateToJobStatus = useSelector(selectAddCandidateToJobStatus, shallowEqual);
     const candidate: CandidateDetails | undefined = useSelector(selectCandidateDetails(id), shallowEqual);
 
     useEffect(() => {
         dispatch(fetchCandidateDetails(id));
         // eslint-disable-next-line
     }, []);
-
-    useEffect(() => {
-        if (addCandidateToJobStatus === ApiRequestStatus.Success) {
-            dispatch(fetchCandidateDetails(id));
-        }
-        // eslint-disable-next-line
-    }, [addCandidateToJobStatus]);
 
     const scheduleInterview = () => {
         setIsScheduleOpen(true);
@@ -68,13 +55,6 @@ const CandidateProfile = () => {
         dispatch(restoreArchivedCandidate(id));
     };
 
-    const onAssignToJobClicked = () => setIsAssignJobOpen(true);
-
-    const onAssignJob = (job: Job) => {
-        setIsAssignJobOpen(false);
-        dispatch(addCandidateToJob(id, job.jobId));
-    };
-
     if (!candidate) {
         return <Spinner />;
     }
@@ -87,13 +67,12 @@ const CandidateProfile = () => {
                         candidate={candidate as Candidate}
                         onUpdateDetails={updateCandidate}
                         onScheduleInterview={scheduleInterview}
-                        onAssignToJobClicked={onAssignToJobClicked}
                         onArchive={archiveCandidateHandler}
                         onRestoreArchive={restoreArchivedCandidateHandler}
                     />
                     {getCandidateDetailsStatus === ApiRequestStatus.InProgress && <Spinner />}
 
-                    {getCandidateDetailsStatus !== ApiRequestStatus.InProgress &&
+                    {/* {getCandidateDetailsStatus !== ApiRequestStatus.InProgress &&
                         candidate.stages &&
                         candidate.stages.length > 0 && (
                             <>
@@ -112,7 +91,7 @@ const CandidateProfile = () => {
                                     <PlusCircle size={32} color='#9CA3AF' />
                                 )}
                             </>
-                        )}
+                        )} */}
                 </>
             </PageWrapper>
 
@@ -120,12 +99,6 @@ const CandidateProfile = () => {
                 open={isScheduleOpen}
                 candidateId={candidate.candidateId}
                 onClose={() => setIsScheduleOpen(false)}
-            />
-
-            <AssignJobModal
-                open={isAssignJobOpen}
-                onAssignJob={onAssignJob}
-                onClose={() => setIsAssignJobOpen(false)}
             />
         </LayoutWide>
     );

@@ -12,7 +12,7 @@ export const permissionViewCandidates = (profile: UserProfile): boolean | undefi
 export const isTeamAdmin = (team: Team): boolean => team.roles.some(role => role === Roles.ADMIN);
 
 export const isInElevatedRole = (team: Team): boolean => {
-    return team.roles.some(role => role === Roles.ADMIN || role === Roles.HIRING_MANAGER || role === Roles.HR);
+    return team.roles.some(role => role === Roles.ADMIN || role === Roles.HIRING_MANAGER || role === Roles.RECRUITER);
 };
 
 export const canCancelInvite = (roles: string[], isOwner: boolean) => {
@@ -27,15 +27,6 @@ export const canAddCandidate = (state: RootState) => {
     const team = selectActiveTeam(state.user.profile);
     if (team) {
         return team.roles.some(role => role !== Roles.INTERVIEWER);
-    }
-
-    return false;
-};
-
-export const canIntegrateWithATS = (state: RootState) => {
-    const team = selectActiveTeam(state.user.profile);
-    if (team) {
-        return team.roles.some(role => role === Roles.ADMIN);
     }
 
     return false;

@@ -4,16 +4,13 @@ import { isEmpty } from "lodash";
 import React, { useEffect, useReducer } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import CompleteImage from "../../assets/illustrations/undraw_completing.svg";
 import SelectionImage from "../../assets/illustrations/undraw_selection.svg";
-import WarningImage from "../../assets/illustrations/undraw_warning.svg";
 import { Colors } from "../../assets/styles/colors";
 import {
     CardOutlined,
     ErrorLabelSmall,
     FormLabel,
     SecondaryText,
-    TextBold,
     TextBoldSmall,
     TextExtraBold,
     TextSmall,
@@ -34,8 +31,6 @@ import { selectAddInterviewStatus, selectUpdateInterviewStatus } from "../../sto
 import {
     Candidate,
     CandidateDetails,
-    CandidateStageStatus,
-    CurrentStage,
     InterviewStatus,
     InterviewType,
     TeamMember,
@@ -194,8 +189,7 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, onClo
     const isExistingCandidate = !isEmpty(candidateId);
     const isTakeHomeChallenge = (template: Template | undefined) =>
         template?.interviewType === InterviewType.TAKE_HOME_TASK;
-    const isInterviewWithoutDate = isTakeHomeChallenge(formData.template);
-    const isInterviewScheduled = selectedCandidate?.currentStage?.status === CandidateStageStatus.INTERVIEW_SCHEDULED;
+    const isInterviewWithoutDate = isTakeHomeChallenge(formData.template);    
 
     const candidatesOptions = sortCandidatesByCreatedDate(filterCandidates(candidates, CandidateStatus.Current))
         .sort((a, b) => a.candidateName.localeCompare(b.candidateName))
@@ -258,16 +252,16 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, onClo
         // eslint-disable-next-line
     }, [formData.candidateId]);
 
-    useEffect(() => {
-        if (selectedCandidate) {
-            let template = findTemplate(selectedCandidate?.currentStage?.templateId);
-            updateFormData({
-                template: template,
-                sendChallenge: isTakeHomeChallenge(template),
-            });
-        }
-        // eslint-disable-next-line
-    }, [selectedCandidate]);
+    // useEffect(() => {
+    //     if (selectedCandidate) {
+    //         let template = findTemplate(selectedCandidate?.currentStage?.templateId);
+    //         updateFormData({
+    //             template: template,
+    //             sendChallenge: isTakeHomeChallenge(template),
+    //         });
+    //     }
+    //     // eslint-disable-next-line
+    // }, [selectedCandidate]);
 
     useEffect(() => {
         if (addInterviewStatus === ApiRequestStatus.Success) {
@@ -410,95 +404,73 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, onClo
         );
     };
 
-    const getInterviewForm = (stage: CurrentStage, template: Template) => (
-        <>
-            <Label>Interview Template</Label>
-            <Select
-                showSearch
-                allowClear={false}
-                placeholder='Select interview template'
-                value={template.templateId}
-                onChange={value =>
-                    updateFormData({
-                        template: findTemplate(value),
-                    })
-                }
-                filterOption={filterOptionLabel}
-            >
-                {templateOptions}
-            </Select>
-            {isTakeHomeChallenge(formData.template) && getSendAssignmentFormItem()}
-            {stage.templateId !== template.templateId && (
-                <ErrorLabel>
-                    Note: selected template doesn't match with a template defined in this job stage.
-                </ErrorLabel>
-            )}
-            <Label>Interviewers</Label>
-            <Select
-                mode='multiple'
-                placeholder='Select one or more interviewers'
-                value={formData.interviewersIds}
-                options={interviewersOptions}
-                filterOption={filterOptionLabel}
-                onChange={values =>
-                    updateFormData({
-                        interviewersIds: values,
-                    })
-                }
-            />
-            {!isInterviewWithoutDate && (
-                <>
-                    <Label>Interview Date</Label>
-                    <DateContainer>
-                        <InterviewDatePicker
-                            allowClear={false}
-                            format={datePickerFormat()}
-                            value={parseDateISO(formData.startDate)}
-                            onSelect={onDateChange}
-                        />
-                        <Select
-                            allowClear={false}
-                            showSearch
-                            placeholder='Start time'
-                            options={generateTimeSlots()}
-                            value={formatDate(formData.startDate, timePickerFormat())}
-                            onSelect={onStartTimeChange}
-                        />
-                        <Select
-                            allowClear={false}
-                            showSearch
-                            placeholder='End time'
-                            options={generateTimeSlots()}
-                            value={formatDate(formData.endDate, timePickerFormat())}
-                            onSelect={onEndTimeChange}
-                        />
-                    </DateContainer>
-                </>
-            )}
-        </>
-    );
-
-    const getJobForm = (stage: CurrentStage) => {
-        if (!stage.templateId) {
-            return (
-                <PlaceholderContainer>
-                    <img src={WarningImage} height={138} alt='Warning' />
-                    <SecondaryText>This job stage is not linked to an interview template.</SecondaryText>
-                </PlaceholderContainer>
-            );
-        }
-
-        if (isInterviewScheduled) {
-            return (
-                <PlaceholderContainer>
-                    <img src={CompleteImage} height={138} alt='Warning' />
-                    <SecondaryText>Interview for this stage is already scheduled.</SecondaryText>
-                </PlaceholderContainer>
-            );
-        } else if (formData.template) {
-            return getInterviewForm(stage, formData.template);
-        }
-    };
+    // const getInterviewForm = (stage: CurrentStage, template: Template) => (
+    //     <>
+    //         <Label>Interview Template</Label>
+    //         <Select
+    //             showSearch
+    //             allowClear={false}
+    //             placeholder='Select interview template'
+    //             value={template.templateId}
+    //             onChange={value =>
+    //                 updateFormData({
+    //                     template: findTemplate(value),
+    //                 })
+    //             }
+    //             filterOption={filterOptionLabel}
+    //         >
+    //             {templateOptions}
+    //         </Select>
+    //         {isTakeHomeChallenge(formData.template) && getSendAssignmentFormItem()}
+    //         {stage.templateId !== template.templateId && (
+    //             <ErrorLabel>
+    //                 Note: selected template doesn't match with a template defined in this job stage.
+    //             </ErrorLabel>
+    //         )}
+    //         <Label>Interviewers</Label>
+    //         <Select
+    //             mode='multiple'
+    //             placeholder='Select one or more interviewers'
+    //             value={formData.interviewersIds}
+    //             options={interviewersOptions}
+    //             filterOption={filterOptionLabel}
+    //             onChange={values =>
+    //                 updateFormData({
+    //                     interviewersIds: values,
+    //                 })
+    //             }
+    //         />
+    //         {!isInterviewWithoutDate && (
+    //             <>
+    //                 <Label>Interview Date</Label>
+    //                 <DateContainer>
+    //                     <InterviewDatePicker
+    //                         allowClear={false}
+    //                         format={datePickerFormat()}
+    //                         value={parseDateISO(formData.startDate)}
+    //                         onSelect={onDateChange}
+    //                     />
+    //                     <Select
+    //                         allowClear={false}
+    //                         showSearch
+    //                         placeholder='Start time'
+    //                         options={generateTimeSlots()}
+    //                         value={formatDate(formData.startDate, timePickerFormat())}
+    //                         onSelect={onStartTimeChange}
+    //                     />
+    //                     <Select
+    //                         allowClear={false}
+    //                         showSearch
+    //                         placeholder='End time'
+    //                         options={generateTimeSlots()}
+    //                         value={formatDate(formData.endDate, timePickerFormat())}
+    //                         onSelect={onEndTimeChange}
+    //                     />
+    //                 </DateContainer>
+    //             </>
+    //         )}
+    //     </>
+    // );
 
     const getJobContent = () => {
         if (!formData.candidateId) {
@@ -507,28 +479,6 @@ const ScheduleInterviewModal = ({ open, alwaysFetchCandidate, candidateId, onClo
                     <img src={SelectionImage} height={138} alt='Selection' />
                     <SecondaryText>Select candidate to get started.</SecondaryText>
                 </PlaceholderContainer>
-            );
-        } else if (selectedCandidate && !selectedCandidate.jobId) {
-            return (
-                <PlaceholderContainer>
-                    <img src={WarningImage} height={138} alt='Warning' />
-                    <SecondaryText>This candidate is not linked to any job.</SecondaryText>
-                </PlaceholderContainer>
-            );
-        } else if (selectedCandidate && selectedCandidate.jobId) {
-            return (
-                <>
-                    <JobTitle>{selectedCandidate.jobTitle}</JobTitle>
-                    {selectedCandidate.currentStage && (
-                        <>
-                            <StageCard>
-                                <StageColorBox color={selectedCandidate.currentStage.colour} />
-                                <TextBold>{selectedCandidate.currentStage.title}</TextBold>
-                            </StageCard>
-                            {getJobForm(selectedCandidate.currentStage)}
-                        </>
-                    )}
-                </>
             );
         }
     };

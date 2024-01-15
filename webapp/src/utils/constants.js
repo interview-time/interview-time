@@ -5,7 +5,7 @@ import { InterviewType } from "../store/models";
 import { interviewTypeToColor } from "./interview";
 
 export const Roles = {
-    HR: "HR",
+    RECRUITER: "RECRUITER",
     HIRING_MANAGER: "HIRING_MANAGER",
     INTERVIEWER: "INTERVIEWER",
     ADMIN: "ADMIN",
@@ -88,8 +88,3 @@ export const POSITIONS_OPTIONS = POSITIONS.map(position => ({
     value: position,
     label: position,
 }));
-
-export const SubscriptionPlans = {
-    Starter: "STARTER",
-    Premium: "PREMIUM",
-};

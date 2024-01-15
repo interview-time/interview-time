@@ -18,6 +18,7 @@ using MediatR;
 using MailChimp.Net.Interfaces;
 using MailChimp.Net;
 using System.Linq;
+using Amazon;
 
 namespace CafApi
 {
@@ -73,6 +74,9 @@ namespace CafApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "InterviewTime API", Version = "v1" });
             });
+
+            AWSConfigs.AWSProfileName = "open_source";
+            
             services.AddAWSService<IAmazonDynamoDB>();
 
             var s3Config = new AmazonS3Config

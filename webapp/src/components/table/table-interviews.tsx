@@ -42,8 +42,7 @@ export const JobColumn = (): ColumnType<Interview> => ({
     sortDirections: ["descend", "ascend"],
     render: (interview: Interview) => (
         <PrimarySecondaryText>
-            <FormLabelSmall>{interview.jobTitle || "-"}</FormLabelSmall>
-            {interview.stageTitle && <FormLabelSecondary>{interview.stageTitle}</FormLabelSecondary>}
+            <FormLabelSmall>{interview.position || "-"}</FormLabelSmall>
         </PrimarySecondaryText>
     ),
 });

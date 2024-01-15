@@ -151,7 +151,7 @@ const InterviewCard = ({ interview, onInterviewClicked, onCancelInterviewClicked
                                     {getFormattedTimeRange(interview.parsedStartDateTime, interview.parsedEndDateTime)}
                                 </SecondaryText>
                             )}
-                            <TextBold>{interview.jobTitle || "-"}</TextBold>
+                            <TextBold>{interview.position || "-"}</TextBold>
                         </JobContainer>
                     </DateJobContainer>
                 </Col>
@@ -161,9 +161,6 @@ const InterviewCard = ({ interview, onInterviewClicked, onCancelInterviewClicked
                         <FormLabelSmall className='fs-mask'>{interview.candidate ?? "Unknown"}</FormLabelSmall>
                         <DemoTag isDemo={interview.isDemo} />
                     </CandidateContainer>
-                </Col>
-                <Col xs={12} lg={5}>
-                    <SecondaryText>{interview.stageTitle || "-"}</SecondaryText>
                 </Col>
                 <FlexEndCol xs={12} lg={5}>
                     <InterviewStatusTag

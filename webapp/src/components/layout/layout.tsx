@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import { Badge, Button, Divider, Dropdown, Layout as AntLayout, Menu, notification, Typography } from "antd";
+import { Divider, Dropdown, Layout as AntLayout, Menu, notification, Typography } from "antd";
 import {
     routeCandidateAdd,
     routeCandidates,
     routeHome,
     routeInterviews,
-    routeJobs, routeJobsNew,
     routeTeamNew,
     routeTeamProfile,
     routeTemplateBlank,
     routeTemplateLibrary,
-    routeTemplates
+    routeTemplates,
 } from "../../utils/route";
-
-import FeedbackModal from "../../pages/feedback/modal-feedback";
 import { joinTeam, switchTeam } from "../../store/user/actions";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 import { defaultTo } from "lodash";
-import { getJoinTeam, isUpdateAvailable, setJoinTeam } from "../../utils/storage";
-import NewsModal from "../../pages/news/modal-news";
-import { Album, CheckCircle2, ChevronDown, Gauge, LayoutTemplate, MessageCircle, Settings, Users } from "lucide-react";
+import { getJoinTeam, setJoinTeam } from "../../utils/storage";
+import { CheckCircle2, ChevronDown, Gauge, LayoutTemplate, Settings, Users } from "lucide-react";
 import { selectActiveTeam, selectUserProfile } from "../../store/user/selector";
 import { Team, UserProfile } from "../../store/models";
 import styled from "styled-components";
@@ -187,7 +183,6 @@ const MenuFooterText = styled(Text)`
 type Props = {
     header?: React.ReactNode;
     children: React.ReactNode | React.ReactNode[];
-
 };
 
 const Layout = ({ header, children }: Props) => {
@@ -210,8 +205,6 @@ const Layout = ({ header, children }: Props) => {
 
     const [interviewVisible, setInterviewVisible] = useState(false);
     const [actionsVisible, setActionsVisible] = useState(false);
-    const [feedbackVisible, setFeedbackVisible] = useState(false);
-    const [newsVisible, setNewsVisible] = useState(isUpdateAvailable());
 
     useHotkeys("ctrl+k,Meta+k", () => setActionsVisible(true), []);
 
@@ -245,8 +238,6 @@ const Layout = ({ header, children }: Props) => {
             return MenuKey.CANDIDATES;
         } else if (location.pathname.includes("/account/")) {
             return MenuKey.SETTINGS;
-        } else if (location.pathname.includes(routeJobs())) {
-            return MenuKey.JOBS;
         } else if (location.pathname.includes(routeHome())) {
             return MenuKey.HOME;
         } else {
@@ -282,22 +273,6 @@ const Layout = ({ header, children }: Props) => {
         setActionsVisible(false);
     };
 
-    const onFeedbackClicked = () => {
-        setFeedbackVisible(true);
-    };
-
-    const onFeedbackClose = () => {
-        setFeedbackVisible(false);
-    };
-
-    const onNewsClicked = () => {
-        setNewsVisible(true);
-    };
-
-    const onNewsClose = () => {
-        setNewsVisible(false);
-    };
-
     const onTeamSelected = (team: Team) => {
         const selected = {
             teamName: team.teamName,
@@ -314,13 +289,11 @@ const Layout = ({ header, children }: Props) => {
     const onScheduleInterview = () => {
         setActionsVisible(false);
         setInterviewVisible(true);
-    }
+    };
 
     const onAddCandidate = () => history.push(routeCandidateAdd());
 
     const onCreateTemplate = () => history.push(routeTemplateBlank());
-
-    const onCreateJob = () => history.push(routeJobsNew());
 
     // @ts-ignore
     const teamMenuItems: ItemType[] = defaultTo(profile.teams, [])
@@ -386,9 +359,6 @@ const Layout = ({ header, children }: Props) => {
                         <MenuItem key={MenuKey.HOME} icon={<Gauge />}>
                             <Link to={routeHome()}>Dashboard</Link>
                         </MenuItem>
-                        <MenuItem key={MenuKey.JOBS} icon={<Album />}>
-                            <Link to={routeJobs()}>Jobs</Link>
-                        </MenuItem>
                         <MenuItem key={MenuKey.CANDIDATES} icon={<Users />}>
                             <Link to={routeCandidates()}>Candidates</Link>
                         </MenuItem>
@@ -402,17 +372,8 @@ const Layout = ({ header, children }: Props) => {
                         <MenuItem key={MenuKey.SETTINGS} icon={<Settings />}>
                             <Link to={routeTeamProfile()}>Settings</Link>
                         </MenuItem>
-                        <MenuItem key={MenuKey.FEEDBACK} icon={<MessageCircle />} onClick={onFeedbackClicked}>
-                            Feedback
-                        </MenuItem>
                     </MainMenu>
                     <MenuFooterContainer>
-                        <Button type='link' onClick={onNewsClicked}>
-                            <Badge dot={isUpdateAvailable()} offset={[6, 4]}>
-                                <MenuFooterText>What's New</MenuFooterText>
-                            </Badge>
-                        </Button>
-
                         <MenuFooterText>v{process.env.REACT_APP_VERSION}</MenuFooterText>
                     </MenuFooterContainer>
                 </LayoutMenuContainer>
@@ -421,20 +382,14 @@ const Layout = ({ header, children }: Props) => {
                 {header}
                 <PageContent>
                     {/*@ts-ignore*/}
-                    <FeedbackModal visible={feedbackVisible} onClose={onFeedbackClose} />
-                    <NewsModal visible={newsVisible} onClose={onNewsClose} />
                     <ActionsModal
                         open={actionsVisible}
                         onClose={onActionsClose}
-                        onCreateJob={onCreateJob}
                         onAddCandidate={onAddCandidate}
                         onScheduleInterview={onScheduleInterview}
                         onCreateTemplate={onCreateTemplate}
                     />
-                    <ScheduleInterviewModal
-                        open={interviewVisible}
-                        onClose={() => setInterviewVisible(false)}
-                    />
+                    <ScheduleInterviewModal open={interviewVisible} onClose={() => setInterviewVisible(false)} />
                     {children}
                 </PageContent>
             </AntLayout>

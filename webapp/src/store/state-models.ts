@@ -1,5 +1,4 @@
 import { ApiRequest } from "./candidates/actions";
-import { JobsApiRequest } from "./jobs/actions";
 import {
     CandidateDetails,
     CandidateChallenge,
@@ -11,13 +10,11 @@ import {
     TeamMember,
     Template,
     UserProfile,
-    Job, JobDetails, Candidate
+    Candidate,
 } from "./models";
 import { InterviewApiRequest } from "./interviews/actions";
 
 export interface IApiResults extends Record<ApiRequest, IApiRequestResult> {}
-
-export interface IJobsApiResults extends Record<JobsApiRequest, IApiRequestResult> {}
 
 export interface IInterviewsApiResults extends Record<InterviewApiRequest, IApiRequestResult> {}
 
@@ -40,8 +37,6 @@ export interface RootState {
     candidates: CandidateState;
     challenge: ChallengeState;
     templates: TemplateState;
-    integration: IntegrationState;
-    jobs: JobsState;
 }
 
 export interface UserState {
@@ -81,16 +76,4 @@ export interface TemplateState {
     templates: Template[];
     library: LibraryTemplate[];
     sharedTemplate: Template | undefined | null;
-}
-
-export interface IntegrationState {
-    linkToken?: string;
-    loading: boolean;
-    error: boolean;
-}
-
-export interface JobsState {
-    jobs: Job[];
-    jobsDetail: JobDetails[];
-    apiResults: IJobsApiResults;
 }

@@ -16,9 +16,6 @@ import { TeamMembersTable } from "./team-members-table";
 import { loadTeam, cancelInvite } from "../../store/team/actions";
 import TeamMembersPendingInvites from "./team-members-pending-invites";
 import Spinner from "../../components/spinner/spinner";
-import { routeSubscription } from "../../utils/route";
-import IllustrationSection from "./illustration-section";
-import ErrorImage from "../../assets/error.svg";
 import { changeRole, removeMember } from "../../store/user/actions";
 import { Team, TeamDetails } from "../../store/models";
 import { RootState } from "../../store/state-models";
@@ -64,7 +61,7 @@ const TeamMembers = ({
                 text: "Same as Hiring Manager plus can manage its team.",
             },
             {
-                role: Roles.HR,
+                role: Roles.RECRUITER,
                 text: "Can view all interviews and assign new interviews to others.",
             },
             {
@@ -94,10 +91,6 @@ const TeamMembers = ({
         });
     };
 
-    const onBuyMoreSeatsClicked = () => {
-        history.push(routeSubscription());
-    };
-
     const showDeleteDialog = (memberId: string, memberName: string) => {
         Modal.confirm({
             title: "Remove member",
@@ -124,20 +117,7 @@ const TeamMembers = ({
                                 Team
                             </Title>
 
-                            <>{teamDetails.availableSeats > 0 && <TeamInvite />}</>
-
-                            <>
-                                {teamDetails.availableSeats <= 0 && (
-                                    <IllustrationSection
-                                        title="Oh no, you can't invite more team members"
-                                        description={`If you want to have more than ${teamDetails.seats} users on your team you need to purchase more seats.`}
-                                        buttonText='Buy More Seats'
-                                        buttonType='primary'
-                                        onButtonClicked={onBuyMoreSeatsClicked}
-                                        illustration={<img src={ErrorImage} alt='Error' />}
-                                    />
-                                )}
-                            </>
+                            <TeamInvite />
                         </Card>
                     )}
                     <div className={styles.divSpaceBetween}>

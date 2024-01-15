@@ -8,20 +8,13 @@ import {
     routeInterviewReport,
     routeInterviews,
     routeInterviewScorecard,
-    routeJobDetails,
-    routeJobEdit,
-    routeJobs,
-    routeJobsNew,
     routeLibraryTemplatePreview,
     routeLiveCodingChallenge,
     routeProfile,
     routeReports,
     routeSharedScorecard,
     routeSharedTemplate,
-    routeSubscription,
     routeTakeHomeChallenge,
-    routeTeamBilling,
-    routeTeamIntegration,
     routeTeamMembers,
     routeTeamNew,
     routeTeamProfile,
@@ -48,11 +41,8 @@ import SharedTemplate from "./pages/shared-template/shared-template";
 import NewTeam from "./pages/team-new/team-new";
 import InterviewReport from "./pages/interview-report/interview-report";
 import Candidates from "./pages/candidates/candidates";
-import Subscription from "./pages/subscription/subscription";
 import TeamProfile from "./pages/account/team-profile";
 import TeamMembers from "./pages/account/team-members";
-import TeamBilling from "./pages/account/team-billing";
-import TeamIntegration from "./pages/account/team-integration";
 import LiveCodingChallenge from "./pages/challenge/live-coding/live-coding-challenge";
 import InterviewReportShared from "./pages/interview-report/interview-report-shared";
 import TakeHomeChallenge from "./pages/challenge/take-home/take-home-challenge";
@@ -62,9 +52,6 @@ import { createGlobalStyle } from "styled-components";
 import { Colors } from "./assets/styles/colors";
 import { ThemeConfig } from "antd/es/config-provider/context";
 import CandidateAdd from "./pages/candidate-add/create-candidate-page";
-import Jobs from "./pages/jobs/jobs";
-import NewJob from "./pages/job-new/new-job";
-import JobDetailsPage from "./pages/job-details/job-details";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -214,16 +201,9 @@ function App() {
                 <PrivateRoute path={routeTeamNew()} exact component={NewTeam} />
                 <PrivateRoute path={routeTeamProfile()} exact component={TeamProfile} />
                 <PrivateRoute path={routeTeamMembers()} exact component={TeamMembers} />
-                <PrivateRoute path={routeTeamBilling()} exact component={TeamBilling} />
-                <PrivateRoute path={routeTeamIntegration()} exact component={TeamIntegration} />
                 <PrivateRoute path={routeCandidates()} exact component={Candidates} />
                 <PrivateRoute path={routeCandidateProfile()} exact component={CandidateProfile} />
                 <PrivateRoute path={routeCandidateAdd()} exact component={CandidateAdd} />
-                <PrivateRoute path={routeSubscription()} exact component={Subscription} />
-                <PrivateRoute path={routeJobs()} exact component={Jobs} />
-                <PrivateRoute path={routeJobEdit()} exact component={NewJob} />
-                <PrivateRoute path={routeJobsNew()} exact component={NewJob} />
-                <PrivateRoute path={routeJobDetails()} exact component={JobDetailsPage} />
                 <Route path={routeSharedTemplate()} exact component={SharedTemplate} />
                 <Route path={routeSharedScorecard()} exact component={InterviewReportShared} />
                 <Route path={routeLiveCodingChallenge()} exact component={LiveCodingChallenge} />

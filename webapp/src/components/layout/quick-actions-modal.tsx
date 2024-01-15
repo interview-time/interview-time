@@ -1,6 +1,6 @@
 import { Modal, Typography } from "antd";
 import styled from "styled-components";
-import { Briefcase, CalendarPlus, FilePlus, UserPlus } from "lucide-react";
+import { CalendarPlus, FilePlus, UserPlus } from "lucide-react";
 import { Colors } from "../../assets/styles/colors";
 
 const { Text } = Typography;
@@ -54,15 +54,9 @@ type Props = {
     onCreateTemplate: () => void;
 };
 
-const ActionsModal = ({ open, onClose, onCreateJob, onScheduleInterview, onAddCandidate, onCreateTemplate }: Props) => {
+const ActionsModal = ({ open, onClose, onScheduleInterview, onAddCandidate, onCreateTemplate }: Props) => {
     return (
         <Modal title='Quick Actions' open={open} onCancel={onClose} footer={null} bodyStyle={{ marginTop: 24 }}>
-            <ActionContainer onClick={onCreateJob}>
-                <IconBackground>
-                    <Briefcase size={20} />
-                </IconBackground>
-                <ActionText>Create job</ActionText>
-            </ActionContainer>
             <ActionContainer onClick={onAddCandidate}>
                 <IconBackground>
                     <UserPlus size={20} />

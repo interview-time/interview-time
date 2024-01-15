@@ -114,8 +114,7 @@ const Interviews = () => {
         return interviews.filter(
             interview =>
                 interview.candidate?.toLowerCase().includes(filterLowerCased) ||
-                interview.jobTitle?.toLowerCase().includes(filterLowerCased) ||
-                interview.stageTitle?.toLowerCase().includes(filterLowerCased)
+                interview.position?.toLowerCase().includes(filterLowerCased)
         );
     };
 
@@ -195,10 +194,7 @@ const Interviews = () => {
                 ]}
             />
 
-            <ScheduleInterviewModal
-                open={interviewModalVisible}
-                onClose={() => setInterviewModalVisible(false)}
-            />
+            <ScheduleInterviewModal open={interviewModalVisible} onClose={() => setInterviewModalVisible(false)} />
         </Layout>
     );
 };

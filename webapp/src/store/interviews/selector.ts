@@ -60,38 +60,14 @@ export const selectInterviewData = (state: RootState, interviewId: string) => {
 
 export const selectUncompletedUserInterviews = (state: RootState): Interview[] => {
     return state.interviews.interviews
-        .filter(interview => interview.userId === state.user.profile.userId && interview.status !== InterviewStatus.SUBMITTED)
+        .filter(
+            interview =>
+                interview.userId === state.user.profile.userId && interview.status !== InterviewStatus.SUBMITTED
+        )
         .map(mapParsedDateTime)
         .map(interview => mapCandidateName(interview, state.candidates.candidates))
         .sort((a: Interview, b: Interview) => dateComparator(a, b));
 };
-
-export const selectUncompletedJobInterviews =
-    (jobId: string) =>
-    (state: RootState): LinkedInterviews[] => {
-        const interviews = state.interviews.interviews
-            .filter(interview => interview.jobId === jobId && interview.status !== InterviewStatus.SUBMITTED)
-            .map(mapParsedDateTime)
-            .map(interview => mapCandidateName(interview, state.candidates.candidates))
-            .sort((a: Interview, b: Interview) => dateComparator(a, b));
-
-        // group by linkId
-        const linkedInterviewsMap = new Map<string, Interview[]>();
-        interviews.forEach(interview => {
-            let linkedInterviews = linkedInterviewsMap.get(interview.linkId);
-            if (linkedInterviews) {
-                linkedInterviews.push(interview);
-            } else {
-                linkedInterviewsMap.set(interview.linkId, [interview]);
-            }
-        });
-
-        const linkedInterviews: LinkedInterviews[] = [];
-        linkedInterviewsMap.forEach((value: Interview[], key: string) => {
-            linkedInterviews.push({ linkId: key, interviews: value });
-        });
-        return linkedInterviews;
-    };
 
 export const selectCompletedInterviews = (state: RootState): Interview[] => {
     return state.interviews.interviews
@@ -99,14 +75,6 @@ export const selectCompletedInterviews = (state: RootState): Interview[] => {
         .map(mapParsedDateTime)
         .map(interview => mapCandidateName(interview, state.candidates.candidates))
         .sort((a: Interview, b: Interview) => dateComparator(a, b, true));
-};
-
-export const selectCompletedJobInterviews = (jobId: string) => (state: RootState): Interview[] => {
-    return state.interviews.interviews
-        .filter(interview => interview.status === InterviewStatus.SUBMITTED && interview.jobId === jobId)
-        .map(mapParsedDateTime)
-        .map(interview => mapCandidateName(interview, state.candidates.candidates))
-        .sort((a: Interview, b: Interview) => dateComparator(a, b));
 };
 
 const mapParsedDateTime = (interview: Interview): Interview => {

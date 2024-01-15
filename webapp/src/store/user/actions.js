@@ -7,7 +7,6 @@ import { loadTemplates, setTemplates } from "../templates/actions";
 import { loadInterviews, setInterviews } from "../interviews/actions";
 import { loadCandidates, setCandidateList } from "../candidates/actions";
 import { resetTeam, loadTeam } from "../team/actions";
-import { resetIntegration } from "../integration/actions";
 import { resetChallenge } from "../challenge/actions";
 import { isEmpty } from "lodash/lang";
 import { getCurrentTimezone } from "../../utils/date-fns";
@@ -234,7 +233,6 @@ export const resetData = teamId => dispatch => {
     dispatch(setInterviews([]));
     dispatch(setCandidateList([]));
     dispatch(resetTeam());
-    dispatch(resetIntegration());
     dispatch(resetChallenge());
 
     dispatch(loadTemplates());
