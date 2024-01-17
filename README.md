@@ -6,7 +6,7 @@
 <p align="center"><b>Open Source Interviewing Platform</b></p>
 
 <p align="center">
-  <img src="https://interviewer-media.s3.us-west-2.amazonaws.com/screenshots/hero.svg" />
+  <img src="https://interviewer-media.s3.us-west-2.amazonaws.com/screenshots/scorecard.svg" />
 </p>
 
 ## Features
